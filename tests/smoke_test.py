@@ -4,19 +4,24 @@ Run from the repository root:
     pip install playwright && python -m playwright install chromium
     python tests/smoke_test.py
 
-It serves the folder locally, then checks that:
-  1. a brand-new game starts (quiz -> seed) without errors,
-  2. an old-style save (one adult, made before multi-plant support) loads, gets a nature,
-     receives the gift seed, and runs a minute of game time without errors,
-  3. two adults can cross-pollinate and the seed lands,
-  4. the iPhone landscape view loads.
+It serves the folder locally and plays each case below for a full minute of game time at speed 20:
+  new game (quiz -> seed -> kid), old save (one adult from before multi-plant support: gets a nature and
+  the gift seed), breeding, night and morning, a teen, a kid on the book stack, the cat in every nap spot,
+  curtains closed with both lamps off (day and night), and the iPhone landscape view.
+Any page error, error box, or missing image fails the run. A screenshot of each case goes to tests/screenshots/.
+
+Game time runs on a virtual clock (the real game loop, stepped 50 ms at a time) with fixed randomness,
+so a minute takes a few seconds and the screenshots come out the same every run.
 Exit code 0 = all good, 1 = something broke.
 """
 import asyncio, http.server, os, socketserver, sys, threading
 from playwright.async_api import async_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SHOTS = os.path.join(ROOT, "tests", "screenshots")
 PORT = 8765
+MINUTE = 60  # seconds of game time per case
+STEP_MS = 50  # game-loop frame length (the game caps a frame at 100 ms)
 
 
 def serve():
@@ -26,83 +31,114 @@ def serve():
         def log_message(self, *a):
             pass
 
-    httpd = socketserver.TCPServer(("", PORT), Quiet)
+    class Server(socketserver.ThreadingTCPServer):  # the game asks for ~240 images at once; one-at-a-time drops some
+        daemon_threads = True
+        request_queue_size = 256
+
+    httpd = Server(("", PORT), Quiet)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd
 
 
+# runs before the game's code: fixed randomness, and a clock + timers + animation frames that only move on __step(seconds)
+VIRTUAL_TIME = """(()=>{let s=12345;Math.random=()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+ let vt=0;const BASE=Date.now();performance.now=()=>vt;Date.now=()=>BASE+vt;
+ let q=[],id=1,raf=[];
+ window.setTimeout=(f,d=0)=>{q.push({id,at:vt+(+d||0),f});return id++;};
+ window.setInterval=(f,d=0)=>{const me=id++,r=()=>{f();q.push({id:me,at:vt+(+d||1),f:r});};q.push({id:me,at:vt+(+d||1),f:r});return me;};
+ window.clearTimeout=window.clearInterval=i=>{q=q.filter(x=>x.id!==i);};
+ window.requestAnimationFrame=f=>{raf.push(f);return 1;};
+ window.__step=sec=>{for(let n=Math.round(sec*1000/%d);n>0;n--){vt+=%d;
+  for(;;){q.sort((a,b)=>a.at-b.at||a.id-b.id);if(!q.length||q[0].at>vt)break;q.shift().f();}
+  const r=raf;raf=[];r.forEach(f=>f(vt));}};})();""" % (STEP_MS, STEP_MS)
+
+# saves, built in the page from fresh() so they always match the current save format
+TEEN = "s.stage=6;s.species=4;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;s.giftSeed=1;"  # neutral: no quirks that wake the cat; gift seed already came (it has its own case)
+CASES = [
+    # name, save (None = brand-new game), js after the start screen, minutes, check (js returning true or a reason)
+    ("new_game", None, "", 1,
+     "st.started&&st.stage===4&&st.nge!=null||'seed did not grow into a kid with a nature (stage '+st.stage+')'"),
+    ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;", "", 1,
+     "st.nge!=null&&plantCount()>=2||'old save: nature '+st.nge+', plants '+plantCount()"),
+    ("breeding", "s.stage=8;s.species=3;s.free={x:300,y:918};",
+     "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);window.__before=plantCount();"
+     "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,  # a second later, once both stand in the room
+     "plantCount()===window.__before+1&&allRaw().some(q=>q.parents)||'no seed from breeding (plants '+plantCount()+')'"),
+    ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
+     "st.night||'tuckIn did not reach night'"),
+    ("teen", TEEN, "", 1,
+     "st.stage===6&&stageGroup()==='grown'&&!!st.free||'teen not on the rug'"),
+    ("kid_on_book_stack", "s.stage=4;s.species=7;s.place={baby:'books'};", "", 1,
+     "spotKey()==='books'||'kid is at '+spotKey()"),
+    ("curtains_closed_lamps_off_day", TEEN + "s.curtain='closed';s.lamp=false;s.desk=false;s.dayT=.1;s.mode='actions';", "", 1,
+     "st.curtain==='closed'&&st.lamp===false&&st.desk===false&&timeKey()==='day'||'room state changed'"),
+    ("curtains_closed_lamps_off_night", TEEN + "s.curtain='closed';s.lamp=false;s.desk=false;s.dayT=.9;s.night=true;", "", 1,
+     "st.curtain==='closed'&&st.lamp===false&&st.desk===false&&st.night||'room state changed'"),
+]
+CAT_NAP = ("const k='%s';if(k==='byplant')CAT_SPOTS.byplant=plantSideSpot();const c=CAT_SPOTS[k];"
+           "Object.assign(cat,{spot:k,x:c.x,y:c.y,sc:c.sc,pose:c.poses[0],state:'sleep',nap:1e9,path:null,pets:0});")
+for spot in ["bed", "rug", "chair", "sill", "crate", "books", "byplant"]:
+    CASES.append(("cat_" + spot, TEEN, CAT_NAP % spot, 1,
+                  f"cat.spot==='{spot}'&&cat.state==='sleep'||'cat ended up '+cat.state+' at '+cat.spot"))
+
+
+async def play(b, name, save, after, minutes, check, device=None):
+    """One case in its own browser context (its own save). Returns a list of problems."""
+    ctx = await b.new_context(**(device or {"viewport": {"width": 1670, "height": 942}}))
+    await ctx.add_init_script(VIRTUAL_TIME)
+    pg = await ctx.new_page()
+    probs = []
+    pg.on("pageerror", lambda e: probs.append("page error: " + str(e)))
+    local = f"http://localhost:{PORT}/"
+    pg.on("requestfailed", lambda r: r.url.startswith(local) and probs.append("missing: " + r.url[len(local):] + " (" + str(r.failure) + ")"))
+    pg.on("response", lambda r: r.url.startswith(local) and r.status >= 400 and probs.append(f"missing ({r.status}): " + r.url[len(local):]))
+    url = local + "index.html"
+    await pg.goto(url, wait_until="load")
+    if save is not None:
+        await pg.evaluate("()=>{const s=fresh();s.started=true;s.species=0;" + save + "localStorage.setItem(KEY,JSON.stringify(s));}")
+        await pg.reload(wait_until="load")
+    await pg.click(".screen button")  # Begin / Continue
+    if save is None:
+        for i in range(4):  # answer the 4 quiz questions
+            await pg.click(".screen button >> nth=%d" % (i % 2))
+    await pg.evaluate("()=>{st.speed=20;" + after + "}")
+    await pg.evaluate("s=>__step(s)", MINUTE * minutes)
+    if name == "night_morning":  # a minute of night, then morning, then a minute of the new day
+        day = await pg.evaluate("()=>st.day")
+        await pg.evaluate("()=>wake()")
+        await pg.evaluate("s=>__step(s)", MINUTE)
+        check = f"st.day==={day}+1&&!st.night||'morning did not come (day '+st.day+', night '+st.night+')'"
+    if device:  # phone: the whole room must fit on screen
+        check = "(()=>{const r=cv.getBoundingClientRect();return r.width<=innerWidth+1&&r.height<=innerHeight+1&&r.width>0})()||'room does not fit the phone screen'"
+    res = await pg.evaluate("()=>" + check)
+    if res is not True:
+        probs.append(str(res))
+    box = await pg.evaluate("()=>(document.getElementById('errbox')||{}).textContent||''")
+    if box:
+        probs.append("error box: " + box.replace("\n", " | "))
+    await pg.screenshot(path=os.path.join(SHOTS, name + ".png"))
+    await ctx.close()
+    return probs
+
+
 async def main():
     serve()
-    url = f"http://localhost:{PORT}/index.html"
-    fails = []
+    os.makedirs(SHOTS, exist_ok=True)
+    fails = 0
     async with async_playwright() as p:
         b = await p.chromium.launch()
-
-        # 1. brand-new game
-        pg = await b.new_page(viewport={"width": 1670, "height": 942})
-        errs = []
-        pg.on("pageerror", lambda e: errs.append(str(e)))
-        await pg.goto(url)
-        await pg.wait_for_timeout(1500)
-        await pg.evaluate("()=>localStorage.clear()")
-        await pg.reload()
-        await pg.wait_for_timeout(1500)
-        await pg.click(".screen button")  # Begin
-        for _ in range(4):  # answer the 4 quiz questions
-            await pg.wait_for_timeout(300)
-            await pg.click(".screen button")
-        await pg.wait_for_timeout(800)
-        ok = await pg.evaluate("()=>st.started&&st.stage===0&&st.nge!=null")
-        if not ok:
-            fails.append("new game did not start with a seed and a nature")
-
-        # 2. old save: one adult, no 'others', no nature
-        await pg.evaluate("""()=>{const s=fresh();s.started=true;s.stage=8;s.species=3;s.day=4;s.dayT=.3;
-            s.place={grown:'rugC'};delete s.others;localStorage.setItem(KEY,JSON.stringify(s));}""")
-        await pg.reload()
-        await pg.wait_for_timeout(1500)
-        await pg.click(".screen button")  # Continue
-        await pg.evaluate("()=>{st.speed=20}")
-        await pg.wait_for_timeout(6000)
-        n = await pg.evaluate("()=>plantCount()")
-        if n < 2:
-            fails.append(f"gift seed did not arrive (plants: {n})")
-
-        # 3. breeding
-        await pg.evaluate("()=>{const q=freshPlant();q.species=6;q.stage=8;addPlant(q);}")
-        await pg.wait_for_timeout(300)
-        before = await pg.evaluate("()=>plantCount()")
-        await pg.evaluate("()=>{const A=allRaw().filter(q=>q.stage>=8);if(A.length>=2&&plantCount()<3)crossPollinate(A[0],A[1]);}")
-        await pg.wait_for_timeout(2500)
-        after = await pg.evaluate("()=>plantCount()")
-        if before < 3 and after <= before:
-            fails.append("breeding did not add a seed")
-
-        # night + morning
-        await pg.evaluate("()=>{st.night=true}")
-        await pg.wait_for_timeout(500)
-        await pg.evaluate("()=>wake()")
-        await pg.wait_for_timeout(500)
-        if errs:
-            fails.append("page errors: " + "; ".join(errs[:5]))
-
-        # 4. iPhone landscape
-        ctx = await b.new_context(**p.devices["iPhone 13 landscape"])
-        ph = await ctx.new_page()
-        perrs = []
-        ph.on("pageerror", lambda e: perrs.append(str(e)))
-        await ph.goto(url)
-        await ph.wait_for_timeout(2000)
-        if perrs:
-            fails.append("phone errors: " + "; ".join(perrs[:5]))
+        runs = list(CASES) + [("iphone_landscape", TEEN, "", 1, "true", p.devices["iPhone 13 landscape"])]
+        for name, save, after, minutes, check, *dev in runs:
+            probs = await play(b, name, save, after, minutes, check, dev[0] if dev else None)
+            print(("FAIL " if probs else "ok   ") + name)
+            for pr in probs[:5]:
+                print("     -", pr)
+            fails += bool(probs)
         await b.close()
-
     if fails:
-        print("FAIL")
-        for f in fails:
-            print(" -", f)
+        print(f"FAIL: {fails} of {len(runs)} cases")
         sys.exit(1)
-    print("PASS: new game, old save, gift seed, breeding, night/morning, iPhone view")
+    print(f"PASS: all {len(runs)} cases, a minute each at speed 20. Screenshots in tests/screenshots/")
 
 
 asyncio.run(main())
