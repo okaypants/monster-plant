@@ -55,7 +55,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(!exact&&st.desk===false&&ok(LOFF[tk].desk))g.drawImage(LOFF[tk].desk,831,0);
  if(held.tool==='can'&&ok(STOOL_EMPTY))g.drawImage(STOOL_EMPTY,765,488);
  fidgetDrawProps(rm);
- curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01&&!exactC){g.save();g.translate(wob.win,0);drawCurtains(curK);g.restore();}
+ curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01&&!exactC)drawCurtains(curK);
  
  const dl=daylight(st.dayT);
  if(wob.can)fx('sparkles',CAN.x+CAN.w/2,CAN.y-10,2,0,.4); // gentle shimmer on the carafe as a water hint (room art untouched)
