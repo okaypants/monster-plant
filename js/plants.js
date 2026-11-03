@@ -9,7 +9,7 @@ const NAMES=['curl-sprout bun','lobed bun','stacked cone','leafy mop','bulb','ro
 function lightFit(k){return lightFitText(spotInfo(k,.37,true),st.pref);} // the spot by day, curtains open
 function stageGroup(){return st.stage<4?'seed':st.stage===4?'baby':'grown';}
 const STAGES=['seed','sprout','sprout','sprout','kid','teen','teen','adult','adult'];
-const TEACH={thirst:'Fading to gray: it\'s thirsty. Water it with the carafe on the stool.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.',lightHi:'Squinting, leaning away, getting toasty at the edges: too much light right here. Move it somewhere softer, or close the curtains. It heals step by step.',lightFlame:'A little flame: a night-lover in strong midday sun for a long while. Move it somewhere softer and it cools off right away.',lightLo:'Withering (drooping, curling in, a little dull): too dark. Open the curtains, switch on a lamp (lamps are grow lights), or move it nearer the window. It perks up step by step.'};
+const TEACH={thirst:'Fading to gray: it\'s thirsty. Water it with the carafe on the stool.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.'};
 /* ---------- plant sprite ---------- */
 // returns {img|null, x, y, w, h, scale} in room coords for the current stage
 // FEWER AGES (Jackie): seed -> sprout -> baby -> teen -> adult, each clearly bigger. Internal stage numbers kept: 0 seed, 1 sprout, 4 baby, 6 teen, 8 elder
@@ -232,7 +232,7 @@ function plantUpdate(dt){const sp=st.speed;
  for(const n of['thirst','attention'])if(want(n)){
   if(Math.random()<dt*.06)sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');
   if(!st.taught[n]){st.taught[n]=1;say(TEACH[n],8);sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
- if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');const key=st.lightState==='hi'?(st.glare===2?'lightFlame':'lightHi'):'lightLo';if(!st.taught[key]){st.taught[key]=1;say(TEACH[key],8);}}
+ if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');}
  // no hints on objects (RULES.md 10): no carafe wobble or sparkle, curtain sway, window wobble, bouncing book or jar
 }
 /* ---------- it moves itself (Jackie: "sit back in the room if it wants to") ----------
@@ -241,7 +241,7 @@ function squinting(){return st.lightState==='hi'&&Math.floor(T*1.5)%3!==0;} // e
 function leanOff(){if(st.lightState!=='hi')return 0;const s=SPOT[spotKey()],i=spotInfo(spotKey()),from=i.sun?WINDOW_LIGHT.x:i.under?i.under.x:WINDOW_LIGHT.x;const n=Math.max(4,Math.round(plantBoxRaw().h*.025));return s.x<from?-n:n;} // whole pixels, away from the light; bigger plants lean further
 function scootTick(dt){if(stageGroup()!=='grown'||st.nap>0||(drag.on&&st.id===ACT))return;
  if(st.walk){const w=st.walk,f=st.free,sp=Math.max(1,Math.round(90*dt));f.x+=clamp(w.x-f.x,-sp,sp);f.y+=clamp(w.y-f.y,-Math.ceil(sp/2),Math.ceil(sp/2));
-  if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');if(w.why!=='bored'&&!st.taught.scoot){st.taught.scoot=1;say('It scooted itself somewhere '+(w.why==='hi'?'shadier':'brighter')+'. Plants know what they like.',6);}}return;}
+  if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');}return;}
  if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:70))return; // grown plants move off once it's been withering or burning a good whilelet best=null,bd=1e9;
  for(let x=FLOOR_X0;x<=FLOOR_X1;x+=40)for(const y of [FLOOR_FRONT,860,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)!=='ok'||!freeClear(x,y))continue;const d=Math.abs(x-st.free.x)+Math.abs(y-st.free.y);if(d<bd){bd=d;best={x,y};}}
  if(best){st.walk={...best,why:st.lightState};st.lightBad=0;}}

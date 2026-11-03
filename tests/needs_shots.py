@@ -16,6 +16,7 @@ BASE = "s.mode='actions';s.giftSeed=1;s.others=[];s.stage=8;s.species=3;s.pref='
 DARK = BASE + "s.dayT=.8;s.curtain='closed';s.lamp=false;s.desk=false;s.free={x:1250,y:918};"  # dusk, curtains closed, lamps off
 SUN = BASE + "s.dayT=.37;s.curtain='open';s.free={x:470,y:852};"  # midday in the window's sun patch
 FINE = BASE + "s.dayT=.3;s.curtain='open';s.free={x:1250,y:860};"
+LIGHT_WORDS = ("light", "bright", "dark", "sun", "shad", "lamp", "flame", "curtain", "scoot")
 CLIP = "()=>{const b=plantBox(),x=Math.max(0,b.x-60),y=Math.max(0,b.y-60);return {x,y,width:Math.min(1670-x,b.w+120),height:Math.min(942-y,b.h+110)};}"
 
 
@@ -29,7 +30,15 @@ async def page_for(b, save):
     await pg.evaluate("()=>{const s=fresh();s.started=true;" + save + "localStorage.setItem(KEY,JSON.stringify(s));}")
     await pg.reload(wait_until="load")
     await pg.click(".screen button")  # Continue
+    await pg.evaluate("()=>{window.__said=[];const o=say;say=(t,...a)=>{__said.push(t);return o(t,...a);};}")  # every caption from here on
     return ctx, pg, errs
+
+
+async def no_light_text(pg, fails, label):
+    """Light shows only on the plant: no caption may talk about light."""
+    said = await pg.evaluate("()=>__said")
+    bad = [t for t in said if any(w in t.lower() for w in LIGHT_WORDS)]
+    if bad: fails.append(f"{label}: light caption in play: {bad[0][:80]}")
 
 
 async def shot(pg, name, full=False):
@@ -62,7 +71,7 @@ async def states(b, fails, rows, heads):
         row.append(await shot(pg, f"withered_{lv}"))
     heads.append(await shot(pg, "state_withered", full=True))
     await heals(pg, "witherLv", "st.curtain='open';st.dayT=.3;", 3, fails, "withered")
-    rows.append(("withered (too dark)", row)); fails += errs; await ctx.close()
+    await no_light_text(pg, fails, "withered"); rows.append(("withered (too dark)", row)); fails += errs; await ctx.close()
 
     # burned: too much light for a while, 3 steps
     ctx, pg, errs = await page_for(b, SUN)
@@ -76,7 +85,7 @@ async def states(b, fails, rows, heads):
     if await pg.evaluate("()=>st.glare===2"): fails.append("a shade plant got the flame (only the extreme case should)")
     heads.append(await shot(pg, "state_burned", full=True))
     await heals(pg, "burnLv", "st.free={x:1250,y:918};st.walk=null;", 3, fails, "burned")
-    rows.append(("burned (too much light)", row)); fails += errs; await ctx.close()
+    await no_light_text(pg, fails, "burned"); rows.append(("burned (too much light)", row)); fails += errs; await ctx.close()
 
     # gray: thirsty, 4 steps
     ctx, pg, errs = await page_for(b, FINE)

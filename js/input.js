@@ -19,8 +19,8 @@ addEventListener('pointerup',e=>{if(!drag.down)return;drag.down=false;if(!drag.o
  if(gp==='grown'){const h=plantBoxRaw().h;let x=Math.round(clamp(mx,FLOOR_X0,FLOOR_X1)),y=Math.round(clamp(my+h*.15,FLOOR_BACK,FLOOR_FRONT));
   for(let n=0;n<12&&!freeClear(x,y);n++)x=clamp(x+(n%2?-1:1)*40*(n+1),FLOOR_X0,FLOOR_X1); // don't stack two plants on top of each other
   st.free={x,y};st.walk=null;sfx('pop');
-  say((y<840?'Tucked back in the room. ':'Up front. ')+lightFitText(lightInfo(x,y,false,.37,true),st.pref),5);save();return;}let best=null,bd=1e9;for(const k of GROUPS[gp]){const sp=SPOT[k];const d=Math.hypot(mx-sp.x,my-sp.y);if(d<bd){bd=d;best=k;}}
- st.place=st.place||{};const was=spotKey();st.place[gp]=best;sfx(best===was?'tick':'pop');if(best!==was)say(lightFit(best),5);save();});
+  save();return;}let best=null,bd=1e9;for(const k of GROUPS[gp]){const sp=SPOT[k];const d=Math.hypot(mx-sp.x,my-sp.y);if(d<bd){bd=d;best=k;}}
+ st.place=st.place||{};const was=spotKey();st.place[gp]=best;sfx(best===was?'tick':'pop');save();});
 cv.addEventListener('contextmenu',e=>{e.preventDefault();held.tool=null;});
 addEventListener('keydown',e=>{if(e.key==='Escape'){held.tool=null;closeBubble();}});
 cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;return;}if(!st.started||st.stage<0)return;const [x,y]=toGame(e);closeBubble();sfx('tick');
