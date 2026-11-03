@@ -1,3 +1,7 @@
 # screenshots are made fresh by every test run (about 36 MB); keep them on your computer only
 *
 !.gitignore
+# except the positioning audit sheets, which are committed on purpose
+!positions/
+!positions/*.png
+!positions/*.txt
