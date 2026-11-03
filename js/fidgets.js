@@ -96,6 +96,29 @@ function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now
  for(const p of FP)if(Math.round(p.ox)||Math.round(p.oy))pf(p.x,p.y,p.w,p.h,p.ox,p.oy,p.n==='shelfplant'?'leaf':'obj');
  if(Math.round(fGlobeKick.ox)||Math.round(fGlobeKick.oy))pc(fGlobeKick.x,fGlobeKick.y,fGlobeKick.w,fGlobeKick.h,fGlobeKick.ox,fGlobeKick.oy);
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
- g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);}
+ g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);
+ idleTick(now);const io=idleOffset(now);if(io){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
 function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s,s);}
  for(const t of fTreats)g.drawImage(t.img,Math.round(t.x-t.w/2),Math.round(t.y-t.h/2),Math.round(t.w),Math.round(t.h));}
+
+/* ---------- IDLE WIGGLE (Jackie, Nov 3; RULES.md 10) ----------
+   Now and then ONE thing you can use gives a tiny wiggle: 1 px, a couple of frames, at most once every few minutes,
+   never two at once, never while you're touching something (or while anything else is moving). It's not a hint about needs.
+   Only usable things: the carafe, the SNACKS cabinet, both lamps, the desk drawers (journal), the armchair, the doodad fidgets
+   and seasonal items. Books: ONLY the four special readable books (not placed in the room yet), never any other books
+   (the shelves, the book stack, the crate book). 'obj' = only the item's own pixels move; 'plain' = a part inside the item (the lamp shade, the chair's back cushion, the cabinet door, the drawers). */
+const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
+ {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
+ {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'armchair',x:500,y:470,w:196,h:90,k:'plain'}]
+ .concat(FP.filter(p=>!['bookstack','cratebook'].includes(p.n)).map(p=>({n:p.n,x:p.x,y:p.y,w:p.w,h:p.h,k:p.n==='shelfplant'?'leaf':'obj'})))
+ .concat([{n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}]); // seasonal items join this list when they arrive
+const IDLE_GAP=[150,300],IDLE_FRAMES=[1,0,1,0],IDLE_MS=90; // seconds between tries; 1 px on two frames
+let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
+cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
+function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!fDrag.t||!!bubble||!!document.querySelector('.screen');}
+function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||fTreats.some(t=>t.vx||t.vy||t.held)||!!(BOING.oy||BOING.vy);}
+function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
+ if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
+ if(!st.started||touching()||somethingMoving())return; // skipped; the next try is minutes away
+ idleOn={it:IDLE_ITEMS[Math.floor(Math.random()*IDLE_ITEMS.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>50)idleLog.shift();}
+function idleOffset(now){return idleOn?IDLE_FRAMES[Math.floor((now-idleOn.t0)/IDLE_MS)]||0:0;}

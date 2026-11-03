@@ -58,8 +58,6 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01&&!exactC)drawCurtains(curK);
  
  const dl=daylight(st.dayT);
- if(wob.can)fx('sparkles',CAN.x+CAN.w/2,CAN.y-10,2,0,.4); // gentle shimmer on the carafe as a water hint (room art untouched)
- if(wob.book){g.fillStyle=C.out;g.fillRect(150,300+wob.book,30,80);g.fillStyle=C.fl3;g.fillRect(154,304+wob.book,22,72);g.fillStyle=C.fl1;g.fillRect(154,330+wob.book,22,10);}
  if(lightMap&&st.started)drawLightMap(); // debug only: under the plants and cat
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
@@ -69,7 +67,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   for(const e of L){if(!catDone&&cat.y<=e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
   if(!catDone)drawCat();}
  function drawOnePlant(){let b;const pb=plantBox();
-  if(st.over>0&&st.overType==='water')fx('puddle',pb.x+pb.w/2,baseY()-6,1.5);
+  if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
   b=drawPlant();if(onChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
   const cx=b.x+b.w/2,top=b.y;
   // each reaction has its own slot around the plant, outside its outline (Jackie: no overlaps, more space)

@@ -2,7 +2,7 @@
 
 Run from the repository root:  python tests/curtain_shots.py
 Day, golden hour and night with the curtains closed (both lamps on, so the curtain pieces are drawn) and a sun-loving
-adult too far from any light. Checks that the plant shows it (too dark, hunching) and that the curtains stay perfectly
+adult too far from any light. Checks that the plant shows it (too dark, withering) and that the curtains stay perfectly
 still (no wiggle): the curtain area must be pixel-identical over two seconds. Pictures go to tests/screenshots/curtains/.
 Exit code 1 if a check fails.
 """
@@ -35,23 +35,23 @@ async def main():
             await pg.reload(wait_until="load")
             await pg.click(".screen button")  # Continue
             await pg.evaluate("()=>__step(8)")  # curtains settle, the plant notices its light (a grown plant scoots off after ~12 s)
-            state = await pg.evaluate("()=>({light:st.lightState,hunch:st.hunch,time:timeKey(),wob:Object.keys(wob).join(',')})")
+            state = await pg.evaluate("()=>({light:st.lightState,wither:st.witherLv||0,time:timeKey(),hints:typeof wob!=='undefined'})")
             frames = []
             for _ in range(8):  # sample the curtain area every quarter second
                 await pg.evaluate("()=>__step(.25)")
                 frames.append(await pg.evaluate(CURTAIN_AREA))
-            if state["light"] != "lo" or state["hunch"] < .5:
-                fails.append(f"{name}: plant should be too dark and hunching, got {state}")
+            if state["light"] != "lo" or state["wither"] < 1:
+                fails.append(f"{name}: plant should be too dark and withering, got {state}")
             if state["time"] != name:
                 fails.append(f"{name}: room shows {state['time']}")
             if len(set(frames)) != 1:
                 fails.append(f"{name}: curtain area moved ({len(set(frames))} different frames)")
-            if "win" in state["wob"]:
-                fails.append(f"{name}: curtain wiggle still exists")
+            if state["hints"]:
+                fails.append(f"{name}: object hints still exist")
             fails += [f"{name}: {e}" for e in errs]
             await pg.wait_for_timeout(800)  # the caption's fade-out runs on real time
             await pg.screenshot(path=os.path.join(OUT, f"{name}_curtains-closed_too-dark.png"))
-            print(f"{name}: light {state['light']}, hunch {state['hunch']:.2f}, curtain frames identical: {len(set(frames)) == 1}")
+            print(f"{name}: light {state['light']}, withered {state['wither']}/3, curtain frames identical: {len(set(frames)) == 1}")
             await ctx.close()
         await b.close()
     for f in fails:
