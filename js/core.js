@@ -9,7 +9,8 @@ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeo
 function img(src){const i=new Image();i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
 const ok=i=>i&&i.complete&&i.naturalWidth>0;
 let errShown=0;function showErr(t){if(errShown>4)return;errShown++;let d=document.getElementById('errbox');if(!d){d=document.createElement('div');d.id='errbox';d.style.cssText='position:fixed;left:8px;bottom:8px;max-width:70vw;background:#341839;color:#fdebc9;font:12px monospace;padding:6px 8px;z-index:99;white-space:pre-wrap;opacity:.9';document.body.appendChild(d);}d.textContent+=(d.textContent?'\n':'')+t;}
-addEventListener('error',e=>showErr('error: '+e.message+' (line '+e.lineno+')'));
+addEventListener('error',e=>{if(!e.filename&&!e.lineno)return; // "Script error." with no file = someone else's script (a browser extension or the app showing the page), not the game
+ showErr('error: '+e.message+' (line '+e.lineno+')');});
 const FX={};for(const n of['flames','zzz','rumble','dust','thought','puddle','drops','hearts','sparkles','sweat'])FX[n]=[img('fx_'+n+'_1.png'),img('fx_'+n+'_2.png')];
 const FX_SCALE=.7; // all reactions a little smaller (Jackie)
 function fx(n,x,y,rate=3,ph=0,sc=FX_SCALE){const f=FX[n][(Math.floor(T*rate+ph))%2];if(!ok(f))return;const w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);g.drawImage(f,Math.round(x-w/2),Math.round(y-h/2),w,h);}
@@ -39,5 +40,7 @@ document.getElementById('fsBtn').addEventListener('click',e=>{e.stopPropagation(
  try{if(on){(d.exitFullscreen||d.webkitExitFullscreen).call(d);return;}
   const req=el.requestFullscreen||el.webkitRequestFullscreen;if(!req)throw 0;const r=req.call(el,{navigationUI:'hide'});if(r&&r.catch)r.catch(()=>fsNo());}catch(err){fsNo();}
  setTimeout(fit,300);});
-function fsNo(){say('This browser won\'t let the game go full screen here. Inside the Claude app on iPhone, sideways is as big as it gets for now.',7,true);}
+const IPHONE=/iPhone|iPod/.test(navigator.userAgent),HOMESCREEN=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+if(HOMESCREEN)document.getElementById('fsBtn').style.display='none'; // opened from the Home Screen icon: already full screen
+function fsNo(){say(IPHONE?'iPhone doesn\'t let web pages go full screen. For full screen: open the game in Safari, tap Share, then Add to Home Screen, and play from that icon.':'This browser won\'t let the game go full screen here.',9,true);}
 document.addEventListener('fullscreenchange',()=>setTimeout(fit,100));document.addEventListener('webkitfullscreenchange',()=>setTimeout(fit,100));
