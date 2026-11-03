@@ -31,7 +31,9 @@ function spotKey(){const gp=stageGroup();st.place=st.place||{};
  const k=st.place[gp];if(GROUPS[gp].includes(k))return k;
  const hid=k=>otherPos().some(q=>q.g==='grown'&&Math.abs(q.x-SPOT[k].x)<260); // a grown plant standing in front would hide a new seed
  const def={seed:hid('sill')&&!hid('desk')?'desk':'sill',baby:'books'}[gp],taken=otherPos().filter(q=>q.g===gp).map(q=>q.k),pick=taken.includes(def)?(GROUPS[gp].find(x=>!taken.includes(x))||def):def;st.place[gp]=pick;return pick;}
-function spotLight(){const k=spotKey();const lampBoost=(st.lamp!==false&&(['crate','rugL','sill'].includes(k)||(k==='free'&&SPOT.free.x<450)))?.12:0;return daylight(st.dayT)*(st.curtain==='open'?1:.28)*SPOT[k].light+(st.dayT>=.85?.08:0)+lampBoost;}
+function spotLight(){return lightAtSpot(spotKey());}
+// light at a spot right now: daylight through the curtains, a little night glow, and the floor lamp on the window side (the debug light map uses this too)
+function lightAtSpot(k){const lampBoost=(st.lamp!==false&&(['crate','rugL','sill'].includes(k)||(k==='free'&&SPOT.free.x<450)))?.12:0;return daylight(st.dayT)*(st.curtain==='open'?1:.28)*SPOT[k].light+(st.dayT>=.85?.08:0)+lampBoost;}
 function nudgeSun(){if(st.night||st.mode==='ambient')return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
@@ -62,6 +64,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  const dl=daylight(st.dayT);
  if(wob.can)fx('sparkles',CAN.x+CAN.w/2,CAN.y-10,2,0,.4); // gentle shimmer on the carafe as a water hint (room art untouched)
  if(wob.book){g.fillStyle=C.out;g.fillRect(150,300+wob.book,30,80);g.fillStyle=C.fl3;g.fillRect(154,304+wob.book,22,72);g.fillStyle=C.fl1;g.fillRect(154,330+wob.book,22,10);}
+ if(lightMap&&st.started)drawLightMap(); // debug only: under the plants and cat
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
  if(drag.on&&stageGroup()!=='grown'){for(const k of GROUPS[stageGroup()]){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,stageGroup()==='grown'?120:stageGroup()==='baby'?70:44,stageGroup()==='grown'?22:12,0,0,Math.PI*2);g.fill();}}
@@ -92,6 +95,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  }
  fidgetDrawTop();
  for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
+ if(lightMap&&st.started)drawLightTags(); // debug only: labels and legend on top
  const ph=phase(st.dayT);
  if(held.tool){const x=mx|0,y=my|0;
   if(held.tool==='can'){const over=onPlant(x,y+60);drawCarried(over?CARRY.pour:CARRY.tilt,x,y);}
