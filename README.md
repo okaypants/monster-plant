@@ -120,6 +120,7 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 - Light and water needs show only on the plant, in clear steps that heal in steps: withered (too dark: droops, hunches, curls in, a little dull), burned (too bright: squints, leans away, toasty scorched edges and tips; the flame only for a night-lover left in midday sun a long while), gray (thirsty), and a puddle with a soggy droop (overwatered; dries in 3 steps over 30 s). Why: the plant is the one thing you're watching, and hints on objects pulled the eye away and moved room art.
 - Removed every hint on objects (carafe wobble and sparkle, curtain sway, window wobble, bouncing book, rattling jar) and the debug "Hints" setting that drove them.
+- No light text in play (Nov 3): dropping or moving a plant no longer captions its spot, and there are no too bright, flame, too dark or scooted captions. Why: the placement captions described the spot by day with the curtains open, so a plant in the sun patch with the sheers closed was told it would get too bright. The journal still describes the spot, and the debug Light map shows the light right now.
 - Usable things get a rare 1 px idle wiggle instead (once every 2.5 to 5 minutes at most, one at a time, never while touching). Books are left out until the four special books are placed in the room.
 - RULES.md now holds the rules (was a README section).
 
