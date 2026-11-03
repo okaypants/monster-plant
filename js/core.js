@@ -32,7 +32,7 @@ function blocks(map,x,y,c,p=P){x=Math.round(x);y=Math.round(y);g.fillStyle=C.out
 const GL={z:['1111','0010','0100','1111'],star:['10101','01110','11111','01110','10101']};
 function flame(x,y,t){const f=Math.sin(t*20+x)>0?P:0;g.fillStyle=C.out;g.fillRect(x-P*1.5-2,y-P*4-f-2,P*3+4,P*5+f+4);g.fillStyle=C.fl1;g.fillRect(x-P*1.5,y-P*2,P*3,P*2);g.fillStyle=C.fl2;g.fillRect(x-P,y-P*3-f,P*2,P*2);g.fillStyle=C.fl3;g.fillRect(x-P/2,y-P*4-f,P,P*1.5);}
 function heart(x,y){blocks(['1101','1111','0110'],x,y,C.fl1,4);}
-let last=performance.now(),T=0,blink=0;const parts=[];const held={tool:null,item:null};let mx=-99,my=-99;const wob={can:0,jar:0,book:0,win:0};
+let last=performance.now(),T=0,blink=0;const parts=[];const held={tool:null,item:null};let mx=-99,my=-99;const wob={can:0,jar:0,book:0};
 function burst(k,x,y,n,c){for(let i=0;i<n;i++)parts.push({k,x:x+rnd(-30,30),y:y+rnd(-20,20),vx:rnd(-40,40),vy:k==='heart'?rnd(-110,-60):rnd(-50,50),g:k==='heart'?0:k==='drop'?700:300,t:k==='heart'?1.1:.7,c});}
 // FULL SCREEN (Jackie): works where the browser allows it (desktop, Android, iPad). iPhones don't let a web page go full screen inside the viewer.
 document.getElementById('fsBtn').addEventListener('click',e=>{e.stopPropagation();const d=document,el=d.documentElement;

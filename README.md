@@ -44,6 +44,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/thirst_shots.py` checks and pictures every thirst step (full color to fully gray) for an adult, a kid and a sprout, and that watering brings the color back one step every half second; saved to `tests/screenshots/thirst/`.
 
+`python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
+
 ---
 
 ## How it's built
@@ -111,6 +113,10 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 9. **Light comes from zones the player can see** (`js/light.js`): the window's sun patch (on the rug and the windowsill, fading across the room; time of day and curtains set its strength, closed = soft and dim), a grow-light circle around every lamp that's on (the milk crate is in the floor lamp's, the desk in the desk lamp's), and soft room light everywhere else. Too bright only for shade and night plants, only after a while, and only in the midday sun patch with the curtains open or right under a lamp. Moving out fixes it right away. Plants, the Light map and the coming code lighting all use the same light sources.
 
 ## DECISIONS (newest first, with why)
+
+### No curtain wiggle (Nov 3)
+
+- Removed the curtain wiggle that hinted at wrong light: it shifted the whole closed-curtain layer, dragging armchair pixels and showing the pulled-back curtain behind. Light problems show only in the plant (squinting, leaning, hunching). The closed-curtain pieces were trimmed to fabric only (armchair, pillow, throw and wall pixels made transparent; outlines kept).
 
 ### Thirst fades to gray (Nov 3)
 

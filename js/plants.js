@@ -214,10 +214,9 @@ function plantUpdate(dt){const sp=st.speed;
   if(Math.random()<dt*.06)sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');
   if(!st.taught[n]){st.taught[n]=1;say(TEACH[n],8);sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
  if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');const key=st.lightState==='hi'?(st.glare===2?'lightFlame':'lightHi'):'lightLo';if(!st.taught[key]){st.taught[key]=1;say(TEACH[key],8);}}
- const hintOn=n=>st.hints==='always'||(st.hints==='auto'&&st.hint[n]<3);
  wob.jar=0; // no hunger, no rattling jar
  wob.book=0; // no bouncing book (Jackie)
- wob.win=st.lightState!=='ok'&&hintOn('light')?Math.round(Math.sin(T*6)*4):0;
+ // no curtain wiggle (Jackie, Nov 3): light problems show only in the plant (squinting, leaning, hunching)
 }
 /* ---------- it moves itself (Jackie: "sit back in the room if it wants to") ----------
    A grown plant that's been in the wrong light for a while shuffles, in whole-pixel steps, to the nearest floor spot that suits it. */
