@@ -1,0 +1,101 @@
+'use strict';
+/* Fidgets: springy room props, snow globe, vines, book spines, bouncing treats, plant boing. */
+/* ---------- FIDGETS (Jackie: squishy, bouncy, endlessly repeatable; visual only, sound slots for Garry later) ---------- */
+// Springy props cut from the current room picture. Fixed 60fps physics; drawn on whole pixels (DS rule).
+const FP=[
+ {n:'ammonite',x:1062,y:138,w:76,h:80,k:.18,d:.12,kick:{vy:-4},puff:true},
+ {n:'snail',x:52,y:345,w:86,h:92,k:.10,d:.10,hop:true},
+ {n:'pillow',x:565,y:512,w:162,h:136,k:.14,d:.16,kick:{vy:5}},
+ {n:'drum',x:1252,y:152,w:182,h:72,k:.25,d:.18,kick:{vy:3}},
+ {n:'armillary',x:1288,y:248,w:110,h:110,k:.16,d:.06,kick:{vx:5}},
+ {n:'butterflies',x:922,y:128,w:116,h:150,k:.12,d:.08,kick:{vx:4}},
+ {n:'catpic',x:738,y:348,w:154,h:120,k:.15,d:.12,kick:{vx:3}},
+ {n:'flowerpic',x:668,y:122,w:240,h:212,k:.12,d:.1,kick:{vx:3}},
+ {n:'moonpanel',x:922,y:290,w:116,h:180,k:.13,d:.1,kick:{vx:3}},
+ {n:'radio',x:1078,y:468,w:106,h:60,k:.22,d:.14,kick:{vy:-3}},
+ {n:'glass',x:838,y:552,w:46,h:50,k:.3,d:.08,kick:{vx:3}},
+ {n:'bookstack',x:898,y:622,w:156,h:140,k:.16,d:.14,kick:{vy:4}},
+ {n:'petbed',x:1478,y:782,w:186,h:136,k:.16,d:.16,kick:{vy:5}},
+ {n:'cratebook',x:282,y:612,w:116,h:46,k:.18,d:.12,kick:{vy:-5}},
+ {n:'box1',x:98,y:466,w:86,h:76,k:.2,d:.1,kick:{vy:-4}},
+ {n:'lockbox',x:22,y:672,w:96,h:66,k:.2,d:.1,kick:{vy:-4}},
+ {n:'box2',x:1072,y:292,w:82,h:70,k:.2,d:.1,kick:{vy:-4}},
+ {n:'moonbox',x:1492,y:412,w:102,h:76,k:.2,d:.1,kick:{vy:-4}},
+ {n:'shelfplant',x:1158,y:268,w:126,h:162,k:.08,d:.06,kick:{vx:4}},
+];
+FP.forEach(p=>{p.ox=0;p.oy=0;p.vx=0;p.vy=0;p.hops=0;p.dust=10;});
+const FSPINE_ROWS=[[146,80,4,224],[248,80,4,212],[456,86,4,92],[568,80,4,218]];
+let fSpines=[],fBits=[],fSnow=[];const fTreats=[];
+const FVINES=[];const VT=16; // finer leaf grid (Jackie): small tiles, and only leaf pixels move
+for(let x=0;x<300;x+=VT)for(let y=10;y<290;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
+for(let x=1462;x<1665;x+=VT)for(let y=66;y<226;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
+const FGLOBE={cx:1537,cy:257,r:36},fGlobeKick={x:1494,y:218,w:88,h:86,ox:0,oy:0,vx:0,vy:0,k:.25,d:.12};
+const BOING={oy:0,vy:0,ox:0,vx:0};const FFLOOR=900;
+function fplay(name){/* sound slot for Garry: ammonite_puff, snail_wind, book_slide, pillow_squish, globe_shake, treat_drop, treat_bounce, plant_boing, vine_rustle, glass_clink, drum_tap */}
+const fhit=(p,x,y)=>x>=p.x&&x<p.x+p.w&&y>=p.y&&y<p.y+p.h;
+function fidgetPoke(x,y){
+ if(Math.hypot(x-FGLOBE.cx,y-FGLOBE.cy)<FGLOBE.r+8){for(let i=0;i<26;i++){const a=rnd(0,6.28),r=rnd(0,FGLOBE.r-6);fSnow.push({x:FGLOBE.cx+Math.cos(a)*r,y:FGLOBE.cy+Math.sin(a)*r,vx:rnd(-1.5,1.5),vy:rnd(-2.5,.5)});}
+  if(fSnow.length>80)fSnow.splice(0,fSnow.length-80);fGlobeKick.vx+=4*(Math.random()<.5?1:-1);fplay('globe_shake');if(st.started&&bump('shakes')>=30)earnPot('frost');return true;}
+ for(const p of FP)if(fhit(p,x,y)){
+  if(p.hop){p.hops=Math.min(p.hops+1,6);if(p.oy===0&&p.vy===0)p.vy=-5;fplay('snail_wind');return true;}
+  const k=p.kick||{};p.vx+=(k.vx||0)*(x<p.x+p.w/2?1:-1);p.vy+=(k.vy||0);
+  if(p.puff){const n=Math.max(2,Math.round(p.dust));for(let i=0;i<n;i++)fBits.push({x:p.x+p.w/2+rnd(-25,25),y:p.y+rnd(10,40),vx:rnd(-1.6,1.6),vy:rnd(-3.2,-.6),life:rnd(40,80),c:Math.random()<.5?'#f3e6c8':'#d9c6a0'});
+   p.dust=Math.max(1,p.dust-1.5);p.lastPoke=performance.now();if(Math.random()<1/30)fBits.push({x:p.x+p.w/2,y:p.y+20,vx:rnd(-1,1),vy:-4,life:200,c:'#b07a3a',big:true});}
+  fplay(p.n);return true;}
+ for(const s of FSPINE_ROWS)if(y>=s[0]&&y<s[0]+s[1]&&x>=s[2]&&x<s[3]){fSpines.push({x:Math.max(s[2],Math.round(x)-12),y:s[0],w:24,h:s[1],oy:0,vy:-6});if(fSpines.length>30)fSpines.shift();fplay('book_slide');return true;}
+ return false;}
+function plantBoing(x){BOING.vy=-9-Math.random()*3;const b=plantBox();BOING.vx=(x<b.x+b.w/2?2:-2);fplay('plant_boing');}
+// treats from the SNACKS cabinet: pop out, bounce, pile up; grab and drop one on the plant to feed it
+function spawnTreat(item){const im=TREAT_IMG[item.id];if(!ok(im))return;const s=.4;
+ fTreats.push({item,img:im,w:im.naturalWidth*s,h:im.naturalHeight*s,r:Math.min(im.naturalWidth,im.naturalHeight)*s*.45,x:JAR.x+20,y:JAR.y+60,vx:rnd(-7,-3),vy:rnd(-9,-5),held:false});
+ if(fTreats.length>24)fTreats.shift();fplay('treat_drop');}
+const fDrag={t:null,hist:[]};
+function fidgetDown(x,y){for(let i=fTreats.length-1;i>=0;i--){const t=fTreats[i];if(Math.hypot(x-t.x,y-t.y)<t.r+8){fDrag.t=t;t.held=true;fDrag.hist=[{x,y,t:performance.now()}];fTreats.push(fTreats.splice(i,1)[0]);return true;}}return false;}
+cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
+ if(fDrag.t){fDrag.t.x=x;fDrag.t.y=y;fDrag.hist.push({x,y,t:performance.now()});if(fDrag.hist.length>6)fDrag.hist.shift();return;}
+ if(fDrag.last){const dx=x-fDrag.last.x;if(Math.abs(dx)+Math.abs(y-fDrag.last.y)>3)for(const v of FVINES)if(Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2))<40){v.vx+=clamp(dx*.2,-2,2);fplay('vine_rustle');}}
+ fDrag.last={x,y};});
+addEventListener('pointerup',()=>{const t=fDrag.t;if(!t)return;fDrag.t=null;t.held=false;drag.justDropped=true;
+ if(st.started&&st.stage>=4&&onPlant(t.x,t.y)){held.tool='snack';held.item=t.item;useTool();fTreats.splice(fTreats.indexOf(t),1);plantBoing(t.x);return;}
+ const a=fDrag.hist[0],b=fDrag.hist[fDrag.hist.length-1];const dt=Math.max(16,b.t-a.t);t.vx=(b.x-a.x)/dt*16;t.vy=(b.y-a.y)/dt*16;});
+function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox+=p.vx;p.oy+=p.vy;if(Math.abs(p.ox)<.3&&Math.abs(p.vx)<.2){p.ox=0;p.vx=0;}if(Math.abs(p.oy)<.3&&Math.abs(p.vy)<.2){p.oy=0;p.vy=0;}}
+function fidgetStep(){
+ for(const p of FP){if(p.hop){if(p.oy<0||p.vy!==0){p.vy+=.5;p.oy+=p.vy;if(p.oy>=0){p.oy=0;if(p.hops>1){p.hops--;p.vy=-4-p.hops*.4;}else{p.hops=0;p.vy=0;}}}continue;}
+  fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
+ fspring(fGlobeKick);
+ for(const s of fSpines){s.vy+=-.14*s.oy;s.vy*=.9;s.oy+=s.vy;}fSpines=fSpines.filter(s=>Math.abs(s.oy)>.3||Math.abs(s.vy)>.2);
+ for(const v of FVINES){v.vx+=-.1*v.ox;v.vx*=.9;v.ox=clamp(v.ox+v.vx,-3,3);}
+ for(const b of fBits){b.vy+=.12;b.vx*=.98;b.x+=b.vx;b.y+=b.vy;b.life--;}fBits=fBits.filter(b=>b.life>0);
+ for(const s of fSnow){s.vy+=.04;s.vx*=.96;s.vy*=.97;s.x+=s.vx;s.y+=s.vy;const dx=s.x-FGLOBE.cx,dy=s.y-FGLOBE.cy,d=Math.hypot(dx,dy),lim=FGLOBE.r-5;if(d>lim){s.x=FGLOBE.cx+dx/d*lim;s.y=FGLOBE.cy+dy/d*lim;s.vx*=-.3;s.vy*=-.3;}}
+ fSnow=fSnow.filter(s=>!(s.y>FGLOBE.cy+FGLOBE.r-8&&Math.abs(s.vy)<.05&&Math.random()<.01));
+ if(BOING.oy<0||BOING.vy!==0){BOING.vy+=.6;BOING.oy+=BOING.vy;if(BOING.oy>=0){BOING.oy=0;if(BOING.vy>2.5)BOING.vy=-BOING.vy*.42;else BOING.vy=0;}}
+ BOING.vx+=-.2*BOING.ox;BOING.vx*=.85;BOING.ox+=BOING.vx;
+ for(const t of fTreats){if(t.held)continue;t.vy+=.55;t.x+=t.vx;t.y+=t.vy;
+  if(t.y+t.r>FFLOOR){t.y=FFLOOR-t.r;if(Math.abs(t.vy)>1.2){t.vy=-t.vy*.45;fplay('treat_bounce');}else t.vy=0;t.vx*=.88;}
+  if(t.x-t.r<0){t.x=t.r;t.vx=-t.vx*.5;}if(t.x+t.r>W){t.x=W-t.r;t.vx=-t.vx*.5;}if(t.y-t.r<0){t.y=t.r;t.vy=Math.abs(t.vy)*.5;}if(Math.abs(t.vx)<.05)t.vx=0;}
+ for(let i=0;i<fTreats.length;i++)for(let j=i+1;j<fTreats.length;j++){const a=fTreats[i],b=fTreats[j];const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,m=a.r+b.r;
+  if(d<m){const o=(m-d)/2,nx=dx/d,ny=dy/d;if(!a.held){a.x-=nx*o;a.y-=ny*o;}if(!b.held){b.x+=nx*o;b.y+=ny*o;}const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){const im=.6*rv;if(!a.held){a.vx+=im*nx;a.vy+=im*ny;}if(!b.held){b.vx-=im*nx;b.vy-=im*ny;}}}}}
+let fAcc=0,fPrev=performance.now();
+// moving pieces carry ONLY their object's pixels, never the wall/shelf behind them:
+// leaves = green pixels; props = pixels that differ from the colors around the prop's edge (its background)
+const leafPx=(r,g2,b)=>(g2>r+8&&g2>b+20)||(g2>110&&b<g2-70&&r<g2+70&&r>g2-10); // greens and yellow-green leaves (autumn/golden light)
+// keep only tiles that are mostly leaf, so books/shelves/wall never wiggle
+let vineChecked=null;function vineFilter(src){if(vineChecked===src.src)return;vineChecked=src.src;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(src,0,0);let D;try{D=x.getImageData(0,0,W,H).data;}catch(e){return;}
+ for(const v of FVINES){let n=0,t=0;for(let y=v.y;y<v.y+v.h;y+=2)for(let xx=v.x;xx<v.x+v.w;xx+=2){const i=(y*W+xx)*4;t++;if(leafPx(D[i],D[i+1],D[i+2]))n++;}v.on=n/t>.5;}}
+const fgCache=new Map();
+function fgPiece(src,x,y,w,h,kind){const key=src.src+'|'+x+','+y+','+w+','+h+'|'+kind;let c=fgCache.get(key);if(c)return c;
+ c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');cx.drawImage(src,x,y,w,h,0,0,w,h);let d;try{d=cx.getImageData(0,0,w,h);}catch(e){return null;}const D=d.data;
+ if(kind==='leaf'){for(let i=0;i<D.length;i+=4){if(!leafPx(D[i],D[i+1],D[i+2])&&!(D[i]+D[i+1]+D[i+2]<150))D[i+3]=0;}}
+ else{const bg=[];const take=i=>bg.push([D[i],D[i+1],D[i+2]]);for(let xx=0;xx<w;xx+=2){take(xx*4);take(((h-1)*w+xx)*4);}for(let yy=0;yy<h;yy+=2){take(yy*w*4);take((yy*w+w-1)*4);}
+  for(let i=0;i<D.length;i+=4){let near=false;for(const q of bg){if(Math.abs(D[i]-q[0])+Math.abs(D[i+1]-q[1])+Math.abs(D[i+2]-q[2])<42){near=true;break;}}if(near)D[i+3]=0;}}
+ cx.putImageData(d,0,0);if(fgCache.size>400)fgCache.clear();fgCache.set(key,c);return c;}
+function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now-fPrev);fPrev=now;while(fAcc>=1000/60){fidgetStep();fAcc-=1000/60;}
+ if(!src||!ok(src))return;const pc=(x,y,w,h,ox,oy)=>g.drawImage(src,x,y,w,h,x+Math.round(ox),y+Math.round(oy),w,h);
+ const pf=(x,y,w,h,ox,oy,kind)=>{const c=fgPiece(src,x,y,w,h,kind);if(c)g.drawImage(c,x+Math.round(ox),y+Math.round(oy));};
+ vineFilter(src);for(const v of FVINES)if(v.on&&Math.round(v.ox))pf(v.x,v.y,v.w,v.h,v.ox,0,'leaf');
+ for(const p of FP)if(Math.round(p.ox)||Math.round(p.oy))pf(p.x,p.y,p.w,p.h,p.ox,p.oy,p.n==='shelfplant'?'leaf':'obj');
+ if(Math.round(fGlobeKick.ox)||Math.round(fGlobeKick.oy))pc(fGlobeKick.x,fGlobeKick.y,fGlobeKick.w,fGlobeKick.h,fGlobeKick.ox,fGlobeKick.oy);
+ for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
+ g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);}
+function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s,s);}
+ for(const t of fTreats)g.drawImage(t.img,Math.round(t.x-t.w/2),Math.round(t.y-t.h/2),Math.round(t.w),Math.round(t.h));}
