@@ -5,3 +5,6 @@
 !positions/
 !positions/*.png
 !positions/*.txt
+# and the seedling pot shots
+!seedlings/
+!seedlings/*.png
