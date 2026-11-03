@@ -42,7 +42,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
 
-`python tests/thirst_shots.py` checks and pictures every thirst step (full color to fully gray) for an adult, a kid and a sprout, and that watering brings the color back one step every half second; saved to `tests/screenshots/thirst/`.
+`python tests/thirst_shots.py` checks and pictures thirst from full color to fully gray for an adult, a kid and a sprout (the gray comes on gradually), and that watering brings the color back smoothly over about 2 seconds; saved to `tests/screenshots/thirst/`.
+
+`python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
 
@@ -116,6 +118,13 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Calm down: still sleepers, rare Zzz, slower drying (Nov 3)
+
+- The sleeping cat shows ONE picture per pose (curl1, loaf2, side1). Breathing is done in code: once every ~4.6 s his body rises 1 px for about 1.8 s and settles back. Whole pixels, never more than 1 px, and his paws stay on the surface (a row low in his body repeats). Why: swapping between two different drawings about once a second made him look like he was panting.
+- Zzz, for the cat and the plants: one single Zzz drifts slowly up (40 px over 4.5 s), fades in, then fades out gently. Each sleeper gets a new one every 12-20 s (random), and never two in the room at once. Why: the constant Zzz loop was busy. The gentle fade is an exception to the no-fades rule, Jackie's call.
+- Drying out is half as fast. There was never a separate sun rate: thirst rises at the same speed everywhere, doubled only for the extreme little-flame case, so the base rate was halved. At normal speed, from just watered: it starts graying after about 2 min (was 1), is thirsty after about 2.7 min (was 1.4) and fully gray after about 4 min (was 2). With the little flame, it's half those times.
+- The gray comes on gradually in 16 tiny steps instead of 4 visible ones. Watering brings the color back smoothly over 2 s. Still pre-made, cached looks; nothing blends live.
 
 ### New cat (Nov 3)
 

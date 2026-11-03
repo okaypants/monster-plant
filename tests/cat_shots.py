@@ -17,7 +17,7 @@ OUT = os.path.join(SHOTS, "cat")
 SPOTS = {"bed": "cat bed", "rug": "rug", "chair": "armchair", "sill": "windowsill", "crate": "milk crate", "books": "book stack"}
 
 SHOT_JS = """async(it)=>{
- Object.assign(st,{others:[],stage:it.plant?8:-1,species:it.sp||3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null,listen:0});
+ Object.assign(st,{others:[],stage:it.plant?8:-1,species:it.sp||3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null,listen:0});
  if(it.plant)st.free={x:it.plant[0],y:it.plant[1]};T=0;blink=0;parts.length=0;BOING.ox=BOING.oy=0;
  const s=it.spot==='byplant'?plantSideSpot():it.spot==='floor'?{x:it.x,y:925,sc:.6}:CAT_SPOTS[it.spot];
  const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['sleep','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],

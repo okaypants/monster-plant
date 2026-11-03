@@ -19,6 +19,16 @@ addEventListener('error',e=>{if(!e.filename&&!e.lineno)return; // "Script error.
  showErr('error: '+e.message+' (line '+e.lineno+')');});
 const FX={};for(const n of['flames','zzz','rumble','dust','thought','puddle','drops','hearts','sparkles','sweat'])FX[n]=[img('fx_'+n+'_1.png'),img('fx_'+n+'_2.png')];
 const FX_SCALE=.7; // all reactions a little smaller (Jackie)
+// ZZZ (Jackie, calm-down): one single Zzz drifts slowly up from a sleeper every 12-20 s and fades out gently. Never two at once in the room.
+// Each sleeper calls sleepZ(id,x,y,sc) every frame it's asleep, with the spot the Zzz starts from.
+const ZZ_LIFE=4.5,ZZ_RISE=40;let zzNow=null;const zzNext={};
+function sleepZ(id,x,y,sc){if(zzNow&&T-zzNow.t0>ZZ_LIFE)zzNow=null;
+ if(zzNext[id]==null||zzNext[id]<T-30)zzNext[id]=T+rnd(4,12); // just fell asleep: the first one comes after a little while
+ if(!zzNow&&T>=zzNext[id]){zzNow={id,t0:T};zzNext[id]=T+rnd(12,20);}
+ else if(zzNow&&zzNow.id!==id&&T>=zzNext[id])zzNext[id]=T+rnd(2,5); // someone else's Zzz is up: wait a bit, never two at once
+ if(!zzNow||zzNow.id!==id)return;const f=FX.zzz[1];if(!ok(f))return;const u=(T-zzNow.t0)/ZZ_LIFE;
+ const w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc),a=u<.15?u/.15:u<.5?1:.5+.5*Math.cos((u-.5)/.5*Math.PI); // fades in, holds, then fades out gently
+ g.save();g.globalAlpha=Math.max(0,a);g.drawImage(f,Math.round(x-w/2),Math.round(y-h/2-u*ZZ_RISE),w,h);g.restore();} // whole-pixel drift up
 function fx(n,x,y,rate=3,ph=0,sc=FX_SCALE){const f=FX[n][(Math.floor(T*rate+ph))%2];if(!ok(f))return;const w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);g.drawImage(f,Math.round(x-w/2),Math.round(y-h/2),w,h);}
 /* ---------- palette ---------- */
 const C={out:'#341839',wine:'#833343',plum:'#490d40',brick:'#b8594d',rust:'#d37259',coral:'#eb905d',peach:'#f5ab6b',sand:'#fbbe7b',cream:'#fcd6a5',ivory:'#fdebc9',lav:'#8d8bb5',vio:'#6c61a4',navy:'#1f3f8f',g1:'#4f7a16',g2:'#70a71c',g3:'#b8d725',g4:'#f2ec6a',fl1:'#d33d3b',fl2:'#f88c26',fl3:'#fcc93f',blue:'#3c9ab4'};

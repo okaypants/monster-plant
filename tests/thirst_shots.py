@@ -1,9 +1,9 @@
 """Thirst fades to gray: screenshots and checks.
 
 Run from the repository root:  python tests/thirst_shots.py
-For an adult, a kid and a sprout: one picture at every thirst step (0 = full color ... 4 = parched, fully gray),
-checking the level the game shows. Then a parched adult is watered and must get its color back one step
-every half second (stepped, not a fade). Pictures go to tests/screenshots/thirst/, plus contact_sheet.png.
+For an adult, a kid and a sprout: one picture at a few thirst values (full color ... parched, fully gray),
+checking the gray level the game shows (0-4 in quarter steps: it comes on gradually). Then a parched adult is
+watered and must get its color back smoothly over about 2 seconds. Pictures go to tests/screenshots/thirst/, plus contact_sheet.png.
 Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -11,7 +11,8 @@ from playwright.async_api import async_playwright
 from smoke_test import PORT, SHOTS, VIRTUAL_TIME, serve
 
 OUT = os.path.join(SHOTS, "thirst")
-THIRST = [0, .5, .65, .8, .95]  # one value inside each step
+THIRST = [0, .5, .65, .8, .95]  # full color ... fully gray
+want_lv = lambda t: min(16, int(max(0, (t - .45) / .45) * 16)) / 4
 BASE = "s.dayT=.2;s.mode='actions';s.curtain='open';s.giftSeed=1;s.others=[];s.pref='shade';s.desk=false;"
 PLANTS = {
     "adult": BASE + "s.stage=8;s.species=3;s.free={x:900,y:900};",
@@ -46,8 +47,8 @@ async def main():
             row = []
             for lv, t in enumerate(THIRST):
                 got = await pg.evaluate(f"()=>{{st.needs.thirst={t};__step(.1);return st.dryLv;}}")
-                if got != lv:
-                    fails.append(f"{name} at thirst {t}: level {got}, expected {lv}")
+                if abs(got - want_lv(t)) > 1e-6:
+                    fails.append(f"{name} at thirst {t}: level {got}, expected {want_lv(t)}")
                 await pg.wait_for_timeout(700)  # let any caption fade (real time)
                 f = f"{name}_step{lv}.png"
                 await pg.screenshot(path=os.path.join(OUT, f), clip=await pg.evaluate(CLIP))
@@ -56,7 +57,7 @@ async def main():
             fails += [f"{name}: {e}" for e in errs]
             await ctx.close()
 
-        # watering a parched adult: color comes back one step every half second
+        # watering a parched adult: color comes back smoothly over about 2 s
         ctx, pg, errs = await page_for(b, PLANTS["adult"])
         await pg.evaluate("()=>{st.needs.thirst=.95;__step(.1);held.tool='can';useTool();}")
         seen, row = [], []
@@ -67,8 +68,8 @@ async def main():
             f = f"watering_{i}.png"
             await pg.screenshot(path=os.path.join(OUT, f), clip=await pg.evaluate(CLIP))
             row.append(f)
-        if seen != [4, 3, 2, 1, 0]:
-            fails.append(f"watering steps {seen}, expected [4, 3, 2, 1, 0]")
+        if seen[-1] != 0 or any(b > a or a - b > 1 for a, b in zip([4] + seen, seen)):
+            fails.append(f"watering levels {seen}, expected a smooth return to 0 (at most 1 level per half second)")
         rows.append(("watering (every 0.5 s)", row))
         fails += [f"watering: {e}" for e in errs]
         await ctx.close()
@@ -88,7 +89,7 @@ async def main():
     print("saved to tests/screenshots/thirst/")
     if fails:
         sys.exit(1)
-    print("PASS: every thirst step, and color comes back one step every half second")
+    print("PASS: gray comes on gradually with thirst, and the color comes back smoothly after watering")
 
 
 asyncio.run(main())

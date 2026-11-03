@@ -2,7 +2,7 @@
 
 Monster Plant's rules. Every change keeps to these; the README links here.
 
-1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels. (Exception, decided Nov 3: light itself may blend softly, for the coming code lighting.)
+1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels. (Exceptions, decided Nov 3: light itself may blend softly, for the coming code lighting; the single Zzz fades in and out gently.)
 2. **No HUD, no meters.** Needs show IN the plant (see rule 10): its colors, face and posture. Zzz only when actually asleep.
 3. **Grace.** Nothing is ever lost for good, nothing punishes. Plants never starve; treats are optional; bickering plants always make up; cat trust never goes down; charms that fade come back faster.
 4. **Fidgets:** squishy, bouncy, endlessly repeatable, visual-first (sound comes later from Garry).
@@ -14,7 +14,7 @@ Monster Plant's rules. Every change keeps to these; the README links here.
 10. **Light and water needs show ONLY physically on the monster, never on tools, curtains or the room.**
     - Not enough light: it **withers** (droops and hunches, leaves curl in, colors slightly dull), more withered the longer it lasts.
     - Too much light: it **burns** (squints and leans away; toasty, scorched edges and tips in a few clear steps; the tiny flame only for the most extreme case).
-    - Not enough water: it **fades to gray** (the desaturation steps), pot and all; black outlines stay black.
+    - Not enough water: it **fades to gray**, coming on gradually (many tiny pre-made steps, no visible jumps), pot and all; black outlines stay black.
     - Too much water: it **sits in a puddle** (the puddle under its pot, plus a soggy droop), which dries up over time.
     - Each fixes itself in steps once the need is met.
     - **No hints on objects:** no carafe wobble or sparkle, curtain sway, window wobble, bouncing book or jar.

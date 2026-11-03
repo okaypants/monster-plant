@@ -11,7 +11,7 @@ function renderDbg(){
  species #${st.species+1} ${NAMES[st.species]} · ${st.stage<0?'—':STAGES[st.stage]} · likes ${st.pref}<br>
  thirst ${st.needs.thirst.toFixed(2)} · full ${(st.full||0).toFixed(2)} · attention ${st.needs.attention.toFixed(2)}<br>
  light ${st.light.toFixed(2)} (${st.lightState}) · growth ${st.credit.toFixed(2)}<br>
- looks: gray ${st.dryLv||0}/4 · withered ${st.witherLv||0}/3 · burned ${st.burnLv||0}/3 · puddle ${st.puddleLv||0}/3<br>
+ looks: gray ${(st.dryLv||0).toFixed(2)}/4 · withered ${st.witherLv||0}/3 · burned ${st.burnLv||0}/3 · puddle ${st.puddleLv||0}/3<br>
  good↔evil ${st.ge.toFixed(2)} · lawful↔chaotic ${st.lc.toFixed(2)} · <b>${align()}</b><br>
  treats: ${SNACKS.map(t=>t.name.split(' ')[0]+' '+((st.treats||{})[t.id]||0)+'/'+TRAIT_AT).join(' · ')}<br>traits: ${(st.traits||[]).join(', ')||'none yet'}<br><br>
 `;}
