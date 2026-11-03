@@ -7,10 +7,8 @@ function update(dt){const sp=st.speed;T+=dt;catUpdate(dt);
  for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.t-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=q.g*dt;if(q.t<=0)parts.splice(i,1);}
  if(!st.started||plantCount()===0)return;
  if(!st.night&&st.mode!=='actions')st.dayT=Math.min(.7,st.dayT+dt*sp*(st.mode==='ambient'?.004:.0012));
- ACT=st.id;pickChair();let thirsty=false;
- eachPlant(()=>{if(st.stage<0)return;plantUpdate(dt);const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y};if(want('thirst'))thirsty=true;});
- const hintOn=n=>st.hints==='always'||(st.hints==='auto'&&st.hint[n]<3);
- wob.can=thirsty&&hintOn('thirst')?Math.sin(T*9)*.12*(Math.sin(T*1.3)>0?1:0):0;
+ ACT=st.id;pickChair();
+ eachPlant(()=>{if(st.stage<0)return;plantUpdate(dt);const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y};});
  seedTick(dt);breedTick(dt);socialTick(dt);}
 function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;try{update(dt);}catch(e){showErr('update: '+e.message);}try{draw();}catch(e){showErr('draw: '+e.message);}requestAnimationFrame(loop);}
 requestAnimationFrame(loop);

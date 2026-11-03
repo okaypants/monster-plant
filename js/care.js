@@ -20,7 +20,7 @@ function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('ba
  const was=st.needs.attention;st.needs.attention=Math.max(0,was-.35);if(was>.6&&st.needs.attention<=.6)met('attention');doMove();if(quiet()&&Math.random()<.5)say(line('pet'),3);}
 function useTool(){const b=plantBox();const base=SPOT[spotKey()].y;
  if(held.tool==='can'){sfx('pour');burst('drop',b.x+b.w/2,base-(st.stage<4?60:b.h*.3)-60,2);
-  if(st.needs.thirst<.3){st.over=20;st.overType='water';setTimeout(()=>sfx('blub'),900);say('Soggy pout. Too much water, but no harm done.',4);}
+  if(st.needs.thirst<.3){st.over=PUDDLE_T;st.overType='water';setTimeout(()=>sfx('blub'),900);say('Sitting in a puddle, a bit soggy: too much water. No harm done; it dries up on its own.',5);}
   else{if(st.needs.thirst>.6)met('thirst');setTimeout(()=>sfx('sigh'),1300);
    const P=pers(),onTime=st.routine!=null&&Math.abs(st.dayT-st.routine)<.07;st.routine=st.routine==null?st.dayT:st.routine*.7+st.dayT*.3;
    if(P.l==='lawful'&&onTime&&st.stage>=4){st.needs.attention=Math.max(0,st.needs.attention-.15);setTimeout(()=>burst('heart',b.x+b.w*.15,b.y-20,2),1300);const f=notice('tidy',QUIRK_TXT.tidy);say('Right on time! '+who()+' loves a routine.'+(f?' (New quirk in the journal.)':''),5);}

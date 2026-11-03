@@ -12,7 +12,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug panel** (top right, "debug"): species, age, speed, time mode, hints, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
+- **Debug panel** (top right, "debug"): species, age, speed, time mode, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Wiggle now (tries an idle wiggle on the next frame), Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
 
 ## Put it online (GitHub Pages)
 
@@ -45,6 +45,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 `python tests/thirst_shots.py` checks and pictures every thirst step (full color to fully gray) for an adult, a kid and a sprout, and that watering brings the color back one step every half second; saved to `tests/screenshots/thirst/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
+
+`python tests/needs_shots.py` checks and pictures every need state on one plant, step by step (withered, burned, gray, puddle) and that each heals in steps, plus the idle wiggle rules (rare, 1 px, never while touching, never books); saved to `tests/screenshots/needs/` with a sheet of everything that can wiggle.
 
 ---
 
@@ -100,19 +102,18 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 ---
 
-## RULES (Jackie's non-negotiables)
+## RULES
 
-1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels. (Exception, decided Nov 3: light itself may blend softly, for the coming code lighting.)
-2. **No HUD, no meters.** Needs show IN the plant: color (fading to gray in 4 steps = thirsty; outlines and pot keep their colors), face, posture (hunching = too dark), squinting and leaning away (too much light, after a while), one small flame only in the extreme case, Zzz only when actually asleep.
-3. **Grace.** Nothing is ever lost for good, nothing punishes. Plants never starve; treats are optional; bickering plants always make up; cat trust never goes down; charms that fade come back faster.
-4. **Fidgets:** squishy, bouncy, endlessly repeatable, visual-first (sound comes later from Garry).
-5. **Cute, not scary.** Removed for being scary or cluttered: thought bubbles, hunger asterisks, bouncing book, dust/crack marks, petrifying cracks, eye-following.
-6. **Art is untouched.** Background removal only; no recoloring or redrawing without Jackie's OK. **Black outlines always stay.** No blush on faces.
-7. **Every room variant is an edit of the default room**, never an edit of another edit.
-8. **One session edits the game at a time.** Run the tests before playing.
-9. **Light comes from zones the player can see** (`js/light.js`): the window's sun patch (on the rug and the windowsill, fading across the room; time of day and curtains set its strength, closed = soft and dim), a grow-light circle around every lamp that's on (the milk crate is in the floor lamp's, the desk in the desk lamp's), and soft room light everywhere else. Too bright only for shade and night plants, only after a while, and only in the midday sun patch with the curtains open or right under a lamp. Moving out fixes it right away. Plants, the Light map and the coming code lighting all use the same light sources.
+Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Needs show only on the monster (Nov 3)
+
+- Light and water needs show only on the plant, in clear steps that heal in steps: withered (too dark: droops, hunches, curls in, a little dull), burned (too bright: squints, leans away, toasty scorched edges and tips; the flame only for a night-lover left in midday sun a long while), gray (thirsty), and a puddle with a soggy droop (overwatered; dries in 3 steps over 30 s). Why: the plant is the one thing you're watching, and hints on objects pulled the eye away and moved room art.
+- Removed every hint on objects (carafe wobble and sparkle, curtain sway, window wobble, bouncing book, rattling jar) and the debug "Hints" setting that drove them.
+- Usable things get a rare 1 px idle wiggle instead (once every 2.5 to 5 minutes at most, one at a time, never while touching). Books are left out until the four special books are placed in the room.
+- RULES.md now holds the rules (was a README section).
 
 ### No curtain wiggle (Nov 3)
 
@@ -120,7 +121,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 ### Thirst fades to gray (Nov 3)
 
-- A thirsty plant's colors drain in 4 clear steps (pre-made, cached levels, no live blending) until a parched plant is fully gray; black outlines and the pot keep their colors. Watering brings the color back one step every half second. Seedlings and kids too. Why: gray reads as "needs something" at a glance and works for every plant color, where browning only touched green leaves.
+- A thirsty plant's colors drain in 4 clear steps (pre-made, cached levels, no live blending) until a parched plant is fully gray, pot and all; black outlines stay black. Watering brings the color back one step every half second. Seedlings and kids too. Why: gray reads as "needs something" at a glance and works for every plant color, where browning only touched green leaves.
 
 ### Light zones and grow lights (Nov 3)
 

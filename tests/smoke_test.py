@@ -48,9 +48,9 @@ VIRTUAL_TIME = """(()=>{let s=12345;Math.random=()=>{s|=0;s=s+0x6D2B79F5|0;let t
  window.setInterval=(f,d=0)=>{const me=id++,r=()=>{f();q.push({id:me,at:vt+(+d||1),f:r});};q.push({id:me,at:vt+(+d||1),f:r});return me;};
  window.clearTimeout=window.clearInterval=i=>{q=q.filter(x=>x.id!==i);};
  window.requestAnimationFrame=f=>{raf.push(f);return 1;};
- window.__step=sec=>{for(let n=Math.round(sec*1000/%d);n>0;n--){vt+=%d;
+ window.__step=(sec,ms=%d)=>{for(let n=Math.round(sec*1000/ms);n>0;n--){vt+=ms;
   for(;;){q.sort((a,b)=>a.at-b.at||a.id-b.id);if(!q.length||q[0].at>vt)break;q.shift().f();}
-  const r=raf;raf=[];r.forEach(f=>f(vt));}};})();""" % (STEP_MS, STEP_MS)
+  const r=raf;raf=[];r.forEach(f=>f(vt));}};})();""" % (STEP_MS,)  # __step(seconds, frame ms): longer frames for long runs
 
 # saves, built in the page from fresh() so they always match the current save format
 TEEN = "s.stage=6;s.species=4;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;s.giftSeed=1;"  # neutral: no quirks that wake the cat; gift seed already came (it has its own case)
