@@ -87,7 +87,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   if((st.nap>0||st.night)&&st.stage>=4)slot('zzz','zzz',1.5,0,.5); // only plants whose eyes can close (elders' face kit); babies have their eyes drawn in // Zzz only when actually asleep (eyes closed); too dark = hunching smaller only
   if(st.listen>0)slot('sparkles','mr',3);
   if(st.over>0&&st.overType!=='water'&&!(st.listen>0))slot('sweat','mr',2);
-  // thirst = turning brown only (Jackie: no dust/crack marks)
+  // thirst = fading to gray only (Jackie: no dust/crack marks)
  }
  fidgetDrawTop();
  for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
