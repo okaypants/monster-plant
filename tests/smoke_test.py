@@ -60,7 +60,7 @@ CASES = [
      "st.started&&st.stage===4&&st.nge!=null||'seed did not grow into a kid with a nature (stage '+st.stage+')'"),
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;", "", 1,
      "st.nge!=null&&plantCount()>=2||'old save: nature '+st.nge+', plants '+plantCount()"),
-    ("breeding", "s.stage=8;s.species=3;s.free={x:300,y:918};",
+    ("breeding", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=1;",  # they already bred today on their own, so only this one counts
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);window.__before=plantCount();"
      "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,  # a second later, once both stand in the room
      "plantCount()===window.__before+1&&allRaw().some(q=>q.parents)||'no seed from breeding (plants '+plantCount()+')'"),
