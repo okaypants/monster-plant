@@ -48,6 +48,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/needs_shots.py` checks and pictures every need state on one plant, step by step (withered, burned, gray, puddle) and that each heals in steps, plus the idle wiggle rules (rare, 1 px, never while touching, never books); saved to `tests/screenshots/needs/` with a sheet of everything that can wiggle.
 
+`python tests/cat_shots.py` saves the cat in every spot (bed, rug, armchair, windowsill, milk crate, book stack, next to a plant, walking) in every frame (petted with the back-scratcher and belly-up too) to `tests/screenshots/cat/`, and fails if he ever overlaps a plant.
+
 `python tests/seedling_shots.py` pictures the seedling pot at every stage and frame on the windowsill and the desk, checks it rests on the surface line and the frames line up, and compares its size to baby_01; saved to `tests/screenshots/seedlings/` (committed).
 
 `python tests/position_audit.py` renders every species at every age in every spot, and the cat in every nap spot and pose, measures whether each pot (or the cat) rests on its surface, floats or sinks, and saves contact sheets plus `off_by_more_than_2px.txt` to `tests/screenshots/positions/` (these are committed).
@@ -98,7 +100,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `teen_01..16.png`, `adult_01..16.png` | Teens and adults |
 | `elder_01..16.png` | Old stand-ins (fallback only) |
 | `eyes_NN_open/blink.png`, `mouthB_01..12.png` | Face kit for teens and adults (`mouth_NN` = older set, unused) |
-| `cat_*.png` | Cat: curl, loaf, side, sit, pet (back-scratcher), walk, yawn |
+| `cat_*.png` | Cat (Nov 3 redesign, cut from `cat_design.png`, `cat_poses.png`, `cat_backscratcher.png`): sit1/sit2 (blink), curl1/curl2 (breathing), loaf1 (eyes open)/loaf2 (dozing), side1/side2, pet1/pet2, belly (belly-up roll), walk1/walk2 (right), walkL1/walkL2 (left), yawn, scratcher1/scratcher2 (the back-scratcher), and extras for jumping, play and "had enough": leap_r/leap_l, playbow, pounce, stalk, groom1/groom2, stand_side, stand_front, annoyed, back |
+| `old_cat/` | The old cat frames (kept, unused) |
 | `charm_*.png` | Charms earned with treats |
 | `treat_*.png`, `carafe_up/tilt/pour.png` | Things you carry |
 | `fx_*.png` | Effects (2 frames each): hearts, Zzz, sparkles, drops, puddle, flames, sweat... |
@@ -113,6 +116,14 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### New cat (Nov 3)
+
+- Jackie's new cat design replaces every old cat frame (old ones in `old_cat/`). Each pose was cut from the sheets by removing the magenta only (outlines kept, no resizing, recoloring or redrawing). Frames that swap (walking, petted, lying on his side, the back-scratcher) share one canvas, lined up on the sheet, so they don't jitter.
+- Size is set in code, never by resizing the PNGs: one cat scale (`CAT_K` in js/cat.js) brings him back to the old cat's size in the room. `cat_poses.png` was drawn about 1.2x bigger than `cat_design.png`, so its frames (and the back-scratcher, drawn to match it) get a fixed `POSES_K` on top. That way every frame is the same cat size: sitting and blinking don't jump. He's drawn crisp (no smoothing).
+- The back-scratcher is now its own sprite. While he's petted it rests on his head from above right, and its 2 frames swap with the 2 petted frames (a gentle rock). When he adores you (BFF trust) he sometimes rolls belly-up instead, with the scratcher over his tummy.
+- Loaf: eyes open for a moment after he settles, then dozing (Zzz only once his eyes close). Sitting awake: a slow blink now and then. Walking left uses the drawn left frames. The curled breathing is a real frame now (no 1 px shift).
+- Napping next to a plant, he sits far enough away to clear it even belly-up, and when he's on the same line as a plant he's drawn in front of it, never behind. His windowsill spot moved 20 px right so his longest poses stay on the sill. `python tests/cat_shots.py` pictures him in every spot and frame and fails if a cat pixel ever lands on a plant.
 
 ### Seedling pot art (Nov 3)
 

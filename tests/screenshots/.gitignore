@@ -5,6 +5,9 @@
 !positions/
 !positions/*.png
 !positions/*.txt
+# and the cat in every spot and frame (tests/cat_shots.py)
+!cat/
+!cat/*.png
 # and the seedling pot shots
 !seedlings/
 !seedlings/*.png
