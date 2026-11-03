@@ -12,7 +12,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug panel** (top right, "debug"): species, age, speed, time mode, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Wiggle now (tries an idle wiggle on the next frame), Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
+- **Debug panel** (top right, "debug"): species, age, speed, time mode, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Wiggle now (tries an idle wiggle on the next frame), Nudge (put a plant of the chosen species, age and spot, or the cat in a pose and spot, in place and move it 1 px at a time; saved on this device, Copy table for `js/nudges.js`), Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
 
 ## Put it online (GitHub Pages)
 
@@ -62,6 +62,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `core.js` | Canvas and screen fitting, image loading, errors, palette, captions and bubbles, effects, full screen |
   | `audio.js` | The little synth sounds (`sfx`) |
   | `saving.js` | The save (`st`), shared room keys (`GLOBAL`), swapping plants in and out, loading old saves |
+  | `nudges.js` | Small per-species and per-frame position fixes (`NUDGE`), set with the debug Nudge tool |
   | `room.js` | Room pictures, seasons, curtains, lamps, time of day, spots, drawing each frame |
   | `light.js` | Light zones: the window's sun patch, lamp grow lights, room light; what plants feel (`lightInfo`) and the shapes to draw (`lightSources`) |
   | `plants.js` | Ages, sprites, faces, charms, pots (paused), needs, scooting, personality, friends, titles, seeds and breeding |
@@ -109,6 +110,11 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Everything sits on its surface (Nov 3)
+
+- Plants and the cat are placed by their real bottom (the lowest solid pixel row of each picture, measured automatically) on one table of surface lines read from the art (`SURFACE` in room.js): windowsill front edge 564, front of the desk top 558, front of the book on the milk crate 639, front of the top book 652, armchair seat 656, cat bed rim 888, the floor 925; on the rug any y is floor (790 back to 918 front). Why: the audit found kids sinking 9 px into the book stack, every teen and adult floating 3-5 px (4 empty rows under each pot), and the cat floating 5 px on the crate.
+- Small leftovers go in one table (`NUDGE`, js/nudges.js), set with the debug Nudge tool. It's empty: nothing needed one.
 
 ### Needs show only on the monster (Nov 3)
 
