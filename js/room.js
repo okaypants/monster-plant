@@ -68,7 +68,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(drag.on&&stageGroup()!=='grown'){for(const k of GROUPS[stageGroup()]){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,stageGroup()==='grown'?120:stageGroup()==='baby'?70:44,stageGroup()==='grown'?22:12,0,0,Math.PI*2);g.fill();}}
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
-  for(const e of L){if(!catDone&&cat.y<=e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
+  for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
   if(!catDone)drawCat();}
  function drawOnePlant(){let b;const pb=plantBox();
   if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
