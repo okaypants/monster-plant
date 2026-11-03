@@ -1,0 +1,19 @@
+'use strict';
+/* Journal: the desk drawers, the plant journal, today's checklist. */
+const DRAWERS={x:1062,y:560,w:118,h:180};
+function bar(v,l,r){const p=Math.round((v+1)*50);return `<div style="display:flex;gap:6px;align-items:center;font-size:14px"><span style="width:58px;text-align:right">${l}</span><div style="flex:1;height:8px;background:#5a3a4a;position:relative"><div style="position:absolute;left:${p}%;top:-3px;width:6px;height:14px;background:#c8d145"></div></div><span style="width:58px">${r}</span></div>`;}
+function potList(){const have=st.pots||[];return '<div style="font-size:14px">'+[`<button data-k="pnone" style="font-size:12px;padding:1px 8px;min-width:0">${!st.potOn?'✓ ':''}starter pot</button>`].concat(POTS.map(p=>have.includes(p.id)?`<button data-k="p_${p.id}" style="font-size:12px;padding:1px 8px;min-width:0">${st.potOn===p.id?'✓ ':''}${p.name}</button>`:`<span style="opacity:.6">🔒 ${p.name}: ${p.how}</span>`)).join(' · ')+'</div>';}
+function openJournal(){sfx('page');const m=st.met||{},tick=n=>m[n]?'✓':'·',L=st.stage<0?'':lightFit(spotKey());
+ const tr=SNACKS.map((t,i)=>{const n=(st.treats||{})[t.id]||0,done=(st.traits||[]).includes(t.trait);return `<div style="font-size:14px">${t.name}: ${done?'<b>'+t.trait+'</b> earned '+(TOPPER_IMG[t.trait]?`<button data-k="w${i}" style="font-size:12px;padding:1px 8px;min-width:0">${(st.wear||((st.traits||[]).slice(-1)[0]))===t.trait?'wearing':'wear'}</button>`:'(art coming)'):n+'/'+TRAIT_AT+' toward '+t.trait}</div>`;}).join('');
+ const d=screen(`<div style="max-width:560px;text-align:left;max-height:80vh;overflow:auto">
+ <h1 style="font-size:28px">Plant journal</h1>
+ <p><b>${NAMES[st.species]}</b>, ${STAGES[Math.max(0,st.stage)]} · day ${st.day} · ${phase(st.dayT)}</p>
+ <p style="font-size:15px">It grows a step each night it's well cared for. Today: water ${tick('thirst')} · right light ${tick('light')} · company ${tick('attention')}<br>
+ <i>Water</i> when the leaves start to brown. <i>Company</i> means petting or reading to it. <i>Light</i>: it likes ${st.pref==='sun'?'sun':st.pref==='shade'?'shade':'the dark'}; drag it between spots or use the curtains and lamps. ${L}</p>
+ <p style="font-size:15px">Personality: <b>${align()}</b>${(st.titles||[]).length?' · <b>'+st.titles.map(t=>TITLES[t]).join(', ')+'</b>':''}. ${temperament().replace('It seems','Born')} Shaped by what you read, how you play, and the treats you give; it drifts back toward how it was born.</p>${allRaw().filter(q=>q.id!==st.id&&q.stage>=4).map(q=>{const r=rel(st,q);return '<p style="font-size:14px;margin:2px 0">'+(r==='friends'?'Friends with':r==='bicker'?'Bickers with (always makes up)':'Gets along fine with')+' the '+NAMES[q.species]+'.</p>';}).join('')}${Object.keys(st.quirks||{}).length?'<p style="font-size:14px;margin:4px 0">Quirks you\'ve noticed:<br>'+Object.values(st.quirks).map(q=>'· '+q).join('<br>')+'</p>':'<p style="font-size:14px;opacity:.7">No quirks noticed yet. Watch what it does.</p>'}
+ ${bar(st.ge,'evil','good')}${bar(st.lc,'chaotic','lawful')}
+ <p style="font-size:14px">Lately: ${(st.log||[]).join(', ')||'nothing yet'}</p>
+ <p style="font-size:15px">Treats are optional. Give one kind ${TRAIT_AT} times and it earns a little charm. Keep giving it now and then (at least every 3 days) or the charm drifts away; it comes back faster.</p>${tr}
+ <div class="opts" style="margin-top:12px">${st.night?'':'<button data-k="n">Say goodnight</button>'}<button data-k="c">Close</button></div></div>`,Object.assign({n:dd=>{dd.remove();tuckIn();},c:dd=>dd.remove()},Object.fromEntries(SNACKS.map((t,i)=>['w'+i,dd=>{st.wear=t.trait;save();dd.remove();openJournal();}])),{pnone:dd=>{st.potOn=null;save();dd.remove();openJournal();}},Object.fromEntries(POTS.map(p=>['p_'+p.id,dd=>{st.potOn=p.id;save();dd.remove();openJournal();}]))));}
+function logEv(t){st.log=(st.log||[]).concat(t).slice(-6);}
+function met(n){st.met[n]=1;st.hint[n]=(st.hint[n]||0)+1;nudgeSun();}

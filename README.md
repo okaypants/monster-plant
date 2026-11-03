@@ -17,7 +17,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 ## Put it online (GitHub Pages)
 
 1. On GitHub, make a **public** repository called `monster-plant`. License: **None**.
-2. Upload every file in this folder (keep them all at the top level, plus the `tests` folder). GitHub's web uploader takes about 100 files at a time, so drag them in 3 batches, or use GitHub Desktop to add the whole folder at once.
+2. Upload every file in this folder (keep them all at the top level, plus the `js` and `tests` folders). GitHub's web uploader takes about 100 files at a time, so drag them in 3 batches, or use GitHub Desktop to add the whole folder at once.
 3. Repository **Settings → Pages → Build and deployment**: Source = *Deploy from a branch*, Branch = `main`, folder = `/ (root)`. Save.
 4. After a minute or two the site is at `https://<your-account>.github.io/monster-plant/`.
 5. To update: upload changed files (same names) and commit. Pages republishes on its own.
@@ -42,9 +42,25 @@ Checks a brand-new game, an old save, the gift seed, breeding, night/morning, an
 
 ## How it's built
 
-- One page: `index.html` holds all the code (HTML, CSS, JavaScript, canvas). Everything else is art.
+- One page: `index.html` holds the HTML and CSS, then loads the game code from the `js` folder. Everything else is art.
+- The code is split into sections, one file each. They are plain scripts that share everything, loaded in this order (`main.js` must stay last, because it starts the game):
+
+  | File | What |
+  | --- | --- |
+  | `core.js` | Canvas and screen fitting, image loading, errors, palette, captions and bubbles, effects, full screen |
+  | `audio.js` | The little synth sounds (`sfx`) |
+  | `saving.js` | The save (`st`), shared room keys (`GLOBAL`), swapping plants in and out, loading old saves |
+  | `room.js` | Room pictures, seasons, curtains, lamps, light and time of day, spots, drawing each frame |
+  | `plants.js` | Ages, sprites, faces, charms, pots (paused), needs, scooting, personality, friends, titles, seeds and breeding |
+  | `care.js` | Watering, treats, books, petting |
+  | `cat.js` | The cat: naps, walks, trust, petting |
+  | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
+  | `journal.js` | The desk-drawer journal |
+  | `input.js` | Taps, drags, and what each spot in the room does |
+  | `start.js` | Title screen, seed quiz, welcome back, goodnight and morning |
+  | `debug.js` | The debug panel |
+  | `main.js` | The game loop; starts everything |
 - The room is drawn at 1670 × 942 and scaled to fit the screen (whole room always visible).
-- **Planned first refactor:** split the code into sections (plants, cat, room/lighting, fidgets, journal, saving, debug) with no change to how it plays.
 
 ### Key code ideas
 
