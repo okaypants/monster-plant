@@ -26,7 +26,7 @@ function buildDbgCtl(){const c=dbg.querySelector('#dCtl');c.innerHTML=` Species 
  <div style="border-top:1px solid #6c61a4;margin-top:6px;padding-top:4px"><b>Nudge</b> (1 px at a time; uses the Species above)<br>
  <select id="nKind"><option value="plant">plant</option><option value="cat">cat</option></select>
  <span id="nPl">age <select id="nAge">${['seed','sprout','kid','teen','adult'].map(a=>`<option>${a}</option>`).join('')}</select> spot <select id="nSpot">${['sill','desk','crate','books','rug','chair'].map(a=>`<option>${a}</option>`).join('')}</select></span>
- <span id="nCt" style="display:none">pose <select id="nPose">${['curl','loaf','side','sit','pet','walk'].map(a=>`<option>${a}</option>`).join('')}</select> spot <select id="nCSpot">${['bed','rug','chair','sill','crate','books','byplant','floor'].map(a=>`<option>${a}</option>`).join('')}</select></span>
+ <span id="nCt" style="display:none">pose <select id="nPose">${['curl','loaf','side','sit','pet','belly','walk'].map(a=>`<option>${a}</option>`).join('')}</select> spot <select id="nCSpot">${['bed','rug','chair','sill','crate','books','byplant','floor'].map(a=>`<option>${a}</option>`).join('')}</select></span>
  <button id="nShow">Show</button><br>
  <button data-n="-1,0">←</button><button data-n="1,0">→</button><button data-n="0,-1">↑</button><button data-n="0,1">↓</button><button data-n="0,0">reset</button> <span id="nVal">pick, then Show</span><br>
  <button id="nDone">Done</button><button id="nCopy">Copy table</button><textarea id="nOut" style="display:none;width:100%;height:60px;font-size:11px"></textarea></div>`;
@@ -87,7 +87,7 @@ function drawLightTags(){const rows=[],act=st.id;g.save();
    Each nudge is saved into NUDGE (js/nudges.js) at once and kept on this device; Copy table gives the text to paste into js/nudges.js for good. */
 let nudgeKey=null;
 const NUDGE_AGE={seed:0,sprout:1,kid:4,teen:6,adult:8},NUDGE_FITS={seed:['sill','desk'],sprout:['sill','desk'],kid:['crate','books','chair'],teen:['rug','chair'],adult:['rug','chair']};
-const CAT_STATE={curl:'sleep',loaf:'sleep',side:'sleep',sit:'sniff',pet:'pet',walk:'walk'};
+const CAT_STATE={curl:'sleep',loaf:'sleep',side:'sleep',sit:'sniff',pet:'pet',belly:'pet',walk:'walk'};
 function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
  q('#nKind').onchange=()=>{q('#nPl').style.display=kind()==='plant'?'':'none';q('#nCt').style.display=kind()==='cat'?'':'none';};
  const show=()=>{const v=nudgeKey&&(nudgeKey.kind==='plant'?NUDGE.plant:NUDGE.cat)[nudgeKey.key];q('#nVal').textContent=nudgeKey?nudgeKey.key+': '+(v?v.join(', '):'0, 0'):'pick, then Show';};
@@ -97,7 +97,7 @@ function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
    if(spot!=='rug'&&spot!=='chair')st.place[stageGroup()]=spot;pickChair();nudgeKey={kind:'plant',key:(st.species+1)+'|'+age+'|'+spot};}
   else{const pose=q('#nPose').value,spot=q('#nCSpot').value,s=spot==='byplant'?plantSideSpot():spot==='floor'?{x:800,y:SURFACE.floor,sc:.6}:CAT_SPOTS[spot];
    if(!s){say('The cat sits by a plant only when a teen or adult is on the rug.',4,true);return;}
-   Object.assign(cat,{hold:true,spot:pose==='walk'?'floor':spot,x:s.x,y:s.y,sc:s.sc,pose,state:CAT_STATE[pose],dir:1,path:null,t:0,nap:1e6});
+   Object.assign(cat,{hold:true,spot:pose==='walk'?'floor':spot,x:s.x,y:s.y,sc:s.sc,pose,state:CAT_STATE[pose],belly:pose==='belly',dir:1,path:null,t:0,nap:1e6});
    nudgeKey={kind:'cat',key:pose+'|'+(pose==='walk'?'floor':spot)};}
   show();};
  c.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!nudgeKey)return;const t=nudgeKey.kind==='plant'?NUDGE.plant:NUDGE.cat,[dx,dy]=b.dataset.n.split(',').map(Number),v=t[nudgeKey.key]||[0,0];
