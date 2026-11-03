@@ -12,7 +12,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug panel** (top right, "debug"): species, age, speed, time mode, hints, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Reset.
+- **Debug panel** (top right, "debug"): species, age, speed, time mode, hints, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Light map (tints the rug and plant spots by how much light each gets right now, with each plant's liked range; the desk lamp currently doesn't light plants), Reset.
 
 ## Put it online (GitHub Pages)
 
@@ -39,6 +39,8 @@ python tests/smoke_test.py
 Checks a brand-new game, an old save, the gift seed, breeding, night/morning, and the iPhone landscape view. **Run it after every change, before playing.**
 
 Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a teen, a kid on the book stack, the cat in every nap spot, curtains closed with lamps off) for a minute of game time each at speed 20 in about 20 seconds, fails on any error or missing image, and saves a screenshot of each case to `tests/screenshots/` (kept on your computer, not uploaded).
+
+`python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
 
 ---
 

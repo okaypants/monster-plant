@@ -141,4 +141,5 @@ async def main():
     print(f"PASS: all {len(runs)} cases, a minute each at speed 20. Screenshots in tests/screenshots/")
 
 
-asyncio.run(main())
+if __name__ == "__main__":  # light_map_shots.py borrows the server and virtual clock
+    asyncio.run(main())
