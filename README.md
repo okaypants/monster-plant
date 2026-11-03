@@ -48,6 +48,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/needs_shots.py` checks and pictures every need state on one plant, step by step (withered, burned, gray, puddle) and that each heals in steps, plus the idle wiggle rules (rare, 1 px, never while touching, never books); saved to `tests/screenshots/needs/` with a sheet of everything that can wiggle.
 
+`python tests/seedling_shots.py` pictures the seedling pot at every stage and frame on the windowsill and the desk, checks it rests on the surface line and the frames line up, and compares its size to baby_01; saved to `tests/screenshots/seedlings/` (committed).
+
 `python tests/position_audit.py` renders every species at every age in every spot, and the cat in every nap spot and pose, measures whether each pot (or the cat) rests on its surface, floats or sinks, and saves contact sheets plus `off_by_more_than_2px.txt` to `tests/screenshots/positions/` (these are committed).
 
 ---
@@ -91,6 +93,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `room_day/golden/night.png`, `room_<time>_[closed_]floorOn/Off_deskOn/Off.png` | Whole-room pictures |
 | `<time>_floorlamp_off.png`, `<time>_desklamp_off.png`, `<time>_curtains_closed.png` | Lamp and curtain pieces |
 | `day_window_<season>.png`, `night_window_winter.png` | Season windows (drawn at 318,88) |
+| `seedling_soil1/2.png`, `seedling_sprout1/2.png`, `seedling_bigsprout1/2.png` | Seedling pot: seed (soil), first sprout, bigger sprout, 2 frames each (cut from `seedling_sheet.png`) |
 | `baby_01..16.png`, `baby_NN_sleep.png` | Kids (+ sleeping) |
 | `teen_01..16.png`, `adult_01..16.png` | Teens and adults |
 | `elder_01..16.png` | Old stand-ins (fallback only) |
@@ -110,6 +113,11 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Seedling pot art (Nov 3)
+
+- The code-drawn seed pot is replaced by Jackie's seedling sheet: soil while it's a seed, the first sprout, then the bigger sprout halfway through the sprout stage, each swapping its 2 frames slowly (about every 1.7 s). Cut with the magenta removed only, outlines kept, every frame lined up on the pot's rim and bottom so only the plant moves.
+- Drawn at exactly half size in code (`SEED_K`, js/plants.js), never resized: the sheet's pot is 238 px across and baby_01's is 140, so the seedling pot comes out a bit smaller (119), and halving keeps whole pixels crisp. It rests on the windowsill and desk surface lines by its real bottom like every other plant. Thirst gray and sun toast use the same steps as other plants; a leaning sprout moves only above the rim.
 
 ### Everything sits on its surface (Nov 3)
 
