@@ -42,6 +42,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
 
+`python tests/thirst_shots.py` checks and pictures every thirst step (full color to fully gray) for an adult, a kid and a sprout, and that watering brings the color back one step every half second; saved to `tests/screenshots/thirst/`.
+
 ---
 
 ## How it's built
@@ -99,7 +101,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 ## RULES (Jackie's non-negotiables)
 
 1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels. (Exception, decided Nov 3: light itself may blend softly, for the coming code lighting.)
-2. **No HUD, no meters.** Needs show IN the plant: color (browning = thirsty), face, posture (hunching = too dark), squinting and leaning away (too much light, after a while), one small flame only in the extreme case, Zzz only when actually asleep.
+2. **No HUD, no meters.** Needs show IN the plant: color (fading to gray in 4 steps = thirsty; outlines and pot keep their colors), face, posture (hunching = too dark), squinting and leaning away (too much light, after a while), one small flame only in the extreme case, Zzz only when actually asleep.
 3. **Grace.** Nothing is ever lost for good, nothing punishes. Plants never starve; treats are optional; bickering plants always make up; cat trust never goes down; charms that fade come back faster.
 4. **Fidgets:** squishy, bouncy, endlessly repeatable, visual-first (sound comes later from Garry).
 5. **Cute, not scary.** Removed for being scary or cluttered: thought bubbles, hunger asterisks, bouncing book, dust/crack marks, petrifying cracks, eye-following.
@@ -109,6 +111,10 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 9. **Light comes from zones the player can see** (`js/light.js`): the window's sun patch (on the rug and the windowsill, fading across the room; time of day and curtains set its strength, closed = soft and dim), a grow-light circle around every lamp that's on (the milk crate is in the floor lamp's, the desk in the desk lamp's), and soft room light everywhere else. Too bright only for shade and night plants, only after a while, and only in the midday sun patch with the curtains open or right under a lamp. Moving out fixes it right away. Plants, the Light map and the coming code lighting all use the same light sources.
 
 ## DECISIONS (newest first, with why)
+
+### Thirst fades to gray (Nov 3)
+
+- A thirsty plant's colors drain in 4 clear steps (pre-made, cached levels, no live blending) until a parched plant is fully gray; black outlines and the pot keep their colors. Watering brings the color back one step every half second. Seedlings and kids too. Why: gray reads as "needs something" at a glance and works for every plant color, where browning only touched green leaves.
 
 ### Light zones and grow lights (Nov 3)
 

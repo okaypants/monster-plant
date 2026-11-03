@@ -9,7 +9,7 @@ const NAMES=['curl-sprout bun','lobed bun','stacked cone','leafy mop','bulb','ro
 function lightFit(k){return lightFitText(spotInfo(k,.37,true),st.pref);} // the spot by day, curtains open
 function stageGroup(){return st.stage<4?'seed':st.stage===4?'baby':'grown';}
 const STAGES=['seed','sprout','sprout','sprout','kid','teen','teen','adult','adult'];
-const TEACH={thirst:'Turning brown: it\'s thirsty. The watering can is wobbling.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.',lightHi:'Squinting and leaning away: too much light right here. Move it out of the bright spot, or close the curtains. It feels better right away.',lightFlame:'A little flame: a night-lover in strong midday sun for a long while. Move it somewhere softer and it cools off right away.',lightLo:'Shrinking into itself: too dark. Open the curtains, switch on a lamp (lamps are grow lights), or move it nearer the window.'};
+const TEACH={thirst:'Fading to gray: it\'s thirsty. The watering can is sparkling.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.',lightHi:'Squinting and leaning away: too much light right here. Move it out of the bright spot, or close the curtains. It feels better right away.',lightFlame:'A little flame: a night-lover in strong midday sun for a long while. Move it somewhere softer and it cools off right away.',lightLo:'Shrinking into itself: too dark. Open the curtains, switch on a lamp (lamps are grow lights), or move it nearer the window.'};
 /* ---------- plant sprite ---------- */
 // returns {img|null, x, y, w, h, scale} in room coords for the current stage
 // FEWER AGES (Jackie): seed -> sprout -> baby -> teen -> adult, each clearly bigger. Internal stage numbers kept: 0 seed, 1 sprout, 4 baby, 6 teen, 8 elder
@@ -37,14 +37,20 @@ let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.n
 function pickChair(){const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
 function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 function stageExtra(){return [0,24,42,60][Math.max(0,st.stage)]||0;}
-// thirst browning (Jackie): green leaf pixels drift toward dry brown as thirst rises; pot, face and outlines untouched. cached per image + level
-const brownCache=new Map();
-function browned(im,lv){if(lv<=0)return im;const key=im.src+'|'+lv;let c=brownCache.get(key);if(c)return c;
+// THIRST = FADING TO GRAY (Jackie, Nov 3): as it gets thirsty its colors drain in 4 clear steps until a parched plant is fully gray.
+// Pre-made levels, cached per image; black outlines and the pot keep their colors. Watering brings the color back one step at a time.
+const DRY_AT=[.45,.6,.75,.9],DRY_STEP=.5; // thirst where levels 1-4 start; seconds per step back after watering (4 steps = 2 s)
+function dryTarget(){return st.stage<0?0:DRY_AT.filter(v=>st.needs.thirst>=v).length;}
+function dryTick(dt){const t=dryTarget();st.dryLv=st.dryLv||0;if(t>=st.dryLv){st.dryLv=t;st.dryT=0;return;}st.dryT=(st.dryT||0)+dt;if(st.dryT>=DRY_STEP){st.dryT=0;st.dryLv--;}} // drains straight away, comes back stepped
+const isPotPx=(r,g,b)=>(r>190&&g>150&&b>90&&r>=g&&g>=b&&r-b>30)||(b>r+40&&b>90); // the starter pot's cream and blue check
+const grayCache=new Map();
+function grayed(im,lv){if(lv<=0)return im;const key=im.src+'|'+lv;let c=grayCache.get(key);if(c)return c;
  c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);
- let d;try{d=x.getImageData(0,0,c.width,c.height);}catch(e){return im;}const a=d.data,k=lv/10*.8;
- for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];if(a[i+3]===0||!(g>r+12&&g>b+25))continue;
-  const L=.3*r+.59*g+.11*b;const br=Math.min(255,L*1.18),bg=L*.9,bb=L*.52;a[i]=r+(br-r)*k;a[i+1]=g+(bg-g)*k;a[i+2]=b+(bb-b)*k;}
- x.putImageData(d,0,0);if(brownCache.size>40)brownCache.clear();brownCache.set(key,c);return c;}
+ let d;try{d=x.getImageData(0,0,c.width,c.height);}catch(e){return im;}const a=d.data,k=lv/4,W2=c.width,potY=c.height*.65;
+ for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];if(a[i+3]===0||r+g+b<170)continue; // black outlines stay black
+  if(i/4/W2>potY&&isPotPx(r,g,b))continue;const L=.3*r+.59*g+.11*b;a[i]=Math.round(r+(L-r)*k);a[i+1]=Math.round(g+(L-g)*k);a[i+2]=Math.round(b+(L-b)*k);}
+ x.putImageData(d,0,0);if(grayCache.size>80)grayCache.clear();grayCache.set(key,c);return c;}
+function grayHex(hex,lv){const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,L=.3*r+.59*g+.11*b,k=lv/4,m=v=>Math.round(v+(L-v)*k);return `rgb(${m(r)},${m(g)},${m(b)})`;} // same steps for the code-drawn sprouts
 // petrifying: stony grey creeps in and cracks spread across the body (not the pot). seeded per species so cracks stay put
 function drawCracks(b){const p=st.parch,W2=tintCv.width,H2=tintCv.height,body=H2*.72;
  tg.save();tg.globalCompositeOperation='source-atop';tg.beginPath();tg.rect(0,0,W2,body);tg.clip();
@@ -142,15 +148,15 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  if(!ok(b.img)||b.w<1||b.h<1)return b; // still loading
  const asleep=st.nap>0||st.night;
  if(asleep&&st.stage>=4&&st.stage<=5&&ok(BABY_SLEEP[st.species])){const si=BABY_SLEEP[st.species],o=SLEEP_OFF[st.species];const k=b.chairK||1;b={...b,img:si,x:b.x+o[0]*k,y:b.y+o[1]*k,w:si.naturalWidth*k,h:si.naturalHeight*k};}
- const dry=st.stage>=4?Math.round(clamp((st.needs.thirst-.45)/.5,0,1)*10):0;
+ const dry=st.dryLv||0;
  const pim=POTS_ON&&st.potOn&&POT_IMG[st.potOn],src=(pim&&ok(pim))?potted(b.img,pim):b.img;
  const sY=b.h/b.img.naturalHeight,floorY=b.y+b.h,cH=Math.round(src.naturalHeight*sY),drawY=floorY-cH;
  if(src.lift){b={...b,y:b.y-Math.round(src.lift*sY)};} // plant moves with the new pot's rim (faces/toppers follow)
  tintCv.width=Math.ceil(b.w);tintCv.height=cH;tg.imageSmoothingEnabled=false;tg.clearRect(0,0,tintCv.width,tintCv.height);
- tg.drawImage(browned(src,dry),0,0,b.w,cH);
+ tg.drawImage(grayed(src,dry),0,0,b.w,cH);
  const evil=clamp(-st.ge,0,1),good=clamp(st.ge,0,1);
- if(evil>.05||good>.05){tg.globalCompositeOperation='source-atop';tg.fillStyle=evil>good?`rgba(108,97,164,${evil*.38})`:`rgba(245,171,107,${good*.18})`;tg.fillRect(0,0,tintCv.width,tintCv.height);tg.globalCompositeOperation='source-over';}
- // petrifying cracks removed (Jackie: too scary); thirst = browning only
+ if(evil>.05||good>.05){tg.globalCompositeOperation='source-atop';const fadeK=1-dry/4;tg.fillStyle=evil>good?`rgba(108,97,164,${evil*.38*fadeK})`:`rgba(245,171,107,${good*.18*fadeK})`;tg.fillRect(0,0,tintCv.width,tintCv.height);tg.globalCompositeOperation='source-over';} // a parched plant is fully gray, personality tint too
+ // petrifying cracks removed (Jackie: too scary); thirst = fading to gray only
  const lean=leanOff();if(!lean)g.drawImage(tintCv,Math.round(b.x),Math.round(drawY)+bob);
  else{const tw=tintCv.width,th=tintCv.height,cut=Math.round(th*.72),X=Math.round(b.x),Y=Math.round(drawY)+bob; // leaning away: the pot stays, the body shifts in whole-pixel steps, most at the top
   g.drawImage(tintCv,0,cut,tw,th-cut,X,Y+cut,tw,th-cut);for(let s=0;s<3;s++){const y0=Math.round(cut*s/3),y1=Math.round(cut*(s+1)/3);g.drawImage(tintCv,0,y0,tw,y1-y0,X+Math.round(lean*(3-s)/3),Y+y0,tw,y1-y0);}
@@ -172,19 +178,20 @@ function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/moo
  const mw=m.naturalWidth*sc,mh=m.naturalHeight*sc;g.drawImage(m,Math.round(cx-mw/2),Math.round(ey+eh+8*sc),Math.round(mw),Math.round(mh));}
 function drawSeedPot(cx,base){const x0=cx-36,y0=base-48;cx+=leanOff()/2; // a sprout leans away too; the pot stays
  // sprout stages (code placeholder)
- const s=st.stage,dryS=st.needs.thirst>.6,G2=dryS?'#9a7a3c':C.g2,G3=dryS?'#c2a056':C.g3,G4=dryS?'#d9c27a':C.g4;g.fillStyle=G2;
+ const s=st.stage,lv=st.dryLv||0,G2=grayHex(C.g2,lv),G3=grayHex(C.g3,lv),G4=grayHex(C.g4,lv);g.fillStyle=G2;
  if(s===1){for(let i=0;i<4;i++)g.fillRect(cx-3+((i===3)?P:0),y0-i*P,P,P);g.fillStyle=G3;g.fillRect(cx+P,y0-4*P,P,P);}
  if(s>=2){const h=s===2?6:9;for(let i=0;i<h;i++)g.fillRect(cx-3,y0-i*P,P,P);
   g.fillStyle=G3;const ly=y0-h*P;g.fillRect(cx-3*P-3,ly,P*3,P*2);g.fillRect(cx+P-3,ly,P*3,P*2);g.fillStyle=C.out;g.fillRect(cx-3*P-3,ly+2*P,P*3,2);g.fillRect(cx+P-3,ly+2*P,P*3,2);
   if(s===3){g.fillStyle=C.out;g.fillRect(cx-2*P,ly-4*P,4*P,4*P);g.fillStyle=G3;g.fillRect(cx-2*P+3,ly-4*P+3,4*P-6,4*P-6);g.fillStyle=G4;g.fillRect(cx-P,ly-3*P,P,P);}}
  // pot
  g.fillStyle=C.out;g.fillRect(x0,y0,72,48);g.fillStyle=C.ivory;g.fillRect(x0+4,y0+4,64,10);
- g.fillStyle=st.needs.thirst>.6?C.rust:C.wine;g.fillRect(x0+8,y0+4,56,4);
+ g.fillStyle=C.wine;g.fillRect(x0+8,y0+4,56,4); // the pot keeps its colors; the sprout fades
  g.fillStyle=C.cream;g.fillRect(x0+8,y0+16,56,28);g.fillStyle=C.navy;for(let i=0;i<7;i++)g.fillRect(x0+10+i*8,y0+22+(i%2)*6,6,6);}
 function want(n){if(st.stage<0)return false;if(st.stage<4)return n==='thirst'&&st.needs.thirst>.6;return st.needs[n]>.6;}
 function plantUpdate(dt){const sp=st.speed;
  st.listen=Math.max(0,st.listen-dt);st.over=Math.max(0,st.over-dt);st.nap=Math.max(0,st.nap-dt);
  if(st.mv)st.mv.t+=dt;if(st.grump>0)st.grump-=dt;
+ dryTick(dt); // real seconds, so color comes back over a couple of seconds at any speed
  if(st.night)return;
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;say('Golden hour. When you\'re ready, tap the armchair (or the journal in the desk drawers) to say goodnight.',7);}
