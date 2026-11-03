@@ -2,7 +2,7 @@
 /* Plants: ages, sprites, faces, charms, pots (paused), needs and light, scooting, personality, friends, titles, seeds and breeding. */
 const BABY=[],ELDER=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');BABY.push(img('baby_'+n+'.png'));ELDER.push(img('elder_'+n+'.png'));}
 const BABY_SLEEP=[];for(let i=1;i<=16;i++)BABY_SLEEP.push(img('baby_'+String(i).padStart(2,'0')+'_sleep.png'));
-const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3], [1, 3], [0, 4], [0, 4], [-2, 4], [-1, 5], [1, -2], [0, 2], [2, 3], [0, 2]]; // sleeping baby offset vs awake (pot-aligned)
+const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3], [1, 3], [0, 4], [0, 4], [-2, 4], [-1, 5], [1, -2], [0, 2], [2, 3], [0, 2]]; // sleeping baby offset vs awake; only x is used now (the bottom is anchored by the real bottom)
 const EYE_O=[],EYE_C=[],MOUTH=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');EYE_O.push(img('eyes_'+n+'_open.png'));EYE_C.push(img('eyes_'+n+'_blink.png'));if(i<=12)MOUTH.push(img('mouthB_'+n+'.png'));}
 const EYE_NAMES=['big round','small dot','sparkle','sly cat','square','flower','tall oval','lashed','sleepy','swirl','sinister','slit','three-shine','pink lids','startled','blushing'];
 const NAMES=['curl-sprout bun','lobed bun','stacked cone','leafy mop','bulb','rounded crown','pineapple tuft','floppy ears','sprout-ears','spiral','tentacle star','willow mop','octopus','diamond','lobed cloud','cradle lobes'];
@@ -22,15 +22,18 @@ const NEWART={1:{teen:img('teen_01.png'),adult:img('adult_01.png'),face:{teen:[0
 const TARGET_H={teen:.45*942,adult:.60*942}; // Jackie: teens 45%, adults 60%
 function ageArt(){const n=NEWART[st.species+1];if(!n||st.stage<6)return null;const k=st.stage>=8?'adult':'teen';return ok(n[k])?{im:n[k],k,face:n.face[k]}:null;}
 function plantBoxRaw(){const sp=SPOT[spotKey()];
- if(st.stage<4){return {img:null,x:sp.x-36,y:sp.y-54-stageExtra(),w:72,h:54+stageExtra()};}
+ if(st.stage<4){const [nx,ny]=plantNudge();return {img:null,x:sp.x-36+nx,y:sp.y-54-stageExtra()+ny,w:72,h:54+stageExtra()};} // the code-drawn pot's bottom is the box's bottom
  let im,sc=1;const aa=ageArt();if(st.stage<=5){im=BABY[st.species];}else if(aa){im=aa.im;sc=TARGET_H[aa.k]/Math.max(im.naturalHeight,aa.k==='teen'?460:740);} /* squat drawings aren't blown up */else{im=ELDER[st.species];sc=TARGET_H[st.stage>=8?'adult':'teen']/(im.naturalHeight||601);} /* stand-in */
  const wl=st.witherLv||0;let w=im.naturalWidth*sc*(1-.05*wl),h=im.naturalHeight*sc*(1-.07*wl); // withering: hunches and curls in, one clear step per level
- if(onChair()){const k=CHAIR_H[st.stage>=8?'adult':st.stage>=6?'teen':'kid']/h;w*=k;h*=k;sc*=k;return {img:im,x:CHAIR_SEAT.x-w/2,y:CHAIR_SEAT.y-h,w,h,scale:sc,chairK:k};}
+ if(onChair()){const k=CHAIR_H[st.stage>=8?'adult':st.stage>=6?'teen':'kid']/h;w*=k;h*=k;sc*=k;const [nx,ny]=plantNudge();return {img:im,x:CHAIR_SEAT.x-w/2+nx,y:CHAIR_SEAT.y-h+padPx(im,h)+ny,w,h,scale:sc,chairK:k};}
  let dk=st.stage>=6?depthK(sp.y):1;
  if(dk<1){const ki=BABY[st.species],kh=ok(ki)?ki.naturalHeight:0,need=kh*(st.stage>=8?1.9:1.45);if(kh&&h*dk<need)dk=Math.min(1,need/h);} /* Jackie: even at the back, teens and adults stay clearly bigger than a kid (body, pot and face) */
-w*=dk;h*=dk;sc*=dk;return {img:im,x:sp.x-w/2,y:sp.y-h,w,h,scale:sc,chairK:dk};}
+w*=dk;h*=dk;sc*=dk;const [nx,ny]=plantNudge();return {img:im,x:sp.x-w/2+nx,y:sp.y-h+padPx(im,h)+ny,w,h,scale:sc,chairK:dk};} // pot bottom on the surface line
+function ageName(s=st.stage){return s<1?'seed':s<4?'sprout':s<6?'kid':s<8?'teen':'adult';}
+function plantSpotName(){if(onChair())return 'chair';const k=spotKey();return k==='free'?'rug':k;}
+function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantSpotName()]||[0,0];}
 // SLEEPING IN THE ARMCHAIR (Jackie): asleep plants sit on the seat, smaller because the chair is farther back
-const CHAIR_SEAT={x:628,y:648},CHAIR_H={kid:152,teen:282,adult:375};
+const CHAIR_SEAT={x:628,y:SURFACE.chair},CHAIR_H={kid:152,teen:282,adult:375};
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
 const CHAIR_FRONT=[[443,598,80,150],[688,598,78,150],[515,686,178,62]];
 let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!drag.on&&st.id===chairId;}
@@ -163,7 +166,7 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  if(!b.img){drawSeedPot(b.x+36,b.y+b.h);return b;}
  if(!ok(b.img)||b.w<1||b.h<1)return b; // still loading
  const asleep=st.nap>0||st.night;
- if(asleep&&st.stage>=4&&st.stage<=5&&ok(BABY_SLEEP[st.species])){const si=BABY_SLEEP[st.species],o=SLEEP_OFF[st.species];const k=b.chairK||1;b={...b,img:si,x:b.x+o[0]*k,y:b.y+o[1]*k,w:si.naturalWidth*k,h:si.naturalHeight*k};}
+ if(asleep&&st.stage>=4&&st.stage<=5&&ok(BABY_SLEEP[st.species])){const si=BABY_SLEEP[st.species],o=SLEEP_OFF[st.species];const k=b.chairK||1,line=b.y+b.h-padPx(b.img,b.h),h2=si.naturalHeight*k;b={...b,img:si,x:b.x+o[0]*k,y:line-h2+padPx(si,h2),w:si.naturalWidth*k,h:h2};} // sleeping picture: same pot line, its own real bottom
  const nk=needK();
  const pim=POTS_ON&&st.potOn&&POT_IMG[st.potOn],src=(pim&&ok(pim))?potted(b.img,pim):b.img;
  const sY=b.h/b.img.naturalHeight,floorY=b.y+b.h,cH=Math.round(src.naturalHeight*sY),drawY=floorY-cH;

@@ -22,7 +22,14 @@ function buildDbgCtl(){const c=dbg.querySelector('#dCtl');c.innerHTML=` Species 
  Eyes <select id="dEy">${EYE_NAMES.map((n,i)=>`<option value="${i}" ${st.eye==i?'selected':''}>${i+1} ${n}</option>`).join('')}</select>
  Disposition <select id="dAl"><option value="">(set…)</option>${['Lawful Good','Neutral Good','Chaotic Good','Lawful Neutral','True Neutral','Chaotic Neutral','Lawful Evil','Neutral Evil','Chaotic Evil'].map(n=>`<option>${n}</option>`).join('')}</select><br>
  Light <select id="dPf">${['sun','shade','night'].map(v=>`<option ${st.pref==v?'selected':''}>${v}</option>`).join('')}</select><br>
- <button id="dPots">All pots</button><button id="dDay">End day</button><button id="dCat">Cat trust +</button><button id="dAdd">Add adult</button><button id="dBreed">Breed now</button><button id="dWig">Wiggle now</button><button id="dLm">Light map: ${lightMap?'on':'off'}</button><button id="dRe">Reset</button>`;
+ <button id="dPots">All pots</button><button id="dDay">End day</button><button id="dCat">Cat trust +</button><button id="dAdd">Add adult</button><button id="dBreed">Breed now</button><button id="dWig">Wiggle now</button><button id="dLm">Light map: ${lightMap?'on':'off'}</button><button id="dRe">Reset</button>
+ <div style="border-top:1px solid #6c61a4;margin-top:6px;padding-top:4px"><b>Nudge</b> (1 px at a time; uses the Species above)<br>
+ <select id="nKind"><option value="plant">plant</option><option value="cat">cat</option></select>
+ <span id="nPl">age <select id="nAge">${['seed','sprout','kid','teen','adult'].map(a=>`<option>${a}</option>`).join('')}</select> spot <select id="nSpot">${['sill','desk','crate','books','rug','chair'].map(a=>`<option>${a}</option>`).join('')}</select></span>
+ <span id="nCt" style="display:none">pose <select id="nPose">${['curl','loaf','side','sit','pet','walk'].map(a=>`<option>${a}</option>`).join('')}</select> spot <select id="nCSpot">${['bed','rug','chair','sill','crate','books','byplant','floor'].map(a=>`<option>${a}</option>`).join('')}</select></span>
+ <button id="nShow">Show</button><br>
+ <button data-n="-1,0">←</button><button data-n="1,0">→</button><button data-n="0,-1">↑</button><button data-n="0,1">↓</button><button data-n="0,0">reset</button> <span id="nVal">pick, then Show</span><br>
+ <button id="nDone">Done</button><button id="nCopy">Copy table</button><textarea id="nOut" style="display:none;width:100%;height:60px;font-size:11px"></textarea></div>`;
  const on=(id,f)=>c.querySelector(id).onchange=e=>f(e.target.value);
  on('#dSpc',v=>{st.species=+v;});on('#dStg',v=>{st.stage=+v;st.started=true;});on('#dSp',v=>st.speed=+v);on('#dMo',v=>st.mode=v);on('#dPf',v=>st.pref=v);on('#dEy',v=>{st.eye=+v;save();});on('#dAl',v=>{if(!v)return;const[a,b]=v==='True Neutral'?['Neutral','Neutral']:v.split(' ');st.lc=a==='Lawful'?.6:a==='Chaotic'?-.6:0;st.ge=b==='Good'?.6:b==='Evil'?-.6:0;save();});
  c.querySelector('#dPots').onclick=()=>{st.pots=POTS.map(p=>p.id);st.potOn=POTS[(POTS.findIndex(p=>p.id===st.potOn)+1)%POTS.length].id;save();};
@@ -32,6 +39,7 @@ function buildDbgCtl(){const c=dbg.querySelector('#dCtl');c.innerHTML=` Species 
  c.querySelector('#dDay').onclick=()=>{st.night=true;wake();};
  c.querySelector('#dWig').onclick=()=>{idleNext=1;}; // the next frame tries an idle wiggle (still skipped while you're touching something)
  c.querySelector('#dLm').onclick=e=>{lightMap=!lightMap;e.target.textContent='Light map: '+(lightMap?'on':'off');};
+ buildNudge(c);
  c.querySelector('#dRe').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();};}
 
 /* ---------- LIGHT MAP (debug only): the light zones, and how much light each spot gets right now ---------- */
@@ -74,3 +82,27 @@ function drawLightTags(){const rows=[],act=st.id;g.save();
  g.fillText('yellow dots = the window\'s sun patch · orange rings = lamp grow light (inner ring = right under)',bx,Y+h-30);
  g.fillText('* = the one you\'re tending · white outline = where it would be happy',bx,Y+h-12);
  g.restore();}
+
+/* ---------- NUDGE (debug): put one plant (species, age, spot) or the cat (pose, spot) in place, move it 1 px at a time ----------
+   Each nudge is saved into NUDGE (js/nudges.js) at once and kept on this device; Copy table gives the text to paste into js/nudges.js for good. */
+let nudgeKey=null;
+const NUDGE_AGE={seed:0,sprout:1,kid:4,teen:6,adult:8},NUDGE_FITS={seed:['sill','desk'],sprout:['sill','desk'],kid:['crate','books','chair'],teen:['rug','chair'],adult:['rug','chair']};
+const CAT_STATE={curl:'sleep',loaf:'sleep',side:'sleep',sit:'sniff',pet:'pet',walk:'walk'};
+function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
+ q('#nKind').onchange=()=>{q('#nPl').style.display=kind()==='plant'?'':'none';q('#nCt').style.display=kind()==='cat'?'':'none';};
+ const show=()=>{const v=nudgeKey&&(nudgeKey.kind==='plant'?NUDGE.plant:NUDGE.cat)[nudgeKey.key];q('#nVal').textContent=nudgeKey?nudgeKey.key+': '+(v?v.join(', '):'0, 0'):'pick, then Show';};
+ q('#nShow').onclick=()=>{if(kind()==='plant'){const age=q('#nAge').value,spot=q('#nSpot').value;
+   if(!NUDGE_FITS[age].includes(spot)){say('A '+age+' can\'t use the '+spot+'. Try: '+NUDGE_FITS[age].join(', ')+'.',4,true);return;}
+   st.stage=NUDGE_AGE[age];st.started=true;st.place=st.place||{};st.walk=null;st.nap=spot==='chair'?1e6:0; // asleep in the armchair until Done
+   if(spot!=='rug'&&spot!=='chair')st.place[stageGroup()]=spot;pickChair();nudgeKey={kind:'plant',key:(st.species+1)+'|'+age+'|'+spot};}
+  else{const pose=q('#nPose').value,spot=q('#nCSpot').value,s=spot==='byplant'?plantSideSpot():spot==='floor'?{x:800,y:SURFACE.floor,sc:.6}:CAT_SPOTS[spot];
+   if(!s){say('The cat sits by a plant only when a teen or adult is on the rug.',4,true);return;}
+   Object.assign(cat,{hold:true,spot:pose==='walk'?'floor':spot,x:s.x,y:s.y,sc:s.sc,pose,state:CAT_STATE[pose],dir:1,path:null,t:0,nap:1e6});
+   nudgeKey={kind:'cat',key:pose+'|'+(pose==='walk'?'floor':spot)};}
+  show();};
+ c.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!nudgeKey)return;const t=nudgeKey.kind==='plant'?NUDGE.plant:NUDGE.cat,[dx,dy]=b.dataset.n.split(',').map(Number),v=t[nudgeKey.key]||[0,0];
+  const n=dx||dy?[v[0]+dx,v[1]+dy]:[0,0];if(n[0]||n[1])t[nudgeKey.key]=n;else delete t[nudgeKey.key];
+  try{localStorage.setItem('mp-nudges',JSON.stringify(NUDGE));}catch(e){}show();});
+ q('#nDone').onclick=()=>{if(nudgeKey&&nudgeKey.kind==='plant'&&st.nap>1e5)st.nap=0;cat.hold=false;if(cat.nap>1e5)cat.nap=rnd(30,70);nudgeKey=null;show();};
+ q('#nCopy').onclick=()=>{const t='const NUDGE='+JSON.stringify(NUDGE)+';',o=q('#nOut');o.style.display='block';o.value=t;o.select();if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});say('Nudge table copied. Paste it over the NUDGE line in js/nudges.js (or send it to Claude).',6,true);}; // if the browser won't copy, the selected text box is there to copy by hand
+ show();}

@@ -2,15 +2,16 @@
 /* Cat: naps, walks, trust, petting. */
 /* ---------- CAT (Jackie): naps all over the room, wanders now and then, can be petted. Frame swaps + whole-pixel moves only. ---------- */
 const CATF={};['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn'].forEach(n=>CATF[n]=img('cat_'+n+'.png'));
-const CAT_SPOTS={bed:{x:1578,y:888,sc:.62,poses:['curl','loaf']},rug:{x:760,y:925,sc:.62,poses:['side','loaf','curl']},
- chair:{x:640,y:650,sc:.5,poses:['curl','loaf']},sill:{x:385,y:548,sc:.45,poses:['loaf','curl']},crate:{x:338,y:612,sc:.48,poses:['loaf','curl']},books:{x:978,y:640,sc:.48,poses:['loaf','curl']}};
-const cat={spot:'bed',x:1578,y:888,sc:.62,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0};
+const CAT_SPOTS={bed:{x:1578,y:SURFACE.bed,sc:.62,poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:.62,poses:['side','loaf','curl']},
+ chair:{x:640,y:SURFACE.chair,sc:.5,poses:['curl','loaf']},sill:{x:385,y:SURFACE.sill,sc:.45,poses:['loaf','curl']},crate:{x:338,y:SURFACE.crate,sc:.48,poses:['loaf','curl']},books:{x:978,y:SURFACE.books,sc:.48,poses:['loaf','curl']}};
+const cat={spot:'bed',x:1578,y:SURFACE.bed,sc:.62,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0};
 function catSpotFree(k){if(['sill','crate','books'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&chairId!=null)return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
-function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair()))return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1;return {x:Math.round(b.x+b.w/2+side*(b.w/2+70)),y:SPOT[spotKey()].y+2,sc:.6*depthK(SPOT[spotKey()].y),poses:['curl','loaf']};}
+function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair()))return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1;return {x:Math.round(b.x+b.w/2+side*(b.w/2+70)),y:SPOT[spotKey()].y,sc:.6*depthK(SPOT[spotKey()].y),poses:['curl','loaf']};}
 function catPick(){const ps=plantSideSpot();if(ps&&cat.spot!=='byplant'&&catTrust()>=TRUST_FOND&&Math.random()<(catTrust()>=TRUST_BFF?.6:.35)){CAT_SPOTS.byplant=ps;return 'byplant';}
  const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&k!==cat.spot&&catSpotFree(k));return ks[Math.floor(Math.random()*ks.length)]||'bed';}
 function catGo(k){const s=CAT_SPOTS[k],FLOOR_Y=925;cat.to=k;cat.path=[{x:cat.x,y:FLOOR_Y,hop:cat.y<FLOOR_Y-20},{x:s.x,y:FLOOR_Y},{x:s.x,y:s.y,hop:s.y<FLOOR_Y-20}];cat.state='walk';cat.t=0;}
-function catUpdate(dt){cat.t+=dt;if(cat.shyT>0)cat.shyT-=dt;
+function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
+ cat.t+=dt;if(cat.shyT>0)cat.shyT-=dt;
  if(cat.state==='sleep'&&((cat.spot==='sill'&&st.curtain==='closed')||(cat.spot==='chair'&&chairId!=null))){cat.state='wake';cat.t=1.2;} // curtains closed: hop off the ledge
  if(cat.state==='sleep'){cat.nap-=dt;if(cat.nap<=0){cat.state='wake';cat.t=0;cat.pets=0;trustGain(.015);}} // a nap left undisturbed builds trust
  else if(cat.state==='sniff'){if(cat.t>1.6){cat.state='wake';cat.t=1.2;}}
@@ -28,7 +29,9 @@ function catFrame(){const f2=Math.floor(T*1.2)%2;
  if(cat.state==='sniff')return CATF.sit1;
  if(cat.state==='pet')return CATF['pet'+(Math.floor(T*4)%2+1)];
  if(cat.state==='walk')return CATF['walk'+(Math.floor(T*6)%2+1)];return CATF.sit1;}
-function catBox(){const f=catFrame();if(!ok(f))return null;const w=Math.round(f.naturalWidth*cat.sc),h=Math.round(f.naturalHeight*cat.sc);const s1=CATF.sit1,shift=(cat.state==='pet'&&ok(s1))?Math.round((f.naturalWidth-s1.naturalWidth)/2*cat.sc):0;return {f,x:Math.round(cat.x-w/2+shift),y:Math.round(cat.y-h),w,h};}
+function catBox(){const f=catFrame();if(!ok(f))return null;const w=Math.round(f.naturalWidth*cat.sc),h=Math.round(f.naturalHeight*cat.sc);const s1=CATF.sit1,shift=(cat.state==='pet'&&ok(s1))?Math.round((f.naturalWidth-s1.naturalWidth)/2*cat.sc):0;const [nx,ny]=catNudge();return {f,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*cat.sc)+ny,w,h};} // paws/body on the surface line
+function catPose(){return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?'pet':cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
+function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
 function drawCat(){const b=catBox();if(!b)return;if(cat.state==='sleep'&&cat.pose==='curl')b.y+=Math.floor(T*1.2)%2;/* breathing: 1px rise and fall */if(cat.state==='walk'&&cat.dir<0){g.save();g.translate(b.x+b.w,b.y);g.scale(-1,1);g.drawImage(b.f,0,0,b.w,b.h);g.restore();}else g.drawImage(b.f,b.x,b.y,b.w,b.h);
  if(cat.state==='sleep'&&Math.floor(T*.7)%3===0)fx('zzz',b.x+b.w*.15,b.y-6,1.5,0,.3);}
 function catHit(x,y){const b=catBox();return b&&x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h;}

@@ -14,7 +14,11 @@ const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtain
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
 // placement (Jackie): seedlings on the windowsill or desk; babies on the milk crate or book stack; grown plants on the floor. Drag the plant to move it.
-const SPOT={sill:{x:478,y:546},desk:{x:1236,y:528},crate:{x:338,y:622},books:{x:978,y:662},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+// SURFACE LINES (Nov 3, from the positioning audit): the row a pot's (or the cat's) lowest solid pixel rests on, read from the room art.
+// windowsill front edge, front of the desk top, front of the book on the milk crate, front of the top book's cover, the armchair seat, the cat bed's rim, the floor in front of the rug.
+// On the rug any y is floor (back 790 to front 918). Small per-species and per-frame fixes live in NUDGE (js/nudges.js).
+const SURFACE={sill:564,desk:558,crate:639,books:652,chair:656,bed:888,floor:925};
+const SPOT={sill:{x:478,y:SURFACE.sill},desk:{x:1236,y:SURFACE.desk},crate:{x:338,y:SURFACE.crate},books:{x:978,y:SURFACE.books},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','rugR']};
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
