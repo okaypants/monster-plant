@@ -8,6 +8,12 @@ function fit(){const vw=document.documentElement.clientWidth||innerWidth,vh=docu
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));addEventListener('load',fit);setInterval(fit,1000);fit(); // keep the whole room on screen on iPad/phones
 function img(src){const i=new Image();i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
 const ok=i=>i&&i.complete&&i.naturalWidth>0;
+// REAL BOTTOM (Nov 3): empty rows under a picture's lowest solid pixel (the pot's bottom, the cat's paws), measured once per picture.
+// Plants and the cat are placed so that pixel sits exactly on the spot's surface line, not the picture's edge.
+const padCache=new Map();
+function bottomPad(im){if(!ok(im))return 0;let p=padCache.get(im.src);if(p!=null)return p;const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);
+ let d;try{d=x.getImageData(0,0,c.width,c.height).data;}catch(e){return 0;}p=0;rows:for(let y=c.height-1;y>=0;y--){for(let i=y*c.width*4+3;i<(y+1)*c.width*4;i+=4)if(d[i]>40)break rows;p++;}padCache.set(im.src,p);return p;}
+const padPx=(im,h)=>Math.round(bottomPad(im)*h/im.naturalHeight); // those empty rows at the size it's drawn
 let errShown=0;function showErr(t){if(errShown>4)return;errShown++;let d=document.getElementById('errbox');if(!d){d=document.createElement('div');d.id='errbox';d.style.cssText='position:fixed;left:8px;bottom:8px;max-width:70vw;background:#341839;color:#fdebc9;font:12px monospace;padding:6px 8px;z-index:99;white-space:pre-wrap;opacity:.9';document.body.appendChild(d);}d.textContent+=(d.textContent?'\n':'')+t;}
 addEventListener('error',e=>{if(!e.filename&&!e.lineno)return; // "Script error." with no file = someone else's script (a browser extension or the app showing the page), not the game
  showErr('error: '+e.message+' (line '+e.lineno+')');});

@@ -9,7 +9,7 @@ edge), red = the measured bottom.
 
 How it measures: each picture is drawn twice, with and without the plant (or cat); the lowest changed pixel row in the
 middle of it is its bottom. Plants asleep in the armchair are measured with the chair front hidden (it's drawn over them),
-then shown as you'd see them.
+then shown as you'd see them. Effects (Zzz, hearts) are off while measuring.
 """
 import asyncio, base64, io, os
 from PIL import Image, ImageDraw
@@ -18,7 +18,8 @@ from smoke_test import PORT, SHOTS, VIRTUAL_TIME, serve
 
 OUT = os.path.join(SHOTS, "positions")
 AGES = {0: "seed", 1: "sprout", 4: "kid", 6: "teen", 8: "adult"}
-# top face of each surface, read from room_day.png (first and last row you can stand on); floors use the placement line
+# top face of each surface, read from room_day.png (first and last row you can stand on), drawn on the sheets;
+# pictures are judged against the game's exact surface line (SURFACE in js/room.js, inside these bands); floors use the placement line
 BANDS = {"sill": (540, 564), "desk": (526, 558), "crate": (616, 639), "books": (630, 652), "chair": (640, 660), "bed": (867, 888)}
 RUG = {"rug front left": (300, 918), "rug front center": (545, 918), "rug front right": (1250, 918),
        "rug back left": (300, 790), "rug back center": (545, 790), "rug back right": (1250, 790)}
@@ -28,7 +29,8 @@ PLANT_JS = """async(items)=>{const out=[];const cf=CHAIR_FRONT.slice();
    needs:{thirst:0,hunger:0,attention:0},dayT:.3,curtain:'open',lamp:true,desk:true,started:true});drag.on=false;BOING.ox=BOING.oy=BOING.vx=BOING.vy=0;parts.length=0;T=0;blink=0;cat.x=-999;};
  for(const it of items){reset();st.species=it.sp;st.stage=it.stage;st.night=!!it.night;st.place={seed:it.spot,baby:it.spot};if(it.free)st.free={x:it.free[0],y:it.free[1]};
   pickChair();const box=plantBoxRaw(),cx=Math.round(box.x+box.w/2),hw=Math.max(14,Math.round(box.w*.3));
-  if(it.night)CHAIR_FRONT.length=0;draw();const A=g.getImageData(0,0,W,H).data;const s0=st.stage;st.stage=-1;draw();const B=g.getImageData(0,0,W,H).data;st.stage=s0;
+  const fx0=fx;fx=()=>{}; // no Zzz or other marks while measuring (a Zzz next to a narrow plant can dip below its pot)
+  if(it.night)CHAIR_FRONT.length=0;draw();const A=g.getImageData(0,0,W,H).data;const s0=st.stage;st.stage=-1;draw();const B=g.getImageData(0,0,W,H).data;st.stage=s0;fx=fx0;
   let bottom=-1;for(let y=H-1;y>=0&&bottom<0;y--)for(let x=Math.max(0,cx-hw);x<Math.min(W,cx+hw);x++){const i=(y*W+x)*4;if(Math.abs(A[i]-B[i])+Math.abs(A[i+1]-B[i+1])+Math.abs(A[i+2]-B[i+2])>40){bottom=y;break;}}
   CHAIR_FRONT.length=0;CHAIR_FRONT.push(...cf);draw(); // as you'd see it
   const cw=Math.max(150,Math.min(360,Math.round(box.w*1.2))),y0=Math.max(0,(bottom<0?box.y+box.h:bottom)-150),c=document.createElement('canvas');c.width=cw;c.height=Math.min(200,H-y0);
@@ -112,6 +114,7 @@ async def main():
         await pg.click(".screen button")
         await pg.evaluate("()=>__step(8)")
 
+        LINE = await pg.evaluate("()=>SURFACE")
         plans = []  # (sheet, band, items)
         for spot in ("sill", "desk"):
             plans.append((f"windowsill" if spot == "sill" else "desk", BANDS[spot], [dict(sp=s, stage=a, spot=spot) for a in (0, 1) for s in range(16)]))
@@ -125,7 +128,8 @@ async def main():
             cells = []
             for it, r in zip(items, res):
                 label = f"#{it['sp'] + 1} {AGES[it['stage']]}"
-                v = judge(r["bottom"], band)
+                line = band if band[0] == band[1] else (LINE[{'windowsill': 'sill', 'desk': 'desk', 'milk crate': 'crate', 'book stack': 'books', 'armchair asleep': 'chair'}[name]],) * 2
+                v = judge(r["bottom"], line)
                 cells.append(tile(r, label, band, v))
                 if v[0] != "resting":
                     report.append((name, label, v))
@@ -146,9 +150,10 @@ async def main():
         cells = []
         for it, r in zip(cat_items, res):
             band = BANDS[it["spot"]] if it["spot"] in BANDS else (r.get("surfY", 925),) * 2
+            line = (r.get("surfY", 925),) * 2
             where = {"floor": f"walking x{it.get('x')}", "byplant": f"by plant, {it.get('where')}"}.get(it["spot"], it["spot"])
             label = f"{where}: {it['pose']}"
-            v = judge(r["bottom"], band) if r["url"] else ("not drawn", None)
+            v = judge(r["bottom"], line) if r["url"] else ("not drawn", None)
             if r["url"]:
                 cells.append(tile(r, label, band, v))
             if v[0] != "resting":
