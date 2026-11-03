@@ -33,38 +33,43 @@ function buildDbgCtl(){const c=dbg.querySelector('#dCtl');c.innerHTML=` Species 
  c.querySelector('#dLm').onclick=e=>{lightMap=!lightMap;e.target.textContent='Light map: '+(lightMap?'on':'off');};
  c.querySelector('#dRe').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();};}
 
-/* ---------- LIGHT MAP (debug only): tints the rug and plant spots by the light a plant would get there right now ---------- */
-// uses the plants' own light math (lightHere for the rug, lightAtSpot for sill/desk/crate/books), so it shows exactly why a plant says too bright or too dark.
-// stepped colors on whole-pixel cells; the white outline = where the plant you're tending would be happy.
+/* ---------- LIGHT MAP (debug only): the light zones, and how much light each spot gets right now ---------- */
+// asks the plants' own light (lightInfo, spotInfo, lightFeel, lightSources in light.js), so it shows exactly why a plant says too bright or too dark.
+// cells = stepped colors by light level; yellow dots = the window's sun patch; orange rings = lamp grow-light circles (inner ring = right under);
+// white outline = where the plant you're tending would be happy.
 let lightMap=false;
 const LM_STEPS=[[.1,'#1b1b4a'],[.2,'#2e3a8c'],[.3,'#3c6fb4'],[.45,'#4fa3a5'],[.6,'#8cc152'],[.75,'#e2d23c'],[.95,'#f5a524'],[99,'#ff6a3d']];
 const lmColor=L=>LM_STEPS.find(s=>L<s[0])[1],LM_CELL=20,LM_MAX=1.2;
-function lmFits(L){const [lo,hi]=PREFS[st.pref];return L>=lo&&L<=hi;}
-function lmVerdict(L){const [lo,hi]=PREFS[st.pref];return L>hi?'too bright':L<lo?'too dark':'just right';}
+function lmVerdict(f){return f==='hi'?'too bright':f==='lo'?'too dark':'just right';}
 function lmText(t,x,y,al='center'){g.font='16px "Pixelify Sans", monospace';g.textAlign=al;g.textBaseline='middle';const w=Math.ceil(g.measureText(t).width)+12,x0=Math.round(al==='center'?x-w/2:x-6);
  g.fillStyle='rgba(25,16,27,.85)';g.fillRect(x0,Math.round(y-11),w,22);g.fillStyle=C.ivory;g.fillText(t,Math.round(x),Math.round(y)+1);}
 function lmBox(x,y,w,h){g.fillStyle=C.ivory;g.fillRect(x,y,w,3);g.fillRect(x,y+h-3,w,3);g.fillRect(x,y,3,h);g.fillRect(x+w-3,y,3,h);}
+function lmRing(x,y,rx,ry,col,dot){g.fillStyle=col;const n=Math.round((rx+ry)/4);for(let a=0;a<n;a++){const t=a/n*Math.PI*2;g.fillRect(Math.round(x+Math.cos(t)*rx-dot/2),Math.round(y+Math.sin(t)*ry-dot/2),dot,dot);}}
 function drawLightMap(){const gp=st.stage>=0?stageGroup():'',xs=[],ys=[];g.save();
- for(let x=FLOOR_X0-20;x<FLOOR_X1+20;x+=LM_CELL)xs.push(x);for(let y=FLOOR_BACK-20;y<FLOOR_FRONT+20;y+=LM_CELL)ys.push(y);
- const L=ys.map(y=>xs.map(x=>lightHere(x+LM_CELL/2,y+LM_CELL/2)));
- g.globalAlpha=.62;ys.forEach((y,j)=>xs.forEach((x,i)=>{g.fillStyle=lmColor(L[j][i]);g.fillRect(x,y,LM_CELL,LM_CELL);}));g.globalAlpha=1;
- if(gp==='grown'){g.fillStyle=C.ivory;const f=(j,i)=>j>=0&&i>=0&&j<ys.length&&i<xs.length&&lmFits(L[j][i]);
+ for(let x=FLOOR_X0-20;x<FLOOR_X1+20;x+=LM_CELL)xs.push(x);for(let y=FLOOR_BACK-40;y<FLOOR_FRONT+20;y+=LM_CELL)ys.push(y);
+ const I=ys.map(y=>xs.map(x=>lightInfo(x+LM_CELL/2,y+LM_CELL/2)));
+ g.globalAlpha=.62;ys.forEach((y,j)=>xs.forEach((x,i)=>{g.fillStyle=lmColor(I[j][i].L);g.fillRect(x,y,LM_CELL,LM_CELL);}));g.globalAlpha=1;
+ if(gp==='grown'){g.fillStyle=C.ivory;const f=(j,i)=>j>=0&&i>=0&&j<ys.length&&i<xs.length&&lightFeel(I[j][i],st.pref)==='ok';
   ys.forEach((y,j)=>xs.forEach((x,i)=>{if(!f(j,i))return;if(!f(j-1,i))g.fillRect(x,y,LM_CELL,3);if(!f(j+1,i))g.fillRect(x,y+LM_CELL-3,LM_CELL,3);if(!f(j,i-1))g.fillRect(x,y,3,LM_CELL);if(!f(j,i+1))g.fillRect(x+LM_CELL-3,y,3,LM_CELL);}));}
- for(const k of['sill','desk','crate','books']){const s=SPOT[k],v=lightAtSpot(k),x=s.x-60,y=s.y-20;g.globalAlpha=.65;g.fillStyle=lmColor(v);g.fillRect(x,y,120,24);g.globalAlpha=1;
-  if((GROUPS[gp]||[]).includes(k)&&lmFits(v))lmBox(x,y,120,24);lmText(k+' '+v.toFixed(2),s.x,s.y+20);}
+ for(const s of lightSources()){if(s.kind==='patch'){lmRing(s.x,s.y,s.rx,s.ry,C.fl3,s.harsh?8:5);lmText('sun patch'+(s.harsh?': too strong for shade & night now':''),s.x,s.y-s.ry-14);}
+  else{lmRing(s.x,s.y,s.r,s.r,C.fl2,6);lmRing(s.x,s.y,s.core,s.core,C.fl2,3);lmText(s.name+' glow',s.x,s.y-s.r+14);}}
+ for(const k of['sill','desk','crate','books']){const s=SPOT[k],i=spotInfo(k),x=s.x-60,y=s.y-20;g.globalAlpha=.65;g.fillStyle=lmColor(i.L);g.fillRect(x,y,120,24);g.globalAlpha=1;
+  if((GROUPS[gp]||[]).includes(k)&&lightFeel(i,st.pref)==='ok')lmBox(x,y,120,24);lmText(k+' '+i.L.toFixed(2)+' · '+i.zone,s.x,s.y+20);}
  g.restore();}
 function drawLightTags(){const rows=[],act=st.id;g.save();
- eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),L=spotLight(),[lo,hi]=PREFS[st.pref];
-  const v=lmVerdict(L),told={hi:'too bright',lo:'too dark'}[st.lightState]||'just right',says=st.stage<1?' (seeds don\'t mind)':told!==v?' · it still says '+told:''; // the plant takes a few seconds to notice a change
-  lmText(L.toFixed(2)+' '+v+says+(st.night||st.nap>0?' (asleep)':''),b.x+b.w/2,Math.max(20,Math.round(b.y-14)));
-  rows.push({name:NAMES[st.species]+' ('+STAGES[st.stage]+')',pref:st.pref,lo,hi:Math.min(hi,LM_MAX),L,act:st.id===act,v:v+says});});
- const X=520,Y=8,BW=580,RH=36,h=132+rows.length*RH,bx=X+20,sx=v=>bx+Math.round(clamp(v,0,LM_MAX)/LM_MAX*BW);
+ eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),i=spotInfo(spotKey()),f=st.stage<1?'ok':lightFeel(i,st.pref),v=lmVerdict(f);
+  const told=lmVerdict(st.lightState||'ok'),says=st.stage<1?' (seeds don\'t mind)':told!==v?' · it still says '+told:''; // too much light takes a while to bother it
+  lmText(i.L.toFixed(2)+' '+v+' · '+i.zone+says+(st.night||st.nap>0?' (asleep)':''),b.x+b.w/2,Math.max(20,Math.round(b.y-14)));
+  rows.push({name:NAMES[st.species]+' ('+STAGES[st.stage]+')',pref:st.pref,need:NEED[st.pref],L:i.L,act:st.id===act,v:v+says});});
+ const src=lightSources(),patch=src[0],X=500,Y=8,BW=620,RH=36,h=168+rows.length*RH,bx=X+20,sx=v=>bx+Math.round(clamp(v,0,LM_MAX)/LM_MAX*BW);
  g.fillStyle='rgba(25,16,27,.88)';g.fillRect(X,Y,BW+40,h);g.fillStyle=C.ivory;g.textAlign='left';g.textBaseline='middle';g.font='16px "Pixelify Sans", monospace';
- g.fillText('Light map · '+phase(st.dayT)+' ('+st.dayT.toFixed(2)+')'+(st.night?' · night':'')+' · curtains '+st.curtain,bx,Y+16);
- g.fillText('Floor lamp '+(st.lamp!==false?'on: +0.12 on the window side':'off')+' · desk lamp '+(st.desk!==false?'on':'off')+' (doesn\'t light plants)',bx,Y+38);
+ g.fillText('Light map · '+phase(st.dayT)+' ('+st.dayT.toFixed(2)+')'+(st.night?' · night':'')+' · curtains '+st.curtain+' · sun patch '+(patch.harsh?'harsh (midday)':'gentle'),bx,Y+16);
+ g.fillText('Grow lights: '+LAMPS.map(p=>p.name+' '+(lampOn(p)?'on':'off')).join(' · ')+' · room light everywhere else',bx,Y+38);
  for(let i=0;i<LM_STEPS.length;i++){const a=i?LM_STEPS[i-1][0]:0;if(a>=LM_MAX)break;g.fillStyle=LM_STEPS[i][1];g.fillRect(sx(a),Y+54,sx(LM_STEPS[i][0])-sx(a),14);}
  g.font='13px "Pixelify Sans", monospace';g.textAlign='center';g.fillStyle=C.ivory;for(const v of[0,.3,.6,.9,1.2]){g.fillRect(sx(v)-1,Y+68,2,5);g.fillText(v.toFixed(1),sx(v),Y+81);}
- g.textAlign='left';rows.forEach((r,i)=>{const y=Y+96+i*RH;g.fillStyle=C.vio;g.fillRect(sx(r.lo),y,sx(r.hi)-sx(r.lo),8);g.fillStyle=C.ivory;g.fillRect(sx(r.lo),y-3,2,14);g.fillRect(sx(r.hi)-2,y-3,2,14);g.fillStyle=C.fl1;g.fillRect(sx(r.L)-2,y-5,4,18);
-  g.fillStyle=C.ivory;g.fillText((r.act?'* ':'')+r.name+' likes '+r.pref+' ('+r.lo.toFixed(2)+'–'+r.hi.toFixed(2)+'): '+r.L.toFixed(2)+' '+r.v,bx,y+21);});
- g.fillText('bar = the light each plant likes · red tick = its light right now',bx,Y+h-30);g.fillText('* = the one you\'re tending · white outline = where it would be happy',bx,Y+h-12);
+ g.textAlign='left';rows.forEach((r,i)=>{const y=Y+96+i*RH;g.fillStyle=C.vio;g.fillRect(sx(r.need),y,sx(LM_MAX)-sx(r.need),8);g.fillStyle=C.ivory;g.fillRect(sx(r.need),y-3,2,14);g.fillStyle=C.fl1;g.fillRect(sx(r.L)-2,y-5,4,18);
+  g.fillStyle=C.ivory;g.fillText((r.act?'* ':'')+r.name+' likes '+r.pref+' (needs '+r.need.toFixed(2)+'+) · now '+r.L.toFixed(2)+' '+r.v,bx,y+21);});
+ g.fillText('bar = light it\'s happy with · red tick = its light now · too bright only in midday sun or right under a lamp',bx,Y+h-48);
+ g.fillText('yellow dots = the window\'s sun patch · orange rings = lamp grow light (inner ring = right under)',bx,Y+h-30);
+ g.fillText('* = the one you\'re tending · white outline = where it would be happy',bx,Y+h-12);
  g.restore();}

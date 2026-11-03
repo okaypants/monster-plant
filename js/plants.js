@@ -6,11 +6,10 @@ const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3],
 const EYE_O=[],EYE_C=[],MOUTH=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');EYE_O.push(img('eyes_'+n+'_open.png'));EYE_C.push(img('eyes_'+n+'_blink.png'));if(i<=12)MOUTH.push(img('mouthB_'+n+'.png'));}
 const EYE_NAMES=['big round','small dot','sparkle','sly cat','square','flower','tall oval','lashed','sleepy','swirl','sinister','slit','three-shine','pink lids','startled','blushing'];
 const NAMES=['curl-sprout bun','lobed bun','stacked cone','leafy mop','bulb','rounded crown','pineapple tuft','floppy ears','sprout-ears','spiral','tentacle star','willow mop','octopus','diamond','lobed cloud','cradle lobes'];
-function lightFit(k){const L=daylight(.35)*SPOT[k].light,[lo,hi]=PREFS[st.pref];return L>hi?'Too much sun for a '+st.pref+'-lover.':L<lo?'A bit dark for a '+st.pref+'-lover.':'A good fit: it likes '+(st.pref==='sun'?'sun':st.pref==='shade'?'shade':'the dark')+'.';}
+function lightFit(k){return lightFitText(spotInfo(k,.37,true),st.pref);} // the spot by day, curtains open
 function stageGroup(){return st.stage<4?'seed':st.stage===4?'baby':'grown';}
 const STAGES=['seed','sprout','sprout','sprout','kid','teen','teen','adult','adult'];
-const PREFS={sun:[.55,1.2],shade:[.25,.62],night:[0,.35]};
-const TEACH={thirst:'Turning brown: it\'s thirsty. The watering can is wobbling.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.',lightHi:'A little flame: too much light, and it\'s drying out fast! Click the window to close the curtains.',lightLo:'Shrinking into itself: too dark. Open the curtains.'};
+const TEACH={thirst:'Turning brown: it\'s thirsty. The watering can is wobbling.',hunger:'Mouth open, eyeing the snack jar: it\'s hungry.',attention:'A little frown: it\'s lonely. Pet it, or read it something from the shelf.',lightHi:'Squinting and leaning away: too much light right here. Move it out of the bright spot, or close the curtains. It feels better right away.',lightFlame:'A little flame: a night-lover in strong midday sun for a long while. Move it somewhere softer and it cools off right away.',lightLo:'Shrinking into itself: too dark. Open the curtains, switch on a lamp (lamps are grow lights), or move it nearer the window.'};
 /* ---------- plant sprite ---------- */
 // returns {img|null, x, y, w, h, scale} in room coords for the current stage
 // FEWER AGES (Jackie): seed -> sprout -> baby -> teen -> adult, each clearly bigger. Internal stage numbers kept: 0 seed, 1 sprout, 4 baby, 6 teen, 8 elder
@@ -152,7 +151,10 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  const evil=clamp(-st.ge,0,1),good=clamp(st.ge,0,1);
  if(evil>.05||good>.05){tg.globalCompositeOperation='source-atop';tg.fillStyle=evil>good?`rgba(108,97,164,${evil*.38})`:`rgba(245,171,107,${good*.18})`;tg.fillRect(0,0,tintCv.width,tintCv.height);tg.globalCompositeOperation='source-over';}
  // petrifying cracks removed (Jackie: too scary); thirst = browning only
- g.drawImage(tintCv,Math.round(b.x),Math.round(drawY)+bob);
+ const lean=leanOff();if(!lean)g.drawImage(tintCv,Math.round(b.x),Math.round(drawY)+bob);
+ else{const tw=tintCv.width,th=tintCv.height,cut=Math.round(th*.72),X=Math.round(b.x),Y=Math.round(drawY)+bob; // leaning away: the pot stays, the body shifts in whole-pixel steps, most at the top
+  g.drawImage(tintCv,0,cut,tw,th-cut,X,Y+cut,tw,th-cut);for(let s=0;s<3;s++){const y0=Math.round(cut*s/3),y1=Math.round(cut*(s+1)/3);g.drawImage(tintCv,0,y0,tw,y1-y0,X+Math.round(lean*(3-s)/3),Y+y0,tw,y1-y0);}
+  b={...b,x:b.x+lean};} // face and charm lean with the head
  if(st.stage>=6)drawElderFace(b,bob);
  drawTopper(b,bob);
  return b;}
@@ -161,14 +163,14 @@ const MOUTH_BY={'Lawful Good':5,'Neutral Good':1,'Chaotic Good':12,'Lawful Neutr
 function mouthNow(){if(st.grump>0)return 9;if(grinning())return 10;const sad=st.lightState!=='ok'||st.needs.thirst>.8||st.needs.attention>.6;if(sad)return 9;return MOUTH_BY[align()]||6;}
 function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/mood. drawn at the same scale as the body
  const aa=ageArt(),f=aa?aa.face:FACE[st.species],sc=TARGET_H[st.stage>=8?'adult':'teen']/601*.54*(b.chairK||1); /* 10% smaller again (Jackie) *//* faces 40% smaller (Jackie) */const cx=b.x+b.w*f[0],cy=b.y+b.h*f[1]+bob;
- const closed=st.nap>0||st.night||blink>0||st.listen>0;
+ const closed=st.nap>0||st.night||blink>0||st.listen>0||squinting();
  const e=(st.eye|0)%16,eo=EYE_O[e],ec=EYE_C[e],m=MOUTH[mouthNow()-1];
  if(!ok(eo)||!ok(ec)||!ok(m))return;
  const eh=eo.naturalHeight*sc,ew=eo.naturalWidth*sc,ey=cy-eh/2-40*sc;
  if(closed){const w=ec.naturalWidth*sc,h=ec.naturalHeight*sc;g.drawImage(ec,Math.round(cx-w/2),Math.round(ey+eh/2-h/2),Math.round(w),Math.round(h));}
  else g.drawImage(eo,Math.round(cx-ew/2),Math.round(ey),Math.round(ew),Math.round(eh));
  const mw=m.naturalWidth*sc,mh=m.naturalHeight*sc;g.drawImage(m,Math.round(cx-mw/2),Math.round(ey+eh+8*sc),Math.round(mw),Math.round(mh));}
-function drawSeedPot(cx,base){const x0=cx-36,y0=base-48;
+function drawSeedPot(cx,base){const x0=cx-36,y0=base-48;cx+=leanOff()/2; // a sprout leans away too; the pot stays
  // sprout stages (code placeholder)
  const s=st.stage,dryS=st.needs.thirst>.6,G2=dryS?'#9a7a3c':C.g2,G3=dryS?'#c2a056':C.g3,G4=dryS?'#d9c27a':C.g4;g.fillStyle=G2;
  if(s===1){for(let i=0;i<4;i++)g.fillRect(cx-3+((i===3)?P:0),y0-i*P,P,P);g.fillStyle=G3;g.fillRect(cx+P,y0-4*P,P,P);}
@@ -190,20 +192,21 @@ function plantUpdate(dt){const sp=st.speed;
    if(st.stage===4){sfx('chime');sfx('boing');say('Its eyes open! It\'s a little kid now, a '+NAMES[st.species]+'. '+temperament()+' It hops down to the book stack. (Drag it to the milk crate if you like.)',8);}
    else{sfx('soil');say('It\'s growing: '+STAGES[st.stage]+'.',3);}}}
  const k=dt*sp/60;
- st.needs.thirst=clamp(st.needs.thirst+k*.22*(st.lightState==='hi'?3:1),0,1); // too hot dries it out 3x faster (Jackie)
+ st.needs.thirst=clamp(st.needs.thirst+k*.22*(st.glare===2?2:1),0,1); // only the little-flame case dries it out faster (gentler, Nov 3)
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
  if(st.stage>=4){st.parch=st.needs.thirst>=.95?clamp((st.parch||0)+k*.35,0,1):st.needs.thirst<.5?clamp((st.parch||0)-dt*.08,0,1):(st.parch||0);} // petrifying cracks (Jackie): slow to form, heal after watering
  if(st.stage>=4){st.full=clamp((st.full||0)-k*.25,0,1);st.needs.hunger=0;st.needs.attention=clamp(st.needs.attention+k*.26,0,1);}
- st.light=spotLight();const [lo,hi]=PREFS[st.pref];
- const ls=st.stage<1?'ok':st.light>hi?'hi':st.light<lo?'lo':'ok';
- if(ls!=='ok')st.lightBad+=dt*sp;else{if(st.lightState!=='ok'&&st.lightBad>6){met('light');sfx('boing');}st.lightBad=0;}
- st.lightState=st.lightBad>6?ls:'ok';
+ const li=spotInfo(spotKey());st.light=li.L;
+ const ls=st.stage<1?'ok':lightFeel(li,st.pref);
+ if(ls!=='ok')st.lightBad+=dt*sp;else{if(st.lightState!=='ok'){met('light');sfx('boing');}st.lightBad=0;} // moving it out fixes it right away
+ st.lightState=st.lightBad>(ls==='hi'?HI_WAIT:6)?ls:'ok'; // too much light takes a while to bother it
+ st.glare=st.lightState!=='hi'?0:li.sun&&st.pref==='night'&&st.lightBad>HI_WAIT+HI_FLAME?2:1; // 1 = squint + lean away; 2 = the little flame, only a night-lover left in midday sun a long while
  const tgt=st.lightState==='lo'?1:0;st.hunch+=(tgt-st.hunch)*Math.min(1,dt*3);
- if(st.lightState==='hi'&&Math.random()<dt*.25)sfx('fsss');
+ if(st.glare===2&&Math.random()<dt*.25)sfx('fsss');
  for(const n of['thirst','attention'])if(want(n)){
   if(Math.random()<dt*.06)sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');
   if(!st.taught[n]){st.taught[n]=1;say(TEACH[n],8);sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
- if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');const key=st.lightState==='hi'?'lightHi':'lightLo';if(!st.taught[key]){st.taught[key]=1;say(TEACH[key],8);}}
+ if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');const key=st.lightState==='hi'?(st.glare===2?'lightFlame':'lightHi'):'lightLo';if(!st.taught[key]){st.taught[key]=1;say(TEACH[key],8);}}
  const hintOn=n=>st.hints==='always'||(st.hints==='auto'&&st.hint[n]<3);
  wob.jar=0; // no hunger, no rattling jar
  wob.book=0; // no bouncing book (Jackie)
@@ -211,12 +214,14 @@ function plantUpdate(dt){const sp=st.speed;
 }
 /* ---------- it moves itself (Jackie: "sit back in the room if it wants to") ----------
    A grown plant that's been in the wrong light for a while shuffles, in whole-pixel steps, to the nearest floor spot that suits it. */
-function lightHere(x,y){const L=lightAtXY(x,y);return daylight(st.dayT)*(st.curtain==='open'?1:.28)*L+(st.dayT>=.85?.08:0)+((st.lamp!==false&&x<450)?.12:0);}
+const HI_WAIT=40,HI_FLAME=80; // too much light: squints after HI_WAIT (game seconds x speed), flame only after HI_FLAME more; grown plants scoot off before that
+function squinting(){return st.lightState==='hi'&&Math.floor(T*1.5)%3!==0;} // eyes shut against the light, peeking now and then (frame swap)
+function leanOff(){if(st.lightState!=='hi')return 0;const s=SPOT[spotKey()],i=spotInfo(spotKey()),from=i.sun?WINDOW_LIGHT.x:i.under?i.under.x:WINDOW_LIGHT.x;const n=Math.max(4,Math.round(plantBoxRaw().h*.025));return s.x<from?-n:n;} // whole pixels, away from the light; bigger plants lean further
 function scootTick(dt){if(stageGroup()!=='grown'||st.nap>0||(drag.on&&st.id===ACT))return;
  if(st.walk){const w=st.walk,f=st.free,sp=Math.max(1,Math.round(90*dt));f.x+=clamp(w.x-f.x,-sp,sp);f.y+=clamp(w.y-f.y,-Math.ceil(sp/2),Math.ceil(sp/2));
   if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');if(w.why!=='bored'&&!st.taught.scoot){st.taught.scoot=1;say('It scooted itself somewhere '+(w.why==='hi'?'shadier':'brighter')+'. Plants know what they like.',6);}}return;}
- if(st.lightState==='ok'||st.lightBad<25)return;const [lo,hi]=PREFS[st.pref];let best=null,bd=1e9;
- for(let x=FLOOR_X0;x<=FLOOR_X1;x+=40)for(const y of [FLOOR_FRONT,860,FLOOR_BACK]){const L=lightHere(x,y);if(L<lo||L>hi||!freeClear(x,y))continue;const d=Math.abs(x-st.free.x)+Math.abs(y-st.free.y);if(d<bd){bd=d;best={x,y};}}
+ if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:25))return;let best=null,bd=1e9;
+ for(let x=FLOOR_X0;x<=FLOOR_X1;x+=40)for(const y of [FLOOR_FRONT,860,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)!=='ok'||!freeClear(x,y))continue;const d=Math.abs(x-st.free.x)+Math.abs(y-st.free.y);if(d<bd){bd=d;best={x,y};}}
  if(best){st.walk={...best,why:st.lightState};st.lightBad=0;}}
 
 /* ---------- PERSONALITY that does things (Jackie: "make it more fun") ----------
@@ -249,7 +254,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.qu
  const q=opts[Math.floor(Math.random()*opts.length)];let t='';doMove();
  if(q==='bonk'){let best=null,bd=480;for(const f of FP){const d=Math.hypot(f.x+f.w/2-cx,f.y+f.h/2-(b.y+b.h*.4));if(d<bd){bd=d;best=f;}}
   plantBoing(cx);if(best){fidgetPoke(best.x+best.w/2,best.y+best.h/2);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
- else if(q==='wander'){const [lo,hi]=PREFS[st.pref],c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){const L=lightHere(x,y);if(L>=lo&&L<=hi&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
+ else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
  else if(q==='tidy'){st.listen=1.6;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=(who()==='It'?'It\'s':who()+' is')+' keeping the cat company. The cat seems to like it.';}

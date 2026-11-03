@@ -14,26 +14,22 @@ const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtain
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
 // placement (Jackie): seedlings on the windowsill or desk; babies on the milk crate or book stack; grown plants on the floor. Drag the plant to move it.
-const SPOT={sill:{x:478,y:546,light:1.0},desk:{x:1236,y:528,light:.62},crate:{x:338,y:622,light:.85},books:{x:978,y:662,light:.7},rugL:{x:300,y:918,light:.75,name:'by the window'},rugC:{x:545,y:918,light:.6,name:'by the armchair'},rugR:{x:1250,y:918,light:.42,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+const SPOT={sill:{x:478,y:546},desk:{x:1236,y:528},crate:{x:338,y:622},books:{x:978,y:662},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','rugR']};
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}
 const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
 function depthK(y){return .9+.1*clamp((y-FLOOR_BACK)/(FLOOR_FRONT-FLOOR_BACK),0,1);} // 90% size at the back of the rug, 100% at the front
-function lightAtXY(x,y){const P=[[300,.75],[545,.6],[1250,.42]];let L;if(x<=P[0][0])L=P[0][1];else if(x>=P[2][0])L=P[2][1];else{const j=x<P[1][0]?0:1,[x0,a]=P[j],[x1,b]=P[j+1];L=a+(b-a)*(x-x0)/(x1-x0);}
- return L-.08*clamp((FLOOR_FRONT-y)/(FLOOR_FRONT-FLOOR_BACK),0,1);} // a little shadier farther from the window and deeper in the room
 function freeClear(x,y){return otherPos().every(q=>q.g!=='grown'||Math.abs(q.x-x)>250);} // side by side, never hidden behind each other
 function defaultFree(){const r=st.place&&SPOT[st.place.grown]?st.place.grown:({sun:'rugL',shade:'rugR',night:'rugR'}[st.pref]||'rugC');
  const c=[r,'rugL','rugC','rugR'].map(k=>[SPOT[k].x,SPOT[k].y]).concat([[400,800],[700,800],[1300,800],[1000,860]]);for(const[x,y]of c)if(freeClear(x,y))return {x,y};return {x:c[0][0],y:c[0][1]};}
 function spotKey(){const gp=stageGroup();st.place=st.place||{};
- if(gp==='grown'){if(!st.free)st.free=defaultFree();SPOT.free={x:st.free.x,y:st.free.y,light:lightAtXY(st.free.x,st.free.y),name:''};return 'free';}
+ if(gp==='grown'){if(!st.free)st.free=defaultFree();SPOT.free={x:st.free.x,y:st.free.y,name:''};return 'free';}
  const k=st.place[gp];if(GROUPS[gp].includes(k))return k;
  const hid=k=>otherPos().some(q=>q.g==='grown'&&Math.abs(q.x-SPOT[k].x)<260); // a grown plant standing in front would hide a new seed
  const def={seed:hid('sill')&&!hid('desk')?'desk':'sill',baby:'books'}[gp],taken=otherPos().filter(q=>q.g===gp).map(q=>q.k),pick=taken.includes(def)?(GROUPS[gp].find(x=>!taken.includes(x))||def):def;st.place[gp]=pick;return pick;}
-function spotLight(){return lightAtSpot(spotKey());}
-// light at a spot right now: daylight through the curtains, a little night glow, and the floor lamp on the window side (the debug light map uses this too)
-function lightAtSpot(k){const lampBoost=(st.lamp!==false&&(['crate','rugL','sill'].includes(k)||(k==='free'&&SPOT.free.x<450)))?.12:0;return daylight(st.dayT)*(st.curtain==='open'?1:.28)*SPOT[k].light+(st.dayT>=.85?.08:0)+lampBoost;}
+function spotLight(){return spotInfo(spotKey()).L;} // light zones live in light.js
 function nudgeSun(){if(st.night||st.mode==='ambient')return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
@@ -87,7 +83,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
    else if(where==='zzz'){x=b.x+b.w+w*.2;y=Math.min(top,vt+40)+h*1.4;}
    else if(where==='topL'){x=cx-w*.75;y=top-M*.6-h/2;}else if(where==='topR'){x=cx+w*.75;y=top-M*.6-h/2;}
    fx(n,x,y,rate,ph,sc);};
-  if(st.lightState==='hi'){fx('flames',cx,top-14-sz('flames')[1]/FX_SCALE*.27/2,5,0,.27);}
+  if(st.glare===2){fx('flames',cx,top-14-sz('flames')[1]/FX_SCALE*.27/2,5,0,.27);}
   if((st.nap>0||st.night)&&st.stage>=4)slot('zzz','zzz',1.5,0,.5); // only plants whose eyes can close (elders' face kit); babies have their eyes drawn in // Zzz only when actually asleep (eyes closed); too dark = hunching smaller only
   if(st.listen>0)slot('sparkles','mr',3);
   if(st.over>0&&st.overType!=='water'&&!(st.listen>0))slot('sweat','mr',2);

@@ -12,7 +12,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug panel** (top right, "debug"): species, age, speed, time mode, hints, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Light map (tints the rug and plant spots by how much light each gets right now, with each plant's liked range; the desk lamp currently doesn't light plants), Reset.
+- **Debug panel** (top right, "debug"): species, age, speed, time mode, hints, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
 
 ## Put it online (GitHub Pages)
 
@@ -54,7 +54,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `core.js` | Canvas and screen fitting, image loading, errors, palette, captions and bubbles, effects, full screen |
   | `audio.js` | The little synth sounds (`sfx`) |
   | `saving.js` | The save (`st`), shared room keys (`GLOBAL`), swapping plants in and out, loading old saves |
-  | `room.js` | Room pictures, seasons, curtains, lamps, light and time of day, spots, drawing each frame |
+  | `room.js` | Room pictures, seasons, curtains, lamps, time of day, spots, drawing each frame |
+  | `light.js` | Light zones: the window's sun patch, lamp grow lights, room light; what plants feel (`lightInfo`) and the shapes to draw (`lightSources`) |
   | `plants.js` | Ages, sprites, faces, charms, pots (paused), needs, scooting, personality, friends, titles, seeds and breeding |
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
@@ -97,16 +98,24 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 ## RULES (Jackie's non-negotiables)
 
-1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels.
-2. **No HUD, no meters.** Needs show IN the plant: color (browning = thirsty), face, posture (hunching = too dark), one small flame (too much sun), Zzz only when actually asleep.
+1. **Simple, web + DS friendly animation:** frame swaps (2–4 frames) and whole-pixel moves only. No fades, rotation, smooth scaling, gradients or glows. Physics is fine if drawn on whole pixels. (Exception, decided Nov 3: light itself may blend softly, for the coming code lighting.)
+2. **No HUD, no meters.** Needs show IN the plant: color (browning = thirsty), face, posture (hunching = too dark), squinting and leaning away (too much light, after a while), one small flame only in the extreme case, Zzz only when actually asleep.
 3. **Grace.** Nothing is ever lost for good, nothing punishes. Plants never starve; treats are optional; bickering plants always make up; cat trust never goes down; charms that fade come back faster.
 4. **Fidgets:** squishy, bouncy, endlessly repeatable, visual-first (sound comes later from Garry).
 5. **Cute, not scary.** Removed for being scary or cluttered: thought bubbles, hunger asterisks, bouncing book, dust/crack marks, petrifying cracks, eye-following.
 6. **Art is untouched.** Background removal only; no recoloring or redrawing without Jackie's OK. **Black outlines always stay.** No blush on faces.
 7. **Every room variant is an edit of the default room**, never an edit of another edit.
 8. **One session edits the game at a time.** Run the tests before playing.
+9. **Light comes from zones the player can see** (`js/light.js`): the window's sun patch (on the rug and the windowsill, fading across the room; time of day and curtains set its strength, closed = soft and dim), a grow-light circle around every lamp that's on (the milk crate is in the floor lamp's, the desk in the desk lamp's), and soft room light everywhere else. Too bright only for shade and night plants, only after a while, and only in the midday sun patch with the curtains open or right under a lamp. Moving out fixes it right away. Plants, the Light map and the coming code lighting all use the same light sources.
 
 ## DECISIONS (newest first, with why)
+
+### Light zones and grow lights (Nov 3)
+
+- Light comes from what you can see: the window's sun patch, a grow-light circle around each lamp that's on, soft room light elsewhere. Why: a shade plant on the left of the rug used to read "too hot" at midday with no sun on it, and the desk lamp did nothing.
+- Too much light is gentle: only the midday sun patch (curtains open) or right under a lamp, only for shade and night plants, and only after a while (about 20 seconds at normal speed). It squints and leans away first; the little flame is only for a night-lover left in midday sun much longer. Moving it out fixes it right away. Grown plants scoot off on their own before it gets that far.
+- Lamps are grow lights, so sun-lovers grow with the curtains closed or after dark.
+- Built so the coming code lighting (one base room + time-of-day grade + window patch + soft lamp glows) draws the same sources plants feel.
 
 **Personality (Nov 3)**
 - Every seed is **born with a nature** (leans good/evil and/or lawful/chaotic), shown when its eyes open. Treats, books and play push it; each night it drifts back toward its nature. Why: so personality shows from day one instead of a bland neutral.
