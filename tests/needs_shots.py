@@ -87,16 +87,22 @@ async def states(b, fails, rows, heads):
     await heals(pg, "burnLv", "st.free={x:1250,y:918};st.walk=null;", 3, fails, "burned")
     await no_light_text(pg, fails, "burned"); rows.append(("burned (too much light)", row)); fails += errs; await ctx.close()
 
-    # gray: thirsty, 4 steps
+    # gray: thirsty, comes on gradually (16 tiny levels between thirst .45 and .9) and the color returns smoothly over 2 s
     ctx, pg, errs = await page_for(b, FINE)
     await pg.evaluate("()=>__step(8)")
     row = []
-    for lv, th in ((1, .5), (2, .65), (3, .8), (4, .95)):
+    for th in (.5, .65, .8, .95):
+        want = min(16, int(max(0, (th - .45) / .45) * 16)) / 4
         got = await pg.evaluate(f"()=>{{st.needs.thirst={th};__step(.1);return st.dryLv;}}")
-        if got != lv: fails.append(f"gray at thirst {th}: level {got}, expected {lv}")
-        row.append(await shot(pg, f"gray_{lv}"))
+        if abs(got - want) > 1e-6: fails.append(f"gray at thirst {th}: level {got}, expected {want}")
+        row.append(await shot(pg, f"gray_{th}"))
     heads.append(await shot(pg, "state_gray", full=True))
-    await heals(pg, "dryLv", "held.tool='can';useTool();", 4, fails, "gray")
+    await pg.evaluate("()=>{held.tool='can';useTool();}")
+    seen = []
+    for _ in range(10):
+        await pg.evaluate("()=>__step(.25)"); seen.append(await pg.evaluate("()=>st.dryLv||0"))
+    if seen[-1] != 0 or any(b > a or a - b > .5 for a, b in zip([4] + seen, seen)):
+        fails.append(f"gray heals {seen}: expected a smooth return to 0 (at most half a level per quarter second)")
     rows.append(("gray (thirsty)", row)); fails += errs; await ctx.close()
 
     # puddle: overwatered, dries in 3 steps over 30 s

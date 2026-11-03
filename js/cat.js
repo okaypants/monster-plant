@@ -33,22 +33,28 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   cat.sc+=((cat.path.length?.6:CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
  // company: a cat napping near the plant keeps it a little company
  if(cat.state==='sleep'&&st.started&&st.stage>=4&&!st.night){const b=plantBox();if(Math.abs(cat.x-(b.x+b.w/2))<b.w*.9+120&&Math.abs(cat.y-SPOT[spotKey()].y)<160)st.needs.attention=Math.max(0,st.needs.attention-dt*.002);}}
-function catFrame(){const f2=Math.floor(T*1.2)%2;
- if(cat.state==='sleep'){if(cat.pose==='loaf')return catLooking()?CATF.loaf1:CATF.loaf2;return CATF[cat.pose+(f2+1)];} // loaf: eyes open for a moment after settling, then dozing
+function catFrame(){
+ if(cat.state==='sleep')return CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[cat.pose]]; // asleep: ONE frame per pose (Jackie, calm-down); the breathing is done in code (catBreath)
  if(cat.state==='wake')return cat.t<1.2?CATF.yawn:CATF[T%2.4<.18?'sit2':'sit1']; // sit2 = a slow blink now and then
  if(cat.state==='sniff')return CATF.sit1;
  if(cat.state==='pet')return cat.belly?CATF.belly:CATF['pet'+(catPetF()+1)];
  if(cat.state==='walk')return CATF[(cat.dir<0?'walkL':'walk')+(Math.floor(T*6)%2+1)];return CATF.sit1;}
 const catPetF=()=>Math.floor(T*4)%2; // petted frame; the back-scratcher rocks with it
-const catLooking=()=>cat.state==='sleep'&&cat.pose==='loaf'&&cat.t<4;
+// BREATHING (Jackie, calm-down): almost completely still. Once every ~4.6 s the body (not the paws) rises 1 px for about 1.8 s, then settles back.
+// Whole pixels only; never more than 1 px. Drawn by repeating one row low in the body, so he stays on his surface.
+const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.7?1:0;};
 function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge();return {f,k,x:Math.round(cat.x-w/2)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
 function catPose(){return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
-function drawCat(){const b=catBox();if(!b)return;g.save();g.imageSmoothingEnabled=false;g.drawImage(b.f,b.x,b.y,b.w,b.h); // crisp: no smoothing when scaled
+function drawCat(){const b=catBox();if(!b)return;g.save();g.imageSmoothingEnabled=false; // crisp: no smoothing when scaled
+ if(cat.state==='sleep'&&catBreath()){const sy=b.y+Math.round(b.h*.62); // breathing in: everything above this row is drawn 1 px higher, the row repeats, the paws stay put
+  g.save();g.beginPath();g.rect(b.x-2,sy,b.w+4,b.h);g.clip();g.drawImage(b.f,b.x,b.y,b.w,b.h);g.restore();
+  g.save();g.beginPath();g.rect(b.x-2,b.y-4,b.w+4,sy-b.y+4);g.clip();g.drawImage(b.f,b.x,b.y-1,b.w,b.h);g.restore();}
+ else g.drawImage(b.f,b.x,b.y,b.w,b.h);
  if(cat.state==='pet'){const s=CATF['scratcher'+(catPetF()+1)];if(ok(s)){const k=cat.sc*catK(s),[ox,oy]=SCRATCH_AT[cat.belly?'belly':'pet'];  // offsets are in the cat frame's own pixels
    g.drawImage(s,Math.round(b.x+ox*b.k),Math.round(b.y+oy*b.k),Math.round(s.naturalWidth*k),Math.round(s.naturalHeight*k));}}
  g.restore();
- if(cat.state==='sleep'&&!catLooking()&&Math.floor(T*.7)%3===0)fx('zzz',b.x+b.w*.15,b.y-6,1.5,0,.3);}
+ if(cat.state==='sleep')sleepZ('cat',b.x+b.w*.15,b.y-6,.3);}
 function catHit(x,y){const b=catBox();return b&&x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h;}
 // Trust (Jackie: earn the cat's affection). 0..1, saved, never goes down (grace); a little per day so it takes a few days.
 const TRUST_SHY=.3,TRUST_FOND=.65,TRUST_BFF=.9;

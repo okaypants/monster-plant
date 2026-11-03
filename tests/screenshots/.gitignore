@@ -11,3 +11,6 @@
 # and the seedling pot shots
 !seedlings/
 !seedlings/*.png
+# and the calm-down pictures (tests/calm_shots.py)
+!calm/
+!calm/*.png

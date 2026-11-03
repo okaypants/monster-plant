@@ -45,14 +45,15 @@ let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.n
 function pickChair(){const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
 function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 // NEEDS SHOW ONLY ON THE PLANT (Jackie, Nov 3; RULES.md 10): never on tools, curtains or the room. Each in a few clear steps, and back in steps once the need is met.
-//  not enough water: fades to gray (dryLv 0-4)            too much water: sits in a puddle, a bit soggy and droopy (puddleLv 0-3, dries over time)
+//  not enough water: fades to gray (dryLv 0-4, gradually: 16 tiny levels)            too much water: sits in a puddle, a bit soggy and droopy (puddleLv 0-3, dries over time)
 //  not enough light: withers (witherLv 0-3: droops, hunches, curls in, colors a little dull)
 //  too much light: burns (burnLv 0-3: squints, leans away, toasty scorched edges and tips; the tiny flame only in the extreme case)
 // The looks are pre-made per image and level and cached; nothing blends live.
-const DRY_AT=[.45,.6,.75,.9],NEED_STEP=.5; // thirst where gray levels 1-4 start; seconds per step back once the need is met
+const DRY_FROM=.45,DRY_FULL=.9,DRY_FINE=4,DRY_HEAL=2,NEED_STEP=.5; // gray starts at thirst .45 and is full at .9, in quarter-steps (16 tiny levels, so it comes on gradually); watering brings the color back over 2 s; seconds per step back for the other looks
 const HI_WAIT=40,HI_FLAME=80,WITHER_AT=[6,30,60],BURN_AT=[40,60,80],PUDDLE_T=30; // light timings in game seconds x speed (lightBad); a puddle dries in 30 s
 function stepLv(k,target,dt){st[k]=st[k]||0;if(target>=st[k]){st[k]=target;st[k+'T']=0;return;}st[k+'T']=(st[k+'T']||0)+dt;if(st[k+'T']>=NEED_STEP){st[k+'T']=0;st[k]--;}} // worse as it happens, better one step at a time
-function needTick(dt){stepLv('dryLv',st.stage<0?0:DRY_AT.filter(v=>st.needs.thirst>=v).length,dt);
+function needTick(dt){const dry=st.stage<0?0:Math.floor(clamp((st.needs.thirst-DRY_FROM)/(DRY_FULL-DRY_FROM),0,1)*4*DRY_FINE)/DRY_FINE; // 0-4 in quarter steps
+ st.dryRaw=dry>=(st.dryRaw??st.dryLv??0)?dry:Math.max(dry,(st.dryRaw??st.dryLv??0)-dt*4/DRY_HEAL);st.dryLv=Math.ceil(st.dryRaw*DRY_FINE-1e-9)/DRY_FINE; // grays as thirst rises; color returns smoothly
  stepLv('witherLv',st.lightState==='lo'?WITHER_AT.filter(v=>st.lightBad>=v).length:0,dt);
  stepLv('burnLv',st.lightState==='hi'?BURN_AT.filter(v=>st.lightBad>=v).length:0,dt);
  st.puddleLv=st.over>0&&st.overType==='water'?Math.ceil(st.over/PUDDLE_T*3):0;}
@@ -217,7 +218,7 @@ function plantUpdate(dt){const sp=st.speed;
    if(st.stage===4){sfx('chime');sfx('boing');say('Its eyes open! It\'s a little kid now, a '+NAMES[st.species]+'. '+temperament()+' It hops down to the book stack. (Drag it to the milk crate if you like.)',8);}
    else{sfx('soil');say('It\'s growing: '+STAGES[st.stage]+'.',3);}}}
  const k=dt*sp/60;
- st.needs.thirst=clamp(st.needs.thirst+k*.22*(st.glare===2?2:1),0,1); // only the little-flame case dries it out faster (gentler, Nov 3)
+ st.needs.thirst=clamp(st.needs.thirst+k*.11*(st.glare===2?2:1),0,1); // half as fast as before (Jackie, calm-down): at normal speed, gray starts after ~2 min, thirsty ~2.7 min, fully gray ~4 min; only the little-flame case dries it twice as fast
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
  if(st.stage>=4){st.parch=st.needs.thirst>=.95?clamp((st.parch||0)+k*.35,0,1):st.needs.thirst<.5?clamp((st.parch||0)-dt*.08,0,1):(st.parch||0);} // petrifying cracks (Jackie): slow to form, heal after watering
  if(st.stage>=4){st.full=clamp((st.full||0)-k*.25,0,1);st.needs.hunger=0;st.needs.attention=clamp(st.needs.attention+k*.26,0,1);}

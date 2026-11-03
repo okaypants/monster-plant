@@ -27,7 +27,7 @@ RUG = {"rug front left": (300, 918), "rug front center": (545, 918), "rug front 
        "rug back left": (300, 790), "rug back center": (545, 790), "rug back right": (1250, 790)}
 
 PLANT_JS = """async(items)=>{const out=[];const cf=CHAIR_FRONT.slice();
- const reset=()=>{Object.assign(st,{others:[],nap:0,listen:0,over:0,overType:'',lightState:'ok',lightBad:0,glare:0,dryLv:0,witherLv:0,burnLv:0,puddleLv:0,mv:null,grump:0,walk:null,
+ const reset=()=>{Object.assign(st,{others:[],nap:0,listen:0,over:0,overType:'',lightState:'ok',lightBad:0,glare:0,dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,mv:null,grump:0,walk:null,
    needs:{thirst:0,hunger:0,attention:0},dayT:.3,curtain:'open',lamp:true,desk:true,started:true});drag.on=false;BOING.ox=BOING.oy=BOING.vx=BOING.vy=0;parts.length=0;T=0;blink=0;cat.x=-999;};
  for(const it of items){reset();st.species=it.sp;st.stage=it.stage;st.night=!!it.night;st.place={seed:it.spot,baby:it.spot};if(it.free)st.free={x:it.free[0],y:it.free[1]};
   pickChair();const box=plantBoxRaw(),cx=Math.round(box.x+box.w/2),hw=Math.max(14,Math.round(box.w*.3));
@@ -40,7 +40,7 @@ PLANT_JS = """async(items)=>{const out=[];const cf=CHAIR_FRONT.slice();
  CHAIR_FRONT.length=0;CHAIR_FRONT.push(...cf);return out;}"""
 
 CAT_JS = """async(items)=>{const out=[];
- for(const it of items){Object.assign(st,{others:[],stage:it.plant?8:-1,species:3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null});
+ for(const it of items){Object.assign(st,{others:[],stage:it.plant?8:-1,species:3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null});
   if(it.plant)st.free={x:it.plant[0],y:it.plant[1]};T=0;blink=0;parts.length=0;BOING.ox=BOING.oy=0;
   let s=it.spot==='byplant'?plantSideSpot():it.spot==='floor'?{x:it.x,y:925,sc:.6}:CAT_SPOTS[it.spot];
   // every frame: [state, pose, cat.t, T, dir, belly]
