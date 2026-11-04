@@ -2,7 +2,16 @@
 /* Care: things you carry and use on a plant: the carafe, treats, books, and petting. */
 const CARRY={up:img('carafe_up.png'),tilt:img('carafe_tilt.png'),pour:img('carafe_pour.png')},TREAT_IMG={};['solar','peat','cotton','pizza','plants','fossil','blood'].forEach(k=>TREAT_IMG[k]=img('treat_'+k+'.png'));
 const CARRY_SC=.45; // carried items shown smaller than drawn so they fit the hand/room
-function drawCarried(im,x,y,sc=CARRY_SC){if(!ok(im))return;y+=(Math.floor(T*2)%2)*2;const w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);g.drawImage(im,Math.round(x-w/2),Math.round(y-h/2),w,h);}
+function drawCarried(im,x,y,sc=CARRY_SC,flip){if(!ok(im))return;y+=(Math.floor(T*2)%2)*2;const w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);
+ if(flip){g.save();g.translate(Math.round(x),0);g.scale(-1,1);g.drawImage(im,-Math.round(w/2),Math.round(y-h/2),w,h);g.restore();}else g.drawImage(im,Math.round(x-w/2),Math.round(y-h/2),w,h);} // flip = mirrored when drawn; the PNG never changes
+/* Carrying the carafe: right-handed (the default) draws the tilt and pour frames mirrored so the spout leans left, and the carafe
+   sits up and to the left of your finger so your thumb doesn't cover it. The journal's left-handed setting flips both back. */
+const CARRY_OFF={x:-60,y:-75},SPOUT={x:69,y:35}; // spout = where the stream ends on carafe_pour.png (336,230 of 365x303), scaled by CARRY_SC, from its centre
+function rightHand(){return !st.leftHand;}
+function carafeAt(x,y){const r=rightHand();return {x:x+(r?CARRY_OFF.x:-CARRY_OFF.x),y:y+CARRY_OFF.y};}
+function pourPoint(x,y){const c=carafeAt(x,y),r=rightHand();return {x:c.x+(r?-SPOUT.x:SPOUT.x),y:c.y+SPOUT.y};}
+function pourOver(x,y){if(st.stage<0)return false;const p=pourPoint(x,y),b=plantBox();return p.x>=b.x-10&&p.x<=b.x+b.w+10&&p.y>=b.y-150&&p.y<=baseY()+4;} // the stream lands on the plant (falling water reaches it from a little above)
+function drawCarafeHeld(x,y){const c=carafeAt(x,y);let over=false;eachPlant(()=>{if(pourOver(x,y))over=true;});drawCarried(over?CARRY.pour:CARRY.tilt,c.x,c.y,CARRY_SC,rightHand());}
 const SNACKS=[ // Jackie's treats, good -> evil. Treats are optional; regular servings grow a cultivated trait (names are placeholders)
  {id:'solar',name:'Solar gummies',ge:.10,s:'slurp',trait:'Orbiting sun'},
  {id:'peat',name:'Peat moss',ge:.06,s:'crunch',trait:'Moss sprout'},
@@ -18,8 +27,8 @@ function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('ba
  if(st.pets.length>=3){sfx('giggle');st.lc=clamp(st.lc-.04,-1,1);st.pets=[];logEv('tickles');tell('Tickle attack! Wild, giggly play makes it more chaotic.',{kind:'teach',key:'tickle'});burst('heart',b.x+b.w*.15,b.y-20,2);}
  else{sfx('purr');st.lc=clamp(st.lc+.01,-1,1);tell('A gentle pet. Calm, steady affection makes it more orderly (lawful). Counts as company.',{kind:'teach',key:'gentle'});burst('heart',b.x+b.w*.15,b.y-20,1);}
  const was=st.needs.attention;st.needs.attention=Math.max(0,was-.35);if(was>.6&&st.needs.attention<=.6)met('attention');doMove();if(ambientOK()&&Math.random()<.5)tell(line('pet'),{kind:'ambient',who:st.id});}
-function useTool(){const b=plantBox();const base=SPOT[spotKey()].y;
- if(held.tool==='can'){sfx('pour');burst('drop',b.x+b.w/2,base-(st.stage<4?60:b.h*.3)-60,2);
+function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
+ if(held.tool==='can'){sfx('pour');const pp=pourPoint(tx,ty);burst('drop',clamp(pp.x,b.x+20,b.x+b.w-20),clamp(pp.y,b.y-20,base-40),2); // drops fall where the spout pours
   if(st.needs.thirst<.3){st.over=PUDDLE_T;st.overType='water';setTimeout(()=>sfx('blub'),900);tell('Sitting in a puddle, a bit soggy: too much water. No harm done; it dries up on its own.',{kind:'teach',key:'puddle'});}
   else{if(st.needs.thirst>.6)met('thirst');setTimeout(()=>sfx('sigh'),1300);
    const P=pers(),onTime=st.routine!=null&&Math.abs(st.dayT-st.routine)<.07;st.routine=st.routine==null?st.dayT:st.routine*.7+st.dayT*.3;
