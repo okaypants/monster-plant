@@ -221,7 +221,7 @@ function plantUpdate(dt){const sp=gameSpeed();
    if(st.stage===4){sfx('chime');sfx('boing');tell('Its eyes open! It\'s a little kid now, a '+NAMES[st.species]+'. '+temperament()+' It hops down to the book stack. (Drag it to the milk crate if you like.)',{kind:'important',who:st.id});}
    else{sfx('soil');tell('It\'s growing: '+STAGES[st.stage]+'.',{kind:'important'});}}}
  const k=dt*sp/60;
- st.needs.thirst=clamp(st.needs.thirst+k*.11*(st.glare===2?2:1),0,1); // half as fast as before (Jackie, calm-down): at normal speed, gray starts after ~2 min, thirsty ~2.7 min, fully gray ~4 min; only the little-flame case dries it twice as fast
+ st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
  if(st.stage>=4){st.parch=st.needs.thirst>=.95?clamp((st.parch||0)+k*.35,0,1):st.needs.thirst<.5?clamp((st.parch||0)-dt*.08,0,1):(st.parch||0);} // petrifying cracks (Jackie): slow to form, heal after watering
  if(st.stage>=4){st.full=clamp((st.full||0)-k*.25,0,1);st.needs.hunger=0;st.needs.attention=clamp(st.needs.attention+k*.26,0,1);}
@@ -246,7 +246,8 @@ function leanOff(){if(st.lightState!=='hi')return 0;const s=SPOT[spotKey()],i=sp
 function scootTick(dt){if(stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(drag.on&&st.id===drag.id))return;
  if(st.walk){const w=st.walk,f=st.free,sp=Math.max(1,Math.round(90*dt));f.x+=clamp(w.x-f.x,-sp,sp);f.y+=clamp(w.y-f.y,-Math.ceil(sp/2),Math.ceil(sp/2));
   if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');}return;}
- if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:70))return; // grown plants move off once it's been withering or burning a good whilelet best=null,bd=1e9;
+ if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:70))return; /* plants on the floor move off once it's been withering or burning a good while */
+ let best=null,bd=1e9;
  for(let x=FLOOR_X0;x<=FLOOR_X1;x+=40)for(const y of [FLOOR_FRONT,860,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)!=='ok'||!freeClear(x,y))continue;const d=Math.abs(x-st.free.x)+Math.abs(y-st.free.y);if(d<bd){bd=d;best={x,y};}}
  if(best){st.walk={...best,why:st.lightState};st.lightBad=0;}}
 

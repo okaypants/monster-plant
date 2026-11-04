@@ -133,6 +133,13 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### Fixes: no error box when plants move; slower drying (Nov 4)
+
+- The error box that popped up when plants moved was a real bug: in the code that sends a plant on the floor toward better light, a comment swallowed the line that set up its variables ("bd is not defined"). That stopped the game's update each time, so plants froze for a moment. Fixed; the plant now walks to its light as it should.
+- Drying is 3x slower: thirst rises at .11/3 per game minute (was .11). At normal speed the gray starts after ~6 min, it's thirsty after ~8 min and fully gray after ~12 min. Under the little flame it still dries twice as fast.
+- The idle wiggle is now one art pixel (5 room units) instead of 1 room unit, which was too small to see, especially on a phone. Still a quick two-frame nudge, one item at a time, at most once every 2.5–5 minutes.
+- Radio and pet bed are out of the idle wiggle until they really work (the radio plays and tunes; the pet bed calls the cat). The snow globe, snail and journal keep it.
+
 ### Idle wiggle: only things that work (Nov 4)
 
 - **Rule for every future build:** only things that actually work get the idle wiggle. When a coming-soon item is built (radio, snow globe, snail, pet bed, scratcher, journal, seasonal items...), adding it to `IDLE_ITEMS` in js/fidgets.js is part of that build. Don't add anything ahead of time.
