@@ -155,6 +155,12 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 - The old cat has 13 frames. Moments that only the new cat had a drawing for borrow the nearest old one: sitting for annoyed, back turned and grooming; his blink-sit for the slow blink; his normal pet frames instead of belly-up. Walking left mirrors his walk, as he used to. His old pet frames have the back-scratcher drawn in, so the separate one is off.
 - Everything he does stays the same: naps, trust, the had-enough walk-off, never hidden behind a plant.
 
+### The carafe faces the way it's moving (Nov 4)
+
+- While you carry the carafe, it faces the way it's moving: right = as drawn (spout on the right), left = mirrored. The tilt and pour frames flip with it, so it always pours from the spout on the side it faces, and the drops and the "over the plant" check follow that spout.
+- An instant flip, no rotation or turning animation (DS rule). It only turns after moving 12 px the new way (FACE_TURN in js/care.js), so a jiggling or resting finger never flickers it, and it keeps its last facing while held still.
+- When picked up it faces away from your thumb (right-handed: left). The left-handed setting still moves it to the up-and-right side of your finger.
+
 ### Where each age can go (Nov 4)
 
 - Kids and teens can stand on the floor too: drag them onto the rug. They can also sit on the milk crate or the book stack.
