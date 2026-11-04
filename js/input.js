@@ -38,11 +38,11 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
   if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');save();return;}
   if(onPlant(x,y)||inR(x,y,CHAIR)){openBubble(x-120,y-90,'Wake up for a new day?<br><button data-k="y">Good morning</button><button data-k="n">Let it sleep</button>',{y:()=>{closeBubble();wake();},n:closeBubble});return;}
   tell('Shh… it\'s sleeping.',{kind:'info',who:st.id});return;}
- const on=held.tool==='can'?pourOver(x,y,holdK(x,y)):held.tool?onPlant(x,y):onPlantPx(x,y);
+ const on=held.tool==='can'?(faceAt(x),pourOver(x,y,holdK(x,y))):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
  if(on){pet();return;}
- if(inR(x,y,CAN)){held.tool='can';return;}
+ if(inR(x,y,CAN)){held.tool='can';carryFace.dir=0;return;}
  // treats only come from the SNACKS box (Jackie)
  if(inR(x,y,JAR)){openSnacks(x,y);return;}
  if(inR(x,y,SHELF)){openBooks(x,y);return;}
