@@ -133,6 +133,10 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### The shelf plant rustles (Nov 4)
+
+- The plant on the trinket shelf rustles like the vines instead of bouncing as one piece. A tap nudges the leaves near your finger, and they sway back within about a second. Its pot (whose green diamonds look like leaves) stays still. Its rare idle wiggle moves only its leaves.
+
 ### New plants only with your OK (Nov 4)
 
 - Nothing appears out of nowhere. The window's gift seed and a seed your two adults make are both offered in a little bubble by the window ("A little seed is tapping at the window. Plant it in the little pot?" / "Your … and your … made a seed together. Plant it?"), with Yes, plant it and Not now. A seed is planted only on yes.
