@@ -43,8 +43,9 @@ function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantS
 const CHAIR_SEAT={x:628,y:SURFACE.chair};
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
 const CHAIR_FRONT=[[443,598,80,150],[688,598,78,150],[515,686,178,62]];
-let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;}
-function pickChair(){const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
+let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;} // only the plant you're dragging leaves the chair
+function inChair(){return onChair()||(!(drag.on&&st.id===drag.id)&&st.stage>=4&&spotKey()==='chair');} // napping there, or sitting there awake
+function pickChair(){const p=allRaw().find(q=>q.perch==='chair'&&q.stage>=6&&q.stage>=0);if(p){chairId=p.id;return;} /* someone sits in it awake: it's theirs */const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
 function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 // NEEDS SHOW ONLY ON THE PLANT (Jackie, Nov 3; RULES.md 10): never on tools, curtains or the room. Each in a few clear steps, and back in steps once the need is met.
 //  not enough water: fades to gray (dryLv 0-4, gradually: 16 tiny levels)            too much water: sits in a puddle, a bit soggy and droopy (puddleLv 0-3, dries over time)
@@ -240,7 +241,7 @@ function plantUpdate(dt){const sp=gameSpeed();
    A grown plant that's been in the wrong light for a while shuffles, in whole-pixel steps, to the nearest floor spot that suits it. */
 function squinting(){return st.lightState==='hi'&&Math.floor(T*1.5)%3!==0;} // eyes shut against the light, peeking now and then (frame swap)
 function leanOff(){if(st.lightState!=='hi')return 0;const s=SPOT[spotKey()],i=spotInfo(spotKey()),from=i.sun?WINDOW_LIGHT.x:i.under?i.under.x:WINDOW_LIGHT.x;const n=Math.max(4,Math.round(plantBoxRaw().h*.025));return s.x<from?-n:n;} // whole pixels, away from the light; bigger plants lean further
-function scootTick(dt){if(stageGroup()!=='grown'||st.nap>0||(drag.on&&st.id===ACT))return;
+function scootTick(dt){if(stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(drag.on&&st.id===drag.id))return;
  if(st.walk){const w=st.walk,f=st.free,sp=Math.max(1,Math.round(90*dt));f.x+=clamp(w.x-f.x,-sp,sp);f.y+=clamp(w.y-f.y,-Math.ceil(sp/2),Math.ceil(sp/2));
   if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');}return;}
  if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:70))return; // grown plants move off once it's been withering or burning a good whilelet best=null,bd=1e9;
@@ -272,7 +273,7 @@ const QUIRK_TXT={bonk:'Chaotic: bonks things around the room for fun.',wander:'C
  boo:'Evil: makes spooky faces at the cat (the cat is unimpressed).',dark:'Evil: loves dark treats, eats wholesome ones politely.',sweet:'Good: loves wholesome treats, eats dark ones politely.'};
 function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.quirkT??rnd(25,50))-dt;if(st.quirkT>0)return;st.quirkT=rnd(45,95);
  const p=pers(),b=plantBox(),cx=b.x+b.w/2,opts=[];
- if(p.l==='chaotic'){opts.push('bonk');if(stageGroup()==='grown')opts.push('wander');}
+ if(p.l==='chaotic'){opts.push('bonk');if(stageGroup()!=='seed'&&spotKey()==='free')opts.push('wander');}
  if(p.l==='lawful')opts.push('tidy');
  if(p.g==='good'){if(cat.state==='sleep'&&Math.abs(cat.x-cx)<650)opts.push('catfriend');if(allRaw().some(q=>q.id!==st.id&&q.stage>=4&&q.needs.attention>.3))opts.push('share');}
  if(p.g==='evil'&&cat.state==='sleep'&&cat.spot!=='byplant'&&Math.abs(cat.x-cx)<750)opts.push('boo');

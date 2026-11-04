@@ -1,3 +1,37 @@
 Positioning audit: everything off by more than 2 px (floating = above the surface, sinking = into it).
 
-Nothing is off by more than 2 px.
+milk crate (16):
+  #1 kid: sinking 278 px
+  #2 kid: sinking 278 px
+  #3 kid: sinking 278 px
+  #4 kid: sinking 278 px
+  #5 kid: sinking 278 px
+  #6 kid: sinking 278 px
+  #7 kid: sinking 278 px
+  #8 kid: sinking 278 px
+  #9 kid: sinking 278 px
+  #10 kid: sinking 278 px
+  #11 kid: sinking 278 px
+  #12 kid: sinking 278 px
+  #13 kid: sinking 278 px
+  #14 kid: sinking 278 px
+  #15 kid: sinking 278 px
+  #16 kid: sinking 278 px
+
+book stack (16):
+  #1 kid: sinking 265 px
+  #2 kid: sinking 265 px
+  #3 kid: sinking 265 px
+  #4 kid: sinking 265 px
+  #5 kid: sinking 265 px
+  #6 kid: sinking 265 px
+  #7 kid: sinking 265 px
+  #8 kid: sinking 265 px
+  #9 kid: sinking 265 px
+  #10 kid: sinking 265 px
+  #11 kid: sinking 265 px
+  #12 kid: sinking 265 px
+  #13 kid: sinking 265 px
+  #14 kid: sinking 265 px
+  #15 kid: sinking 265 px
+  #16 kid: sinking 265 px

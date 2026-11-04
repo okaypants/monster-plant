@@ -50,6 +50,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 
+`python tests/placement_test.py` drags plants with the mouse. It checks that a kid goes from the book stack to the rug and a teen from the rug onto the crate. An adult dropped on the book stack lands on the floor; an adult in the armchair sits there awake. A teen can't take the armchair from a napping kid, two plants can't share the crate, and a teen on the crate that grows up moves to the floor. Drops onto an occupied book stack, armchair or bit of floor never leave two plants overlapping; with no clear floor, the plant goes back. Screenshots go to `tests/screenshots/placement/`. If another copy of the game is running its tests at the same time, use another port: `MP_PORT=8791 python tests/placement_test.py`.
+
 `python tests/perspective_shots.py` puts a seedling, a kid, a teen, an adult and the cat at every spot and lines them up at the same scale in `tests/screenshots/perspective/every_spot.png`, plus two kids asleep (armchair and book stack) and the debug Depth lines view. It checks that everything follows one depth curve, that a teen is 1.45x a kid and an adult 1.9x at every depth, and that the two sleeping kids are the same size.
 
 `python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed. It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
@@ -143,6 +145,15 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 - You missed the old cat (the new one looked warped), so `OLD_CAT=true` in js/cat.js draws the old frames from `old_cat/` again, at their own size on the same perspective curve. The new cat's PNGs are untouched; set `OLD_CAT=false` to bring him back.
 - The old cat has 13 frames. Moments that only the new cat had a drawing for borrow the nearest old one: sitting for annoyed, back turned and grooming; his blink-sit for the slow blink; his normal pet frames instead of belly-up. Walking left mirrors his walk, as he used to. His old pet frames have the back-scratcher drawn in, so the separate one is off.
 - Everything he does stays the same: naps, trust, the had-enough walk-off, never hidden behind a plant.
+
+### Where each age can go (Nov 4)
+
+- Kids and teens can stand on the floor too: drag them onto the rug. They can also sit on the milk crate or the book stack.
+- Adults are too big for the crate and the book stack. Dropped there, they land on the floor; a teen sitting on one that grows up moves down to the floor.
+- Teens and adults can sit in the armchair awake: drag them into it. While one sits there, it's theirs: nobody else naps in it, and the cat doesn't take it. Any age can still nap in it when the chair is free.
+- Never sharing a space or on top of each other (your rule): one plant per piece of furniture, and a plant only goes where its picture wouldn't overlap another plant's. Drag a plant near a free spot it fits on (the spots glow while you drag) and it sits there; drop it anywhere else and it stands on the nearest clear bit of floor. If there's no clear floor anywhere, it goes back where you picked it up. Seeds never land on a taken pot spot either. Plants walking around on the floor (scooting to their light, wandering) keep to clear floor the same way.
+- Plants on the floor scoot toward their light and wander; plants on furniture stay put. The cat curls up next to a plant only when it's on the floor.
+- Debug → Plants → Spot picks the floor, crate, book stack or armchair.
 
 ### One perspective for every size (Nov 4)
 

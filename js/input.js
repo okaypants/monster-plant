@@ -13,13 +13,18 @@ cv.addEventListener('mouseleave',()=>{mx=my=-99;});
 function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hk=box==='can'?holdK(x,y):1,hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y,hk):box?onPlant(x,y):onPlantPx(x,y));
  let best=-2,by=-1;eachPlant(i=>{if(hit()&&baseY()>by){by=baseY();best=i;}});if(best>=0){swapIn(best);ACT=st.id;}}
 cv.addEventListener('pointerdown',e=>{const [fx0,fy0]=toGame(e);if(st.started)focusPlantAt(fx0,fy0,held.tool==='can'?'can':!!held.tool);if(fidgetDown(fx0,fy0))return;if(!st.started||st.stage<0||held.tool)return;const [x,y]=toGame(e);if(onPlantPx(x,y)){drag.down=true;drag.id=st.id;drag.sx=x;drag.sy=y;}});
-cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);mx=x;my=y;if(drag.down&&!drag.on&&Math.hypot(x-drag.sx,y-drag.sy)>14){drag.on=true;sfx('soil');closeBubble();}});
+cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);mx=x;my=y;if(drag.down&&!drag.on&&Math.hypot(x-drag.sx,y-drag.sy)>14){drag.on=true;drag.from={perch:st.perch,free:st.free&&{...st.free},seed:(st.place||{}).seed};sfx('soil');closeBubble();}});
 addEventListener('pointerup',e=>{if(!drag.down)return;drag.down=false;if(!drag.on)return;drag.on=false;drag.justDropped=true;
  const gp=stageGroup();
- if(gp==='grown'){const h=plantBoxRaw().h;let x=Math.round(clamp(mx,FLOOR_X0,FLOOR_X1)),y=Math.round(clamp(my+h*.15,FLOOR_BACK,FLOOR_FRONT));
-  for(let n=0;n<12&&!freeClear(x,y);n++)x=clamp(x+(n%2?-1:1)*40*(n+1),FLOOR_X0,FLOOR_X1); // don't stack two plants on top of each other
-  st.free={x,y};st.walk=null;sfx('pop');
-  save();return;}let best=null,bd=1e9;for(const k of GROUPS[gp]){const sp=SPOT[k];const d=Math.hypot(mx-sp.x,my-sp.y);if(d<bd){bd=d;best=k;}}
+ const from=drag.from||{};
+ if(gp!=='seed'){const was=spotKey(); // kids, teens, adults: onto a free piece of furniture their age fits on, if you drop it near one; anywhere else, the floor
+  const near=PERCH[ageName()].filter(k=>(k===was||!perchTaken(k))&&spaceFree(k)).map(k=>[k,Math.hypot(mx-SPOT[k].x,my-SPOT[k].y)]).sort((a,b)=>a[1]-b[1])[0];
+  if(near&&near[1]<130){st.perch=near[0];st.walk=null;pickChair();sfx(near[0]===was?'tick':'pop');save();return;}
+  const h=plantBoxRaw().h,spot=nearestClearFloor(mx,my+h*.15); // the clear bit of floor nearest where you let go
+  if(spot){st.perch=null;st.free=spot;sfx('pop');}else{st.perch=from.perch;if(from.free)st.free=from.free;sfx('tick');} // nowhere clear: back where you picked it up
+  st.walk=null;pickChair();spotKey();save();return;}
+ let best=null,bd=1e9;for(const k of GROUPS[gp]){if(otherPos().some(q=>q.k===k))continue;const sp=SPOT[k];const d=Math.hypot(mx-sp.x,my-sp.y);if(d<bd){bd=d;best=k;}} // seeds: the nearest free one, never a taken pot spot
+ if(!best)best=from.seed||spotKey();
  st.place=st.place||{};const was=spotKey();st.place[gp]=best;sfx(best===was?'tick':'pop');save();});
 cv.addEventListener('contextmenu',e=>{e.preventDefault();held.tool=null;});
 addEventListener('keydown',e=>{if(e.key==='Escape'){held.tool=null;closeBubble();}});
