@@ -32,7 +32,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
   if(inR(x,y,LAMP)){st.desk=st.desk===false;save();return;}
   if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');save();return;}
   if(onPlant(x,y)||inR(x,y,CHAIR)){openBubble(x-120,y-90,'Wake up for a new day?<br><button data-k="y">Good morning</button><button data-k="n">Let it sleep</button>',{y:()=>{closeBubble();wake();},n:closeBubble});return;}
-  say('Shh… it\'s sleeping.',2);return;}
+  tell('Shh… it\'s sleeping.',{kind:'info',who:st.id});return;}
  const on=held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool();return;}
  if(held.tool){held.tool=null;return;}

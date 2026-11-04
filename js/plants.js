@@ -213,10 +213,10 @@ function plantUpdate(dt){const sp=gameSpeed();
  needTick(dt); // real seconds, so looks come back over a couple of seconds at any speed
  if(st.night)return;
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
- if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;say('Golden hour. When you\'re ready, tap the armchair (or the journal in the desk drawers) to say goodnight.',7);}
+ if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Golden hour. When you\'re ready, tap the armchair (or the journal in the desk drawers) to say goodnight.',{kind:'teach',key:'golden'});}
  if(st.stage<4){st.timer+=dt*sp;if(st.timer>30){st.timer=0;st.stage=NEXT[st.stage]??4;
-   if(st.stage===4){sfx('chime');sfx('boing');say('Its eyes open! It\'s a little kid now, a '+NAMES[st.species]+'. '+temperament()+' It hops down to the book stack. (Drag it to the milk crate if you like.)',8);}
-   else{sfx('soil');say('It\'s growing: '+STAGES[st.stage]+'.',3);}}}
+   if(st.stage===4){sfx('chime');sfx('boing');tell('Its eyes open! It\'s a little kid now, a '+NAMES[st.species]+'. '+temperament()+' It hops down to the book stack. (Drag it to the milk crate if you like.)',{kind:'important',who:st.id});}
+   else{sfx('soil');tell('It\'s growing: '+STAGES[st.stage]+'.',{kind:'important'});}}}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11*(st.glare===2?2:1),0,1); // half as fast as before (Jackie, calm-down): at normal speed, gray starts after ~2 min, thirsty ~2.7 min, fully gray ~4 min; only the little-flame case dries it twice as fast
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
@@ -230,7 +230,7 @@ function plantUpdate(dt){const sp=gameSpeed();
  if(st.glare===2&&Math.random()<dt*.25)sfx('fsss');
  for(const n of['thirst','attention'])if(want(n)){
   if(Math.random()<dt*.06)sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');
-  if(!st.taught[n]){st.taught[n]=1;say(TEACH[n],8);sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
+  if(!st.taught[n]){tell(TEACH[n],{kind:'teach',key:n});sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
  if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');}
  // no hints on objects (RULES.md 10): no carafe wobble or sparkle, curtain sway, window wobble, bouncing book or jar
 }
@@ -259,8 +259,11 @@ const VOICE={
  greet:{good:'{W} waves every leaf at you.',evil:'{W} acts like it didn\'t notice you. It noticed.',lawful:'{W} was waiting in exactly the same spot.',chaotic:'{W} is somehow facing a different direction.','':'{W} perks up.'},
  idle:{good:['{W} is humming to itself.','{W} is watching the cat sleep, fondly.'],evil:['{W} is plotting something small.','{W} is doing a tiny evil laugh.'],
   lawful:['{W} is tidying its leaves into neat rows.','{W} is counting the books on the shelf.'],chaotic:['{W} is trying to lick the window.','{W} is doing a little dance for no reason.'],'':['{W} is just vibing.']}};
-function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);const k=keys.length?keys[Math.floor(Math.random()*keys.length)]:'';const v=VOICE[ev][k];const t=Array.isArray(v)?v[Math.floor(Math.random()*v.length)]:v;return t.replace('{W} is ',who()==='It'?'It\'s ':'{W} is ').replace('{W}',who());}
-function quiet(){return capT<=0&&performance.now()>capLock;}
+// voice lines come out of a shuffle bag: never one of the last 15 picked for that event, never one shown in the last 10 minutes ('' = nothing fresh, stay quiet)
+const LINE_HIST={};
+function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W} is ',who()==='It'?'It\'s ':'{W} is ').replace('{W}',who());
+ const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=LINE_HIST[ev]=LINE_HIST[ev]||[],fresh=all.filter(t=>!h.includes(t)&&!capRecent(t));
+ if(!fresh.length)return '';const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>15)h.shift();return t;}
 function notice(q,desc){st.quirks=st.quirks||{};if(!st.quirks[q]){st.quirks[q]=desc;return true;}return false;}
 const QUIRK_TXT={bonk:'Chaotic: bonks things around the room for fun.',wander:'Chaotic: wanders to a new spot when it gets bored.',tidy:'Lawful: tidies its leaves; loves being watered at its usual time.',
  usual:'Lawful: loves its usual treat.',novel:'Chaotic: loves a treat it hasn\'t had lately.',catfriend:'Good: keeps the cat company (the cat warms up to you faster).',share:'Good: shares its happiness with the other plants.',
@@ -271,7 +274,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.qu
  if(p.l==='lawful')opts.push('tidy');
  if(p.g==='good'){if(cat.state==='sleep'&&Math.abs(cat.x-cx)<650)opts.push('catfriend');if(allRaw().some(q=>q.id!==st.id&&q.stage>=4&&q.needs.attention>.3))opts.push('share');}
  if(p.g==='evil'&&cat.state==='sleep'&&cat.spot!=='byplant'&&Math.abs(cat.x-cx)<750)opts.push('boo');
- if(!opts.length){if(quiet()&&Math.random()<.35)say(line('idle'),4);return;}
+ if(!opts.length){if(ambientOK()&&Math.random()<.35)tell(line('idle'),{kind:'ambient',who:st.id});return;}
  const q=opts[Math.floor(Math.random()*opts.length)];let t='';doMove();
  if(q==='bonk'){let best=null,bd=480;for(const f of FP){const d=Math.hypot(f.x+f.w/2-cx,f.y+f.h/2-(b.y+b.h*.4));if(d<bd){bd=d;best=f;}}
   plantBoing(cx);if(best){fidgetPoke(best.x+best.w/2,best.y+best.h/2);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
@@ -281,7 +284,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.qu
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=(who()==='It'?'It\'s':who()+' is')+' keeping the cat company. The cat seems to like it.';}
  else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=(who()==='It'?'It\'s':who()+' is')+' cheering up the '+NAMES[o.species]+'.';}
  else if(q==='boo'){plantBoing(cx);sfx('hmm');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at the cat. The cat is unimpressed and leaves.';}
- const first=notice(q,QUIRK_TXT[q]);if(t&&(first||quiet()))say(t+(first?' (New quirk in the journal.)':''),first?6:4,first);}
+ const first=notice(q,QUIRK_TXT[q]);if(t)tell(first?t+' (New quirk in the journal.)':t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
 
 /* ---------- born with a nature; visible moves; friends and bickering; titles (Nov 3, no new art) ---------- */
 function temperament(){const g=st.nge||0,l=st.nlc||0,a=[];if(g>.15)a.push('sweet');if(g<-.15)a.push('a little mischievous');if(l>.15)a.push('tidy');if(l<-.15)a.push('wiggly');return a.length?'It seems '+a.join(' and ')+'.':'It seems easygoing.';}
@@ -300,33 +303,33 @@ function socialTick(dt){if(st.night)return;const P=allRaw().filter(q=>q.stage>=4
  const both=(f)=>{for(const q of[a,b]){const i=(st.others||[]).indexOf(q);if(i<0)f();else{swapIn(i);try{f();}finally{swapIn(i);}}}};
  const hearts=()=>{for(let i=0;i<4;i++)setTimeout(()=>burst('heart',a._pos.x+(b._pos.x-a._pos.x)*(i+.5)/4,Math.min(a._pos.y,b._pos.y)-300,1),i*180);};
  if(r==='bicker'){both(()=>{st.grump=6;doMove('grin');});sfx('hmm');
-  if(quiet())say('The '+n(a)+' and the '+n(b)+' are bickering. Grumpy faces all around.',5);
-  setTimeout(()=>{hearts();sfx('chime');if(quiet())say('…and they made up. They always do.',4);},6500);bumpRel(a,b,-1);}
+  const said=tell('The '+n(a)+' and the '+n(b)+' are bickering. Grumpy faces all around.',{kind:'ambient',key:'bicker'});
+  setTimeout(()=>{hearts();sfx('chime');if(said)tell('…and they made up. They always do.',{kind:'info',key:'madeup'});},6500);bumpRel(a,b,-1);}
  else if(r==='friends'){const p=pers.call(null);both(()=>doMove());hearts();sfx('giggle');
   const both2=(k,v)=>a[k]*v>0.33&&b[k]*v>0.33;
   const t=both2('lc',-1)?'egging each other on':both2('lc',1)?'bowing politely to each other':both2('ge',1)?'swaying together':both2('ge',-1)?'scheming together':'getting along';
-  if(quiet())say('The '+n(a)+' and the '+n(b)+' are '+t+'. Friends!',5);bumpRel(a,b,1);}
+  tell('The '+n(a)+' and the '+n(b)+' are '+t+'. Friends!',{kind:'ambient',key:'friends'});bumpRel(a,b,1);}
  else{both(()=>doMove('bob'));}}
 function bumpRel(a,b,v){for(const[x,y]of[[a,b],[b,a]]){x.rel=x.rel||{};x.rel[y.id]=(x.rel[y.id]||0)+v;}}
 // extremes earn a title + a one-time celebration
 const TITLES={good:'Little saint',evil:'Little menace',lawful:'Stickler',chaotic:'Wild child'};
 function titleCheck(){const out=[];if(st.ge>.85)out.push('good');if(st.ge<-.85)out.push('evil');if(st.lc>.85)out.push('lawful');if(st.lc<-.85)out.push('chaotic');
- st.titles=st.titles||[];const id=st.id;for(const t of out)if(!st.titles.includes(t)){st.titles.push(t);setTimeout(()=>withPlant(id,()=>{const b=plantBox();doMove();burst('heart',b.x+b.w/2,b.y-30,4);sfx('chime');say(who()+' earned a title: '+TITLES[t]+'! (In the journal.)',7,true);}),2500);}}
+ st.titles=st.titles||[];const id=st.id;for(const t of out)if(!st.titles.includes(t)){st.titles.push(t);setTimeout(()=>withPlant(id,()=>{const b=plantBox();doMove();burst('heart',b.x+b.w/2,b.y-30,4);sfx('chime');tell(who()+' earned a title: '+TITLES[t]+'! (In the journal.)',{kind:'important',who:id});}),2500);}}
 /* ---------- a second seed, and breeding ---------- */
 function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.length-1);ACT=st.id;} // the new one becomes the one you're tending
 function seedTick(dt){ // once your first plant is a teen, a seed drifts in through the open window
- if(st.giftSeed||st.night||plantCount()>=3||st.curtain==='closed'||performance.now()<capLock+1500)return;if(!allRaw().some(q=>q.stage>=6))return;
+ if(st.giftSeed||st.night||plantCount()>=3||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
  if(allRaw().some(q=>q.stage>=0&&q.stage<4))return;st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
- say('Something tapped the window. A seed drifted in and landed in the little pot. You have two plants now: tap one to tend it.',8,true);save();}
+ tell('Something tapped the window. A seed drifted in and landed in the little pot. You have two plants now: tap one to tend it.',{kind:'important'});save();}
 function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
  if(st.night||plantCount()>=3||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
  if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
  st.bloomT=0;st.breedDay=st.day;const [a,b]=A;crossPollinate(a,b);}
 function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.needs}};const pa=a._pos,pb=b._pos; // snapshot: 'st' changes when the seed arrives
  for(let i=0;i<10;i++)setTimeout(()=>{const t=i/9;burst('heart',pa.x+(pb.x-pa.x)*t,Math.min(pa.y,pb.y)-380-Math.sin(t*Math.PI)*80,1);},i*160);
- sfx('chime');say('Pollen drifts between your two plants…',4,true);
+ sfx('chime');tell('Pollen drifts between your two plants…',{kind:'important'});
  setTimeout(()=>{const pick=(k,n)=>Math.random()<.08?Math.floor(Math.random()*n):(Math.random()<.5?a:b)[k];
   const c=freshPlant();c.species=pick('species',16);c.eye=pick('eye',16);c.pref=Math.random()<.08?['sun','shade','night'][Math.floor(Math.random()*3)]:(Math.random()<.5?a:b).pref;c.parents=[a.id,b.id];c.nge=clamp(((a.nge||0)+(b.nge||0))/2+rnd(-.2,.2),-.6,.6);c.nlc=clamp(((a.nlc||0)+(b.nlc||0))/2+rnd(-.2,.2),-.6,.6);c.ge=clamp((a.ge+b.ge)/2*.5+c.nge*.5,-1,1);c.lc=clamp((a.lc+b.lc)/2*.5+c.nlc*.5,-1,1); // born leaning a little like its parents
   addPlant(c);sfx('soil');sfx('boing');const nm=q=>NAMES[q.species];
-  say('A seed! Its parents are your '+nm(a)+' and your '+nm(b)+'. It\'s in the little pot '+(spotKey()==='desk'?'on the desk':'by the window')+'.',8,true);save();},1800);}
+  tell('A seed! Its parents are your '+nm(a)+' and your '+nm(b)+'. It\'s in the little pot '+(spotKey()==='desk'?'on the desk':'by the window')+'.',{kind:'important'});save();},1800);}
 function align(){const a=st.lc>.33?'Lawful':st.lc<-.33?'Chaotic':'Neutral',b=st.ge>.33?'Good':st.ge<-.33?'Evil':'Neutral';return a===b?'True Neutral':a+' '+b;}
