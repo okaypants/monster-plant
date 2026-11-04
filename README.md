@@ -46,6 +46,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/cat_cover.py` puts plants in every spot (and right in front of the crate, book stack, armchair and cat bed), lets the cat pick and settle again and again, and fails if he's ever more than 20% covered. It also checks that he moves when a plant comes in front of him while he naps.
 
+`python tests/cat_huff.py` plays the cat having had enough (petted too many times, touched again while settling, shy) and saves a picture of every step to `tests/screenshots/huff/`.
+
 `python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
@@ -120,6 +122,12 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### When the cat has had enough, he leaves like a real cat (Nov 3)
+
+- When he isn't into being touched (shy and napping, or petted more times than he likes), he gives a second of the annoyed look (ears back), then gets up and walks off at his normal pace. He goes to a spot a comfortable way from where you touched him and from the plants, often a higher one (milk crate, book stack, armchair, the windowsill when the curtains are open).
+- There he sits awake for 30-90 s: back turned and looking over his shoulder, a little grooming (two frames swapped slowly), back turned again, then sitting with a slow blink now and then. Then he loafs with his eyes open for 60-90 s, and only then dozes off into a real nap.
+- Touch him while he's settling and he calmly moves once more: no annoyed look, no penalty. Each move makes the settling at least 10 s longer, so it takes a little longer before he's open to pets again. Trust never goes down. Shy cats still warm up by sniffing your hand when they're awake.
 
 ### The cat is never hidden behind a plant (Nov 3)
 
