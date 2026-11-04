@@ -20,7 +20,7 @@ PLANTS = {
 }
 SPY = "()=>{if(window._spy)return;window._spy=1;const o=drawCarried;drawCarried=function(...a){window._dc={src:a[0]&&a[0].src.split('/').pop(),x:a[1],y:a[2],flip:!!a[4]};return o.apply(this,a);};}"
 # a finger position that puts the stream's end on the plant, a third of the way down
-AIM = "()=>{const b=plantBox(),d=pourPoint(0,0);return {x:b.x+b.w/2-d.x,y:b.y+b.h*.3-d.y};}"
+AIM = "()=>{const b=plantBox(),d=pourPoint(0,0,depthK(plantDepth()));return {x:b.x+b.w/2-d.x,y:b.y+b.h*.3-d.y};}"
 CLIP = "([x,y])=>{const r=cv.getBoundingClientRect(),b=plantBox(),x0=Math.min(x-200,b.x-40),x1=Math.max(x+120,b.x+b.w+40),y0=Math.min(y-200,b.y-60),y1=Math.max(y+60,baseY()+20);return {x:r.left+Math.max(0,x0)*S,y:r.top+Math.max(0,y0)*S,width:(Math.min(1670,x1)-Math.max(0,x0))*S,height:(Math.min(942,y1)-Math.max(0,y0))*S};}"
 
 
@@ -85,7 +85,7 @@ async def main():
                 if not dc:
                     fails.append(f"{name}/{hand}: nothing carried"); break
                 check(dc and dc["src"] == "carafe_pour.png" and dc["flip"] == mirrored, f"{name}/{hand}: not the {'mirrored ' if mirrored else ''}pour frame over the plant: {dc}")
-                sp = await pg.evaluate(f"()=>pourPoint({aim['x']},{aim['y']})")
+                sp = await pg.evaluate(f"()=>pourPoint({aim['x']},{aim['y']},holdK({aim['x']},{aim['y']}))")
                 check((sp["x"] < dc["x"]) if mirrored else (sp["x"] > dc["x"]), f"{name}/{hand}: the spout is on the wrong side ({sp} vs carafe {dc})")
                 await pg.wait_for_timeout(300)
                 await pg.screenshot(path=os.path.join(OUT, f"{name}_{hand}_pouring.png"), clip=await pg.evaluate(CLIP, [aim["x"], aim["y"]]))
@@ -101,7 +101,7 @@ async def main():
                 await pick_up()
                 bx = await pg.evaluate("()=>{const b=plantBox();return {x:b.x+b.w/2,y:b.y+b.h*.5,w:b.w};}")
                 fx = bx["x"] + (bx["w"] / 2 if mirrored else -bx["w"] / 2)  # the plant's edge on the side away from the spout
-                off = not await pg.evaluate(f"()=>pourOver({fx},{bx['y']})")
+                off = not await pg.evaluate(f"()=>pourOver({fx},{bx['y']},depthK(plantDepth()))")
                 if off:
                     await tap(fx, bx["y"])
                     check(await pg.evaluate("()=>st.needs.thirst") == .7, f"{name}/{hand}: poured although the spout was off the plant")

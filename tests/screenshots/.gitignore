@@ -26,3 +26,6 @@
 # and pouring the carafe, right- and left-handed (tests/carafe_test.py)
 !carafe/
 !carafe/*.png
+# and one perspective: every age and the cat at every spot (tests/perspective_shots.py)
+!perspective/
+!perspective/*.png

@@ -10,7 +10,7 @@ function onPlantPx(x,y){if(st.stage<0)return false;const b=plantBox();if(!b.img|
 function onPlant(x,y){if(st.stage<0)return false;const b=plantBox();return x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=baseY()+4;}
 cv.addEventListener('mousemove',e=>{[mx,my]=toGame(e);cv.style.cursor=held.tool?'none':'pointer';});
 cv.addEventListener('mouseleave',()=>{mx=my=-99;});
-function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y):box?onPlant(x,y):onPlantPx(x,y));
+function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hk=box==='can'?holdK(x,y):1,hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y,hk):box?onPlant(x,y):onPlantPx(x,y));
  let best=-2,by=-1;eachPlant(i=>{if(hit()&&baseY()>by){by=baseY();best=i;}});if(best>=0){swapIn(best);ACT=st.id;}}
 cv.addEventListener('pointerdown',e=>{const [fx0,fy0]=toGame(e);if(st.started)focusPlantAt(fx0,fy0,held.tool==='can'?'can':!!held.tool);if(fidgetDown(fx0,fy0))return;if(!st.started||st.stage<0||held.tool)return;const [x,y]=toGame(e);if(onPlantPx(x,y)){drag.down=true;drag.sx=x;drag.sy=y;}});
 cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);mx=x;my=y;if(drag.down&&!drag.on&&Math.hypot(x-drag.sx,y-drag.sy)>14){drag.on=true;sfx('soil');closeBubble();}});
@@ -33,7 +33,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
   if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');save();return;}
   if(onPlant(x,y)||inR(x,y,CHAIR)){openBubble(x-120,y-90,'Wake up for a new day?<br><button data-k="y">Good morning</button><button data-k="n">Let it sleep</button>',{y:()=>{closeBubble();wake();},n:closeBubble});return;}
   tell('Shh… it\'s sleeping.',{kind:'info',who:st.id});return;}
- const on=held.tool==='can'?pourOver(x,y):held.tool?onPlant(x,y):onPlantPx(x,y);
+ const on=held.tool==='can'?pourOver(x,y,holdK(x,y)):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
  if(on){pet();return;}
