@@ -13,7 +13,7 @@ function enterTest(){save();realSnap={st:JSON.stringify(st),cat:plainCat(),bypla
 function leaveTest(keep){if(!TESTING)return;testEpoch++;
  if(!keep){st=Object.assign(fresh(),JSON.parse(realSnap.st));for(const k of Object.keys(cat))delete cat[k];Object.assign(cat,JSON.parse(realSnap.cat));
   if(realSnap.byplant)CAT_SPOTS.byplant=realSnap.byplant;else delete CAT_SPOTS.byplant;CAT_SPOTS.rug.x=realSnap.rugX;}
- SEASON_OVERRIDE=null;FX_OFF.clear();PAUSED=false;lightMap=false;dbgFx=null;if(keep){cat.force=null;cat.hold=false;} // back: the cat is exactly as he was
+ SEASON_OVERRIDE=null;FX_OFF.clear();PAUSED=false;lightMap=false;depthLines=false;dbgFx=null;if(keep){cat.force=null;cat.hold=false;} // back: the cat is exactly as he was
  held.tool=null;drag.on=false;parts.length=0;zzNow=null;nudgeKey=null;ACT=st.id;pickChair();cap.style.transition='none';capClear();_setTimeout(()=>{cap.style.transition='';},50);closeBubble();for(const sc of document.querySelectorAll('.screen'))if(!realSnap.screens.includes(sc))sc.remove(); // no test captions, bubbles or screens left on the real game
  TESTING=false;if(keep)save();realSnap=null;document.body.classList.remove('testing');try{localStorage.removeItem(TEST_KEY);}catch(e){}}
 
@@ -71,7 +71,8 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   seg(b,'Clock',[['visit','visit'],['ambient','ambient'],['actions','only on actions']],()=>st.mode,v=>{st.mode=v;});
   seg(b,'Curtains',[['open','open'],['closed','closed']],()=>st.curtain,v=>{st.curtain=v;});
   for(const L of LAMPS)toggle(b,L.name[0].toUpperCase()+L.name.slice(1),()=>lampOn(L),v=>{st[L.key]=v;}); // every lamp in LAMPS gets a switch
-  toggle(b,'Light map',()=>lightMap,v=>{lightMap=v;});});
+  toggle(b,'Light map',()=>lightMap,v=>{lightMap=v;});
+  toggle(b,'Depth lines',()=>depthLines,v=>{depthLines=v;});});
 
  group(body,'Plants',true,b=>{
   const tabs=el('div','seg wrap tabs');allRaw().filter(q=>q.stage>=0).forEach((q,i)=>{const t=el('button','',esc((i+1)+'. '+NAMES[q.species]));t.type='button';t.classList.toggle('on',q.id===pRaw().id);t.onclick=()=>{dbgPid=q.id;buildDbg();};tabs.appendChild(t);});b.appendChild(tabs);
@@ -176,7 +177,18 @@ const NUDGE_HTML=()=>`<div class="nudge">1 px at a time; uses this plant's speci
 // asks the plants' own light (lightInfo, spotInfo, lightFeel, lightSources in light.js), so it shows exactly why a plant says too bright or too dark.
 // cells = stepped colors by light level; yellow dots = the window's sun patch; orange rings = lamp grow-light circles (inner ring = right under);
 // white outline = where the plant you're tending would be happy.
-let lightMap=false;
+let lightMap=false,depthLines=false;
+/* Depth lines (debug): where each spot touches the floor, and the size everything there is drawn at (one perspective curve, depthK in room.js) */
+function drawDepthLines(){g.save();const pct=d=>Math.round(depthK(d)*100)+'%';
+ const L=(y,x0,x1,col)=>{g.fillStyle=col;for(let x=x0;x<x1;x+=16)g.fillRect(x,Math.round(y)-1,10,3);};
+ L(DEPTH_FRONT,0,W,C.fl2);lmText('front of the rug '+DEPTH_FRONT+' · 100%',150,DEPTH_FRONT+16,'left');
+ L(DEPTH_BACK,0,W,C.fl2);lmText('back wall '+DEPTH_BACK+' · '+pct(DEPTH_BACK),20,DEPTH_BACK-16,'left');
+ const at={sill:SPOT.sill.x,desk:SPOT.desk.x,crate:SPOT.crate.x,books:SPOT.books.x,chair:CHAIR_SEAT.x,bed:CAT_SPOTS.bed.x,floor:CAT_SPOTS.rug.x},row=[];
+ for(const k in DEPTH){const d=DEPTH[k],x=at[k];L(d,x-70,x+70,C.ivory);g.fillStyle=C.ivory;g.fillRect(x-1,d-12,3,24);row.push([k,d,x]);}
+ eachPlant(()=>{if(st.stage<0)return;const k=onChair()?'chair':spotKey();if(DEPTH[k]!=null)return;const d=plantDepth(),x=SPOT.free.x;L(d,x-90,x+90,C.coral);row.push([NAMES[st.species]+' on the rug',d,x]);});
+ row.sort((a,b)=>a[2]-b[2]).forEach(([n,d,x],i)=>lmText(n+' '+Math.round(d)+' · '+pct(d),x,d+(i%2?30:-30)));
+ lmText('Perspective: one size curve. 100% at the front of the rug, '+pct(DEPTH_BACK)+' at the back wall (horizon '+HORIZON+')',W/2,24);
+ g.restore();}
 const LM_STEPS=[[.1,'#1b1b4a'],[.2,'#2e3a8c'],[.3,'#3c6fb4'],[.45,'#4fa3a5'],[.6,'#8cc152'],[.75,'#e2d23c'],[.95,'#f5a524'],[99,'#ff6a3d']];
 const lmColor=L=>LM_STEPS.find(s=>L<s[0])[1],LM_CELL=20,LM_MAX=1.2;
 function lmVerdict(f){return f==='hi'?'too bright':f==='lo'?'too dark':'just right';}

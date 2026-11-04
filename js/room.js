@@ -25,7 +25,14 @@ const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}
 const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
-function depthK(y){return .9+.1*clamp((y-FLOOR_BACK)/(FLOOR_FRONT-FLOOR_BACK),0,1);} // 90% size at the back of the rug, 100% at the front
+/* PERSPECTIVE (Nov 4): ONE scale curve for everything. A spot's depth is the row where its furniture touches the floor
+   (the armchair's feet, the book stack's bottom...), not the surface the plant sits on; on the rug it's the plant's own row.
+   Scale falls in a straight line toward the horizon: 100% at the front of the rug (918), smallest at the back wall (748).
+   HORIZON is set so the armchair (766) comes out at the 66% Jackie OK'd for plants asleep in it. Measured from room_day.png. */
+const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
+const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:767/* book stack bottom */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
+function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
+function spotDepth(k){return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
 function freeClear(x,y){return otherPos().every(q=>q.g!=='grown'||Math.abs(q.x-x)>250);} // side by side, never hidden behind each other
 function defaultFree(){const r=st.place&&SPOT[st.place.grown]?st.place.grown:({sun:'rugL',shade:'rugR',night:'rugR'}[st.pref]||'rugC');
  const c=[r,'rugL','rugC','rugR'].map(k=>[SPOT[k].x,SPOT[k].y]).concat([[400,800],[700,800],[1300,800],[1000,860]]);for(const[x,y]of c)if(freeClear(x,y))return {x,y};return {x:c[0][0],y:c[0][1]};}
@@ -96,9 +103,11 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  fidgetDrawTop();
  for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
  if(lightMap&&st.started)drawLightTags(); // debug only: labels and legend on top
+ if(typeof depthLines!=='undefined'&&depthLines&&st.started)drawDepthLines(); // debug only: each spot's depth and size
  const ph=phase(st.dayT);
  if(held.tool){const x=mx|0,y=my|0;
   if(held.tool==='can')drawCarafeHeld(x,y);
-  else if(held.tool==='snack'){drawCarried(TREAT_IMG[held.item.id],x,y,.4);}
-  else{g.fillStyle=C.out;g.fillRect(x-28,y-36,56,72);g.fillStyle={fairy:C.coral,almanac:C.blue,nonsense:C.fl3,grimoire:'#2d1824'}[held.item.id];g.fillRect(x-24,y-32,48,64);g.fillStyle=C.ivory;g.fillRect(x-16,y-20,32,4);}}
+  else if(held.tool==='snack'){drawCarried(TREAT_IMG[held.item.id],x,y,.4*overK(x,y));}
+  else{const k=overK(x,y),R=(a,b,c,d)=>g.fillRect(Math.round(x+a*k),Math.round(y+b*k),Math.round(c*k),Math.round(d*k)); // a book, sized for the depth it's held at
+   g.fillStyle=C.out;R(-28,-36,56,72);g.fillStyle={fairy:C.coral,almanac:C.blue,nonsense:C.fl3,grimoire:'#2d1824'}[held.item.id];R(-24,-32,48,64);g.fillStyle=C.ivory;R(-16,-20,32,4);}}
 }

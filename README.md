@@ -50,6 +50,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 
+`python tests/perspective_shots.py` puts a seedling, a kid, a teen, an adult and the cat at every spot and lines them up at the same scale in `tests/screenshots/perspective/every_spot.png`, plus two kids asleep (armchair and book stack) and the debug Depth lines view. It checks that everything follows one depth curve, that a teen is 1.45x a kid and an adult 1.9x at every depth, and that the two sleeping kids are the same size.
+
 `python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed. It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
 
 `python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
@@ -128,6 +130,15 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### One perspective for every size (Nov 4)
+
+- All the separate size rules are now ONE: each spot has a depth, the row where its furniture touches the floor (the armchair's feet, the book stack's bottom, the crate's bottom, the desk's legs, the wall under the windowsill; on the rug, the plant's own row). One straight-line curve gives the scale: 100% at the front of the rug (918), 63% at the back wall (748). `DEPTH`, `depthK` and `spotDepth` in js/room.js.
+- The curve's horizon (464) is set so the armchair comes out at the 66% you OK'd for plants asleep there. A kid in the armchair and a kid on the book stack are now the same size (~198 px). Before, the chair kid was 152 and the book-stack kid was drawn full size.
+- At 100%: kid 297, teen 431 (1.45x), adult 565 (1.9x, the same 60% of the room as before). Every kid is the same height; a teen or adult drawn shorter than usual still isn't blown up, so species 4, 6, 15 and 16's teens come out at 1.13–1.36x.
+- Seedlings, the cat, the carafe, treats and books all use the same curve. The cat keeps his old front-of-room size; carried things take the depth of the plant you hold them over.
+- Kids and seedlings are smaller than before (they sit about 2/3 of the way back); adults at the back of the rug are 72% instead of 90%.
+- Debug → World → Depth lines shows each spot's depth and scale.
 
 ### Carafe: pours from the left for right-handed play (Nov 3)
 

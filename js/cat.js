@@ -11,9 +11,11 @@ const CAT_K=218/168,POSES_K=168/204,SIDE_K=POSES_K*140/289,POSES_SHEET=['sit2','
 const catK=f=>CAT_K*(POSES_SHEET.includes(f.catName)?POSES_K:f.catName==='side1'||f.catName==='side2'?SIDE_K:1);
 // back-scratcher: where its top-left sits on the cat frame, in that frame's own pixels (tines on his crown, or on his tummy when he rolls belly-up)
 const SCRATCH_AT={pet:[48,-115],belly:[108,-85]};
-const CAT_SPOTS={bed:{x:1578,y:SURFACE.bed,sc:.62,poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:.62,poses:['side','loaf','curl']},
- chair:{x:640,y:SURFACE.chair,sc:.5,poses:['curl','loaf']},sill:{x:405,y:SURFACE.sill,sc:.45,poses:['loaf','curl']},crate:{x:338,y:SURFACE.crate,sc:.48,poses:['loaf','curl']},books:{x:978,y:SURFACE.books,sc:.48,poses:['loaf','curl']}};
-const cat={spot:'bed',x:1578,y:SURFACE.bed,sc:.62,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0};
+// his size comes from the one perspective curve (depthK in room.js): CAT_BASE at the front of the rug, smaller at deeper spots
+const CAT_BASE=.62,catSc=d=>CAT_BASE*depthK(d);
+const CAT_SPOTS={bed:{x:1578,y:SURFACE.bed,sc:catSc(DEPTH.bed),poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:catSc(DEPTH.floor),poses:['side','loaf','curl']},
+ chair:{x:640,y:SURFACE.chair,sc:catSc(DEPTH.chair),poses:['curl','loaf']},sill:{x:405,y:SURFACE.sill,sc:catSc(DEPTH.sill),poses:['loaf','curl']},crate:{x:338,y:SURFACE.crate,sc:catSc(DEPTH.crate),poses:['loaf','curl']},books:{x:978,y:SURFACE.books,sc:catSc(DEPTH.books),poses:['loaf','curl']}};
+const cat={spot:'bed',x:1578,y:SURFACE.bed,sc:CAT_SPOTS.bed.sc,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0};
 // NEVER HIDDEN BEHIND A PLANT (Jackie): how much of his picture a spot would leave covered by the plants drawn in front of him, in real pixels (0..1).
 // A plant is in front when the room draws it after him: its base line is lower on screen than his (room.js draw()).
 const COVER_MAX=.2,coverCv=document.createElement('canvas'),coverG=coverCv.getContext('2d',{willReadFrequently:true});
@@ -29,7 +31,7 @@ function spotVisible(s,frames){return spotCover(s,frames)<=COVER_MAX;}
 // on the floor he can shift sideways: the nearest x (to the one he'd like) where he isn't covered
 function floorX(s,x0=FLOOR_X0,x1=FLOOR_X1){for(let d=0;d<=x1-x0;d+=30)for(const x of d?[s.x+d,s.x-d]:[s.x])if(x>=x0&&x<=x1&&spotVisible({...s,x}))return x;return null;}
 function catSpotFree(k,frames){if(CAT_SPOTS[k]&&k!=='rug'&&!spotVisible(CAT_SPOTS[k],frames))return false;if(['sill','crate','books'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&chairId!=null)return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
-function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair()))return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1,sc=.6*depthK(SPOT[spotKey()].y),half=Math.ceil(CATF.belly.naturalWidth*CAT_K*sc/2); // clear of the plant even in his widest pose (belly-up)
+function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair()))return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1,sc=catSc(plantDepth()),half=Math.ceil(CATF.belly.naturalWidth*CAT_K*sc/2); // clear of the plant even in his widest pose (belly-up)
  const y=SPOT[spotKey()].y,poses=['curl','loaf'];
  for(const sd of[side,-side]){const near=Math.round(b.x+b.w/2+sd*(b.w/2+half+12)),s={x:near,y,sc,poses}; // his side of the plant first, then the other; slide further out if another plant is in front
   const x=sd>0?floorX(s,near,FLOOR_X1):floorX(s,FLOOR_X0,near);if(x!=null&&Math.abs(x-near)<=150)return {...s,x};}
@@ -58,7 +60,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   if(!p){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){st.listen=3;sfx('purr');tell('The cat curled up next to your plant. They like each other.',{kind:'teach',key:'catPlant',who:'cat'});}return;}
   if(p.hop){cat.x=p.x;cat.y=p.y;cat.path.shift();return;} // hop up/down: one quick jump
   const dx=p.x-cat.x,sp=110*dt;if(Math.abs(dx)<=sp){cat.x=p.x;cat.y=p.y;cat.path.shift();}else{cat.dir=Math.sign(dx);cat.x+=cat.dir*sp;cat.y=p.y;}
-  cat.sc+=((cat.path.length?.6:CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
+  cat.sc+=((cat.path.length?catSc(DEPTH.floor):CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
  // company: a cat napping near the plant keeps it a little company
  if(cat.state==='sleep'&&st.started&&st.stage>=4&&!st.night){const b=plantBox();if(Math.abs(cat.x-(b.x+b.w/2))<b.w*.9+120&&Math.abs(cat.y-SPOT[spotKey()].y)<160)st.needs.attention=Math.max(0,st.needs.attention-dt*.002);}}
 function catFrame(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
