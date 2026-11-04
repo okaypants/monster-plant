@@ -133,6 +133,11 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### Idle wiggle: only things that work (Nov 4)
+
+- **Rule for every future build:** only things that actually work get the idle wiggle. When a coming-soon item is built (radio, snow globe, snail, pet bed, scratcher, journal, seasonal items...), adding it to `IDLE_ITEMS` in js/fidgets.js is part of that build. Don't add anything ahead of time.
+- Books: only the four special readable books, never the shelves, the book stack or the crate book.
+
 ### The shelf plant rustles (Nov 4)
 
 - The plant on the trinket shelf rustles like the vines instead of bouncing as one piece. A tap nudges the leaves near your finger, and they sway back within about a second. Its pot (whose green diamonds look like leaves) stays still. Its rare idle wiggle moves only its leaves.
