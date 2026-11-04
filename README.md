@@ -44,6 +44,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/thirst_shots.py` checks and pictures thirst from full color to fully gray for an adult, a kid and a sprout (the gray comes on gradually), and that watering brings the color back smoothly over about 2 seconds; saved to `tests/screenshots/thirst/`.
 
+`python tests/cat_cover.py` puts plants in every spot (and right in front of the crate, book stack, armchair and cat bed), lets the cat pick and settle again and again, and fails if he's ever more than 20% covered. It also checks that he moves when a plant comes in front of him while he naps.
+
 `python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
@@ -118,6 +120,11 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### The cat is never hidden behind a plant (Nov 3)
+
+- Before he takes a nap spot, the game checks his picture there against every plant drawn in front of him, with real pixels, not boxes. If more than 20% of him would be covered, the spot doesn't count. On the rug and next to a plant he slides sideways to where he's in view.
+- If a plant moves, scoots, wanders or grows in front of him while he naps, he gets up after a moment and walks somewhere he can be seen. No trust is lost and there's no caption. Walking, he may pass behind a plant, but he never stops there: if his spot got covered on the way, he picks another.
 
 ### Calm down: still sleepers, rare Zzz, slower drying (Nov 3)
 

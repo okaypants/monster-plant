@@ -14,20 +14,43 @@ const SCRATCH_AT={pet:[48,-115],belly:[108,-85]};
 const CAT_SPOTS={bed:{x:1578,y:SURFACE.bed,sc:.62,poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:.62,poses:['side','loaf','curl']},
  chair:{x:640,y:SURFACE.chair,sc:.5,poses:['curl','loaf']},sill:{x:405,y:SURFACE.sill,sc:.45,poses:['loaf','curl']},crate:{x:338,y:SURFACE.crate,sc:.48,poses:['loaf','curl']},books:{x:978,y:SURFACE.books,sc:.48,poses:['loaf','curl']}};
 const cat={spot:'bed',x:1578,y:SURFACE.bed,sc:.62,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0};
-function catSpotFree(k){if(['sill','crate','books'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&chairId!=null)return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
+// NEVER HIDDEN BEHIND A PLANT (Jackie): how much of his picture a spot would leave covered by the plants drawn in front of him, in real pixels (0..1).
+// A plant is in front when the room draws it after him: its base line is lower on screen than his (room.js draw()).
+const COVER_MAX=.2,coverCv=document.createElement('canvas'),coverG=coverCv.getContext('2d',{willReadFrequently:true});
+function plantsInFront(y){const L=[];if(!st.started)return L;eachPlant(i=>{if(st.stage<0||baseY()<=y)return;const b=plantBox(),im=b.img||b.seed;if(ok(im))L.push({im,x:b.x,y:b.y,w:b.w,h:b.h});});return L;}
+function catCover(x,y,sc,f){if(!ok(f))return 0;const P=plantsInFront(y);if(!P.length)return 0;const k=sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k),X=Math.round(x-w/2),Y=Math.round(y-h+bottomPad(f)*k);
+ if(!P.some(p=>p.x<X+w&&p.x+p.w>X&&p.y<Y+h&&p.y+p.h>Y))return 0; // no plant even near him
+ coverCv.width=w;coverCv.height=h;coverG.imageSmoothingEnabled=false;coverG.clearRect(0,0,w,h);coverG.drawImage(f,0,0,w,h);let A;try{A=coverG.getImageData(0,0,w,h).data;}catch(e){return 0;}
+ coverG.clearRect(0,0,w,h);for(const p of P)coverG.drawImage(p.im,Math.round(p.x-X),Math.round(p.y-Y),Math.round(p.w),Math.round(p.h));const B=coverG.getImageData(0,0,w,h).data;
+ let n=0,c=0;for(let i=3;i<A.length;i+=4)if(A[i]>40){n++;if(B[i]>40)c++;}return n?c/n:0;}
+const napFrames=poses=>poses.map(p=>CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[p]]);
+function spotCover(s){return Math.max(0,...napFrames(s.poses).map(f=>catCover(s.x,s.y,s.sc,f)));} // his worst nap pose there
+function spotVisible(s){return spotCover(s)<=COVER_MAX;}
+// on the floor he can shift sideways: the nearest x (to the one he'd like) where he isn't covered
+function floorX(s,x0=FLOOR_X0,x1=FLOOR_X1){for(let d=0;d<=x1-x0;d+=30)for(const x of d?[s.x+d,s.x-d]:[s.x])if(x>=x0&&x<=x1&&spotVisible({...s,x}))return x;return null;}
+function catSpotFree(k){if(CAT_SPOTS[k]&&k!=='rug'&&!spotVisible(CAT_SPOTS[k]))return false;if(['sill','crate','books'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&chairId!=null)return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
 function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair()))return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1,sc=.6*depthK(SPOT[spotKey()].y),half=Math.ceil(CATF.belly.naturalWidth*CAT_K*sc/2); // clear of the plant even in his widest pose (belly-up)
- return {x:Math.round(b.x+b.w/2+side*(b.w/2+half+12)),y:SPOT[spotKey()].y,sc,poses:['curl','loaf']};}
-function catPick(){const ps=plantSideSpot();if(ps&&cat.spot!=='byplant'&&catTrust()>=TRUST_FOND&&Math.random()<(catTrust()>=TRUST_BFF?.6:.35)){CAT_SPOTS.byplant=ps;return 'byplant';}
- const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&k!==cat.spot&&catSpotFree(k));return ks[Math.floor(Math.random()*ks.length)]||'bed';}
+ const y=SPOT[spotKey()].y,poses=['curl','loaf'];
+ for(const sd of[side,-side]){const near=Math.round(b.x+b.w/2+sd*(b.w/2+half+12)),s={x:near,y,sc,poses}; // his side of the plant first, then the other; slide further out if another plant is in front
+  const x=sd>0?floorX(s,near,FLOOR_X1):floorX(s,FLOOR_X0,near);if(x!=null&&Math.abs(x-near)<=150)return {...s,x};}
+ return null;}
+function catPick(avoid){const ps=plantSideSpot();if(ps&&cat.spot!=='byplant'&&catTrust()>=TRUST_FOND&&Math.random()<(catTrust()>=TRUST_BFF?.6:.35)){CAT_SPOTS.byplant=ps;return 'byplant';}
+ const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&k!==cat.spot&&k!==avoid&&catSpotFree(k));const k=ks[Math.floor(Math.random()*ks.length)]||'rug';
+ if(k==='rug'){const r=CAT_SPOTS.rug,x=floorX({...r,x:RUG_X}); r.x=x??RUG_X;} // the rug: wherever along it he's in view
+ return k;}
+const RUG_X=760;
 function catGo(k){const s=CAT_SPOTS[k],FLOOR_Y=925;cat.to=k;cat.path=[{x:cat.x,y:FLOOR_Y,hop:cat.y<FLOOR_Y-20},{x:s.x,y:FLOOR_Y},{x:s.x,y:s.y,hop:s.y<FLOOR_Y-20}];cat.state='walk';cat.t=0;}
 function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  cat.t+=dt;if(cat.shyT>0)cat.shyT-=dt;
  if(cat.state==='sleep'&&((cat.spot==='sill'&&st.curtain==='closed')||(cat.spot==='chair'&&chairId!=null))){cat.state='wake';cat.t=1.2;} // curtains closed: hop off the ledge
+ if(cat.state==='sleep'&&!drag.on){cat.coverChk=(cat.coverChk||0)-dt;if(cat.coverChk<=0){cat.coverChk=.5;const f=catFrame();cat.hidden=catCover(cat.x,cat.y,cat.sc,f)>COVER_MAX?(cat.hidden||0)+.5:0;}
+  if((cat.hidden||0)>=1.5){cat.hidden=0;cat.state='wake';cat.t=0;}} // a plant moved, scooted, wandered or grew in front of him: after a moment he gets up and walks somewhere he can be seen
  if(cat.state==='sleep'){cat.nap-=dt;if(cat.nap<=0){cat.state='wake';cat.t=0;cat.pets=0;trustGain(.015);}} // a nap left undisturbed builds trust
  else if(cat.state==='sniff'){if(cat.t>1.6){cat.state='wake';cat.t=1.2;}}
  else if(cat.state==='wake'){if(cat.t>2.6){catGo(catPick());}}
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
- else if(cat.state==='walk'){const p=cat.path[0];if(!p){const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){st.listen=3;sfx('purr');if(!st.taught.catPlant){st.taught.catPlant=1;say('The cat curled up next to your plant. They like each other.',6);}}return;}
+ else if(cat.state==='walk'){const p=cat.path[0];if(!p&&!spotVisible(CAT_SPOTS[cat.to])&&(cat.retry=(cat.retry||0)+1)<6){catGo(catPick(cat.to));return;} // a plant moved in front while he walked: he never stops behind it
+  if(!p){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){st.listen=3;sfx('purr');if(!st.taught.catPlant){st.taught.catPlant=1;say('The cat curled up next to your plant. They like each other.',6);}}return;}
   if(p.hop){cat.x=p.x;cat.y=p.y;cat.path.shift();return;} // hop up/down: one quick jump
   const dx=p.x-cat.x,sp=110*dt;if(Math.abs(dx)<=sp){cat.x=p.x;cat.y=p.y;cat.path.shift();}else{cat.dir=Math.sign(dx);cat.x+=cat.dir*sp;cat.y=p.y;}
   cat.sc+=((cat.path.length?.6:CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
