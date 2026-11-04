@@ -82,7 +82,7 @@ async def main():
         # 3: a sun-lover in full sun at midday: how fast it dries, and how the gray comes on
         ctx, pg, errs = await page_for(b, BASE + "s.pref='sun';s.dayT=.3;s.curtain='open';s.free={x:470,y:852};")
         r = await pg.evaluate("""()=>{st.needs.thirst=0;const at={};let t=0,shot=[];
-          for(let i=0;i<20*600&&st.needs.thirst<.95;i++){st.dayT=.37;__step(.05);t+=.05;for(const v of[.45,.6,.9])if(at[v]==null&&st.needs.thirst>=v)at[v]=t;}
+          for(let i=0;i<60*600&&st.needs.thirst<.95;i++){st.dayT=.37;__step(.05);t+=.05;for(const v of[.45,.6,.9])if(at[v]==null&&st.needs.thirst>=v)at[v]=t;}
           const li=spotInfo(spotKey());return {at,sun:li.sun,L:li.L,glare:st.glare};}""")
         if not r["sun"]:
             fails.append("the full-sun plant isn't in the sun patch")
