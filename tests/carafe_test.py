@@ -2,7 +2,8 @@
 
 Run from the repository root:  python tests/carafe_test.py
 On an iPhone 13 held sideways (touch), for a kid and for an adult: pick up the carafe and check that the tilt and pour
-frames are drawn mirrored (spout on the left), that the carafe sits up and to the left of the finger, that tapping
+frames face the way the carafe moved (mirrored when moving left; a jiggle under 12 px never flips it, holding still keeps
+its facing, the spout is always on the side it faces), that the carafe sits up and to the left of the finger, that tapping
 with the spout over the plant waters it (drops land under the spout), and that a tap with only the finger on the plant
 but the spout off it doesn't pour. Then the journal's left-handed setting: frames not mirrored, carafe up and to the
 right of the finger, spout on the right, watering still works. Screenshots of each pour go to tests/screenshots/carafe/.
@@ -20,7 +21,6 @@ PLANTS = {
 }
 SPY = "()=>{if(window._spy)return;window._spy=1;const o=drawCarried;drawCarried=function(...a){window._dc={src:a[0]&&a[0].src.split('/').pop(),x:a[1],y:a[2],flip:!!a[4]};return o.apply(this,a);};}"
 # a finger position that puts the stream's end on the plant, a third of the way down
-AIM = "()=>{const b=plantBox(),d=pourPoint(0,0,depthK(plantDepth()));return {x:b.x+b.w/2-d.x,y:b.y+b.h*.3-d.y};}"
 CLIP = "([x,y])=>{const r=cv.getBoundingClientRect(),b=plantBox(),x0=Math.min(x-200,b.x-40),x1=Math.max(x+120,b.x+b.w+40),y0=Math.min(y-200,b.y-60),y1=Math.max(y+60,baseY()+20);return {x:r.left+Math.max(0,x0)*S,y:r.top+Math.max(0,y0)*S,width:(Math.min(1670,x1)-Math.max(0,x0))*S,height:(Math.min(942,y1)-Math.max(0,y0))*S};}"
 
 
@@ -69,18 +69,29 @@ async def main():
                     await pg.locator(".screen button", has_text="Close").tap()
                     await pg.evaluate("()=>__step(.2)")
                     await pg.evaluate("()=>{st.needs.thirst=.7;}")
-                mirrored = hand == "right"
+                mirrored = hand == "right"  # the pour below comes in from the right for right-handed play (facing left), from the left when left-handed
 
-                # away from the plant: the tilt frame, up and to the side of the finger
+                # away from the plant: the tilt frame, up and to the thumb-free side of the finger; it faces the way it moved
                 await pick_up()
-                dc = await hold_at(400, 300)
+                dc = await hold_at(400, 300)  # moved left from the stool
                 check(dc and dc["src"] == "carafe_tilt.png", f"{name}/{hand}: not the tilt frame away from the plant: {dc}")
-                check(dc and dc["flip"] == mirrored, f"{name}/{hand}: tilt frame mirrored={dc and dc['flip']}, expected {mirrored}")
-                check(dc and dc["y"] < 300 and ((dc["x"] < 400) if mirrored else (dc["x"] > 400)),
-                      f"{name}/{hand}: carafe not up and to the {'left' if mirrored else 'right'} of the finger: {dc}")
+                check(dc and dc["flip"], f"{name}/{hand}: moving left, it should face left (mirrored): {dc}")
+                check(dc and dc["y"] < 300 and ((dc["x"] < 400) if hand == "right" else (dc["x"] > 400)),
+                      f"{name}/{hand}: carafe not up and to the {'left' if hand == 'right' else 'right'} of the finger: {dc}")
+                # turning: a jiggle doesn't flip it, a few pixels the new way does, holding still keeps it
+                for x, want, what in ((406, True, "a 6 px jiggle right flipped it"), (400, True, "jiggling back flipped it"),
+                                      (414, False, "14 px to the right didn't turn it to face right"), (414, False, "held still, it turned back"),
+                                      (420, False, "moving on right turned it"), (412, False, "an 8 px jiggle left flipped it"),
+                                      (406, True, "14 px back to the left didn't turn it to face left")):
+                    dc = await hold_at(x, 300)
+                    check(dc and dc["flip"] == want, f"{name}/{hand}: {what}: {dc}")
+                    sp = await pg.evaluate(f"()=>pourPoint({x},300,1)")
+                    check((sp["x"] < dc["x"]) if want else (sp["x"] > dc["x"]), f"{name}/{hand}: the spout isn't on the side it faces ({sp} vs carafe {dc})")
 
                 # the spout over the plant: the pour frame, and a tap waters it
-                aim = await pg.evaluate(AIM)
+                face = -1 if mirrored else 1
+                aim = await pg.evaluate(f"()=>{{const d0=carryFace.dir;carryFace.dir={face};const b=plantBox(),d=pourPoint(0,0,depthK(plantDepth()));carryFace.dir=d0;return {{x:b.x+b.w/2-d.x,y:b.y+b.h*.3-d.y}};}}")
+                await hold_at(aim["x"] - face * 80, aim["y"])  # come in from the far side, moving the way it should face
                 dc = await hold_at(aim["x"], aim["y"])
                 if not dc:
                     fails.append(f"{name}/{hand}: nothing carried"); break
