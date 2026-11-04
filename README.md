@@ -50,6 +50,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 
+`python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed. It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
+
 `python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
 
 `python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
@@ -126,6 +128,13 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Carafe: pours from the left for right-handed play (Nov 3)
+
+- With the phone held sideways in the right hand, the tilt and pour frames used to lean toward your thumb. They're now drawn mirrored (flipped when drawn; `carafe_tilt.png` and `carafe_pour.png` are unchanged), so the spout is on the left.
+- The carried carafe sits a little up and to the left of your finger, so your thumb doesn't cover it or the spout.
+- The pour frame, the "is it over the plant" check and the drops all follow the spout, not your finger: it waters when the end of the stream is over the plant.
+- Journal → Settings → left-handed flips it back: the spout is on the right and the carafe sits up and to the right of your finger. It's one setting for the whole room, and it's saved.
 
 ### Captions: a cozy speech bubble that doesn't nag (Nov 3)
 

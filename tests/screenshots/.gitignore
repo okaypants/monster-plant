@@ -23,3 +23,6 @@
 # and the caption bubble (tests/caption_test.py)
 !captions/
 !captions/*.png
+# and pouring the carafe, right- and left-handed (tests/carafe_test.py)
+!carafe/
+!carafe/*.png

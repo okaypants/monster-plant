@@ -98,7 +98,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(lightMap&&st.started)drawLightTags(); // debug only: labels and legend on top
  const ph=phase(st.dayT);
  if(held.tool){const x=mx|0,y=my|0;
-  if(held.tool==='can'){const over=onPlant(x,y+60);drawCarried(over?CARRY.pour:CARRY.tilt,x,y);}
+  if(held.tool==='can')drawCarafeHeld(x,y);
   else if(held.tool==='snack'){drawCarried(TREAT_IMG[held.item.id],x,y,.4);}
   else{g.fillStyle=C.out;g.fillRect(x-28,y-36,56,72);g.fillStyle={fairy:C.coral,almanac:C.blue,nonsense:C.fl3,grimoire:'#2d1824'}[held.item.id];g.fillRect(x-24,y-32,48,64);g.fillStyle=C.ivory;g.fillRect(x-16,y-20,32,4);}}
 }
