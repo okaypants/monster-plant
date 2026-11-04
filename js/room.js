@@ -28,6 +28,7 @@ const PERCH={kid:['crate','books'],teen:['crate','books','chair'],adult:['chair'
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}
+const SPARKLE_SC=.35; // half the old size
 const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
 /* PERSPECTIVE (Nov 4): ONE scale curve for everything. A spot's depth is the row where its furniture touches the floor
    (the armchair's feet, the book stack's bottom...), not the surface the plant sits on; on the rug it's the plant's own row.
@@ -111,11 +112,12 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
    else if(where==='ll'){x=b.x-M*.5-w/2;y=base-h/2;}else if(where==='lr'){x=b.x+b.w+M*.5+w/2;y=base-h/2;}
    else if(where==='think'){x=b.x+b.w+w*.32;y=Math.min(top,vt+40)+h*.15;}
    else if(where==='zzz'){x=b.x+b.w+w*.2;y=Math.min(top,vt+40)+h*1.4;}
+   else if(where==='side'){x=b.x+b.w-w*.1;y=b.y+b.h*.3;} // tucked against its upper right side, half on the plant
    else if(where==='topL'){x=cx-w*.75;y=top-M*.6-h/2;}else if(where==='topR'){x=cx+w*.75;y=top-M*.6-h/2;}
    fx(n,x,y,rate,ph,sc);};
   if(st.glare===2){fx('flames',cx,top-14-sz('flames')[1]/FX_SCALE*.27/2,5,0,.27);}
   if((st.nap>0||st.night)&&st.stage>=4){const[w,h]=[sz('zzz')[0]/FX_SCALE*.5,sz('zzz')[1]/FX_SCALE*.5];sleepZ('p'+st.id,b.x+b.w+w*.2,Math.min(top,vt+40)+h*1.4,.5);} // only plants whose eyes can close (elders' face kit); babies have their eyes drawn in // Zzz only when actually asleep (eyes closed); too dark = hunching smaller only
-  if(st.listen>0)slot('sparkles','mr',3);
+  if(st.listen>0)slot('sparkles','side',3,0,SPARKLE_SC); // smaller and close in (Jackie): it was as big as a kid's face and drifted onto the next plant
   if(st.over>0&&st.overType!=='water'&&!(st.listen>0))slot('sweat','mr',2);
   // thirst = fading to gray only (Jackie: no dust/crack marks)
  }
