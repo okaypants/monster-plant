@@ -19,7 +19,7 @@ from playwright.async_api import async_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHOTS = os.path.join(ROOT, "tests", "screenshots")
-PORT = 8765
+PORT = int(os.environ.get("MP_PORT", 8765))  # another checkout running its tests at the same time: MP_PORT=8791 python tests/...py
 MINUTE = 60  # seconds of game time per case
 STEP_MS = 50  # game-loop frame length (the game caps a frame at 100 ms)
 

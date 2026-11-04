@@ -21,6 +21,10 @@ const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtain
 const SURFACE={sill:564,desk:558,crate:639,books:652,chair:656,bed:888,floor:925};
 const SPOT={sill:{x:478,y:SURFACE.sill},desk:{x:1236,y:SURFACE.desk},crate:{x:338,y:SURFACE.crate},books:{x:978,y:SURFACE.books},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','rugR']};
+SPOT.chair={x:628,y:SURFACE.chair,name:'in the armchair'};
+// WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big
+// for those and stand on the floor. Teens and adults can also sit in the armchair awake (any age can nap there). st.perch = the furniture, or null = the floor.
+const PERCH={kid:['crate','books'],teen:['crate','books','chair'],adult:['chair']};
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}
@@ -33,14 +37,30 @@ const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
 const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:767/* book stack bottom */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
 function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
 function spotDepth(k){return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
-function freeClear(x,y){return otherPos().every(q=>q.g!=='grown'||Math.abs(q.x-x)>250);} // side by side, never hidden behind each other
+/* NEVER SHARING A SPACE (Jackie, Nov 4): "I never want them sharing a space or on top of each other." A plant may only go where its sprite
+   wouldn't overlap any other plant's (the side 15% of each box is mostly empty leaves, so it doesn't count). */
+function boxAt(perch,x,y){const p0=st.perch,f0=st.free;st.perch=perch;if(!perch)st.free={x,y};
+ try{return plantBoxRaw();}finally{st.perch=p0;st.free=f0;if(f0)SPOT.free={x:f0.x,y:f0.y,name:''};}} // where this plant's sprite would be on that perch (null = the floor at x,y)
+function boxesOverlap(a,b){const ia=a.w*.15,ib=b.w*.15;return a.x+ia<b.x+b.w-ib&&b.x+ib<a.x+a.w-ia&&a.y<b.y+b.h&&b.y<a.y+a.h;}
+function spaceFree(perch,x,y){const me=boxAt(perch,x,y);return otherPos().every(q=>!q.box||!boxesOverlap(me,q.box));}
+function freeClear(x,y){return spaceFree(null,x,y);} // a clear bit of floor: side by side, never in front of or behind another plant
+// the clear floor spot nearest (x,y), searching the whole rug; null if there's none
+function nearestClearFloor(x,y){const c=[];for(let fx=FLOOR_X0;fx<=FLOOR_X1;fx+=20)for(let fy=FLOOR_BACK;fy<=FLOOR_FRONT;fy+=16)c.push([fx,fy,Math.hypot(fx-x,(fy-y)*2)]);
+ c.push([Math.round(clamp(x,FLOOR_X0,FLOOR_X1)),Math.round(clamp(y,FLOOR_BACK,FLOOR_FRONT)),-1]);c.sort((a,b)=>a[2]-b[2]);
+ for(const[fx,fy]of c)if(freeClear(fx,fy))return {x:fx,y:fy};return null;}
 function defaultFree(){const r=st.place&&SPOT[st.place.grown]?st.place.grown:({sun:'rugL',shade:'rugR',night:'rugR'}[st.pref]||'rugC');
  const c=[r,'rugL','rugC','rugR'].map(k=>[SPOT[k].x,SPOT[k].y]).concat([[400,800],[700,800],[1300,800],[1000,860]]);for(const[x,y]of c)if(freeClear(x,y))return {x,y};return {x:c[0][0],y:c[0][1]};}
+function perchTaken(k){return otherPos().some(q=>q.k===k)||(k==='chair'&&chairId!=null&&chairId!==st.id);} // one plant per piece of furniture (a napper in the armchair counts)
 function spotKey(){const gp=stageGroup();st.place=st.place||{};
- if(gp==='grown'){if(!st.free)st.free=defaultFree();SPOT.free={x:st.free.x,y:st.free.y,name:''};return 'free';}
+ if(gp!=='seed'){const a=ageName();
+  if(st.perch===undefined)st.perch=a==='kid'?kidDefault():null; // old saves and new kids: a kid starts on the crate or book stack, a teen or adult on the floor
+  if(st.perch&&!PERCH[a].includes(st.perch))st.perch=null; // grew too big for it: down to the floor
+  if(st.perch)return st.perch;
+  if(!st.free)st.free=defaultFree();SPOT.free={x:st.free.x,y:st.free.y,name:''};return 'free';}
  const k=st.place[gp];if(GROUPS[gp].includes(k))return k;
- const hid=k=>otherPos().some(q=>q.g==='grown'&&Math.abs(q.x-SPOT[k].x)<260); // a grown plant standing in front would hide a new seed
+ const hid=k=>otherPos().some(q=>q.k==='free'&&Math.abs(q.x-SPOT[k].x)<260); // a plant standing on the floor in front would hide a new seed
  const def={seed:hid('sill')&&!hid('desk')?'desk':'sill',baby:'books'}[gp],taken=otherPos().filter(q=>q.g===gp).map(q=>q.k),pick=taken.includes(def)?(GROUPS[gp].find(x=>!taken.includes(x))||def):def;st.place[gp]=pick;return pick;}
+function kidDefault(){const k=st.place.baby;if(GROUPS.baby.includes(k)&&!perchTaken(k))return k;return GROUPS.baby.find(x=>!perchTaken(x))||null;} // the book stack or crate, whichever is free (else the floor)
 function spotLight(){return spotInfo(spotKey()).L;} // light zones live in light.js
 function nudgeSun(){if(st.night||st.mode==='ambient')return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
@@ -73,17 +93,17 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(lightMap&&st.started)drawLightMap(); // debug only: under the plants and cat
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
- if(drag.on&&stageGroup()!=='grown'){for(const k of GROUPS[stageGroup()]){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,stageGroup()==='grown'?120:stageGroup()==='baby'?70:44,stageGroup()==='grown'?22:12,0,0,Math.PI*2);g.fill();}}
+ if(drag.on){const gp=stageGroup();for(const k of gp==='seed'?GROUPS.seed:PERCH[ageName()].filter(k=>!perchTaken(k))){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,k==='chair'?110:gp==='seed'?44:70,12,0,0,Math.PI*2);g.fill();}}
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
   if(!catDone)drawCat();}
  function drawOnePlant(){let b;const pb=plantBox();
   if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
-  b=drawPlant();if(onChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
+  b=drawPlant();if(inChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
   const cx=b.x+b.w/2,top=b.y;
   // each reaction has its own slot around the plant, outside its outline (Jackie: no overlaps, more space)
-  const base=baseY(),M=34,vh=onChair()?b.h:Math.max(b.h,440),vt=base-vh; // small plants get a taller virtual box so slots never stack
+  const base=baseY(),M=34,vh=inChair()?b.h:Math.max(b.h,440),vt=base-vh; // small plants get a taller virtual box so slots never stack
   const sz=n=>{const f=FX[n][0];return ok(f)?[f.naturalWidth*FX_SCALE,f.naturalHeight*FX_SCALE]:[0,0];};
   const slot=(n,where,rate,ph=0,sc)=>{const[w,h]=sc?[sz(n)[0]/FX_SCALE*sc,sz(n)[1]/FX_SCALE*sc]:sz(n);let x,y;
    if(where==='ul'){x=b.x-M-w/2;y=vt+h/2;}else if(where==='ur'){x=b.x+b.w+M+w/2;y=vt+h/2;}
