@@ -4,11 +4,19 @@
 // New cat (Nov 3 redesign; old frames in old_cat/). Extras wait for the jump, play and "had enough" moments: leaps, play bow, crouches, grooming, stand, annoyed, back turned.
 const CATF={};['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','walkL1','walkL2','yawn','belly','scratcher1','scratcher2',
  'leap_r','leap_l','playbow','pounce','stalk','groom1','groom2','stand_side','stand_front','annoyed','back'].forEach(n=>{CATF[n]=img('cat_'+n+'.png');CATF[n].catName=n;});
+// OLD CAT (Jackie, Nov 4: "I miss the old cat for now"): true draws the pre-redesign frames from old_cat/ at their own size (they were drawn at room scale).
+// The new cat's PNGs stay as they are; set OLD_CAT=false to bring him back. Poses only the new cat has borrow the nearest old frame,
+// walking left mirrors the old walk (as the old cat did), and there's no back-scratcher.
+const OLD_CAT=true;
+if(OLD_CAT){const OLD=['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn'];
+ for(const n of OLD){CATF[n]=img('old_cat/cat_'+n+'.png');CATF[n].catName=n;CATF[n].old=true;}
+ Object.assign(CATF,{walkL1:CATF.walk1,walkL2:CATF.walk2,belly:CATF.pet1,annoyed:CATF.sit1,back:CATF.sit1,groom1:CATF.sit1,groom2:CATF.sit2,
+  stand_side:CATF.walk1,stand_front:CATF.sit1,stalk:CATF.walk1,pounce:CATF.walk2,playbow:CATF.loaf1,leap_r:CATF.walk1,leap_l:CATF.walk1});}
 // SIZE: one cat scale. The new cat is drawn smaller than the old one, so CAT_K brings him back to the old size in the room (old sit 218 px tall, new 168).
 // cat_poses.png (and the back-scratcher drawn to match it) is drawn bigger than cat_design.png (sit-blink 204 px vs sit 168), so its frames get POSES_K on top: every frame is the same cat size.
 // The side-asleep pair (cat_side_sheet.png, replacing the poses-sheet sleeper) is drawn about 2x bigger again; SIDE_K makes him exactly as tall as the sleeper he replaces (140 px on the poses sheet, 289 here).
 const CAT_K=218/168,POSES_K=168/204,SIDE_K=POSES_K*140/289,POSES_SHEET=['sit2','pet1','pet2','yawn','loaf2','curl2','annoyed','back','scratcher1','scratcher2'];
-const catK=f=>CAT_K*(POSES_SHEET.includes(f.catName)?POSES_K:f.catName==='side1'||f.catName==='side2'?SIDE_K:1);
+const catK=f=>f.old?1:CAT_K*(POSES_SHEET.includes(f.catName)?POSES_K:f.catName==='side1'||f.catName==='side2'?SIDE_K:1);
 // back-scratcher: where its top-left sits on the cat frame, in that frame's own pixels (tines on his crown, or on his tummy when he rolls belly-up)
 const SCRATCH_AT={pet:[48,-115],belly:[108,-85]};
 // his size comes from the one perspective curve (depthK in room.js): CAT_BASE at the front of the rug, smaller at deeper spots
@@ -76,15 +84,16 @@ const catPetF=()=>Math.floor(T*4)%2; // petted frame; the back-scratcher rocks w
 // BREATHING (Jackie, calm-down): almost completely still. Once every ~4.6 s the body (not the paws) rises 1 px for about 1.8 s, then settles back.
 // Whole pixels only; never more than 1 px. Drawn by repeating one row low in the body, so he stays on his surface.
 const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.7?1:0;};
-function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge();return {f,k,x:Math.round(cat.x-w/2)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
+function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
 function catPose(){if(cat.state==='annoyed')return 'annoyed';if(cat.state==='settle')return (cat.huffF||'back').replace(/[0-9]/g,'');if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
+function catImg(f,x,y,w,h){if(f.old&&cat.state==='walk'&&cat.dir<0){g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring his walk
 function drawCat(){const b=catBox();if(!b)return;g.save();g.imageSmoothingEnabled=false; // crisp: no smoothing when scaled
  if(cat.state==='sleep'&&catBreath()){const sy=b.y+Math.round(b.h*.62); // breathing in: everything above this row is drawn 1 px higher, the row repeats, the paws stay put
-  g.save();g.beginPath();g.rect(b.x-2,sy,b.w+4,b.h);g.clip();g.drawImage(b.f,b.x,b.y,b.w,b.h);g.restore();
-  g.save();g.beginPath();g.rect(b.x-2,b.y-4,b.w+4,sy-b.y+4);g.clip();g.drawImage(b.f,b.x,b.y-1,b.w,b.h);g.restore();}
- else g.drawImage(b.f,b.x,b.y,b.w,b.h);
- if(cat.state==='pet'){const s=CATF['scratcher'+(catPetF()+1)];if(ok(s)){const k=cat.sc*catK(s),[ox,oy]=SCRATCH_AT[cat.belly?'belly':'pet'];  // offsets are in the cat frame's own pixels
+  g.save();g.beginPath();g.rect(b.x-2,sy,b.w+4,b.h);g.clip();catImg(b.f,b.x,b.y,b.w,b.h);g.restore();
+  g.save();g.beginPath();g.rect(b.x-2,b.y-4,b.w+4,sy-b.y+4);g.clip();catImg(b.f,b.x,b.y-1,b.w,b.h);g.restore();}
+ else catImg(b.f,b.x,b.y,b.w,b.h);
+ if(cat.state==='pet'&&!OLD_CAT){const s=CATF['scratcher'+(catPetF()+1)];if(ok(s)){const k=cat.sc*catK(s),[ox,oy]=SCRATCH_AT[cat.belly?'belly':'pet'];  // offsets are in the cat frame's own pixels
    g.drawImage(s,Math.round(b.x+ox*b.k),Math.round(b.y+oy*b.k),Math.round(s.naturalWidth*k),Math.round(s.naturalHeight*k));}}
  g.restore();
  if(cat.state==='sleep')sleepZ('cat',b.x+b.w*.15,b.y-6,.3);}
@@ -117,7 +126,7 @@ function petCat(){const tr=catTrust();if(cat.state==='walk'||cat.state==='annoye
   if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell('The cat is still shy. Let it nap, and say hi when it wakes up.',{kind:'teach',key:'catShy'});return;}
   cat.state='sniff';cat.t=0;trustGain(.06);tell('It sniffs your hand. That\'s a start.',{kind:'teach',key:'catSniff',who:'cat'});return;}
  const max=tr>=TRUST_FOND?3:1;if(cat.pets>=max){catLeave();return;} // enough for now: it wanders off, no penalty
- cat.state='pet';cat.t=0;cat.pets++;cat.belly=tr>=TRUST_BFF&&Math.random()<.35; // very trusting: sometimes rolls belly-up for a tummy scratch
+ cat.state='pet';cat.t=0;cat.pets++;cat.belly=!OLD_CAT&&tr>=TRUST_BFF&&Math.random()<.35; // very trusting: sometimes rolls belly-up for a tummy scratch
 sfx('purr');fplay('cat_purr');if(b)burst('heart',b.x+b.w/2,b.y,tr>=TRUST_FOND?2:1);trustGain(tr>=TRUST_FOND?.03:.04);
  if(cat.spot==='byplant'&&st.stage>=4){const pb=plantBox();burst('heart',pb.x+pb.w*.15,pb.y-20,1);st.listen=2;st.needs.attention=Math.max(0,st.needs.attention-.15);}
  tell('The cat purrs. It naps all over the room and keeps your plant company when it curls up nearby.',{kind:'teach',key:'cat'});}

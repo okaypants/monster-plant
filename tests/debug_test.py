@@ -112,7 +112,7 @@ async def main():
         await dbg("Book stack").tap(); await step()
         check(await pg.evaluate("()=>cat.spot") == "books", "send cat to the book stack")
         await choose("Pose", "groom1")
-        check(await pg.evaluate("()=>catFrame().catName") == "groom1", "cat pose")
+        check(await pg.evaluate("()=>catFrame()===CATF.groom1"), "cat pose")
         await pg.screenshot(path=os.path.join(OUT, "phone_2_changes_applied.png"))
 
         # Effects
