@@ -90,10 +90,12 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   slider(b,'Fullness',0,1,.01,()=>pRaw().full||0,v=>onP(()=>{st.full=v;}));
   toggle(b,'Nap',()=>pRaw().nap>0,v=>onP(()=>{st.nap=v?1e6:0;}));
   const p=pRaw(),gp=p.stage<4?'seed':p.stage===4?'baby':'grown';
-  if(gp==='grown'){slider(b,'Rug x',FLOOR_X0,FLOOR_X1,1,()=>pRaw().free?pRaw().free.x:SPOT.rugC.x,v=>onP(()=>{spotKey();st.free.x=v;st.walk=null;}),v=>String(v));
+  if(gp!=='seed'){const age=ageName(p.stage),SN={crate:'milk crate',books:'book stack',chair:'armchair (awake)'};
+   seg(b,'Spot',[['floor','floor']].concat(PERCH[age].map(k=>[k,SN[k]])),()=>{const q=pRaw();return q.perch||(q.perch===undefined&&age==='kid'?(q.place||{}).baby||'books':'floor');},v=>{onP(()=>{st.perch=v==='floor'?null:v;st.walk=null;st.nap=0;pickChair();});buildDbgSoon();});}
+  if(gp!=='seed'&&!p.perch&&!(p.perch===undefined&&gp==='baby')){slider(b,'Rug x',FLOOR_X0,FLOOR_X1,1,()=>pRaw().free?pRaw().free.x:SPOT.rugC.x,v=>onP(()=>{spotKey();st.free.x=v;st.walk=null;}),v=>String(v));
    slider(b,'Rug y (back ↔ front)',FLOOR_BACK,FLOOR_FRONT,1,()=>pRaw().free?pRaw().free.y:SPOT.rugC.y,v=>onP(()=>{spotKey();st.free.y=v;st.walk=null;}),v=>String(v));
    btns(b,[['By the window',()=>onP(()=>{st.free={x:SPOT.rugL.x,y:SPOT.rugL.y};st.walk=null;})],['By the armchair',()=>onP(()=>{st.free={x:SPOT.rugC.x,y:SPOT.rugC.y};st.walk=null;})],['By the desk',()=>onP(()=>{st.free={x:SPOT.rugR.x,y:SPOT.rugR.y};st.walk=null;})]]);}
-  else seg(b,'Spot',GROUPS[gp].map(k=>[k,{sill:'windowsill',desk:'desk',crate:'milk crate',books:'book stack'}[k]]),()=>(pRaw().place||{})[gp],v=>onP(()=>{st.place=st.place||{};st.place[gp]=v;}));
+  else if(gp==='seed')seg(b,'Spot',GROUPS[gp].map(k=>[k,{sill:'windowsill',desk:'desk',crate:'milk crate',books:'book stack'}[k]]),()=>(pRaw().place||{})[gp],v=>onP(()=>{st.place=st.place||{};st.place[gp]=v;}));
   chips(b,'Charms',SNACKS.map(s=>[s.trait,s.trait]),t=>(pRaw().traits||[]).includes(t),t=>onP(()=>{st.traits=st.traits||[];st.traits=st.traits.includes(t)?st.traits.filter(x=>x!==t):st.traits.concat(t);if(st.wear&&!st.traits.includes(st.wear))st.wear=null;}));
   chips(b,'Titles',Object.entries(TITLES),t=>(pRaw().titles||[]).includes(t),t=>onP(()=>{st.titles=st.titles||[];st.titles=st.titles.includes(t)?st.titles.filter(x=>x!==t):st.titles.concat(t);}));
   btns(b,[['Reset quirks',()=>onP(()=>{st.quirks={};st.quirkT=null;})],['Grow one age',()=>onP(()=>{if(NEXT[st.stage]!=null){st.stage=NEXT[st.stage];st.timer=0;}})]]);
@@ -228,7 +230,7 @@ function drawLightTags(){const rows=[],act=st.id;g.save();
 /* ---------- NUDGE (debug): put one plant (species, age, spot) or the cat (pose, spot) in place, move it 1 px at a time ----------
    Each nudge is saved into NUDGE (js/nudges.js) at once and kept on this device; Copy table gives the text to paste into js/nudges.js for good. */
 let nudgeKey=null;
-const NUDGE_AGE={seed:0,sprout:1,kid:4,teen:6,adult:8},NUDGE_FITS={seed:['sill','desk'],sprout:['sill','desk'],kid:['crate','books','chair'],teen:['rug','chair'],adult:['rug','chair']};
+const NUDGE_AGE={seed:0,sprout:1,kid:4,teen:6,adult:8},NUDGE_FITS={seed:['sill','desk'],sprout:['sill','desk'],kid:['crate','books','rug','chair'],teen:['crate','books','rug','chair'],adult:['rug','chair']};
 const CAT_STATE={curl:'sleep',loaf:'sleep',side:'sleep',sit:'sniff',pet:'pet',belly:'pet',walk:'walk'};
 function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
  q('#nKind').onchange=()=>{q('#nPl').style.display=kind()==='plant'?'':'none';q('#nCt').style.display=kind()==='cat'?'':'none';};
@@ -236,7 +238,7 @@ function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
  q('#nShow').onclick=()=>{if(kind()==='plant'){const age=q('#nAge').value,spot=q('#nSpot').value;
    if(!NUDGE_FITS[age].includes(spot)){say('A '+age+' can\'t use the '+spot+'. Try: '+NUDGE_FITS[age].join(', ')+'.',4,true);return;}
    st.stage=NUDGE_AGE[age];st.started=true;st.place=st.place||{};st.walk=null;st.nap=spot==='chair'?1e6:0; // asleep in the armchair until Done
-   if(spot!=='rug'&&spot!=='chair')st.place[stageGroup()]=spot;pickChair();nudgeKey={kind:'plant',key:(st.species+1)+'|'+age+'|'+spot};}
+   if(stageGroup()==='seed')st.place.seed=spot;else st.perch=spot==='crate'||spot==='books'?spot:null;pickChair();nudgeKey={kind:'plant',key:(st.species+1)+'|'+age+'|'+spot};}
   else{const pose=q('#nPose').value,spot=q('#nCSpot').value,s=spot==='byplant'?plantSideSpot():spot==='floor'?{x:800,y:SURFACE.floor,sc:.6}:CAT_SPOTS[spot];
    if(!s){say('The cat sits by a plant only when a teen or adult is on the rug.',4,true);return;}
    Object.assign(cat,{hold:true,spot:pose==='walk'?'floor':spot,x:s.x,y:s.y,sc:s.sc,pose,state:CAT_STATE[pose],belly:pose==='belly',dir:1,path:null,t:0,nap:1e6});

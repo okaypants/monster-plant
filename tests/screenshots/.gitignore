@@ -29,3 +29,6 @@
 # and one perspective: every age and the cat at every spot (tests/perspective_shots.py)
 !perspective/
 !perspective/*.png
+# and where each age can go (tests/placement_test.py)
+!placement/
+!placement/*.png
