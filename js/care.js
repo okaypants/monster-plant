@@ -9,13 +9,21 @@ function drawCarried(im,x,y,sc=CARRY_SC,flip){if(!ok(im))return;y+=(Math.floor(T
 const CARRY_OFF={x:-60,y:-75},SPOUT={x:69,y:35}; // spout = where the stream ends on carafe_pour.png (336,230 of 365x303), scaled by CARRY_SC, from its centre
 function rightHand(){return !st.leftHand;}
 function carafeAt(x,y){const r=rightHand();return {x:x+(r?CARRY_OFF.x:-CARRY_OFF.x),y:y+CARRY_OFF.y};}
-function pourPoint(x,y,k){const c=carafeAt(x,y),r=rightHand();return {x:c.x+(r?-SPOUT.x:SPOUT.x)*k,y:c.y+SPOUT.y*k};} // k = the carafe's depth scale (holdK)
+/* FACING (Jackie, Nov 4): the carafe faces the way it's moving: right = as drawn (spout on the right), left = mirrored. An instant flip, no
+   turning (DS rule). It only turns after moving FACE_TURN px the new way, so a jiggling or resting finger doesn't flicker it, and it keeps
+   its last facing while held still. Picked up, it starts facing away from your thumb (right-handed: left). */
+const FACE_TURN=12,carryFace={dir:0,far:0};
+function faceAt(x){const f=carryFace;if(!f.dir){f.dir=rightHand()?-1:1;f.far=x;}
+ if((x-f.far)*f.dir>0)f.far=x; // still going the same way: remember how far it got
+ else if(Math.abs(x-f.far)>=FACE_TURN){f.dir=-f.dir;f.far=x;} // moved far enough back the other way: turn
+ return f.dir;}
+function pourPoint(x,y,k){const c=carafeAt(x,y);return {x:c.x+carryFace.dir*SPOUT.x*k,y:c.y+SPOUT.y*k};} // the spout is on the side it faces // k = the carafe's depth scale (holdK)
 function pourOver(x,y,k){if(st.stage<0)return false;const p=pourPoint(x,y,k),b=plantBox();return p.x>=b.x-10&&p.x<=b.x+b.w+10&&p.y>=b.y-150&&p.y<=baseY()+4;} // the stream lands on the plant (falling water reaches it from a little above)
 // PERSPECTIVE: what you carry is sized for the depth of the plant you hold it over (the same curve as everything else), else the front of the room.
 // Never call these inside eachPlant (they loop over the plants themselves).
 function holdK(x,y){let d=DEPTH_FRONT;eachPlant(()=>{if(st.stage>=0&&pourOver(x,y,depthK(plantDepth())))d=plantDepth();});return depthK(d);}
 function overK(x,y){let d=DEPTH_FRONT;eachPlant(()=>{if(onPlant(x,y))d=plantDepth();});return depthK(d);}
-function drawCarafeHeld(x,y){const c=carafeAt(x,y),k=holdK(x,y);let over=false;eachPlant(()=>{if(pourOver(x,y,k))over=true;});drawCarried(over?CARRY.pour:CARRY.tilt,c.x,c.y,CARRY_SC*k,rightHand());}
+function drawCarafeHeld(x,y){faceAt(x);const c=carafeAt(x,y),k=holdK(x,y);let over=false;eachPlant(()=>{if(pourOver(x,y,k))over=true;});drawCarried(over?CARRY.pour:CARRY.tilt,c.x,c.y,CARRY_SC*k,carryFace.dir<0);}
 const SNACKS=[ // Jackie's treats, good -> evil. Treats are optional; regular servings grow a cultivated trait (names are placeholders)
  {id:'solar',name:'Solar gummies',ge:.10,s:'slurp',trait:'Orbiting sun'},
  {id:'peat',name:'Peat moss',ge:.06,s:'crunch',trait:'Moss sprout'},
