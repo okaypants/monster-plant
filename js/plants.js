@@ -53,7 +53,7 @@ function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 //  too much light: burns (burnLv 0-3: squints, leans away, toasty scorched edges and tips; the tiny flame only in the extreme case)
 // The looks are pre-made per image and level and cached; nothing blends live.
 const DRY_FROM=.45,DRY_FULL=.9,DRY_FINE=4,DRY_HEAL=2,NEED_STEP=.5; // gray starts at thirst .45 and is full at .9, in quarter-steps (16 tiny levels, so it comes on gradually); watering brings the color back over 2 s; seconds per step back for the other looks
-const HI_WAIT=40,HI_FLAME=80,WITHER_AT=[6,30,60],BURN_AT=[40,60,80],PUDDLE_T=30; // light timings in game seconds x speed (lightBad); a puddle dries in 30 s
+const LIGHT_OK_FOR=30,HI_WAIT=40,HI_FLAME=80,WITHER_AT=[6,30,60],BURN_AT=[40,60,80],PUDDLE_T=30; // light timings in game seconds x speed (lightBad); a puddle dries in 30 s
 function stepLv(k,target,dt){st[k]=st[k]||0;if(target>=st[k]){st[k]=target;st[k+'T']=0;return;}st[k+'T']=(st[k+'T']||0)+dt;if(st[k+'T']>=NEED_STEP){st[k+'T']=0;st[k]--;}} // worse as it happens, better one step at a time
 function needTick(dt){const dry=st.stage<0?0:Math.floor(clamp((st.needs.thirst-DRY_FROM)/(DRY_FULL-DRY_FROM),0,1)*4*DRY_FINE)/DRY_FINE; // 0-4 in quarter steps
  st.dryRaw=dry>=(st.dryRaw??st.dryLv??0)?dry:Math.max(dry,(st.dryRaw??st.dryLv??0)-dt*4/DRY_HEAL);st.dryLv=Math.ceil(st.dryRaw*DRY_FINE-1e-9)/DRY_FINE; // grays as thirst rises; color returns smoothly
@@ -228,6 +228,8 @@ function plantUpdate(dt){const sp=gameSpeed();
  const li=spotInfo(spotKey());st.light=li.L;
  const ls=st.stage<1?'ok':lightFeel(li,st.pref);
  if(ls!=='ok')st.lightBad+=dt*sp;else{if(st.lightState!=='ok'){met('light');sfx('boing');}st.lightBad=0;} // moving it out fixes it right away
+ // the right light counts for the day once it has spent a little while in it (LIGHT_OK_FOR game s, ~15 s at normal speed), not only when you fix bad light
+ if(ls==='ok'&&st.stage>=1&&!st.night&&!st.met.light){st.lightGood=(st.lightGood||0)+dt*sp;if(st.lightGood>=LIGHT_OK_FOR)met('light');}
  st.lightState=st.lightBad>(ls==='hi'?HI_WAIT:6)?ls:'ok'; // too much light takes a while to bother it
  st.glare=st.lightState!=='hi'?0:li.sun&&st.pref==='night'&&st.lightBad>HI_WAIT+HI_FLAME?2:1; // 1 = squint + lean away; 2 = the little flame, only a night-lover left in midday sun a long while
  if(st.glare===2&&Math.random()<dt*.25)sfx('fsss');
