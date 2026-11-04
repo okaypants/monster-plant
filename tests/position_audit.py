@@ -21,8 +21,8 @@ AGES = {0: "seed", 1: "sprout", 4: "kid", 6: "teen", 8: "adult"}
 # top face of each surface, read from room_day.png (first and last row you can stand on), drawn on the sheets;
 # pictures are judged against the game's exact surface line (SURFACE in js/room.js, inside these bands); floors use the placement line
 BANDS = {"sill": (540, 564), "desk": (526, 558), "crate": (616, 639), "books": (630, 652), "chair": (640, 660), "bed": (867, 888)}
-# every frame the cat can show while he's in a spot (both frames of each nap pose, sit and blink, yawn, petted with the back-scratcher, belly-up)
-NAP_FRAMES = ("curl1", "curl2", "loaf1", "loaf2", "side1", "side2", "sit1", "sit2", "yawn", "pet1", "pet2", "belly")
+# every frame the cat can show while he's in a spot (the one frame of each nap pose, settling awake after he's had enough: eyes-open loaf, annoyed, back turned, grooming; sit and blink, yawn, petted with the back-scratcher, belly-up)
+NAP_FRAMES = ("curl1", "loaf2", "side1", "loaf1", "annoyed", "back", "groom1", "groom2", "sit1", "sit2", "yawn", "pet1", "pet2", "belly")
 RUG = {"rug front left": (300, 918), "rug front center": (545, 918), "rug front right": (1250, 918),
        "rug back left": (300, 790), "rug back center": (545, 790), "rug back right": (1250, 790)}
 
@@ -44,10 +44,10 @@ CAT_JS = """async(items)=>{const out=[];
   if(it.plant)st.free={x:it.plant[0],y:it.plant[1]};T=0;blink=0;parts.length=0;BOING.ox=BOING.oy=0;
   let s=it.spot==='byplant'?plantSideSpot():it.spot==='floor'?{x:it.x,y:925,sc:.6}:CAT_SPOTS[it.spot];
   // every frame: [state, pose, cat.t, T, dir, belly]
-  const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['sleep','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],
+  const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['loafwake','loaf',0,0],annoyed:['annoyed','loaf',0,0],back:['settle','loaf',0,0],groom1:['settle','loaf',0,0],groom2:['settle','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],
    sit1:['sniff','sit',0,.5],sit2:['wake','sit',2,.1],yawn:['wake','sit',0,0],pet1:['pet','pet',0,0],pet2:['pet','pet',0,.3],belly:['pet','pet',0,0,1,1],
    walk1:['walk','walk',0,0],walk2:['walk','walk',0,.2],walkL1:['walk','walk',0,0,-1],walkL2:['walk','walk',0,.2,-1]}[it.pose];
-  Object.assign(cat,{spot:it.spot,x:s.x,y:s.y,sc:s.sc,state:F[0],pose:F[1],t:F[2],dir:F[4]||1,belly:!!F[5],path:null,pets:0,shyT:0});T=F[3];
+  Object.assign(cat,{spot:it.spot,x:s.x,y:s.y,sc:s.sc,state:F[0],pose:F[1],t:F[2],dir:F[4]||1,belly:!!F[5],huffF:it.pose,path:null,pets:0,shyT:0});T=F[3];
   const b=catBox();if(!b){out.push({bottom:-1,y0:0,x0:0,url:''});continue;}const cx=Math.round(b.x+b.w/2),hw=Math.round(b.w*.3);
   draw();const A=g.getImageData(0,0,W,H).data;const keep=cat.x;cat.x=-999;draw();const B=g.getImageData(0,0,W,H).data;cat.x=keep;
   let bottom=-1;for(let y=H-1;y>=0&&bottom<0;y--)for(let x=Math.max(0,cx-hw);x<Math.min(W,cx+hw);x++){const i=(y*W+x)*4;if(Math.abs(A[i]-B[i])+Math.abs(A[i+1]-B[i+1])+Math.abs(A[i+2]-B[i+2])>40){bottom=y;break;}}

@@ -20,10 +20,10 @@ SHOT_JS = """async(it)=>{
  Object.assign(st,{others:[],stage:it.plant?8:-1,species:it.sp||3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null,listen:0});
  if(it.plant)st.free={x:it.plant[0],y:it.plant[1]};T=0;blink=0;parts.length=0;BOING.ox=BOING.oy=0;
  const s=it.spot==='byplant'?plantSideSpot():it.spot==='floor'?{x:it.x,y:925,sc:.6}:CAT_SPOTS[it.spot];
- const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['sleep','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],
+ const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['loafwake','loaf',0,0],annoyed:['annoyed','loaf',0,0],back:['settle','loaf',0,0],groom1:['settle','loaf',0,0],groom2:['settle','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],
   sit1:['sniff','sit',0,.5],sit2:['wake','sit',2,.1],yawn:['wake','sit',0,0],pet1:['pet','pet',0,0],pet2:['pet','pet',0,.3],belly:['pet','pet',0,0,1,1],
   walk1:['walk','walk',0,0],walk2:['walk','walk',0,.2],walkL1:['walk','walk',0,0,-1],walkL2:['walk','walk',0,.2,-1]}[it.pose];
- Object.assign(cat,{spot:it.spot,x:s.x,y:s.y,sc:s.sc,state:F[0],pose:F[1],t:F[2],dir:F[4]||1,belly:!!F[5],path:null,pets:0,shyT:0});T=F[3];
+ Object.assign(cat,{spot:it.spot,x:s.x,y:s.y,sc:s.sc,state:F[0],pose:F[1],t:F[2],dir:F[4]||1,belly:!!F[5],huffF:it.pose,path:null,pets:0,shyT:0});T=F[3];
  const b=catBox();if(!b)return {err:'not drawn'};
  const fx0=fx;fx=()=>{};const grab=()=>{draw();return g.getImageData(0,0,W,H).data;};
  const A=grab(),keep=cat.x;cat.x=-9999;const B=grab();cat.x=keep;let overlap=0;
