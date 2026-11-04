@@ -21,7 +21,6 @@ const FP=[
  {n:'lockbox',x:22,y:672,w:96,h:66,k:.2,d:.1,kick:{vy:-4}},
  {n:'box2',x:1072,y:292,w:82,h:70,k:.2,d:.1,kick:{vy:-4}},
  {n:'moonbox',x:1492,y:412,w:102,h:76,k:.2,d:.1,kick:{vy:-4}},
- {n:'shelfplant',x:1158,y:268,w:126,h:162,k:.08,d:.06,kick:{vx:4}},
 ];
 FP.forEach(p=>{p.ox=0;p.oy=0;p.vx=0;p.vy=0;p.hops=0;p.dust=10;});
 const FSPINE_ROWS=[[146,80,4,224],[248,80,4,212],[456,86,4,92],[568,80,4,218]];
@@ -29,6 +28,10 @@ let fSpines=[],fBits=[],fSnow=[];const fTreats=[];
 const FVINES=[];const VT=16; // finer leaf grid (Jackie): small tiles, and only leaf pixels move
 for(let x=0;x<300;x+=VT)for(let y=10;y<290;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
 for(let x=1462;x<1665;x+=VT)for(let y=66;y<226;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
+// the plant on the trinket shelf rustles like the vines (Jackie, Nov 4): its leaves are small tiles too, instead of the whole plant bouncing
+const SHELF_PLANT={x:1158,y:268,w:126,h:162};
+const SHELF_POT={x:1188,y:320,w:82,h:48}; // its pot's green diamonds look like leaves: the pot stays still
+for(let x=SHELF_PLANT.x;x<SHELF_PLANT.x+SHELF_PLANT.w;x+=VT)for(let y=SHELF_PLANT.y;y<SHELF_PLANT.y+SHELF_PLANT.h;y+=VT)if(x+VT<=SHELF_POT.x||x>=SHELF_POT.x+SHELF_POT.w||y+VT<=SHELF_POT.y||y>=SHELF_POT.y+SHELF_POT.h)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0,shelf:true});
 const FGLOBE={cx:1537,cy:257,r:36},fGlobeKick={x:1494,y:218,w:88,h:86,ox:0,oy:0,vx:0,vy:0,k:.25,d:.12};
 const BOING={oy:0,vy:0,ox:0,vx:0};const FFLOOR=900;
 function fplay(name){/* sound slot for Garry: ammonite_puff, snail_wind, book_slide, pillow_squish, globe_shake, treat_drop, treat_bounce, plant_boing, vine_rustle, glass_clink, drum_tap */}
@@ -36,6 +39,8 @@ const fhit=(p,x,y)=>x>=p.x&&x<p.x+p.w&&y>=p.y&&y<p.y+p.h;
 function fidgetPoke(x,y){
  if(Math.hypot(x-FGLOBE.cx,y-FGLOBE.cy)<FGLOBE.r+8){for(let i=0;i<26;i++){const a=rnd(0,6.28),r=rnd(0,FGLOBE.r-6);fSnow.push({x:FGLOBE.cx+Math.cos(a)*r,y:FGLOBE.cy+Math.sin(a)*r,vx:rnd(-1.5,1.5),vy:rnd(-2.5,.5)});}
   if(fSnow.length>80)fSnow.splice(0,fSnow.length-80);fGlobeKick.vx+=4*(Math.random()<.5?1:-1);fplay('globe_shake');if(st.started&&bump('shakes')>=30)earnPot('frost');return true;}
+ if(x>=SHELF_PLANT.x&&x<SHELF_PLANT.x+SHELF_PLANT.w&&y>=SHELF_PLANT.y&&y<SHELF_PLANT.y+SHELF_PLANT.h){const dir=x<SHELF_PLANT.x+SHELF_PLANT.w/2?1:-1; // a tap rustles the leaves near your finger, away from it
+  for(const v of FVINES)if(v.shelf){const d=Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2));if(d<70)v.vx+=dir*(2.2-d/50)*(.8+Math.random()*.4);}fplay('vine_rustle');return true;}
  for(const p of FP)if(fhit(p,x,y)){
   if(p.hop){p.hops=Math.min(p.hops+1,6);if(p.oy===0&&p.vy===0)p.vy=-5;fplay('snail_wind');return true;}
   const k=p.kick||{};p.vx+=(k.vx||0)*(x<p.x+p.w/2?1:-1);p.vy+=(k.vy||0);
@@ -93,7 +98,7 @@ function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now
  if(!src||!ok(src))return;const pc=(x,y,w,h,ox,oy)=>g.drawImage(src,x,y,w,h,x+Math.round(ox),y+Math.round(oy),w,h);
  const pf=(x,y,w,h,ox,oy,kind)=>{const c=fgPiece(src,x,y,w,h,kind);if(c)g.drawImage(c,x+Math.round(ox),y+Math.round(oy));};
  vineFilter(src);for(const v of FVINES)if(v.on&&Math.round(v.ox))pf(v.x,v.y,v.w,v.h,v.ox,0,'leaf');
- for(const p of FP)if(Math.round(p.ox)||Math.round(p.oy))pf(p.x,p.y,p.w,p.h,p.ox,p.oy,p.n==='shelfplant'?'leaf':'obj');
+ for(const p of FP)if(Math.round(p.ox)||Math.round(p.oy))pf(p.x,p.y,p.w,p.h,p.ox,p.oy,'obj');
  if(Math.round(fGlobeKick.ox)||Math.round(fGlobeKick.oy))pc(fGlobeKick.x,fGlobeKick.y,fGlobeKick.w,fGlobeKick.h,fGlobeKick.ox,fGlobeKick.oy);
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
  g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);
@@ -110,8 +115,8 @@ function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3
 const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
  {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
  {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'armchair',x:500,y:470,w:196,h:90,k:'plain'}]
- .concat(FP.filter(p=>!['bookstack','cratebook'].includes(p.n)).map(p=>({n:p.n,x:p.x,y:p.y,w:p.w,h:p.h,k:p.n==='shelfplant'?'leaf':'obj'})))
- .concat([{n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}]); // seasonal items join this list when they arrive
+ .concat(FP.filter(p=>!['bookstack','cratebook'].includes(p.n)).map(p=>({n:p.n,x:p.x,y:p.y,w:p.w,h:p.h,k:'obj'})))
+ .concat([{n:'shelf plant',...SHELF_PLANT,k:'leaf'},{n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}]); // seasonal items join this list when they arrive
 const IDLE_GAP=[150,300],IDLE_FRAMES=[1,0,1,0],IDLE_MS=90; // seconds between tries; 1 px on two frames
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
