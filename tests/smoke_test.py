@@ -74,6 +74,10 @@ CASES = [
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);"
      "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,
      "(plantCount()===2&&/made a seed together/.test(bubble&&bubble.textContent||''))||'breeding without a yes: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
+    # two plants on the floor, one in the wrong light for a long while, so it walks toward better light (this once crashed: "bd is not defined")
+    ("floor_light_seek", "s.stage=8;s.species=3;s.pref='night';s.free={x:400,y:918};s.giftSeed=1;",
+     "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);swapIn(0);st.lightBad=500;st.lightState='hi';", 1,
+     "!document.getElementById('errbox')||'error box: '+document.getElementById('errbox').textContent"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
