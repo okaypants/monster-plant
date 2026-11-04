@@ -80,7 +80,7 @@ function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.s
   capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-3*u,3*u,bw*S-9*u))+'px';}}
 let bubble=null;
 function closeBubble(){if(bubble){bubble.remove();bubble=null;}}
-function openBubble(x,y,html,binds){closeBubble();const b=document.createElement('div');b.className='bubble';b.innerHTML=html;b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;
+function openBubble(x,y,html,binds){closeBubble();const b=document.createElement('div');b.className='bubble';b.innerHTML=html;b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;b.style.left=clamp(x*S,4,Math.max(4,W*S-b.offsetWidth-4))+'px';b.style.top=clamp(y*S,4,Math.max(4,H*S-b.offsetHeight-4))+'px'; /* kept inside the room */
  const r=b.getBoundingClientRect(),wr=wrap.getBoundingClientRect();if(r.right>wr.right)b.style.left=(wr.width-r.width-6)+'px';if(r.bottom>wr.bottom)b.style.top=(wr.height-r.height-6)+'px';if(r.left<wr.left)b.style.left='6px';if(r.top<wr.top)b.style.top='6px';
  b.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',ev=>{ev.stopPropagation();binds[btn.dataset.k]&&binds[btn.dataset.k]();}));const f=b.querySelector('button');f&&f.focus();}
 function screen(html,binds){const d=document.createElement('div');d.className='screen';d.innerHTML=html;ui.appendChild(d);d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{binds[b.dataset.k](d);}));const f=d.querySelector('button');f&&f.focus();return d;}

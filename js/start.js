@@ -18,7 +18,7 @@ function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n])
    if(st.credit>=1&&st.stage<8){st.stage=NEXT[st.stage]??8;st.credit=0;if(st.stage===6)earnPot('drip');if(st.stage===8)earnPot('speckle');
    const gid=st.id,gt=st.stage===6?'Repotted onto the rug! Its real face is showing now. It\'s a teen!':st.stage===8?'All grown up: an adult, in its biggest pot.':'It\'s '+STAGES[st.stage]+' now, in a bigger pot.';
    setTimeout(()=>{sfx('chime');sfx('boing');tell(gt,{kind:'important',who:gid});},600);}}
- st.met={};st.needs.thirst=Math.max(st.needs.thirst,.65);
+ st.met={};st.lightGood=0;st.needs.thirst=Math.max(st.needs.thirst,.65);
  // COMMITMENT (Jackie): a charm stays while you keep giving its treat; after KEEP days without it, the charm drifts away (it comes back faster: 3 treats)
  const KEEP=3;st.tLast=st.tLast||{};const faded=[];
  for(const t of SNACKS){if((st.traits||[]).includes(t.trait)&&st.day-(st.tLast[t.id]||st.day)>KEEP){st.traits=st.traits.filter(x=>x!==t.trait);st.dormant=(st.dormant||[]).concat(t.trait);st.treats[t.id]=0;if(st.wear===t.trait)st.wear=null;faded.push(t);}}

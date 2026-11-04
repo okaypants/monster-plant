@@ -166,6 +166,13 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 - The old cat has 13 frames. Moments that only the new cat had a drawing for borrow the nearest old one: sitting for annoyed, back turned and grooming; his blink-sit for the slow blink; his normal pet frames instead of belly-up. Walking left mirrors his walk, as he used to. His old pet frames have the back-scratcher drawn in, so the separate one is off.
 - Everything he does stays the same: naps, trust, the had-enough walk-off, never hidden behind a plant.
 
+### Growing up again: the right light counts, and any tap at night says good morning (Nov 4)
+
+- Plants were growing about half as fast as they should. "The right light" only counted for the day when you moved a plant out of bad light, so a plant that sat happily in its right light all day never got it, and topped out at 2 of the 3 needs (about an age every two nights). Now it counts once the plant has spent a little while in its right light that day (LIGHT_OK_FOR = 30 game s, about 15 s at normal speed).
+- The goodnight caption says "Click anywhere to sleep until morning", but only the plant or the armchair worked. Now any tap at night (except the lamps and the curtains, which still switch) offers Good morning. Plants only age at Good morning, so a day has to be put to bed (Say goodnight in the journal) for them to grow.
+- Bubbles stay inside the room when you tap near an edge.
+- `python tests/growth_test.py` checks it: a fully cared-for kid grows overnight, and two nights of light and water grow it again.
+
 ### The carafe faces the way it's moving (Nov 4)
 
 - While you carry the carafe, it faces the way it's moving: right = as drawn (spout on the right), left = mirrored. The tilt and pour frames flip with it, so it always pours from the spout on the side it faces, and the drops and the "over the plant" check follow that spout.
