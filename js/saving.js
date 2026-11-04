@@ -16,6 +16,8 @@ function allRaw(){return [st].concat(st.others||[]);}
 function otherPos(){return allRaw().filter(p=>p.id!==st.id&&p._pos).map(p=>p._pos);}
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.started)st=Object.assign(fresh(),s);}catch(e){}
 st.stage={2:1,3:1,5:6,7:8}[st.stage]??st.stage;if(st.id==null)st.id=1;if(st.nge==null&&st.started){st.nge=Math.abs(st.ge)>.15?st.ge*.8:(Math.random()<.5?.4:-.4);st.nlc=Math.abs(st.lc)>.15?st.lc*.8:(Math.random()<.5?.4:-.4);}st.others=(st.others||[]).map(o=>{const f=fresh(),q={};for(const k in f)if(!GLOBAL.has(k))q[k]=f[k];Object.assign(q,o);if(q.nge==null){q.nge=Math.abs(q.ge)>.15?q.ge*.8:.4*(Math.random()<.5?1:-1);q.nlc=Math.abs(q.lc)>.15?q.lc*.8:.4*(Math.random()<.5?1:-1);}return q;});if(st.speed===1)st.speed=2; // old saves -> the five ages
-function save(){st.lastSeen=Date.now();try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+// TEST MODE (debug): while the debug drawer is open the game plays a copy; saves go to TEST_KEY and the real save (KEY) is never touched.
+let TESTING=false;const TEST_KEY='mp-test';
+function save(){st.lastSeen=Date.now();try{localStorage.setItem(TESTING?TEST_KEY:KEY,JSON.stringify(st));}catch(e){}}
 function withPlant(id,f){if(st.id===id)return f();const i=(st.others||[]).findIndex(q=>q.id===id);if(i<0)return;swapIn(i);try{f();}finally{swapIn(i);}}
 const LOADED_LAST_SEEN=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}').lastSeen||0;}catch(e){return 0;}})();

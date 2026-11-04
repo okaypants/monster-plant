@@ -9,7 +9,8 @@ const STOOL_EMPTY=img('stool_empty.png');
 // exact mixed-lamp rooms from Jackie (used instead of the soft cut-outs when present). key: time + '_' + floor(on/off) + desk(on/off)
 const MIX={golden_onoff:img('room_golden_floorOn_deskOff.png'),golden_offon:img('room_golden_floorOff_deskOn.png'),golden_offoff:img('room_golden_floorOff_deskOff.png'),day_c_onoff:img('room_day_closed_floorOn_deskOff.png'),day_c_offon:img('room_day_closed_floorOff_deskOn.png'),day_offoff:img('room_day_floorOff_deskOff.png'),golden_c_offoff:img('room_golden_closed_floorOff_deskOff.png')}; // _c_ = curtains closed
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
-function seasonNow(){const m=new Date().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
+let SEASON_OVERRIDE=null; // debug: force a season (window and seasonal items); null = from the calendar
+function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=new Date().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
 const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtains cut from Jackie's closed-curtain edit (fabric pixels only)
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
@@ -91,6 +92,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   if(st.over>0&&st.overType!=='water'&&!(st.listen>0))slot('sweat','mr',2);
   // thirst = fading to gray only (Jackie: no dust/crack marks)
  }
+ if(typeof dbgFxDraw==='function')dbgFxDraw(); // debug: effect previews
  fidgetDrawTop();
  for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
  if(lightMap&&st.started)drawLightTags(); // debug only: labels and legend on top

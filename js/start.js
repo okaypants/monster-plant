@@ -24,7 +24,7 @@ function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n])
  if(faded.length)setTimeout(()=>say('Its '+faded.map(t=>t.trait.toLowerCase()).join(' and ')+' drifted away overnight. A few more '+faded.map(t=>t.name.toLowerCase()).join(' or ')+' will bring it back.',8),5500);
 }
 function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
- const d=new Date(),season=['winter','winter','spring','spring','spring','summer','summer','summer','autumn','autumn','autumn','winter'][d.getMonth()];
+ const d=new Date(),season=seasonNow();
  say(`Morning. Day ${st.day} · ${d.toLocaleString('en',{month:'long'})}, ${season}. `+(st.stage>=4&&st.lastNight?st.lastNight:''),8);save();}
 /* ---------- start + quiz ---------- */
 function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=[];

@@ -17,3 +17,6 @@
 # and the cat walking off when he has had enough (tests/cat_huff.py)
 !huff/
 !huff/*.png
+# and the debug drawer on a phone (tests/debug_test.py)
+!debug/
+!debug/*.png
