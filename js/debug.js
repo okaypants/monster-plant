@@ -14,7 +14,7 @@ function leaveTest(keep){if(!TESTING)return;testEpoch++;
  if(!keep){st=Object.assign(fresh(),JSON.parse(realSnap.st));for(const k of Object.keys(cat))delete cat[k];Object.assign(cat,JSON.parse(realSnap.cat));
   if(realSnap.byplant)CAT_SPOTS.byplant=realSnap.byplant;else delete CAT_SPOTS.byplant;CAT_SPOTS.rug.x=realSnap.rugX;}
  SEASON_OVERRIDE=null;FX_OFF.clear();PAUSED=false;lightMap=false;dbgFx=null;if(keep){cat.force=null;cat.hold=false;} // back: the cat is exactly as he was
- held.tool=null;drag.on=false;parts.length=0;zzNow=null;nudgeKey=null;ACT=st.id;pickChair();cap.style.transition='none';cap.style.opacity=0;cap.textContent='';capT=0;capLock=0;_setTimeout(()=>{cap.style.transition='';},50);closeBubble();for(const sc of document.querySelectorAll('.screen'))if(!realSnap.screens.includes(sc))sc.remove(); // no test captions, bubbles or screens left on the real game
+ held.tool=null;drag.on=false;parts.length=0;zzNow=null;nudgeKey=null;ACT=st.id;pickChair();cap.style.transition='none';capClear();_setTimeout(()=>{cap.style.transition='';},50);closeBubble();for(const sc of document.querySelectorAll('.screen'))if(!realSnap.screens.includes(sc))sc.remove(); // no test captions, bubbles or screens left on the real game
  TESTING=false;if(keep)save();realSnap=null;document.body.classList.remove('testing');try{localStorage.removeItem(TEST_KEY);}catch(e){}}
 
 /* ---------- the drawer ---------- */

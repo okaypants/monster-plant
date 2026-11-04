@@ -50,6 +50,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 
+`python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
+
 `python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
@@ -124,6 +126,12 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Captions: a cozy speech bubble that doesn't nag (Nov 3)
+
+- Captions are a cream speech bubble at the top of the room, with a stepped pixel outline (no blur, no shadow). It's small on a phone, never covers a plant's face, and keeps clear of the buttons at the top right. When a plant or the cat is "speaking", a little tail points down at them; tips have no tail. It fades in and out and stays about 1 s per 4 words (at least 3 s).
+- One caption manager (`tell` in core.js) decides what shows. Important lines always get through: welcome back, morning, goodnight, a new seed, a new age, pollen, a title, a new trait, the cat's trust milestones. Teaching tips show once ever, remembered in the save. Replies to what you just did can't repeat within 10 minutes. Ambient chatter (voice lines, quirks, friends and bickering) is limited to one every 45-90 s, and none while you're carrying something, dragging, holding a tap, or reading (treat jar, books, journal).
+- No line repeats within 10 minutes. Neither does one event however it's worded: bickering, making friends, each plant's quirk. Voice lines come from a shuffle bag that never repeats any of the last 15 picked for that event, and stays quiet when every option was used recently. Why: the old bottom caption repeated itself and talked over everything.
 
 ### Debug never changes the real game (Nov 3)
 

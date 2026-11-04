@@ -4,7 +4,7 @@ const W=1670,H=942; // book room v2 (Jackie's curated room)
 const cv=document.getElementById('c'),g=cv.getContext('2d');g.imageSmoothingEnabled=false;
 const wrap=document.getElementById('wrap'),ui=document.getElementById('ui');
 let S=1,FIT_RIGHT=0; // FIT_RIGHT: screen width the debug drawer takes on the right; the room fits beside it instead of under it
-function fit(){const vw=(document.documentElement.clientWidth||innerWidth)-FIT_RIGHT,vh=document.documentElement.clientHeight||innerHeight;S=Math.min(vw/W,vh/H);cv.style.width=W*S+'px';cv.style.height=H*S+'px';wrap.style.width=W*S+'px';wrap.style.height=H*S+'px';wrap.style.left=vw/2+'px';}
+function fit(){const vw=(document.documentElement.clientWidth||innerWidth)-FIT_RIGHT,vh=document.documentElement.clientHeight||innerHeight;S=Math.min(vw/W,vh/H);wrap.style.setProperty('--S',S);wrap.style.setProperty('--u',Math.max(3,Math.round(5*S))+'px');/* --u: one outline 'pixel' of the caption bubble */cv.style.width=W*S+'px';cv.style.height=H*S+'px';wrap.style.width=W*S+'px';wrap.style.height=H*S+'px';wrap.style.left=vw/2+'px';}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));addEventListener('load',fit);setInterval(fit,1000);fit(); // keep the whole room on screen on iPad/phones
 function img(src){const i=new Image();i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
 const ok=i=>i&&i.complete&&i.naturalWidth>0;
@@ -37,8 +37,47 @@ const C={out:'#341839',wine:'#833343',plum:'#490d40',brick:'#b8594d',rust:'#d372
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const rnd=(a,b)=>a+Math.random()*(b-a);
 const P=6; // comic-mark pixel size
 /* ---------- ui helpers ---------- */
-const cap=document.getElementById('caption');let capT=0;
-let capLock=0;function say(t,sec=5,lock){const now=performance.now();if(now<capLock&&!lock){setTimeout(()=>say(t,sec),capLock-now+200);return;}if(lock)capLock=now+sec*1000;cap.textContent=t;cap.style.opacity=1;capT=sec;}
+/* ---------- CAPTIONS (Jackie): a cream pixel speech bubble at the top centre ----------
+   tell(text,{kind,key,who}):
+     important : always shows (welcome back, a new seed, a new age, a bloom, a title...); bumps a chatty line that's up
+     teach     : a teaching tip, shown ONCE EVER (remembered in the save under st.taught[key])
+     info      : a reply to something you just did
+     ambient   : chatter (voice lines, quirks, friends and bickering): at most one every 45-90 s, never while you're busy
+   Nothing but important lines repeats within 10 minutes (by its text, or by key: one event, however it's worded). who = a plant id or 'cat': the bubble gets a little tail pointing at them.
+   Shows about 1 s per 4 words (at least 3 s), fades in and out. */
+const cap=document.getElementById('caption'),capText=cap.querySelector('.ct'),capTail=cap.querySelector('.tail');
+const CAP_REPEAT=10*60*1000,CAP={q:[],cur:null,until:0,nextAt:0,lastAmb:-1e9,ambGap:45+Math.random()*45,seen:new Map(),log:[]};
+function capBusy(){return !!(typeof held!=='undefined'&&held.tool)||!!(typeof drag!=='undefined'&&(drag.on||drag.down))||!!bubble||!!document.querySelector('.screen')||(typeof pointerHeld!=='undefined'&&pointerHeld);} // carrying, dragging, holding a tap, or reading (treat jar, books, journal)
+function capRecent(t){const at=CAP.seen.get(t);return at!=null&&performance.now()-at<CAP_REPEAT;}
+function tell(t,o={}){if(!t)return false;const kind=o.kind||'info',now=performance.now();
+ if(kind==='teach'){const k=o.key||t;st.taught=st.taught||{};if(st.taught[k])return false;st.taught[k]=1;}
+ const rk=kind==='teach'?t:(o.key||t);if(kind!=='important'&&(capRecent(rk)||capRecent(t)))return false;
+ if(CAP.q.some(i=>i.t===t)||(CAP.cur&&CAP.cur.t===t))return false;
+ if(kind==='ambient'){if(!ambientOK())return false;CAP.lastAmb=now;CAP.ambGap=rnd(45,90);}
+ const item={t,rk,kind,who:o.who??null,dur:Math.max(3,t.trim().split(/\s+/).length/4)};
+ if(kind==='important'){const i=CAP.q.findIndex(x=>x.kind!=='important');CAP.q.splice(i<0?CAP.q.length:i,0,item);if(CAP.cur&&CAP.cur.kind==='ambient')CAP.until=now;} // jumps the queue; a chatty line steps aside
+ else{CAP.q=CAP.q.filter(x=>x.kind!=='ambient');CAP.q.push(item);if(CAP.q.length>4)CAP.q.splice(CAP.q.findIndex(x=>x.kind!=='important'),1);}
+ return true;}
+function ambientOK(){return !capBusy()&&!CAP.cur&&!CAP.q.length&&performance.now()-CAP.lastAmb>=CAP.ambGap*1000;}
+function say(t,sec,lock){return tell(t,{kind:lock?'important':'info'});} // older calls; new ones say what kind of line they are
+function quiet(){return !CAP.cur&&!CAP.q.length;}
+function capClear(){CAP.q=[];CAP.cur=null;cap.classList.remove('show');capText.textContent='';}
+function capTick(){const now=performance.now();
+ if(CAP.cur&&now>=CAP.until){CAP.cur=null;cap.classList.remove('show');CAP.nextAt=now+450;}
+ if(!CAP.cur&&CAP.q.length&&now>=CAP.nextAt){const it=CAP.q.shift();CAP.cur=it;CAP.until=now+it.dur*1000;CAP.seen.set(it.t,now);CAP.seen.set(it.rk,now);CAP.log.push({t:it.t,kind:it.kind,at:now});if(CAP.log.length>200)CAP.log.shift();
+  capText.textContent=it.t;cap.classList.toggle('talk',it.who!=null);cap.classList.add('show');capPlace(true);}
+ if(CAP.cur)capPlace(false);}
+// where it sits: top centre, unless that would cover a plant's face; the tail points at whoever is talking
+function capSpeakerX(w){try{if(w==='cat'){const b=catBox();return b?b.x+b.w/2:null;}let x=null;withPlant(w,()=>{if(st.stage>=0){const b=plantBox();x=b.x+b.w/2;}});return x;}catch(e){return null;}}
+function capFaces(){const F=[];try{eachPlant(()=>{if(st.stage<0)return;const b=plantBox();F.push({x0:b.x+b.w*.2,x1:b.x+b.w*.8,y0:b.y+b.h*.2,y1:b.y+b.h*.65});});}catch(e){}return F;}
+let capPlaceT=0;
+function capRight(){const fb=document.getElementById('fsBtn'),r=fb&&fb.getBoundingClientRect(),c=cv.getBoundingClientRect();return r&&r.width?(r.left-c.left)/S-12:W-8;} // keep clear of the buttons at the top right
+function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.6,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=14;
+ if(force||now-capPlaceT>=400){capPlaceT=now;const F=capFaces();let best=Math.min(W/2,R-bw/2); // top centre, or the nearest place along the top that leaves every plant's face clear
+  for(const c of[W/2,W*.36,W*.64,W*.25,W*.75]){const x0=c-bw/2,x1=c+bw/2;if(x0<8||x1>R)continue;if(!F.some(f=>f.x1>x0&&f.x0<x1&&f.y0<top+bh+20)){best=c;break;}}cap.dataset.cx=best;}
+ const cx=+cap.dataset.cx||W/2;cap.style.left=Math.round((cx-bw/2)*S)+'px';cap.style.top=Math.round(top*S)+'px';
+ if(CAP.cur&&CAP.cur.who!=null){const sx=capSpeakerX(CAP.cur.who);if(sx==null){capTail.style.display='none';return;}capTail.style.display='';const u=parseFloat(getComputedStyle(wrap).getPropertyValue('--u'))||3;
+  capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-3*u,3*u,bw*S-9*u))+'px';}}
 let bubble=null;
 function closeBubble(){if(bubble){bubble.remove();bubble=null;}}
 function openBubble(x,y,html,binds){closeBubble();const b=document.createElement('div');b.className='bubble';b.innerHTML=html;b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;
@@ -60,5 +99,5 @@ document.getElementById('fsBtn').addEventListener('click',e=>{e.stopPropagation(
  setTimeout(fit,300);});
 const IPHONE=/iPhone|iPod/.test(navigator.userAgent),HOMESCREEN=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
 if(HOMESCREEN)document.getElementById('fsBtn').style.display='none'; // opened from the Home Screen icon: already full screen
-function fsNo(){say(IPHONE?'iPhone doesn\'t let web pages go full screen. For full screen: open the game in Safari, tap Share, then Add to Home Screen, and play from that icon.':'This browser won\'t let the game go full screen here.',9,true);}
+function fsNo(){tell(IPHONE?'iPhone doesn\'t let web pages go full screen. For full screen: open the game in Safari, tap Share, then Add to Home Screen, and play from that icon.':'This browser won\'t let the game go full screen here.',{kind:'important'});}
 document.addEventListener('fullscreenchange',()=>setTimeout(fit,100));document.addEventListener('webkitfullscreenchange',()=>setTimeout(fit,100));

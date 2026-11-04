@@ -20,3 +20,6 @@
 # and the debug drawer on a phone (tests/debug_test.py)
 !debug/
 !debug/*.png
+# and the caption bubble (tests/caption_test.py)
+!captions/
+!captions/*.png
