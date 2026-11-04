@@ -76,7 +76,7 @@ async def main():
             fails.append(f"settled too close: x{info['x']:.0f}, touched at x{x_touch:.0f}, plant at x{info['plant']:.0f}")
         if not (30 <= info["awake"] <= 90):
             fails.append(f"sits awake {info['awake']:.0f} s, expected 30-90")
-        await pg.evaluate("()=>{window.SEEN=new Set();window.SEENI=setInterval(()=>{if(cat.state==='settle')SEEN.add(catFrame().catName);},50);__step(1);}")
+        await pg.evaluate("()=>{window.SEEN=new Set();window.SEENI=setInterval(()=>{if(cat.state==='settle')SEEN.add(OLD_CAT?cat.huffF:catFrame().catName);},50);__step(1);}")
         await pg.screenshot(path=os.path.join(OUT, "step_3_back_turned.png"), clip=await pg.evaluate(CLIP))
         await until(pg, "cat.huffF==='groom2'")
         await pg.screenshot(path=os.path.join(OUT, "step_4_grooming.png"), clip=await pg.evaluate(CLIP))

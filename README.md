@@ -131,6 +131,12 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### The old cat is back, for now (Nov 4)
+
+- You missed the old cat (the new one looked warped), so `OLD_CAT=true` in js/cat.js draws the old frames from `old_cat/` again, at their own size on the same perspective curve. The new cat's PNGs are untouched; set `OLD_CAT=false` to bring him back.
+- The old cat has 13 frames. Moments that only the new cat had a drawing for borrow the nearest old one: sitting for annoyed, back turned and grooming; his blink-sit for the slow blink; his normal pet frames instead of belly-up. Walking left mirrors his walk, as he used to. His old pet frames have the back-scratcher drawn in, so the separate one is off.
+- Everything he does stays the same: naps, trust, the had-enough walk-off, never hidden behind a plant.
+
 ### One perspective for every size (Nov 4)
 
 - All the separate size rules are now ONE: each spot has a depth, the row where its furniture touches the floor (the armchair's feet, the book stack's bottom, the crate's bottom, the desk's legs, the wall under the windowsill; on the rug, the plant's own row). One straight-line curve gives the scale: 100% at the front of the rug (918), 63% at the back wall (748). `DEPTH`, `depthK` and `spotDepth` in js/room.js.
