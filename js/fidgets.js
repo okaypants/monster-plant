@@ -115,9 +115,10 @@ function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3
 const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
  {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
  {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'armchair',x:500,y:470,w:196,h:90,k:'plain'}]
- .concat(FP.filter(p=>!['bookstack','cratebook'].includes(p.n)).map(p=>({n:p.n,x:p.x,y:p.y,w:p.w,h:p.h,k:'obj'})))
+ .concat(FP.filter(p=>!['bookstack','cratebook','radio','petbed'].includes(p.n)) /* radio and pet bed join when they really work (it plays and tunes; it calls the cat) */.map(p=>({n:p.n,x:p.x,y:p.y,w:p.w,h:p.h,k:'obj'})))
  .concat([{n:'shelf plant',...SHELF_PLANT,k:'leaf'},{n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}]); // seasonal items join this list when they arrive
-const IDLE_GAP=[150,300],IDLE_FRAMES=[1,0,1,0],IDLE_MS=90; // seconds between tries; 1 px on two frames
+const IDLE_GAP=[150,300],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
+// ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
 function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!fDrag.t||!!bubble||!!document.querySelector('.screen');}
@@ -126,4 +127,4 @@ function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
  if(!st.started||touching()||somethingMoving())return; // skipped; the next try is minutes away
  idleOn={it:IDLE_ITEMS[Math.floor(Math.random()*IDLE_ITEMS.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>50)idleLog.shift();}
-function idleOffset(now){return idleOn?IDLE_FRAMES[Math.floor((now-idleOn.t0)/IDLE_MS)]||0:0;}
+function idleOffset(now){return idleOn?(IDLE_FRAMES[Math.floor((now-idleOn.t0)/IDLE_MS)]||0)*ART_PX:0;}
