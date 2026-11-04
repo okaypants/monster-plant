@@ -12,7 +12,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug panel** (top right, "debug"): species, age, speed, time mode, eye style, disposition, light preference, End day, Cat trust +, Add adult, Breed now, Wiggle now (tries an idle wiggle on the next frame), Nudge (put a plant of the chosen species, age and spot, or the cat in a pose and spot, in place and move it 1 px at a time; saved on this device, Copy table for `js/nudges.js`), Light map (the light zones: the window's sun patch, lamp grow-light circles, and how much light each spot gets right now, with each plant's needs), Reset.
+- **Debug drawer** (top right, "debug"): opening it switches to **TEST MODE**, a copy of your real save at that moment. Everything you change happens on the copy, and a red TEST MODE label shows. **Back to my game** brings your real game back exactly as it was. **Keep these changes in my real game** saves them for real, only after a second tap. It slides in on the right, and the room shrinks to fit beside it; **Hide** tucks it away so you can look at the room with your settings (the ◂ debug tab brings it back). Live controls, in collapsible groups: **World** (time of day slider and buttons, season auto/override, day, speed, pause time, clock, curtains, every lamp, light map); **Plants** (a tab per plant; species, age, eyes, light preference, good/evil and lawful/chaotic now and born-with, thirst, lonely, fullness, nap, spot or rug x/y, charms, titles, reset quirks, grow one age, add/remove, make two adults, breed now, end day; changing species or age keeps it the same plant); **Cat** (trust with its level name, state, send to any spot, hold any pose); **Effects and reactions** (on/off and replay for each effect, plus the plant moves, boing, idle wiggle, cat purr); **Presets** (built-in setups, save/load your own on this device, reset to your real save, brand-new game in test mode); **Nudge** (the 1 px positions tool; that table is saved on this device for every game, not in your save).
 
 ## Put it online (GitHub Pages)
 
@@ -48,6 +48,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/cat_huff.py` plays the cat having had enough (petted too many times, touched again while settling, shy) and saves a picture of every step to `tests/screenshots/huff/`.
 
+`python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
+
 `python tests/calm_shots.py` plays the sleeping cat (each nap pose) next to a sleeping plant for 3 minutes each at normal speed and checks the calm-down rules: one still frame per sleeping pose, a 1 px breath every ~4.6 s, one Zzz at a time, every 12-20 s per sleeper. It also times how fast a plant dries in full sun. Pictures go to `tests/screenshots/calm/`.
 
 `python tests/curtain_shots.py` checks closed curtains at day, golden hour and night with a plant in the wrong light: the plant shows it, and the curtains stay perfectly still; saved to `tests/screenshots/curtains/`.
@@ -82,7 +84,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `journal.js` | The desk-drawer journal |
   | `input.js` | Taps, drags, and what each spot in the room does |
   | `start.js` | Title screen, seed quiz, welcome back, goodnight and morning |
-  | `debug.js` | The debug panel |
+  | `debug.js` | The debug drawer and TEST MODE (a copy of the save; the real one is never touched), the Light map, the Nudge tool |
   | `main.js` | The game loop; starts everything |
 - The room is drawn at 1670 × 942 and scaled to fit the screen (whole room always visible).
 
@@ -122,6 +124,11 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing anything.
 
 ## DECISIONS (newest first, with why)
+
+### Debug never changes the real game (Nov 3)
+
+- Opening the debug drawer switches to TEST MODE: the game keeps playing on a copy of the real save, saves go to a separate test slot (`mp-test`), and a red TEST MODE label shows. **Back to my game** brings back the real save and the cat exactly as they were. Anything the game had scheduled for later while testing (a seed arriving after Breed now, a title cheer) is dropped, and test captions are cleared. **Keep these changes in my real game** saves only after a second tap. Why: the old panel changed the real save directly (its Reset even deleted it).
+- The drawer is phone-first: it slides in on the right and the room shrinks to fit beside it, so none of the room is covered. Collapsible groups, big touch targets, sliders for numbers. **Hide** shows the room full size with the settings applied. Presets are kept on the device (`mp-presets`), never in the save.
 
 ### When the cat has had enough, he leaves like a real cat (Nov 3)
 

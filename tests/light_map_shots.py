@@ -42,7 +42,7 @@ async def main():
                     await pg.reload(wait_until="load")
                     await pg.click(".screen button")  # Continue
                     await pg.evaluate("()=>{" + EXTRA + "}")
-                    await pg.click("#dbgBtn"); await pg.click("#dLm"); await pg.click("#dbgBtn")  # Light map on, panel closed
+                    await pg.click("#dbgBtn"); await pg.locator("#dbg .row", has=pg.locator("label", has_text="Light map")).locator("button", has_text="on").click(); await pg.locator("#dbg button", has_text="Hide").click()  # Light map on (debug drawer, test mode), drawer hidden
                     await pg.evaluate("()=>__step(10)")  # curtains settle, captions end, plants notice their light
                     await pg.wait_for_timeout(800)  # the caption's fade-out runs on real time
                     name = f"{t}_curtains-{cur}_lamps-{lamps}.png"
@@ -110,7 +110,7 @@ async def zones(b):
         await pg.reload(wait_until="load")
         await pg.click(".screen button")  # Continue
         if map_on:
-            await pg.click("#dbgBtn"); await pg.click("#dLm"); await pg.click("#dbgBtn")
+            await pg.click("#dbgBtn"); await pg.locator("#dbg .row", has=pg.locator("label", has_text="Light map")).locator("button", has_text="on").click(); await pg.locator("#dbg button", has_text="Hide").click()
         await pg.evaluate("s=>__step(s)", secs)
         if after:
             await pg.evaluate("()=>{" + after + "}")

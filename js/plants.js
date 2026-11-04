@@ -207,7 +207,7 @@ function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toast
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*SEED_K),w,h-Math.round(cut*SEED_K));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*SEED_K));}
  g.restore();}
 function want(n){if(st.stage<0)return false;if(st.stage<4)return n==='thirst'&&st.needs.thirst>.6;return st.needs[n]>.6;}
-function plantUpdate(dt){const sp=st.speed;
+function plantUpdate(dt){const sp=gameSpeed();
  st.listen=Math.max(0,st.listen-dt);st.over=Math.max(0,st.over-dt);st.nap=Math.max(0,st.nap-dt);
  if(st.mv)st.mv.t+=dt;if(st.grump>0)st.grump-=dt;
  needTick(dt); // real seconds, so looks come back over a couple of seconds at any speed
@@ -320,7 +320,7 @@ function seedTick(dt){ // once your first plant is a teen, a seed drifts in thro
  say('Something tapped the window. A seed drifted in and landed in the little pot. You have two plants now: tap one to tend it.',8,true);save();}
 function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
  if(st.night||plantCount()>=3||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
- if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*st.speed;if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
+ if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
  st.bloomT=0;st.breedDay=st.day;const [a,b]=A;crossPollinate(a,b);}
 function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.needs}};const pa=a._pos,pb=b._pos; // snapshot: 'st' changes when the seed arrives
  for(let i=0;i<10;i++)setTimeout(()=>{const t=i/9;burst('heart',pa.x+(pb.x-pa.x)*t,Math.min(pa.y,pb.y)-380-Math.sin(t*Math.PI)*80,1);},i*160);
