@@ -75,7 +75,7 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   toggle(b,'Depth lines',()=>depthLines,v=>{depthLines=v;});});
 
  group(body,'Plants',true,b=>{
-  const tabs=el('div','seg wrap tabs');allRaw().filter(q=>q.stage>=0).forEach((q,i)=>{const t=el('button','',esc((i+1)+'. '+NAMES[q.species]));t.type='button';t.classList.toggle('on',q.id===pRaw().id);t.onclick=()=>{dbgPid=q.id;buildDbg();};tabs.appendChild(t);});b.appendChild(tabs);
+  const tabs=el('div','seg wrap tabs');allRaw().filter(q=>q.stage>=0).forEach((q,i)=>{const t=el('button','',esc((i+1)+'. '+NAMES[q.species]+' ('+ageName(q.stage)+')')); /* the age on each tab: you always see which plant you're changing */t.type='button';t.classList.toggle('on',q.id===pRaw().id);t.onclick=()=>{dbgPid=q.id;buildDbg();};tabs.appendChild(t);});b.appendChild(tabs);
   if(pRaw().stage<0){btns(b,[['Add plant',dbgAddPlant]]);return;}
   pick(b,'Species',NAMES.map((n,i)=>[i,(i+1)+' '+n]),()=>pRaw().species,v=>onP(()=>{st.species=+v;}));
   seg(b,'Age',AGE_OPTS,()=>pRaw().stage,v=>onP(()=>{st.stage=v;st.timer=0;st.walk=null;}));

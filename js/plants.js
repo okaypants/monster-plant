@@ -20,7 +20,7 @@ const TEACH={thirst:'Fading to gray: it\'s thirsty. Water it with the carafe on 
 const NEXT={0:1,1:4,4:6,6:8},AGES=[0,1,4,6,8];
 const ELDER_SCALE={6:.62,7:.62,8:.82}; // shown smaller so elder pixels match the room's (Jackie OK'd); swap to 1 when finer-pixel redraws arrive
 const FACE=[[0.531, 0.511], [0.505, 0.403], [0.487, 0.493], [0.509, 0.409], [0.525, 0.47], [0.508, 0.377], [0.536, 0.435], [0.503, 0.364], [0.51, 0.461], [0.417, 0.516], [0.5, 0.488], [0.497, 0.375], [0.505, 0.376], [0.5, 0.413], [0.506, 0.406], [0.494, 0.456]]; // per-elder face point (fraction of sprite), from blank body area
-function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50){const dx=mx-(pb.x+pb.w/2),dy=my-(pb.y+pb.h*.85);return {...pb,x:pb.x+dx,y:pb.y+dy};}return pb;}
+function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50&&st.id===drag.id){ /* only the plant you grabbed follows your finger */const dx=mx-(pb.x+pb.w/2),dy=my-(pb.y+pb.h*.85);return {...pb,x:pb.x+dx,y:pb.y+dy};}return pb;}
 // NEW teen/adult art per species (Jackie via ChatGPT), shown at target heights: teen 45%, adult 60% of the room
 const NEWART={1:{teen:img('teen_01.png'),adult:img('adult_01.png'),face:{teen:[0.494, 0.398],adult:[0.491, 0.511]}},2:{teen:img('teen_02.png'),adult:img('adult_02.png'),face:{teen:[0.499, 0.363],adult:[0.493, 0.375]}},3:{teen:img('teen_03.png'),adult:img('adult_03.png'),face:{teen:[0.493, 0.477],adult:[0.498, 0.532]}},4:{teen:img('teen_04.png'),adult:img('adult_04.png'),face:{teen:[0.5, 0.503],adult:[0.486, 0.523]}},5:{teen:img('teen_05.png'),adult:img('adult_05.png'),face:{teen:[0.494, 0.414],adult:[0.503, 0.497]}},6:{teen:img('teen_06.png'),adult:img('adult_06.png'),face:{teen:[0.492, 0.401],adult:[0.507, 0.364]}},7:{teen:img('teen_07.png'),adult:img('adult_07.png'),face:{teen:[0.501, 0.445],adult:[0.5, 0.491]}},8:{teen:img('teen_08.png'),adult:img('adult_08.png'),face:{teen:[0.497, 0.352],adult:[0.499, 0.414]}},9:{teen:img('teen_09.png'),adult:img('adult_09.png'),face:{teen:[0.495, 0.42],adult:[0.509, 0.465]}},10:{teen:img('teen_10.png'),adult:img('adult_10.png'),face:{teen:[0.542, 0.48],adult:[0.491, 0.532]}},11:{teen:img('teen_11.png'),adult:img('adult_11.png'),face:{teen:[0.491, 0.53],adult:[0.469, 0.528]}},12:{teen:img('teen_12.png'),adult:img('adult_12.png'),face:{teen:[0.503, 0.431],adult:[0.495, 0.385]}},13:{teen:img('teen_13.png'),adult:img('adult_13.png'),face:{teen:[0.499, 0.242],adult:[0.505, 0.267]}},14:{teen:img('teen_14.png'),adult:img('adult_14.png'),face:{teen:[0.499, 0.289],adult:[0.503, 0.318]}},15:{teen:img('teen_15.png'),adult:img('adult_15.png'),face:{teen:[0.499, 0.368],adult:[0.499, 0.419]}},16:{teen:img('teen_16.png'),adult:img('adult_16.png'),face:{teen:[0.5, 0.419],adult:[0.498, 0.422]}}};
 // AGE SIZES at the front of the rug (100%); depthK shrinks them farther back. A teen is 1.45x a kid, an adult 1.9x (adult = 60% of the room, as Jackie set).
@@ -43,7 +43,7 @@ function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantS
 const CHAIR_SEAT={x:628,y:SURFACE.chair};
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
 const CHAIR_FRONT=[[443,598,80,150],[688,598,78,150],[515,686,178,62]];
-let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!drag.on&&st.id===chairId;}
+let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;}
 function pickChair(){const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
 function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 // NEEDS SHOW ONLY ON THE PLANT (Jackie, Nov 3; RULES.md 10): never on tools, curtains or the room. Each in a few clear steps, and back in steps once the need is met.
@@ -319,10 +319,24 @@ function titleCheck(){const out=[];if(st.ge>.85)out.push('good');if(st.ge<-.85)o
  st.titles=st.titles||[];const id=st.id;for(const t of out)if(!st.titles.includes(t)){st.titles.push(t);setTimeout(()=>withPlant(id,()=>{const b=plantBox();doMove();burst('heart',b.x+b.w/2,b.y-30,4);sfx('chime');tell(who()+' earned a title: '+TITLES[t]+'! (In the journal.)',{kind:'important',who:id});}),2500);}}
 /* ---------- a second seed, and breeding ---------- */
 function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.length-1);ACT=st.id;} // the new one becomes the one you're tending
-function seedTick(dt){ // once your first plant is a teen, a seed drifts in through the open window
- if(st.giftSeed||st.night||plantCount()>=3||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
- if(allRaw().some(q=>q.stage>=0&&q.stage<4))return;st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
- tell('Something tapped the window. A seed drifted in and landed in the little pot. You have two plants now: tap one to tend it.',{kind:'important'});save();}
+/* NEW PLANTS ONLY WITH YOUR OK (Jackie, Nov 4): nothing appears out of nowhere. A seed (the window gift, or one your two adults made)
+   is offered in a little bubble, and planted only if you say yes. "Not now", or tapping away, means no seed; the gift asks again a few days later. */
+let seedOffer=null;
+function offerSeed(o){seedOffer=o;}
+function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.querySelector('.screen'))return; // never while you're busy, in a menu, or at night
+ const o=seedOffer;seedOffer=null;if(plantCount()>=3||allRaw().some(q=>q.stage>=0&&q.stage<4)){o.no&&o.no();return;}
+ sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,o.text+'<br><button data-k="y">Yes, plant it</button><button data-k="n">Not now</button>',
+  {y:()=>{closeBubble();o.yes();},n:()=>{closeBubble();o.no&&o.no();}});
+ o.no&&o.no(); /* asked: unless you say yes, it's a no (tapping away included) */}
+function seedTick(dt){ // once your first plant is a teen, a seed taps at the open window and asks to come in
+ offerTick();
+ if(seedOffer||st.giftSeed||st.night||plantCount()>=3||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
+ if((st.giftAskDay||0)>st.day)return; // you said not now: ask again in a few days
+ if(allRaw().some(q=>q.stage>=0&&q.stage<4))return;
+ offerSeed({text:'A little seed is tapping at the window. Plant it in the little pot?',
+  no:()=>{st.giftAskDay=st.day+3;save();},
+  yes:()=>{st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
+   tell('You let it in. The seed is in the little pot. You have two plants now: tap one to tend it.',{kind:'important'});save();}});}
 function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
  if(st.night||plantCount()>=3||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
  if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
@@ -332,6 +346,7 @@ function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.nee
  sfx('chime');tell('Pollen drifts between your two plants…',{kind:'important'});
  setTimeout(()=>{const pick=(k,n)=>Math.random()<.08?Math.floor(Math.random()*n):(Math.random()<.5?a:b)[k];
   const c=freshPlant();c.species=pick('species',16);c.eye=pick('eye',16);c.pref=Math.random()<.08?['sun','shade','night'][Math.floor(Math.random()*3)]:(Math.random()<.5?a:b).pref;c.parents=[a.id,b.id];c.nge=clamp(((a.nge||0)+(b.nge||0))/2+rnd(-.2,.2),-.6,.6);c.nlc=clamp(((a.nlc||0)+(b.nlc||0))/2+rnd(-.2,.2),-.6,.6);c.ge=clamp((a.ge+b.ge)/2*.5+c.nge*.5,-1,1);c.lc=clamp((a.lc+b.lc)/2*.5+c.nlc*.5,-1,1); // born leaning a little like its parents
-  addPlant(c);sfx('soil');sfx('boing');const nm=q=>NAMES[q.species];
-  tell('A seed! Its parents are your '+nm(a)+' and your '+nm(b)+'. It\'s in the little pot '+(spotKey()==='desk'?'on the desk':'by the window')+'.',{kind:'important'});save();},1800);}
+  const nm=q=>NAMES[q.species];
+  offerSeed({text:'Your '+nm(a)+' and your '+nm(b)+' made a seed together. Plant it?',
+   yes:()=>{addPlant(c);sfx('soil');sfx('boing');tell('A seed! Its parents are your '+nm(a)+' and your '+nm(b)+'. It\'s in the little pot '+(spotKey()==='desk'?'on the desk':'by the window')+'.',{kind:'important'});save();}});},1800);}
 function align(){const a=st.lc>.33?'Lawful':st.lc<-.33?'Chaotic':'Neutral',b=st.ge>.33?'Good':st.ge<-.33?'Evil':'Neutral';return a===b?'True Neutral':a+' '+b;}

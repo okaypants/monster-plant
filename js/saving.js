@@ -6,7 +6,7 @@ function fresh(){return {started:false,species:0,stage:-1,timer:0,day:1,dayT:0,n
 let st=fresh();
 // MORE THAN ONE PLANT (Jackie, Nov 3): 'st' always holds the ACTIVE plant's fields + shared room state; the other plants wait in st.others.
 // eachPlant() swaps each one in, so every existing plant function just works on whichever plant is swapped in.
-const GLOBAL=new Set(['started','day','dayT','night','curtain','lamp','desk','speed','mode','hints','taught','hint','lastSeen','goldenSaid','catTrust','catGain','catDayN','others','pots','youUsed','nextId','breedDay','giftSeed','bloomT','leftHand']);
+const GLOBAL=new Set(['started','day','dayT','night','curtain','lamp','desk','speed','mode','hints','taught','hint','lastSeen','goldenSaid','catTrust','catGain','catDayN','others','pots','youUsed','nextId','breedDay','giftSeed','bloomT','leftHand','giftAskDay']);
 function freshPlant(){const f=fresh(),o={};for(const k in f)if(!GLOBAL.has(k))o[k]=f[k];o.id=(st.nextId=(st.nextId||1)+1);o.stage=0;giveNature(o);return o;}
 function giveNature(o){const r=()=>{const v=rnd(.36,.6);return Math.random()<.5?v:-v;};o.nge=r();o.nlc=r();if(Math.random()<.25)(Math.random()<.5?o.nge=0:o.nlc=0);o.ge=o.nge;o.lc=o.nlc;} // most seeds lean two ways; some only one
 function swapIn(i){const a={};for(const k of Object.keys(st))if(!GLOBAL.has(k)){a[k]=st[k];delete st[k];}Object.assign(st,st.others[i]);st.others[i]=a;}
