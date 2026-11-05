@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A softer UI look: Fredoka, cream pills (Nov 4)
+
+- Jackie wanted the text bigger, cuter and less 16-bit. All HTML text (captions, bubbles, menus, the journal, buttons) now uses the rounded Google font Fredoka instead of Pixelify Sans, about 20-25% bigger, on phones too. The room and sprites stay pixel art.
+- Captions are a cream pill (#fff4e2, text #4a2a4f, 2px #e8c9a8 border, 3px #d9b08c shadow) 3% from the top, still moving aside so they never cover a plant's face. The little tail is now a soft rounded point toward whoever is talking.
+- Bubbles are the same cream with 18px corners. Buttons are soft peach/cream pills with no black outline and lift 1px on hover. The debug and full-screen buttons and the debug drawer are rounded to match.
+- `python tests/ui_shots.py` checks the look and saves pictures to tests/screenshots/ui/.
+
 ### CLAUDE.md: how every session works (Nov 4)
 
 - CLAUDE.md in the repo root, which Claude Code reads at the start of every session, says: read README.md, RULES.md and DECISIONS.md first; change one thing per request; run tests/smoke_test.py before and after every change and fix what it breaks; show Jackie screenshots; log her decisions here with the reason; commit and push to main only when tests pass. Why: so every session follows the same habits without Jackie repeating them.

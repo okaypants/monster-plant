@@ -40,7 +40,7 @@ function startFlow(){
  screen(`<h1>Monster Plant</h1><p>prototype v2 · your real plants</p><p>Sound on. A few silly questions decide which seed you get.</p><div class="opts"><button data-k="go">Begin</button></div>`,{go:d=>{d.remove();audioInit();quiz();}});}
 function quiz(){const picks=QUIZ.map(pool=>pool[Math.floor(Math.random()*pool.length)]);let bits=0,i=0;
  const ask=()=>{const q=picks[i];sfx('pop');
-  screen(`<p style="opacity:.7">Question ${i+1} of 4</p><h1 style="font-size:32px">${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
+  screen(`<p style="opacity:.7">Question ${i+1} of 4</p><h1 style="font-size:39px">${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
  const next=v=>{bits=bits*2+v;i++;if(i<4)ask();else plantSeed(bits);};ask();}
 let addingSeed=false;
 function plantSeed(sp){if(!addingSeed||!st.started)giveNature(st);if(addingSeed&&st.started){addingSeed=false;const p=freshPlant();p.species=sp;addPlant(p);sfx('soil');tell('A second seed, in the other little pot.',{kind:'important'});save();return;}
