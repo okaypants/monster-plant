@@ -24,7 +24,7 @@ const FP=[
 ];
 FP.forEach(p=>{p.ox=0;p.oy=0;p.vx=0;p.vy=0;p.hops=0;p.dust=10;});
 const FSPINE_ROWS=[[146,80,4,224],[248,80,4,212],[456,86,4,92],[568,80,4,218]];
-let fSpines=[],fBits=[],fSnow=[];const fTreats=[];
+let fSpines=[],fBits=[],fSnow=[];
 const FVINES=[];const VT=16; // finer leaf grid (Jackie): small tiles, and only leaf pixels move
 for(let x=0;x<300;x+=VT)for(let y=10;y<290;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
 for(let x=1462;x<1665;x+=VT)for(let y=66;y<226;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
@@ -50,19 +50,10 @@ function fidgetPoke(x,y){
  for(const s of FSPINE_ROWS)if(y>=s[0]&&y<s[0]+s[1]&&x>=s[2]&&x<s[3]){fSpines.push({x:Math.max(s[2],Math.round(x)-12),y:s[0],w:24,h:s[1],oy:0,vy:-6});if(fSpines.length>30)fSpines.shift();fplay('book_slide');return true;}
  return false;}
 function plantBoing(x){BOING.vy=-9-Math.random()*3;const b=plantBox();BOING.vx=(x<b.x+b.w/2?2:-2);fplay('plant_boing');}
-// treats from the SNACKS cabinet: pop out, bounce, pile up; grab and drop one on the plant to feed it
-function spawnTreat(item){const im=TREAT_IMG[item.id];if(!ok(im))return;const s=.4;
- fTreats.push({item,img:im,w:im.naturalWidth*s,h:im.naturalHeight*s,r:Math.min(im.naturalWidth,im.naturalHeight)*s*.45,x:JAR.x+20,y:JAR.y+60,vx:rnd(-7,-3),vy:rnd(-9,-5),held:false});
- if(fTreats.length>24)fTreats.shift();fplay('treat_drop');}
-const fDrag={t:null,hist:[]};
-function fidgetDown(x,y){for(let i=fTreats.length-1;i>=0;i--){const t=fTreats[i];if(Math.hypot(x-t.x,y-t.y)<t.r+8){fDrag.t=t;t.held=true;fDrag.hist=[{x,y,t:performance.now()}];fTreats.push(fTreats.splice(i,1)[0]);return true;}}return false;}
+const fDrag={last:null}; // the last pointer spot, for brushing the vines
 cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
- if(fDrag.t){fDrag.t.x=x;fDrag.t.y=y;fDrag.hist.push({x,y,t:performance.now()});if(fDrag.hist.length>6)fDrag.hist.shift();return;}
  if(fDrag.last){const dx=x-fDrag.last.x;if(Math.abs(dx)+Math.abs(y-fDrag.last.y)>3)for(const v of FVINES)if(Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2))<40){v.vx+=clamp(dx*.2,-2,2);fplay('vine_rustle');}}
  fDrag.last={x,y};});
-addEventListener('pointerup',()=>{const t=fDrag.t;if(!t)return;fDrag.t=null;t.held=false;drag.justDropped=true;
- if(st.started&&st.stage>=4&&onPlant(t.x,t.y)){held.tool='snack';held.item=t.item;useTool();fTreats.splice(fTreats.indexOf(t),1);plantBoing(t.x);return;}
- const a=fDrag.hist[0],b=fDrag.hist[fDrag.hist.length-1];const dt=Math.max(16,b.t-a.t);t.vx=(b.x-a.x)/dt*16;t.vy=(b.y-a.y)/dt*16;});
 function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox+=p.vx;p.oy+=p.vy;if(Math.abs(p.ox)<.3&&Math.abs(p.vx)<.2){p.ox=0;p.vx=0;}if(Math.abs(p.oy)<.3&&Math.abs(p.vy)<.2){p.oy=0;p.vy=0;}}
 function fidgetStep(){
  for(const p of FP){if(p.hop){if(p.oy<0||p.vy!==0){p.vy+=.5;p.oy+=p.vy;if(p.oy>=0){p.oy=0;if(p.hops>1){p.hops--;p.vy=-4-p.hops*.4;}else{p.hops=0;p.vy=0;}}}continue;}
@@ -75,11 +66,7 @@ function fidgetStep(){
  fSnow=fSnow.filter(s=>!(s.y>FGLOBE.cy+FGLOBE.r-8&&Math.abs(s.vy)<.05&&Math.random()<.01));
  if(BOING.oy<0||BOING.vy!==0){BOING.vy+=.6;BOING.oy+=BOING.vy;if(BOING.oy>=0){BOING.oy=0;if(BOING.vy>2.5)BOING.vy=-BOING.vy*.42;else BOING.vy=0;}}
  BOING.vx+=-.2*BOING.ox;BOING.vx*=.85;BOING.ox+=BOING.vx;
- for(const t of fTreats){if(t.held)continue;t.vy+=.55;t.x+=t.vx;t.y+=t.vy;
-  if(t.y+t.r>FFLOOR){t.y=FFLOOR-t.r;if(Math.abs(t.vy)>1.2){t.vy=-t.vy*.45;fplay('treat_bounce');}else t.vy=0;t.vx*=.88;}
-  if(t.x-t.r<0){t.x=t.r;t.vx=-t.vx*.5;}if(t.x+t.r>W){t.x=W-t.r;t.vx=-t.vx*.5;}if(t.y-t.r<0){t.y=t.r;t.vy=Math.abs(t.vy)*.5;}if(Math.abs(t.vx)<.05)t.vx=0;}
- for(let i=0;i<fTreats.length;i++)for(let j=i+1;j<fTreats.length;j++){const a=fTreats[i],b=fTreats[j];const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,m=a.r+b.r;
-  if(d<m){const o=(m-d)/2,nx=dx/d,ny=dy/d;if(!a.held){a.x-=nx*o;a.y-=ny*o;}if(!b.held){b.x+=nx*o;b.y+=ny*o;}const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){const im=.6*rv;if(!a.held){a.vx+=im*nx;a.vy+=im*ny;}if(!b.held){b.vx-=im*nx;b.vy-=im*ny;}}}}}
+}
 let fAcc=0,fPrev=performance.now();
 // moving pieces carry ONLY their object's pixels, never the wall/shelf behind them:
 // leaves = green pixels; props = pixels that differ from the colors around the prop's edge (its background)
@@ -103,8 +90,7 @@ function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
  g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);
  idleTick(now);const io=idleOffset(now);if(io){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
-function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s,s);}
- for(const t of fTreats)g.drawImage(t.img,Math.round(t.x-t.w/2),Math.round(t.y-t.h/2),Math.round(t.w),Math.round(t.h));}
+function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s,s);}}
 
 /* ---------- IDLE WIGGLE (Jackie, Nov 3; RULES.md 10) ----------
    Now and then ONE thing you can use gives a tiny wiggle: one art pixel, a couple of frames, every 30-60 s,
@@ -122,8 +108,8 @@ const IDLE_GAP=[30,60],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds be
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
-function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!fDrag.t||!!bubble||!!document.querySelector('.screen');}
-function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||fTreats.some(t=>t.vx||t.vy||t.held)||!!(BOING.oy||BOING.vy);}
+function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!feed.item||!!bubble||!!document.querySelector('.screen');}
+function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||!!(BOING.oy||BOING.vy);}
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
  if(!st.started||touching()||somethingMoving())return; // skipped; the next try is minutes away
