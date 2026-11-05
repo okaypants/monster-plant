@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The second plant is opt-in: Doctor Bug's note (Nov 4)
+
+- When your only plant is a late teen (it has spent at least one night as a teen, or is already grown), a little pixel paper airplane from Doctor Bug glides onto the windowsill once and sits there. Nothing blinks or loops.
+- Tapping it asks "I have a seedling in need of a home. May I send it over?" with **Yes, please** and **Not yet**.
+  - Yes: the seed arrives the next morning in the little pot, with "Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug." (A short "Doctor Bug will send it over in the morning." confirms the yes.)
+  - Not yet: the note goes into the journal, where "Yes, please" works anytime, and Doctor Bug lands another note in 3 days.
+  - Tapping away leaves the note on the sill.
+- No note when there are already two plants. Why: Jackie wants nothing to appear without the player agreeing. The old window gift seed is gone. The only other ways to get a second plant are ones you start yourself: "Plant another seed" on the start screen, and the breeding offer (which asks first, and can't happen while two plants fill the room).
+- `python tests/bug_note_shots.py` plays the whole flow and saves pictures to tests/screenshots/bug_note/.
+
 ### A softer UI look: Fredoka, cream pills (Nov 4)
 
 - Jackie wanted the text bigger, cuter and less 16-bit. All HTML text (captions, bubbles, menus, the journal, buttons) now uses the rounded Google font Fredoka instead of Pixelify Sans, about 20-25% bigger, on phones too. The room and sprites stay pixel art.
@@ -52,7 +62,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 ### New plants only with your OK (Nov 4)
 
-- Nothing appears out of nowhere. The window's gift seed and a seed your two adults make are both offered in a little bubble by the window ("Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug. Plant it in the little pot?" / "Your … and your … made a seed together. Plant it?"), with Yes, plant it and Not now. A seed is planted only on yes.
+- Nothing appears out of nowhere. The window's gift seed and a seed your two adults make are both offered in a little bubble by the window ("A little seed is tapping at the window. Plant it in the little pot?" / "Your … and your … made a seed together. Plant it?"), with Yes, plant it and Not now. A seed is planted only on yes.
 - Not now, or tapping away, means no seed. The gift seed asks again 3 days later; two adults can make another seed on a later day. It never asks at night, or while you're carrying something or have a menu, a book or the journal open.
 - Why: a second plant once appeared while Jackie was in the debug drawer, and it was confusing, not calm.
 - Also: when you drag one plant, only that plant follows your finger (before, every plant was drawn following it). The debug drawer's plant tabs show each plant's age, so you can see which one you're changing.

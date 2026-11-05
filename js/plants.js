@@ -332,15 +332,37 @@ function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.queryS
  sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,o.text+'<br><button data-k="y">Yes, plant it</button><button data-k="n">Not now</button>',
   {y:()=>{closeBubble();o.yes();},n:()=>{closeBubble();o.no&&o.no();}});
  o.no&&o.no(); /* asked: unless you say yes, it's a no (tapping away included) */}
-function seedTick(dt){ // once your first plant is a teen, a seed taps at the open window and asks to come in
+/* DOCTOR BUG'S NOTE (Jackie, Nov 4): the second plant is opt-in. When your only plant is a late teen (at least one night as a teen,
+   or already grown), a paper-airplane note from Doctor Bug glides onto the windowsill once and sits there (nothing loops or blinks).
+   Tap it: "I have a seedling in need of a home. May I send it over?"
+     Yes, please -> the seed arrives the next morning in the little pot (wakeRoom in start.js).
+     Not yet     -> the note goes into the journal (accept it there anytime); Doctor Bug asks again in a few days.
+   Never with two plants. This is the only way a second seed comes without you starting it yourself ("Plant another seed"). */
+const BUG_NOTE={x:474,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
+const BUG_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
+let bugLand=null; // when it landed this visit (for the glide in); null = already there
+function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend)return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.credit||0)>0));}
+function bugNoteBox(){const p=P,w=BUG_PLANE[0].length*p,h=BUG_PLANE.length*p;return {x:BUG_NOTE.x-w/2,y:BUG_NOTE.y-h,w,h};}
+function bugOnSill(){return st.bugNote==='sill'&&bugReady();}
+function bugNoteHit(x,y){if(!bugOnSill())return false;const b=bugNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}
+function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==null?1:clamp((T-bugLand)/1.6,0,1),p=P;
+ const x0=b.x-(1-u)*140,y0=b.y-(1-u)*170; // glides down from the window once, on whole pixels
+ const X=Math.round(x0/p)*p,Y=Math.round(y0/p)*p;
+ g.fillStyle=C.out;BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='0')g.fillRect(X+i*p-2,Y+j*p-2,p+4,p+4);}));
+ BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));}
+function bugAsk(){sfx('page');const b=bugNoteBox();
+ openBubble(b.x-140,b.y-190,BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
+function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Doctor Bug will send it over in the morning.',{kind:'info'});save();}
+function bugNotYet(){st.bugNote=null;st.bugJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
+function bugArrive(){ // the next morning
+ if(!st.bugSend||st.day<st.bugSend)return;st.bugSend=0;if(plantCount()>=MAX_PLANTS)return;
+ st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
+ tell('Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug.',{kind:'important'});save();}
+function seedTick(dt){
  offerTick();
- if(seedOffer||st.giftSeed||st.night||plantCount()>=MAX_PLANTS||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
- if((st.giftAskDay||0)>st.day)return; // you said not now: ask again in a few days
- if(allRaw().some(q=>q.stage>=0&&q.stage<4))return;
- offerSeed({text:'Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug. Plant it in the little pot?',
-  no:()=>{st.giftAskDay=st.day+3;save();},
-  yes:()=>{st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
-   tell('A second seed, in the other little pot.',{kind:'important'});save();}});}
+ if(st.bugNote==='sill'||st.night||T<8||!quiet()||!bugReady())return; // not in the first moments after you arrive: the welcome comes first
+ if((st.giftAskDay||0)>st.day)return; // you said not yet: ask again in a few days
+ st.bugNote='sill';bugLand=T;sfx('page');save();}
 function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
  if(st.night||plantCount()>=MAX_PLANTS||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
  if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner

@@ -29,6 +29,7 @@ addEventListener('pointerup',e=>{if(!drag.down)return;drag.down=false;if(!drag.o
 cv.addEventListener('contextmenu',e=>{e.preventDefault();held.tool=null;});
 addEventListener('keydown',e=>{if(e.key==='Escape'){held.tool=null;closeBubble();}});
 cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;return;}if(!st.started||st.stage<0)return;const [x,y]=toGame(e);closeBubble();sfx('tick');
+ if(!held.tool&&!onPlantPx(x,y)&&bugNoteHit(x,y)){bugAsk();return;} // Doctor Bug's note on the windowsill
  if(!held.tool&&!onPlantPx(x,y)&&catHit(x,y)){petCat();return;}
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openJournal();return;}
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
