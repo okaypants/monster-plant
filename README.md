@@ -40,6 +40,8 @@ Checks a brand-new game, an old save, the gift seed, breeding, night/morning, an
 
 Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a teen, a kid on the book stack, the cat in every nap spot, curtains closed with lamps off) for a minute of game time each at speed 20 in about 20 seconds, fails on any error or missing image, and saves a screenshot of each case to `tests/screenshots/` (kept on your computer, not uploaded).
 
+`python tests/journal_shots.py` opens the keepsake journal on an iPhone 13 held sideways (a kid's page; an adult with titles, charms and quirks; two friends; the cat at low and high trust), checks the book fits with nothing scrolling, and saves pictures to `tests/screenshots/journal/`. The smoke test also opens it with one plant, two plants and an old save, turns pages with the ribbons, and wears and takes off a charm.
+
 `python tests/bug_note_shots.py` plays Doctor Bug's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
 
 `python tests/ui_shots.py` checks the soft UI look (Fredoka text, cream caption pill, rounded bubbles, outline-free pill buttons) and saves the start screen, a caption, the treat jar bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
@@ -58,7 +60,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/perspective_shots.py` puts a seedling, a kid, a teen, an adult and the cat at every spot and lines them up at the same scale in `tests/screenshots/perspective/every_spot.png`, plus two kids asleep (armchair and book stack) and the debug Depth lines view. It checks that everything follows one depth curve, that a teen is 1.45x a kid and an adult 1.9x at every depth, and that the two sleeping kids are the same size.
 
-`python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed. It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
+`python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed (switched with the tiny hand inside the journal's back cover). It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
 
 `python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
 
@@ -93,7 +95,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
-  | `journal.js` | The desk-drawer journal |
+  | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon |
   | `input.js` | Taps, drags, and what each spot in the room does |
   | `start.js` | Title screen, seed quiz, welcome back, goodnight and morning |
   | `debug.js` | The debug drawer and TEST MODE (a copy of the save; the real one is never touched), the Light map, the Nudge tool |

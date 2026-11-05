@@ -57,7 +57,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
    meh=!love&&((P.g==='good'&&s.ge<-.05)||(P.g==='evil'&&s.ge>.05));
   const why=love?(P.g==='good'&&s.ge>.05?'sweet':P.g==='evil'&&s.ge<-.05?'dark':P.l==='lawful'?'usual':'novel'):meh?(P.g==='good'?'sweet':'dark'):'';
   const rx=love?({sweet:'Its favorite!',dark:'Ooh, its favorite. Mwah-ha-hah!',usual:'Its usual!',novel:'Something new!'})[why]:meh?'It eats it… politely.':'Nom.';
-  const qf=why?notice(why,QUIRK_TXT[why]):false;st.lastTreat=s.id;if(love)st.needs.attention=Math.max(0,st.needs.attention-.1);
+  const qf=why?notice(why,QUIRK_TXT[why]):false;st.lastTreat=s.id;if(love)st.fav=s.id; // the journal draws the last treat it lovedif(love)st.needs.attention=Math.max(0,st.needs.attention-.1);
   setTimeout(()=>{plantBoing(b.x+b.w/2);sfx('pop');burst('heart',b.x+b.w*.15,b.y-20,love?4:meh?1:2);if(love)setTimeout(()=>doMove(),300);},350); // the happy 'pop' after it eats
   if((st.full||0)+.35>.6){setTimeout(()=>{sfx('burp');st.nap=60;},900);tell('Burp! This monster\'s so full it\'s dozing off.',{kind:'info',who:st.id});} // full = a full-minute nap (Jackie)
   else tell('Treats aren\'t food. They help it grow into itself.',{kind:'teach',key:'snack'});

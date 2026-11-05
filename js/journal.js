@@ -1,21 +1,141 @@
 'use strict';
-/* Journal: the desk drawers, the plant journal, today's checklist. */
+/* JOURNAL (Jackie, Nov 4): a cozy keepsake book opened from the desk drawers, not a status screen.
+   Calm and almost wordless: short labels only, no numbers, no meters or bars, no settings screens. No new art: the plants' own
+   sprites, the treat and charm pictures and the cat's frames, plus tiny icons drawn here in the room's palette.
+   One open book (cream pages, dark stepped pixel outline), fitted to the screen with no scrolling. Ribbons along the top pick the
+   page: one per plant (two at most) and one for the cat. A page turn is a 2-frame swap, never a slide or fade.
+   Close: tap outside the book or the little corner. Controls: charms (tap to wear, tap again to take off) and the tiny hand inside
+   the back cover (which hand carries the carafe). Everything the old journal showed (day, checklist, bars, treat counts, log, pots)
+   is still in the save; the numbers live in the debug drawer. */
 const DRAWERS={x:1062,y:560,w:118,h:180};
-function bar(v,l,r){const p=Math.round((v+1)*50);return `<div style="display:flex;gap:6px;align-items:center;font-size:17px"><span style="width:58px;text-align:right">${l}</span><div style="flex:1;height:8px;background:#5a3a4a;position:relative"><div style="position:absolute;left:${p}%;top:-3px;width:6px;height:14px;background:#c8d145"></div></div><span style="width:58px">${r}</span></div>`;}
-function potList(){const have=st.pots||[];return '<div style="font-size:17px">'+[`<button data-k="pnone" style="font-size:14px;padding:1px 8px;min-width:0">${!st.potOn?'✓ ':''}starter pot</button>`].concat(POTS.map(p=>have.includes(p.id)?`<button data-k="p_${p.id}" style="font-size:14px;padding:1px 8px;min-width:0">${st.potOn===p.id?'✓ ':''}${p.name}</button>`:`<span style="opacity:.6">🔒 ${p.name}: ${p.how}</span>`)).join(' · ')+'</div>';}
-function openJournal(){sfx('page');const m=st.met||{},tick=n=>m[n]?'✓':'·',L=st.stage<0?'':lightFit(spotKey());
- const tr=SNACKS.map((t,i)=>{const n=(st.treats||{})[t.id]||0,done=(st.traits||[]).includes(t.trait);return `<div style="font-size:17px">${t.name}: ${done?'<b>'+t.trait+'</b> earned '+(TOPPER_IMG[t.trait]?`<button data-k="w${i}" style="font-size:14px;padding:1px 8px;min-width:0">${(st.wear||((st.traits||[]).slice(-1)[0]))===t.trait?'wearing':'wear'}</button>`:'(art coming)'):n+'/'+TRAIT_AT+' toward '+t.trait}</div>`;}).join('');
- const d=screen(`<div style="max-width:560px;text-align:left;max-height:80vh;overflow:auto">
- <h1 style="font-size:34px">Plant journal</h1>
- <p><b>${NAMES[st.species]}</b>, ${STAGES[Math.max(0,st.stage)]} · day ${st.day} · ${phase(st.dayT)}</p>
- <p style="font-size:18px">It grows a step each night it's well cared for. Today: water ${tick('thirst')} · right light ${tick('light')} · company ${tick('attention')}<br>
- <i>Water</i> when its colors start to fade. <i>Company</i> means petting or reading to it. <i>Light</i>: it likes ${st.pref==='sun'?'sun':st.pref==='shade'?'shade':'the dark'}; drag it between spots or use the curtains and lamps. ${L}</p>
- <p style="font-size:18px">Personality: <b>${align()}</b>${(st.titles||[]).length?' · <b>'+st.titles.map(t=>TITLES[t]).join(', ')+'</b>':''}. ${temperament().replace('It seems','Born')} Shaped by what you read, how you play, and the treats you give; it drifts back toward how it was born.</p>${allRaw().filter(q=>q.id!==st.id&&q.stage>=4).map(q=>{const r=rel(st,q);return '<p style="font-size:17px;margin:2px 0">'+(r==='friends'?'Friends with':r==='bicker'?'Bickers with (always makes up)':'Gets along fine with')+' the '+NAMES[q.species]+'.</p>';}).join('')}${Object.keys(st.quirks||{}).length?'<p style="font-size:17px;margin:4px 0">Quirks you\'ve noticed:<br>'+Object.values(st.quirks).map(q=>'· '+q).join('<br>')+'</p>':'<p style="font-size:17px;opacity:.7">No quirks noticed yet. Watch what it does.</p>'}
- ${bar(st.ge,'evil','good')}${bar(st.lc,'chaotic','lawful')}
- <p style="font-size:17px">Lately: ${(st.log||[]).join(', ')||'nothing yet'}</p>
- <p style="font-size:18px">Treats are optional. Give one kind ${TRAIT_AT} times and it earns a little charm. Keep giving it now and then (at least every 3 days) or the charm drifts away; it comes back faster.</p>${tr}
- ${st.bugJournal&&bugReady()?'<p style="font-size:18px;margin-top:12px"><b>A note from Doctor Bug</b><br>“'+BUG_ASK+'” <button data-k="bug" style="font-size:14px;padding:1px 8px;min-width:0">Yes, please</button></p>':st.bugSend?'<p style="font-size:18px;margin-top:12px">Doctor Bug\'s seedling arrives in the morning.</p>':''}
- <p style="font-size:18px;margin-top:12px"><b>Settings</b><br>Carrying the carafe: <button data-k="hR" style="font-size:14px;padding:1px 8px;min-width:0">${st.leftHand?'':'✓ '}right-handed</button> <button data-k="hL" style="font-size:14px;padding:1px 8px;min-width:0">${st.leftHand?'✓ ':''}left-handed</button></p>
- <div class="opts" style="margin-top:12px">${st.night?'':'<button data-k="n">Say goodnight</button>'}<button data-k="c">Close</button></div></div>`,Object.assign({n:dd=>{dd.remove();tuckIn();},c:dd=>dd.remove()},Object.fromEntries(SNACKS.map((t,i)=>['w'+i,dd=>{st.wear=t.trait;save();dd.remove();openJournal();}])),{bug:dd=>{bugYes();dd.remove();openJournal();},hR:dd=>{st.leftHand=false;save();dd.remove();openJournal();},hL:dd=>{st.leftHand=true;save();dd.remove();openJournal();}},{pnone:dd=>{st.potOn=null;save();dd.remove();openJournal();}},Object.fromEntries(POTS.map(p=>['p_'+p.id,dd=>{st.potOn=p.id;save();dd.remove();openJournal();}]))));}
+const JB={w:760,h:400,rib:46}; // the book's design size; scaled to fit the room
+const QUIRK_SHORT={bonk:'Bonks things',wander:'Wanders',tidy:'Tidy',usual:'Its usual',novel:'New treats',
+ catfriend:'Cat buddy',share:'Shares joy',boo:'Spooky',dark:'Dark tastes',sweet:'Sweet tooth'};
+const NAP_SPOTS=['bed','rug','chair','sill','crate','books','byplant'];
+const RIB_COLORS=[C.coral,C.lav,C.blue,C.g2];
+let jPage=null,jEl=null;
+// pages that only show up once they have something in them (later: freed plants, postcards, Doctor Bug's notes)
+function worldItems(){return [];}
+
+/* ---------- tiny pixel icons (drawn in code, room palette, dark outline like the comic marks) ---------- */
+const IPAL={y:C.fl3,o:C.fl2,r:C.fl1,m:C.fl3,w:C.lav,v:C.vio,p:C.coral,c:C.rust,b:C.wine,h:C.peach,g:C.g2,G:C.g1,n:C.blue,f:C.wine,s:C.sand,k:C.brick,i:C.ivory};
+const ICONS={
+ sun:['....y....','.y.....y.','...ooo...','..ooooo..','y.ooooo.y','..ooooo..','...ooo...','.y.....y.','....y....'],
+ shade:['...ww....','..wwww.w.','.wwwwwwww','wwwwwwwww','.wwwwwww.'],
+ night:['..mmm...','.mmm....','mmm.....','mmm.....','mmm.....','mmm.....','.mmm....','..mmm...'],
+ heart:['.rr.rr.','rrrrrrr','rrrrrrr','.rrrrr.','..rrr..','...r...'],
+ squiggle:['.v...v...','v.v.v.v.v','...v...v.'],
+ paw:['.b.b.b.','.b.b.b.','b.....b','..bbb..','.bbbbb.','.bbbbb.','..bbb..'],
+ hand:['..h.h.h.','..h.h.h.','h.hhhhh.','hhhhhhh.','.hhhhhh.','..hhhh..'],
+ leaf:['..g..g.','.ggg.gg','..ggg..','...g...','.ppppp.','..ppp..'],
+ bed:['.pppppp.','pccccccp','pccccccp','.pppppp.'],
+ rug:['kkkkkkkk','kyyyyyyk','kyvvvvyk','kyyyyyyk','kkkkkkkk'],
+ chair:['.yyyyy.','.yyyyy.','yyyyyyy','ykkkkky','y.....y'],
+ sill:['fffffff','fnnfnnf','fnnfnnf','fffffff','fnnfnnf','sssssss'],
+ crate:['yyyyyyy','y.y.y.y','yy.y.yy','y.y.y.y','yyyyyyy'],
+ books:['.vvvvv.','kkkkkkk','.GGGGG.'],
+ byplant:['..g..g.','.ggg.gg','..ggg..','...g...','.ppppp.','..ppp..'],
+ plane:BUG_PLANE.map(r=>r.replace(/1/g,'i').replace(/2/g,'s').replace(/0/g,'.'))};
+function pix(name,px=4,flip=false){const m=ICONS[name],h=m.length,w=m[0].length,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;c.className='jpix';
+ const x=c.getContext('2d'),cell=(i,j)=>{const ch=m[j]&&m[j][i];return ch&&ch!=='.';},at=i=>flip?w-1-i:i;
+ x.fillStyle=C.out;for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(cell(i,j))x.fillRect(at(i)*px,j*px,px*3,px*3); // outline: one pixel all round
+ for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(cell(i,j)){x.fillStyle=IPAL[m[j][i]]||C.out;x.fillRect((at(i)+1)*px,(j+1)*px,px,px);}
+ return c;}
+
+/* ---------- pictures from the game's own sprites ---------- */
+function fitCanvas(src,sx,sy,sw,sh,bw,bh){const s=Math.min(bw/sw,bh/sh),c=document.createElement('canvas');c.width=Math.max(1,Math.round(sw*s));c.height=Math.max(1,Math.round(sh*s));c.className='jpix';
+ const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,sx,sy,sw,sh,0,0,c.width,c.height);return c;}
+function trimBox(c){const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let x0=c.width,y0=c.height,x1=-1,y1=-1;
+ for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(d[(y*c.width+x)*4+3]>8){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+ return x1<0?null:{x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};}
+// the plant as it looks right now (age, face, worn charm, mood): drawn by the game itself on a cleared patch of the room canvas, copied out, then the room is put back
+function plantPortrait(id,bw,bh){let out=null;withPlant(id,()=>{if(st.stage<0)return;const b=plantBox();
+  const x0=clamp(Math.floor(b.x-b.w*.2),0,W-1),y0=clamp(Math.floor(b.y-b.h*.4),0,H-1),w=Math.min(W-x0,Math.ceil(b.w*1.4)),h=Math.min(H-y0,Math.ceil(b.h*1.45));
+  const keep=g.getImageData(x0,y0,w,h);g.clearRect(x0,y0,w,h);try{drawPlant();const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(cv,x0,y0,w,h,0,0,w,h);
+   const t=trimBox(c);if(t)out=fitCanvas(c,t.x,t.y,t.w,t.h,bw,bh);}finally{g.putImageData(keep,x0,y0);}});
+ return out||document.createElement('canvas');}
+// growth row: seed, sprout, kid, teen, adult, from this plant's own sprites; filled in up to its age
+function ageSprites(){const n=NEWART[st.species+1],pick=k=>n&&ok(n[k])?n[k]:ELDER[st.species];return [SEEDLING.soil[0],SEEDLING.bigsprout[0],BABY[st.species],pick('teen'),pick('adult')];}
+function ageStep(s=st.stage){return s<1?0:s<4?1:s<6?2:s<8?3:4;}
+function silhouette(im,size,filled){if(!ok(im))return document.createElement('canvas');const c=fitCanvas(im,0,0,im.naturalWidth,im.naturalHeight,size,size),x=c.getContext('2d');
+ x.globalCompositeOperation='source-in';x.fillStyle=filled?C.plum:'#ead8c0';x.fillRect(0,0,c.width,c.height);return c;}
+function imgPic(im,bw,bh){return ok(im)?fitCanvas(im,0,0,im.naturalWidth,im.naturalHeight,bw,bh):document.createElement('canvas');}
+// which charm it's wearing: st.wear, 'none' = taken off, nothing chosen = the newest one (as drawTopper does)
+function wornCharm(){const tr=st.traits||[];if(st.wear==='none')return null;return st.wear&&tr.includes(st.wear)?st.wear:tr.slice(-1)[0]||null;}
+function bornLine(){return temperament().replace('It seems ','Born ').replace(/\.$/,'');}
+
+/* ---------- the book ---------- */
+function jdiv(cls,kids=[],txt){const e=document.createElement('div');e.className=cls;if(txt!=null)e.textContent=txt;for(const k of kids)if(k)e.appendChild(k);return e;}
+function jlabel(t){return jdiv('jlab',[],t);}
+function fitBook(){if(!jEl)return;const r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+JB.rib));jEl.querySelector('.jbook').style.transform=`translate(-50%,-50%) scale(${k})`;}
+function closeJournal(){if(jEl){jEl.remove();jEl=null;}}
+function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');return P;}
+function openJournal(page){sfx('page');closeJournal();
+ const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
+ jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
+ jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();}); // tap outside the book
+ jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
+ ui.appendChild(jEl);fitBook();renderJournal();}
+addEventListener('resize',()=>setTimeout(fitBook,50));
+function jTurn(to){if(to===jPage||!jEl)return;sfx('page');const bk=jEl.querySelector('.jcover');
+ const f=document.createElement('div');f.className='jturn jturn1 jstep';bk.appendChild(f); // frame 1: the right page lifts
+ setTimeout(()=>{f.className='jturn jturn2 jstep';},90); // frame 2: it lands on the left
+ setTimeout(()=>{f.remove();jPage=to;renderJournal();},180);}
+function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage))jPage=P[0];
+ const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
+ P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.background=RIB_COLORS[i%RIB_COLORS.length];r.style.left=(430+i*52)+'px';
+  r.setAttribute('aria-label',p==='cat'?'The cat':p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
+  r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
+ const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';
+ if(jPage==='cat')catPages(L,R);else if(jPage==='world')worldPages(L,R);else withPlant(+jPage.slice(1),()=>plantPages(L,R));
+ // inside the back cover: which hand carries the carafe (tap to flip)
+ const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
+ hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
+ // Doctor Bug's note, tucked in until you say yes
+ if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Doctor Bug');n.appendChild(pix('plane',3));
+  n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}}
+function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();return;}sfx('page');
+ const c=jdiv('jbugask jstep',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div><div class="jbtns"><button type="button" data-k="y">Yes, please</button><button type="button" data-k="n">Not yet</button></div>';
+ c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
+ c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
+
+/* ---------- a plant's pages ---------- */
+function plantPages(L,R){
+ const id=st.id,steps=ageSprites(),at=ageStep();
+ L.appendChild(jdiv('jname',[],NAMES[st.species]));
+ L.appendChild(jdiv('jportrait',[plantPortrait(id,240,196)]));
+ L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at))));
+ L.appendChild(jdiv('jborn',[],bornLine()));
+ // likes: its light, and the last treat it loved (blank until then)
+ const fav=st.fav&&TREAT_IMG[st.fav];
+ const likes=jdiv('jrow',[jdiv('jgroup',[jlabel('Likes'),jdiv('jicons',[pix(st.pref==='sun'?'sun':st.pref==='shade'?'shade':'night',4),fav?jdiv('jfav',[imgPic(fav,40,40)]):jdiv('jblank')])])]);
+ // friends: a tiny portrait of the other plant with a heart or a squiggle, or nothing
+ const pals=allRaw().filter(q=>q.id!==id&&q.stage>=4).map(q=>({q,r:rel(st,q)})).filter(o=>o.r==='friends'||o.r==='bicker');
+ if(pals.length)likes.appendChild(jdiv('jgroup',[jlabel('Friends'),jdiv('jicons',pals.flatMap(o=>[jdiv('jpal',[plantPortrait(o.q.id,44,48)]),pix(o.r==='friends'?'heart':'squiggle',4)]))]));
+ R.appendChild(likes);
+ const titles=(st.titles||[]).filter(t=>TITLES[t]);
+ if(titles.length)R.appendChild(jdiv('jgroup',[jlabel('Titles'),jdiv('jstamps',titles.map(t=>jdiv('jstamp jtitle',[],TITLES[t])))]));
+ const charms=(st.traits||[]).filter(t=>TOPPER_IMG[t]),worn=wornCharm();
+ if(charms.length){const row=jdiv('jstickers',charms.map(t=>{const b=document.createElement('button');b.type='button';b.className='jcharm'+(t===worn?' worn':'');b.dataset.trait=t;b.setAttribute('aria-label',t);b.appendChild(imgPic(TOPPER_IMG[t],38,38));
+   b.addEventListener('click',e=>{e.stopPropagation();st.wear=wornCharm()===t?'none':t;sfx('pop');save();renderJournal();});return b;}));
+  R.appendChild(jdiv('jgroup',[jlabel('Charms'),row]));}
+ const seen=st.quirks||{};
+ R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint')))]));}
+
+/* ---------- the cat's pages ---------- */
+function catPages(L,R){
+ const tr=catTrust(),paws=1+[TRUST_SHY,TRUST_FOND,TRUST_BFF].filter(t=>tr>=t).length;
+ L.appendChild(jdiv('jname',[],'The cat'));
+ const f=CATF.loaf1&&ok(CATF.loaf1)?CATF.loaf1:CATF.sit1;
+ L.appendChild(jdiv('jportrait',[imgPic(f,220,170)]));
+ L.appendChild(jdiv('jpaws',Array.from({length:paws},()=>pix('paw',5))));
+ const naps=Object.entries(st.catNaps||{}).filter(([k,n])=>n>0&&NAP_SPOTS.includes(k)).sort((a,b)=>b[1]-a[1]).slice(0,3);
+ if(naps.length)R.appendChild(jdiv('jgroup',[jlabel('Favorite naps'),jdiv('jicons',naps.map(([k])=>pix(k,5)))]));
+ const seen=st.catSeen||{};
+ R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(CAT_QUIRKS).map(k=>seen[k]?jdiv('jstamp',[],CAT_QUIRKS[k]):jdiv('jstamp jfaint')))]));}
+
+/* ---------- out in the world (hidden until it has something) ---------- */
+function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(const it of worldItems())R.appendChild(jdiv('jgroup',[jlabel(it.label||'')]));}
+
 function logEv(t){st.log=(st.log||[]).concat(t).slice(-6);}
 function met(n){st.met[n]=1;st.hint[n]=(st.hint[n]||0)+1;nudgeSun();}

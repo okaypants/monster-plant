@@ -62,11 +62,11 @@ async def main():
             for hand in ("right", "left"):
                 if hand == "left":  # the journal setting
                     await pg.evaluate("()=>openJournal()")
-                    await pg.locator(".screen button", has_text="left-handed").tap()
+                    await pg.locator(".jhand").tap()  # the tiny hand inside the journal's back cover
                     await pg.evaluate("()=>__step(.2)")
                     check(await pg.evaluate("()=>st.leftHand===true"), f"{name}: the left-handed setting didn't save")
-                    check("✓ left-handed" in await pg.locator(".screen").inner_text(), f"{name}: the journal doesn't show left-handed as chosen")
-                    await pg.locator(".screen button", has_text="Close").tap()
+                    check(await pg.locator(".jhand").get_attribute("aria-label") == "Left-handed", f"{name}: the journal's hand doesn't show left-handed")
+                    await pg.locator(".jclose").tap()
                     await pg.evaluate("()=>__step(.2)")
                     await pg.evaluate("()=>{st.needs.thirst=.7;}")
                 mirrored = hand == "right"  # the pour below comes in from the right for right-handed play (facing left), from the left when left-handed

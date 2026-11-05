@@ -45,11 +45,12 @@ async def main():
         check(await pg.evaluate("()=>!bugOnSill()&&st.bugJournal===1&&st.giftAskDay===st.day+3"), "not yet: the note should move to the journal and ask again in 3 days")
         await pg.evaluate("()=>openJournal()")
         await pg.wait_for_timeout(300)
-        await pg.evaluate("()=>{const b=document.querySelector('.screen [data-k=bug]');b&&b.scrollIntoView({block:'center'});}")
+        await pg.click(".jbugnote")  # the paper airplane tucked in the journal
+        await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "3_journal_note.png"))
-        await pg.click(".screen [data-k=bug]")
+        await pg.click(".jbugask [data-k=y]")
         check(await pg.evaluate("()=>st.bugSend===st.day+1&&plantCount()===1"), "yes in the journal: the seed should come next morning, not now")
-        await pg.evaluate("()=>{document.querySelectorAll('.screen').forEach(d=>d.remove());capClear();st.night=true;wake();__step(1);}")
+        await pg.evaluate("()=>{closeJournal();capClear();st.night=true;wake();__step(1);}")
         check(await pg.evaluate("()=>plantCount()===2&&st.stage===0"), "the seed didn't arrive in the morning")
         await pg.evaluate("()=>{__step(4.5);}")  # the morning line, then Doctor Bug's
         await pg.wait_for_timeout(700)
