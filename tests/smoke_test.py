@@ -124,6 +124,16 @@ CASES = [
     ("names_seed_named_early", "s.stage=1;s.species=2;s.timer=0;s.giftSeed=1;delete s.name;",
      "openJournal();const b=document.querySelector('.jrename');b.click();const i=document.querySelector('.jnameinput');i.value='Sprinkles';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));closeJournal();st.timer=29.5;", 0.2,
      "(st.stage===4&&st.name==='Sprinkles'&&CAP.log.some(l=>l.t==='Hello, Sprinkles! Its eyes are open.'))||'seed name: '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+    # feeding (Jackie, Nov 4): drag a treat from the tray to an adult (open mouth, it eats) and to the floor (it goes back to the tray)
+    ("feed_drag", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;s.nap=0;s.full=0;", "", 0.1,
+     "(()=>{st.nap=0;st.full=0;st.night=false;openSnacks();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});"
+     "const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;if(document.querySelectorAll('.ttray .ttreat').length!==7)return 'tray has '+document.querySelectorAll('.ttray .ttreat').length;"
+     "document.querySelector('.ttreat[data-id=pizza]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));"
+     "if(feed.over!==st.id)return 'treat over the adult does not count';if(mouthNow()!==2)return 'mouth not open: '+mouthNow();"
+     "dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));__step(1);if(((st.treats||{}).pizza||0)!==1)return 'it did not eat the pizza';"
+     "document.querySelector('.ttreat[data-id=solar]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));if(feed.over!=null)return 'the floor counted as a monster';"
+     "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.5);if(((st.treats||{}).solar||0)!==0)return 'a treat dropped on the floor got eaten';if(feed.item)return 'still holding';"
+     "if(!document.querySelector('.ttray'))return 'tray closed too soon';__step(5);return !document.querySelector('.ttray')||'tray did not hide after a few seconds';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

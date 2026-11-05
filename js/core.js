@@ -47,7 +47,7 @@ const P=6; // comic-mark pixel size
    Shows 2 s + 0.3 s a word: short lines 3-5 s, the longest 6-8 s (never more); fades in and out. */
 const cap=document.getElementById('caption'),capText=cap.querySelector('.ct'),capTail=cap.querySelector('.tail');
 const CAP_REPEAT=10*60*1000,CAP={q:[],cur:null,until:0,nextAt:0,lastAmb:-1e9,ambGap:45+Math.random()*45,seen:new Map(),log:[]};
-function capBusy(){return !!(typeof held!=='undefined'&&held.tool)||!!(typeof drag!=='undefined'&&(drag.on||drag.down))||!!bubble||!!document.querySelector('.screen')||(typeof pointerHeld!=='undefined'&&pointerHeld);} // carrying, dragging, holding a tap, or reading (treat jar, books, journal)
+function capBusy(){return !!(typeof held!=='undefined'&&held.tool)||!!(typeof drag!=='undefined'&&(drag.on||drag.down))||!!bubble||!!document.querySelector('.screen')||(typeof pointerHeld!=='undefined'&&pointerHeld)||!!(typeof feed!=='undefined'&&feed.item);} // carrying, dragging, holding a tap, or reading (treat jar, books, journal)
 function capRecent(t){const at=CAP.seen.get(t);return at!=null&&performance.now()-at<CAP_REPEAT;}
 function tell(t,o={}){if(!t)return false;const kind=o.kind||'info',now=performance.now();
  if(kind==='teach'){const k=o.key||t;st.taught=st.taught||{};if(st.taught[k])return false;st.taught[k]=1;}
