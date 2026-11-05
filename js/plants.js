@@ -218,7 +218,7 @@ function plantUpdate(dt){const sp=gameSpeed();
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
  if(st.stage<4){st.timer+=dt*sp;if(st.timer>30){st.timer=0;st.stage=NEXT[st.stage]??4;
-   if(st.stage===4){sfx('chime');sfx('boing');if(!st.name)st.name=makeName(st);tell('Its eyes open! Hello, '+st.name+'!',{kind:'important',who:st.id});}
+   if(st.stage===4){sfx('chime');sfx('boing');if(!st.name)st.name=makeName(st);tell('Hello, '+st.name+'! Its eyes are open.',{kind:'important',who:st.id});}
    else{sfx('soil');if(st.stage===1)tell('A sprout!',{kind:'important'});}}}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
@@ -235,7 +235,7 @@ function plantUpdate(dt){const sp=gameSpeed();
  if(st.glare===2&&Math.random()<dt*.25)sfx('fsss');
  for(const n of['thirst','attention'])if(want(n)){
   if(Math.random()<dt*.06)sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');
-  if(!st.taught[n]){tell(TEACH[n],{kind:'teach',key:n});sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
+  if(!st.taught[n]){tell(n==='attention'?'A little frown: '+who()+' is lonely. Pet it or read to it.':TEACH[n],{kind:'teach',key:n,who:st.id});sfx(n==='thirst'?'crinkle':n==='hunger'?'rumble':'hum');}}
  if(st.lightState!=='ok'){if(Math.random()<dt*.05)sfx('hmm');}
  // no hints on objects (RULES.md 10): no carafe wobble or sparkle, curtain sway, window wobble, bouncing book or jar
 }
@@ -256,20 +256,25 @@ function scootTick(dt){if(stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(
    change with alignment; Cult of the Lamb traits flip reactions (what one hates, another loves); Petz used a fixed personality
    sheet + "constrained randomness", never punished the player, and aimed for every interaction to give you a story to tell. */
 function pers(){return {g:st.ge>.33?'good':st.ge<-.33?'evil':'',l:st.lc>.33?'lawful':st.lc<-.33?'chaotic':''};}
-function who(){return firstName()||(plantCount()>1?'The '+NAMES[st.species]:'It');} // its first name once its eyes are open
-function nameOf(q){return firstName(q)||'the '+NAMES[q.species];} // another plant, by name
+/* NAMES IN CAPTIONS (Jackie, Nov 4): with the cat and often two monsters in the room, a caption never says a bare "it" about a monster:
+   it names the monster first ("Pip's full. Maybe later.", "Pip loves it."). Seeds and sprouts have no name yet: "The seed", "The sprout". */
+function who(){return nameOf(st,true);} // the monster this caption is about
+function nameOf(q,cap){const n=firstName(q)||((q.stage<1?'the seed':q.stage<4?'the sprout':'the '+NAMES[q.species]));return cap?n.charAt(0).toUpperCase()+n.slice(1):n;}
+function whose(){const w=who();return w+(w.endsWith('s')?'\'':'\'s');} // Pip's, Bonks'
+// every monster in the room, named: "Pip", "Pip and Mortie"; plural = more than one
+function allNames(cap){const P=allRaw().filter(q=>q.stage>=0),n=P.map((q,i)=>nameOf(q,cap&&i===0));return {text:n.length>1?n.slice(0,-1).join(', ')+' and '+n[n.length-1]:n[0]||'',plural:n.length>1};}
 function plantsWord(){const P=allRaw().filter(q=>q.stage>=4);return P.length===1&&firstName(P[0])?firstName(P[0]):P.length>1?'your plants':'your plant';}
 const VOICE={
  pet:{good:['{W} leans into your hand.','{W} hums a tiny thank-you.'],evil:['{W} pretends not to like it. It likes it.','{W} lets you, this once.'],
   lawful:['{W} holds perfectly still to be petted.','{W} straightens up afterwards, very proper.'],chaotic:['{W} nibbles your finger, gently.','{W} wiggles every leaf at once.'],'':['{W} wiggles happily.']},
  water:{good:['{W} sighs happily.','{W} glows a little.'],evil:['{W} slurps it down loudly. Mwah-ha-hah.','{W} drinks like a tiny villain.'],
-  lawful:['{W} drinks exactly half, then the other half.'],chaotic:['{W} splashes some on the floor on purpose.','{W} blows bubbles in it.'],'':['Gulp gulp.']},
+  lawful:['{W} drinks exactly half, then the other half.'],chaotic:['{W} splashes some on the floor on purpose.','{W} blows bubbles in it.'],'':['{W} goes gulp gulp.']},
  greet:{good:'{W} waves every leaf at you.',lawful:'{W} was waiting in exactly the same spot.',chaotic:'{W} is somehow facing a different direction.','':'{W} perks up.'},
  idle:{good:['{W} is humming to itself.','{W} is watching the cat sleep, fondly.'],evil:['{W} is plotting something small.','{W} is doing a tiny evil laugh.'],
   lawful:['{W} is tidying its leaves into neat rows.','{W} is counting the books on the shelf.'],chaotic:['{W} is trying to lick the window.','{W} is doing a little dance for no reason.'],'':['{W} is just vibing.']}};
 // voice lines come out of a shuffle bag: never one of the last 15 picked for that event, never one shown in the last 10 minutes ('' = nothing fresh, stay quiet)
 const LINE_HIST={};
-function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W} is ',who()==='It'?'It\'s ':'{W} is ').replace('{W}',who());
+function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W}',who());
  const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=LINE_HIST[ev]=LINE_HIST[ev]||[],fresh=all.filter(t=>!h.includes(t)&&!capRecent(t));
  if(!fresh.length)return '';const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>15)h.shift();return t;}
 function notice(q,desc){st.quirks=st.quirks||{};if(!st.quirks[q]){st.quirks[q]=desc;return true;}return false;}
@@ -289,8 +294,8 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.qu
  else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
  else if(q==='tidy'){st.listen=1.6;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
- else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=(who()==='It'?'It\'s':who()+' is')+' keeping the cat company. The cat seems to like it.';}
- else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=(who()==='It'?'It\'s':who()+' is')+' cheering up the '+NAMES[o.species]+'.';}
+ else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping the cat company. The cat seems to like it.';}
+ else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
  else if(q==='boo'){plantBoing(cx);sfx('hmm');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at the cat. The cat is unimpressed and leaves.';}
  const first=notice(q,QUIRK_TXT[q]);if(t)tell(t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
 
@@ -354,7 +359,7 @@ function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==nu
  BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));}
 function bugAsk(){sfx('page');const b=bugNoteBox();
  openBubble(b.x-140,b.y-190,BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
-function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Doctor Bug will send it over in the morning.',{kind:'info'});save();}
+function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Doctor Bug will send the seedling over in the morning.',{kind:'info'});save();}
 function bugNotYet(){st.bugNote=null;st.bugJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
 function bugArrive(){ // the next morning
  if(!st.bugSend||st.day<st.bugSend)return;st.bugSend=0;if(plantCount()>=MAX_PLANTS)return;

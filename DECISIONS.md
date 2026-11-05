@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Captions always name the monster; seeds can be named early (Nov 4)
+
+- With the cat and often two monsters in the room, a bare "it" doesn't say who. Every caption about a monster now names it first, and "it" only follows a name in the same caption: "Pip is full. Maybe later.", "Shh... Pip is sleeping off a snack.", "Burp! Pip is so full it's dozing off.", "Pip grew a pizza bow!", "Pip listens to the fairy tale, very still.", "A little frown: Pip is lonely. Pet it or read to it.", "Pip is already a teen with big ideas and a bigger pot.", "Pip, no longer a moss-monster? ...", "Hello, Pip Wobblebean! Its eyes are open." Unnamed seeds and sprouts are "The seed" / "The sprout".
+- Mornings name who slept well ("Pip slept well...", or "Both slept well and their dreams were..."); before, only the plant you were last tending counted. Welcome back names everyone ("Pip and Mortie missed you."), and being away makes both a little thirsty ("Both got a little thirsty."), not just the one you were tending.
+- The cat's lines say "The cat" ("The cat sniffs your hand. A start.", "The cat is still shy. Let it nap."). "Tap a monster to offer the treat." "Doctor Bug will send the seedling over in the morning."
+- A new game starts as a seed, which had no name to tap, so Jackie couldn't name her monster. Now the journal title is tappable from the start: a seed or sprout shows its species there, and a tap names it. When its eyes open it keeps that name and the hello uses it.
+
 ### Every monster gets a silly, cute name (Nov 4)
 
 - When a seed opens its eyes (becomes a kid) it gets a two-part name, and the caption says hello once: "Its eyes open! Hello, Pip Wobblebean!" The name is saved with the plant and goes everywhere with it (later: freed plants' postcards).

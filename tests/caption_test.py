@@ -80,7 +80,7 @@ async def main():
                 await pg.wait_for_timeout(700)  # the fade-in runs on real time
                 await pg.screenshot(path=os.path.join(OUT, f"{dev_name}_{when}_plant_speaking_tail.png"))
                 if not night and dev_name == "phone":
-                    r = await pg.evaluate(SHOW, ["It sniffs your hand. A start.", {"kind": "info", "who": "cat"}])
+                    r = await pg.evaluate(SHOW, ["The cat sniffs your hand. A start.", {"kind": "info", "who": "cat"}])
                     check(r["tail"], "the cat's line should have a tail")
                     await pg.wait_for_timeout(700)
                     await pg.screenshot(path=os.path.join(OUT, "phone_day_cat_tail.png"))
