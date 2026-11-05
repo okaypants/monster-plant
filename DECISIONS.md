@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The opening, name tags, the cat's name, bigger captions, a wiggle every 10 s (Nov 4)
+
+- **Every new game opens in the daytime with the curtains open and both lamps off** (from the quiz on), whatever the room was doing before.
+- **The name comes with the seed.** When you plant (a new game or "Plant another seed"), the seed is named from js/names.js and the hello caption shares it: "Hello, Tuffet Mossmuffin! Your little seed is on the window sill growing, ...". No naming screen (Jackie chose that over a name step in the opening); rename anytime by tapping the name in the journal. When its eyes open: "Tuffet opens its eyes!" (a plant that somehow has no name yet still gets "Hello, ...! Its eyes are open.").
+- **Name tags:** each monster's full name sits in a small cream pill at the bottom left of the room, side by side when there are two. Tap one to open that monster's journal page. Hidden on menus and in the journal. (Jackie asked for it, an exception to "no HUD".)
+- **The cat has a name** too, from CAT_NAMES in js/names.js (Biscuit, Mochi, Pumpkin...), picked once per game and kept in the save. His journal page shows it (tap to rename) and his captions use it: "Biscuit sniffs your hand. A start.", "Biscuit curled up next to Tuffet.", "Pip made a spooky face at Biscuit. Biscuit is unimpressed and leaves."
+- **Captions are about 25% bigger** (31 px at full size, at least 16 px on a phone).
+- **Idle wiggle: one item every 10 s.** If something else is moving or you're touching the screen, it tries again a second later instead of waiting the full 10 s.
+
 ### Seedling pot sits on top of the desk (Nov 4)
 
 - The desk spot was at the bottom of the desk's front apron (y 558), so the pot hung in front of the desk and over the chair. It now stands on the desktop just behind the front edge (y 536), between the radio and the desk lamp (x 1268), in the lamp's pool of light. Same depth as the desk (its legs), so it stays about the radio's size.

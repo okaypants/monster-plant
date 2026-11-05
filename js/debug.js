@@ -162,7 +162,7 @@ function snapPreset(){return {st:JSON.stringify(st),cat:plainCat(),season:SEASON
 function loadPreset(p){if(typeof p==='function'){p();return;}st=Object.assign(fresh(),JSON.parse(p.st));for(const k of Object.keys(cat))delete cat[k];Object.assign(cat,JSON.parse(p.cat));
  SEASON_OVERRIDE=p.season||null;PAUSED=!!p.paused;dbgPid=st.id;ACT=st.id;pickChair();}
 const BUILT_IN={
- 'Two adults at golden hour in winter':()=>{dbgTwoAdults();st.dayT=.6;st.night=false;st.curtain='open';SEASON_OVERRIDE='winter';},
+ 'Two adults at golden hour in winter':()=>{dbgTwoAdults();eachPlant(()=>{st.lightState='ok';st.lightBad=0;});st.dayT=.6;st.night=false;st.curtain='open';SEASON_OVERRIDE='winter';},
  'A seed on the windowsill, morning':()=>{st=Object.assign(fresh(),{started:true,stage:0,id:st.id||1,others:[],place:{seed:'sill'},dayT:.1,mode:'actions',catTrust:st.catTrust,day:st.day});giveNature(st);dbgPid=st.id;ACT=st.id;},
  'BFF cat napping by an adult':()=>{if(pRaw().stage<6)onP(()=>{st.stage=8;st.nap=0;});st.catTrust=.95;dbgCatTo('byplant');}};
 function closeDrawerForStart(){dbgHidden=true;placeDrawer();startFlow();} // a brand-new game starts with the title and quiz, still in test mode

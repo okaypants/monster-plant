@@ -57,7 +57,7 @@ TEEN = "s.stage=6;s.species=4;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;s.gi
 CASES = [
     # name, save (None = brand-new game), js after the start screen, minutes, check (js returning true or a reason)
     ("new_game", None, "", 1,
-     "st.started&&st.stage===4&&st.nge!=null||'seed did not grow into a kid with a nature (stage '+st.stage+')'"),
+     "(st.started&&st.stage===4&&st.nge!=null&&!!st.name&&__open[4]===st.name&&__open[0]===.3&&__open[1]===false&&__open[2]===false&&__open[3]==='open'&&__open[5].startsWith('Hello, '+st.name+'! Your little seed')&&CAP.log.some(l=>l.t===st.name+' opens its eyes!'))||'new game: stage '+st.stage+', name '+st.name+', opening '+JSON.stringify(__open)"),
     # the second plant is opt-in (Jackie, Nov 4): Doctor Bug's note lands on the sill when the only plant is a late teen; tap it to be asked
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;",
      "window.__yes=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes
@@ -120,10 +120,16 @@ CASES = [
      "(()=>{const L=CAP.log.map(l=>l.t).concat(CAP.q.map(l=>l.t));if(!L.some(t=>/^Mortie listens to the fairy tale/.test(t)))return 'reading: '+L.join(' | ');"
      "if(!L.some(t=>t==='Mortie is full. Maybe later.'))return 'full: '+L.join(' | ');if(!L.some(t=>/Both slept well/.test(t)))return 'morning: '+L.join(' | ');"
      "const bare=L.filter(t=>/^(It|Its|It's) /.test(t));return !bare.length||'bare it: '+bare.join(' | ');})()"),
-    # a seed can be named in the journal right away; when its eyes open it keeps that name
+    # a seed can be renamed in the journal right away; when its eyes open it keeps that name (and says so)
     ("names_seed_named_early", "s.stage=1;s.species=2;s.timer=0;s.giftSeed=1;delete s.name;",
      "openJournal();const b=document.querySelector('.jrename');b.click();const i=document.querySelector('.jnameinput');i.value='Sprinkles';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));closeJournal();st.timer=29.5;", 0.2,
-     "(st.stage===4&&st.name==='Sprinkles'&&CAP.log.some(l=>l.t==='Hello, Sprinkles! Its eyes are open.'))||'seed name: '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+     "(st.stage===4&&st.name==='Sprinkles'&&CAP.log.some(l=>l.t==='Sprinkles opens its eyes!'))||'seed name: '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+    # the cat has a name too: on his journal page (tap to rename) and in his captions
+    ("cat_name", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.catTrust=.1;delete s.catName;",
+     "openJournal('cat');", 0.2,
+     "(()=>{const n=st.catName;if(!CAT_NAMES.includes(n))return 'no cat name: '+n;const q=s=>document.querySelector(s);if(q('.jrename').textContent!==n)return 'cat page shows '+q('.jrename').textContent;"
+     "q('.jrename').click();const i=q('.jnameinput');i.value='Sir Whiskers';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));if(st.catName!=='Sir Whiskers')return 'rename: '+st.catName;"
+     "closeJournal();capClear();CAP.seen.clear();st.taught={};cat.state='wake';cat.shyT=0;petCat();return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Sir Whiskers sniffs your hand. A start.')||'caption: '+CAP.q.map(c=>c.t).join('|');})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
@@ -161,6 +167,7 @@ async def play(b, name, save, after, minutes, check, device=None):
     if save is None:
         for i in range(4):  # answer the 4 quiz questions
             await pg.click(".screen button >> nth=%d" % (i % 2))
+        await pg.evaluate("()=>{window.__open=[st.dayT,st.lamp,st.desk,st.curtain,st.name,CAP.q.concat(CAP.cur||[]).map(c=>c.t).join('|')];}")
     await pg.evaluate("()=>{st.speed=20;" + after + "}")
     await pg.evaluate("s=>__step(s)", MINUTE * minutes)
     if name == "night_morning":  # a minute of night, then morning, then a minute of the new day

@@ -32,19 +32,26 @@ function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
 /* ---------- start + quiz ---------- */
 function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=[];
  if(away>30){eachPlant(()=>{if(st.stage>=0)st.needs.thirst=Math.max(st.needs.thirst,.55);});const A=allNames(true);bits.push(A.plural&&allRaw().filter(q=>q.stage>=0).length===2?'Both got a little thirsty.':A.text+(A.plural?' all':'')+' got a little thirsty.');}
- const ps=catTrust()>=TRUST_BFF?plantSideSpot():null;if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push('The cat waited right by '+(firstName()||'your plant')+'.');}
- else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&catSpotFree(k));const k=ks[Math.floor(Math.random()*ks.length)];if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);bits.push('The cat napped on '+({bed:'its bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
+ const ps=catTrust()>=TRUST_BFF?plantSideSpot():null;if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push(catName()+' waited right by '+(firstName()||'your plant')+'.');}
+ else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&catSpotFree(k));const k=ks[Math.floor(Math.random()*ks.length)];if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);bits.push(catName()+' napped on '+({bed:'its bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
  setTimeout(()=>{if(st.stage>=4){const b=plantBox();plantBoing(b.x+b.w/2);burst('heart',b.x+b.w*.15,b.y-20,2);sfx('giggle');}
   const A=allNames(true),t=!A.text||away<2?'Welcome back!':away<60?'Welcome back! '+A.text+' missed you.':away<1440?'Welcome back! '+A.text+(A.plural?' are':' is')+' so happy to see you.':'You\'re back! '+A.text+' waited for you.';
   tell(t+(bits.length?' While you were away: '+bits.join(' '):'')+(st.stage>=4?' '+line('greet'):''),{kind:'important'});},400);save();}
 function startFlow(){
  if(st.started&&st.stage>=0){const s=screen(`<h1>Monster Plant</h1><p>Welcome back. Day ${st.day}.</p><div class="opts"><button data-k="go">Continue</button>${plantCount()<MAX_PLANTS?'<button data-k="add">Plant another seed</button>':''}<button data-k="new">Start over</button></div>`,{go:d=>{d.remove();audioInit();welcomeBack();},add:d=>{d.remove();audioInit();addingSeed=true;quiz();},new:d=>{d.remove();audioInit();st=fresh();quiz();}});return;}
  screen(`<h1>Monster Plant</h1><p>prototype v2 · your real plants</p><p>Sound on. A few silly questions decide which seed you get.</p><div class="opts"><button data-k="go">Begin</button></div>`,{go:d=>{d.remove();audioInit();quiz();}});}
-function quiz(){const picks=QUIZ.map(pool=>pool[Math.floor(Math.random()*pool.length)]);let bits=0,i=0;
+// THE OPENING (Jackie, Nov 4): every new game starts in the daytime, curtains open, both lamps off
+function openingRoom(){Object.assign(st,{dayT:.3,night:false,curtain:'open',lamp:false,desk:false});curK=0;}
+function quiz(){if(!st.started||!addingSeed)openingRoom();const picks=QUIZ.map(pool=>pool[Math.floor(Math.random()*pool.length)]);let bits=0,i=0;
  const ask=()=>{const q=picks[i];sfx('pop');
   screen(`<p style="opacity:.7">Question ${i+1} of 4</p><h1 style="font-size:39px">${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
  const next=v=>{bits=bits*2+v;i++;if(i<4)ask();else plantSeed(bits);};ask();}
 let addingSeed=false;
-function plantSeed(sp){if(!addingSeed||!st.started)giveNature(st);if(addingSeed&&st.started){addingSeed=false;const p=freshPlant();p.species=sp;addPlant(p);sfx('soil');tell('A second seed, in the other little pot.',{kind:'important'});save();return;}
- st.species=sp;st.started=true;st.stage=0;st.timer=0;st.dayT=0;sfx('soil');
- tell('Your little seed is on the window sill growing, or move it to the desk and turn on the lamp.',{kind:'important'});save();}
+function plantSeed(sp){
+ if(addingSeed&&st.started){addingSeed=false;const p=freshPlant();p.species=sp;
+  nameStep(p,()=>{addPlant(p);sfx('soil');tell('Hello, '+p.name+'! A second seed, in the other little pot.',{kind:'important',who:p.id});save();});return;}
+ giveNature(st);st.species=sp;
+ nameStep(st,()=>{st.started=true;st.stage=0;st.timer=0;openingRoom();sfx('soil');
+  tell('Hello, '+st.name+'! Your little seed is on the window sill growing, or move it to the desk and turn on the lamp.',{kind:'important'});save();});}
+// its name is picked for it (js/names.js) and shared in the hello; rename it anytime by tapping its name in the journal (no naming screens)
+function nameStep(p,done){if(!p.name)p.name=makeName(p);done();}

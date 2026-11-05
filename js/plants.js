@@ -218,7 +218,7 @@ function plantUpdate(dt){const sp=gameSpeed();
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
  if(st.stage<4){st.timer+=dt*sp;if(st.timer>30){st.timer=0;st.stage=NEXT[st.stage]??4;
-   if(st.stage===4){sfx('chime');sfx('boing');if(!st.name)st.name=makeName(st);tell('Hello, '+st.name+'! Its eyes are open.',{kind:'important',who:st.id});}
+   if(st.stage===4){sfx('chime');sfx('boing');const had=!!st.name;if(!had)st.name=makeName(st);tell(had?st.name+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.',{kind:'important',who:st.id});}
    else{sfx('soil');if(st.stage===1)tell('A sprout!',{kind:'important'});}}}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
@@ -294,9 +294,9 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.qu
  else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
  else if(q==='tidy'){st.listen=1.6;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
- else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping the cat company. The cat seems to like it.';}
+ else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping '+catName()+' company. '+catName()+' seems to like it.';}
  else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
- else if(q==='boo'){plantBoing(cx);sfx('hmm');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at the cat. The cat is unimpressed and leaves.';}
+ else if(q==='boo'){plantBoing(cx);sfx('hmm');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
  const first=notice(q,QUIRK_TXT[q]);if(t)tell(t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
 
 /* ---------- born with a nature; visible moves; friends and bickering; titles (Nov 3, no new art) ---------- */

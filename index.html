@@ -30,7 +30,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 /* caption: a cream pill at the top centre; --S = room scale (set in fit()); the little tail points at whoever is talking */
 #caption{position:absolute;left:0;top:0;max-width:60%;opacity:0;transition:opacity .45s ease;pointer-events:none;z-index:40}
 #caption.show{opacity:1}
-#caption .ci{background:#fff4e2;color:#4a2a4f;border:2px solid #e8c9a8;border-radius:999px;box-shadow:0 3px 0 #d9b08c;padding:max(5px,calc(var(--S)*10px)) max(14px,calc(var(--S)*28px));font-size:max(13px,calc(var(--S)*25px));font-weight:500;line-height:1.3;text-align:center}
+#caption .ci{background:#fff4e2;color:#4a2a4f;border:2px solid #e8c9a8;border-radius:999px;box-shadow:0 3px 0 #d9b08c;padding:max(5px,calc(var(--S)*10px)) max(14px,calc(var(--S)*28px));font-size:max(16px,calc(var(--S)*31px));font-weight:500;line-height:1.3;text-align:center}
 #caption .tail{display:none;position:absolute;top:calc(100% - 1px);width:calc(var(--u)*6);height:calc(var(--u)*3)}
 #caption .tail::after{content:'';position:absolute;left:50%;top:0;width:calc(var(--u)*2.2);height:calc(var(--u)*2.2);background:#fff4e2;border-right:2px solid #e8c9a8;border-bottom:2px solid #e8c9a8;border-bottom-right-radius:3px;transform:translate(-50%,-60%) rotate(45deg)}
 #caption.talk .tail{display:block}
@@ -40,6 +40,9 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .screen:not(.journal) .opts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 .screen:not(.journal) button{font:inherit;font-size:22px;font-weight:500;background:#fff4e2;color:#4a2a4f;border:none;border-radius:999px;box-shadow:0 3px 0 #d9b08c;padding:10px 26px;cursor:pointer;min-width:160px;transition:transform .12s,background .12s}
 .screen:not(.journal) button:hover,.screen:not(.journal) button:focus-visible{background:#ffd9b8;transform:translateY(-1px)}
+/* NAME TAGS (Jackie, Nov 4): each monster's name in a small cream pill at the bottom left (both, when there are two). Tap one to open its journal page. */
+#nameTags{position:absolute;left:1.2%;bottom:2%;display:flex;gap:6px;z-index:30;pointer-events:none}
+#nameTags button{pointer-events:auto;font:inherit;font-weight:600;font-size:max(12px,calc(var(--S)*20px));color:#4a2a4f;background:#fff4e2;border:2px solid #e8c9a8;border-radius:999px;padding:max(2px,calc(var(--S)*4px)) max(8px,calc(var(--S)*14px));box-shadow:0 2px 0 #d9b08c;cursor:pointer;opacity:.92}
 /* JOURNAL (Jackie, Nov 4): a keepsake book. Cream pages, dark stepped pixel outline; design size 760x446, scaled to fit (fitBook in journal.js). */
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
 .jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:500}
@@ -129,6 +132,7 @@ body.testing #testBadge{display:block}
 <div id="wrap">
 <canvas id="c" width="1670" height="942" aria-label="Monster plant room"></canvas>
 <div id="ui">
+<div id="nameTags" aria-label="Your monsters"></div>
 <div id="caption" role="status" aria-live="polite"><div class="ci"><span class="ct"></span></div><div class="tail"></div></div>
 <button id="fsBtn" type="button" aria-label="Full screen">⛶</button>
 <button id="dbgBtn" type="button">debug</button>

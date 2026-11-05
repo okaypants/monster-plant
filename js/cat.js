@@ -65,7 +65,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
  else if(cat.state==='walk'){const p=cat.path[0];if(!p&&!spotVisible(CAT_SPOTS[cat.to],cat.huff?HUFF_FRAMES():null)&&(cat.retry=(cat.retry||0)+1)<6){if(cat.huff)huffWalk();else catGo(catPick(cat.to));return;} // a plant moved in front while he walked: he never stops behind it
   if(!p&&cat.huff){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;huffSettle();return;}
-  if(!p){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;st.catNaps=st.catNaps||{};st.catNaps[cat.to]=(st.catNaps[cat.to]||0)+1;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){catSaw('byplant');st.listen=3;sfx('purr');tell('The cat curled up next to '+(firstName()||'your plant')+'.',{kind:'teach',key:'catPlant',who:'cat'});}return;}
+  if(!p){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;st.catNaps=st.catNaps||{};st.catNaps[cat.to]=(st.catNaps[cat.to]||0)+1;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){catSaw('byplant');st.listen=3;sfx('purr');tell(catName()+' curled up next to '+(firstName()||'your plant')+'.',{kind:'teach',key:'catPlant',who:'cat'});}return;}
   if(p.hop){cat.x=p.x;cat.y=p.y;cat.path.shift();return;} // hop up/down: one quick jump
   const dx=p.x-cat.x,sp=110*dt;if(Math.abs(dx)<=sp){cat.x=p.x;cat.y=p.y;cat.path.shift();}else{cat.dir=Math.sign(dx);cat.x+=cat.dir*sp;cat.y=p.y;}
   cat.sc+=((cat.path.length?catSc(DEPTH.floor):CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
@@ -106,9 +106,9 @@ const CAT_QUIRKS={sniff:'Sniffs hands',purr:'Purrs',byplant:'Plant buddy',huff:'
 function catSaw(k){st.catSeen=st.catSeen||{};st.catSeen[k]=1;}
 function trustGain(v){if(st.catDayN!==st.day){st.catDayN=st.day;st.catGain=0;}const room=Math.max(0,.18-(st.catGain||0)),d=Math.min(v,room);if(d<=0)return;
  const before=catTrust();st.catTrust=Math.min(1,before+d);st.catGain=(st.catGain||0)+d;const a=st.catTrust;st.taught=st.taught||{};
- if(before<TRUST_SHY&&a>=TRUST_SHY&&!st.taught.trust1){st.taught.trust1=1;tell('The cat lets you pet it now.',{kind:'important',who:'cat'});}
- else if(before<TRUST_FOND&&a>=TRUST_FOND&&!st.taught.trust2){st.taught.trust2=1;tell('The cat might nap by '+plantsWord()+' now.',{kind:'important',who:'cat'});}
- else if(before<TRUST_BFF&&a>=TRUST_BFF&&!st.taught.trust3){st.taught.trust3=1;tell('The cat adores you.',{kind:'important',who:'cat'});}}
+ if(before<TRUST_SHY&&a>=TRUST_SHY&&!st.taught.trust1){st.taught.trust1=1;tell(catName()+' lets you pet him now.',{kind:'important',who:'cat'});}
+ else if(before<TRUST_FOND&&a>=TRUST_FOND&&!st.taught.trust2){st.taught.trust2=1;tell(catName()+' might nap by '+plantsWord()+' now.',{kind:'important',who:'cat'});}
+ else if(before<TRUST_BFF&&a>=TRUST_BFF&&!st.taught.trust3){st.taught.trust3=1;tell(catName()+' adores you.',{kind:'important',who:'cat'});}}
 // HAD ENOUGH (Jackie): when he isn't into being touched (shy, or petted too many times) he leaves like a real cat.
 // A second of the annoyed look (ears back), then he gets up and walks off at his normal pace to a spot a comfortable way from you and the plants,
 // often a higher one. There he sits awake for 30-90 s (back turned, a little grooming, a slow blink), then loafs with his eyes open for a minute or more,
@@ -126,8 +126,8 @@ function huffSettle(){cat.state='settle';cat.t=0;cat.huffF='back';const n=cat.hu
 function petCat(){const tr=catTrust();if(cat.state==='walk'||cat.state==='annoyed'||(cat.shyT||0)>0)return;const b=catBox();
  if(cat.state==='settle'||cat.state==='loafwake'){huffWalk();return;} // still settling: he calmly moves once more (no penalty)
  if(tr<TRUST_SHY){ // shy: only says hi when it's awake, and only once
-  if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell('The cat is still shy. Let it nap.',{kind:'teach',key:'catShy'});return;}
-  cat.state='sniff';cat.t=0;catSaw('sniff');trustGain(.06);tell('The cat sniffs your hand. A start.',{kind:'teach',key:'catSniff',who:'cat'});return;}
+  if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell(catName()+' is still shy. Let him nap.',{kind:'teach',key:'catShy'});return;}
+  cat.state='sniff';cat.t=0;catSaw('sniff');trustGain(.06);tell(catName()+' sniffs your hand. A start.',{kind:'teach',key:'catSniff',who:'cat'});return;}
  const max=tr>=TRUST_FOND?3:1;if(cat.pets>=max){catLeave();return;} // enough for now: it wanders off, no penalty
  cat.state='pet';cat.t=0;cat.pets++;cat.belly=!OLD_CAT&&tr>=TRUST_BFF&&Math.random()<.35; // very trusting: sometimes rolls belly-up for a tummy scratch
 sfx('purr');fplay('cat_purr');if(b)burst('heart',b.x+b.w/2,b.y,tr>=TRUST_FOND?2:1);trustGain(tr>=TRUST_FOND?.03:.04);
