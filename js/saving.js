@@ -11,6 +11,7 @@ function freshPlant(){const f=fresh(),o={};for(const k in f)if(!GLOBAL.has(k))o[
 function giveNature(o){const r=()=>{const v=rnd(.36,.6);return Math.random()<.5?v:-v;};o.nge=r();o.nlc=r();if(Math.random()<.25)(Math.random()<.5?o.nge=0:o.nlc=0);o.ge=o.nge;o.lc=o.nlc;} // most seeds lean two ways; some only one
 function swapIn(i){const a={};for(const k of Object.keys(st))if(!GLOBAL.has(k)){a[k]=st[k];delete st[k];}Object.assign(st,st.others[i]);st.others[i]=a;}
 function eachPlant(f){f(-1);const n=(st.others||[]).length;for(let i=0;i<n;i++){swapIn(i);try{f(i);}finally{swapIn(i);}}}
+const MAX_PLANTS=2; // never more than two plants in the room at once (Jackie, Nov 4)
 function plantCount(){return (st.started&&st.stage>=0?1:0)+(st.others||[]).length;}
 function allRaw(){return [st].concat(st.others||[]);}
 function otherPos(){return allRaw().filter(p=>p.id!==st.id&&p._pos).map(p=>p._pos);}

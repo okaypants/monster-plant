@@ -328,13 +328,13 @@ function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.
 let seedOffer=null;
 function offerSeed(o){seedOffer=o;}
 function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.querySelector('.screen'))return; // never while you're busy, in a menu, or at night
- const o=seedOffer;seedOffer=null;if(plantCount()>=3||allRaw().some(q=>q.stage>=0&&q.stage<4)){o.no&&o.no();return;}
+ const o=seedOffer;seedOffer=null;if(plantCount()>=MAX_PLANTS||allRaw().some(q=>q.stage>=0&&q.stage<4)){o.no&&o.no();return;}
  sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,o.text+'<br><button data-k="y">Yes, plant it</button><button data-k="n">Not now</button>',
   {y:()=>{closeBubble();o.yes();},n:()=>{closeBubble();o.no&&o.no();}});
  o.no&&o.no(); /* asked: unless you say yes, it's a no (tapping away included) */}
 function seedTick(dt){ // once your first plant is a teen, a seed taps at the open window and asks to come in
  offerTick();
- if(seedOffer||st.giftSeed||st.night||plantCount()>=3||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
+ if(seedOffer||st.giftSeed||st.night||plantCount()>=MAX_PLANTS||st.curtain==='closed'||!quiet()||T<8)return;/* not in the first moments after you arrive: the welcome comes first */if(!allRaw().some(q=>q.stage>=6))return;
  if((st.giftAskDay||0)>st.day)return; // you said not now: ask again in a few days
  if(allRaw().some(q=>q.stage>=0&&q.stage<4))return;
  offerSeed({text:'A little seed is tapping at the window. Plant it in the little pot?',
@@ -342,7 +342,7 @@ function seedTick(dt){ // once your first plant is a teen, a seed taps at the op
   yes:()=>{st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
    tell('You let it in. The seed is in the little pot. You have two plants now: tap one to tend it.',{kind:'important'});save();}});}
 function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
- if(st.night||plantCount()>=3||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
+ if(st.night||plantCount()>=MAX_PLANTS||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
  if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
  st.bloomT=0;st.breedDay=st.day;const [a,b]=A;crossPollinate(a,b);}
 function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.needs}};const pa=a._pos,pb=b._pos; // snapshot: 'st' changes when the seed arrives
