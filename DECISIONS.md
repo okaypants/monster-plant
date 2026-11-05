@@ -11,6 +11,16 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Captions are about 25% bigger** (31 px at full size, at least 16 px on a phone).
 - **Idle wiggle: one item every 10 s.** If something else is moving or you're touching the screen, it tries again a second later instead of waiting the full 10 s.
 
+### Feeding: drag a treat from a tray to a monster (Nov 4)
+
+- Jackie wanted feeding simple and satisfying with a finger or a mouse, with no new art.
+- Tapping the SNACKS cabinet shows a small cream tray (the caption pill's style) along the bottom of the room, ending under the cabinet, with the seven treat pictures in a row, each a thumb-sized (46 px) target, no words. It sits low so it never covers a monster's face.
+- Press a treat and drag: it follows the finger, drawn a little above and to the side (away from the thumb; the other side when left-handed). Pointer events, so a mouse drag is the same.
+- Over a monster that can eat (teen or adult, awake, not full) that monster opens its mouth (mouthB_02). The drop area is its whole body plus a generous margin. Let go there: chomp (closed, open, closed; 110 ms each) with a 2 px squash on the open frame, then its usual treat reaction. Let go anywhere else, or over one that can't eat (a kid, asleep, full): the treat just goes back to the tray.
+- The tray hides when you tap away, or 4 seconds after the last treat.
+- Removed: the Treat jar bubble, the "Tap a monster to offer the treat." caption, and the unused floor-bouncing treats code. Kids no longer eat treats (teens and adults only, as asked).
+- Tests: the smoke test drags a treat to an adult (it eats) and to the floor (it goes back); `python tests/feed_shots.py` does it with a real mouse on a phone-sized screen and saves the tray, the open mouth and the chomp to tests/screenshots/feed/.
+
 ### Seedling pot sits on top of the desk (Nov 4)
 
 - The desk spot was at the bottom of the desk's front apron (y 558), so the pot hung in front of the desk and over the chair. It now stands on the desktop just behind the front edge (y 536), between the radio and the desk lamp (x 1268), in the lamp's pool of light. Same depth as the desk (its legs), so it stays about the radio's size.

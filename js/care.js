@@ -69,6 +69,45 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
  if(held.tool==='book'){const bk=held.item;sfx('page');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
   st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=5)earnPot({fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'}[bk.id]);
   tell(who()+' '+({fairy:'listens to the fairy tale, very still.',almanac:'nods along to the rules.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
-function openSnacks(x,y){const av=SNACKS;sfx('tick');
- openBubble(x-260,y-300,'Treat jar<br>'+av.map((s,i)=>`<button data-k="${i}">${s.name}</button>`).join(''),Object.fromEntries(av.map((s,i)=>[i,()=>{held.tool='snack';held.item=s;closeBubble();sfx('pop');tell('Tap a monster to offer the treat.',{kind:'teach',key:'feed'});}])));}
+/* FEEDING (Jackie, Nov 4): simple and satisfying with a finger or a mouse.
+   Tap the SNACKS cabinet: a small cream tray beside it holds the seven treats in a row (thumb-sized, no words).
+   Press a treat and drag: it follows the finger, drawn a little above and to the side so the thumb doesn't hide it.
+   Over a monster that can eat (teen or adult, awake, not full) that monster opens its mouth (mouthB_02); the drop area is its
+   whole body plus a generous margin. Let go there: chomp (closed-open-closed) with a 2 px squash, then its usual treat reaction.
+   Let go anywhere else, or over one that can't eat: the treat just goes back to the tray. The tray hides when you tap away,
+   or a few seconds after the last treat. Pointer events, so a mouse drag works the same way. */
+const feed={item:null,x:0,y:0,over:null,trayT:0},CHOMP=new Map(),CHOMP_MS=110,TRAY_HIDE=4000;let trayEl=null;
+function openSnacks(){sfx('tick');if(!trayEl){trayEl=document.createElement('div');trayEl.className='ttray';
+  for(const s of SNACKS){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
+   const im=document.createElement('img');im.src=TREAT_IMG[s.id].src;im.alt='';im.draggable=false;b.appendChild(im);
+   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabTreat(s,e);});trayEl.appendChild(b);}
+  trayEl.addEventListener('pointerdown',e=>e.stopPropagation());trayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(trayEl);}
+ placeTray();trayKeep();}
+function placeTray(){if(!trayEl)return;const w=trayEl.offsetWidth,h=trayEl.offsetHeight; // along the bottom, ending under the cabinet: over the rug and pots, never a face
+ trayEl.style.left=Math.round(clamp((JAR.x+JAR.w)*S-w,4,W*S-w-4))+'px';trayEl.style.top=Math.round(H*S-h-6)+'px';}
+function trayKeep(){feed.trayT=performance.now();}
+function closeTray(){if(trayEl){trayEl.remove();trayEl=null;}}
+cv.addEventListener('pointerdown',()=>{if(!feed.item)closeTray();}); // tap away
+// where the treat is drawn: a little above the finger and to the side (away from the thumb), in room units
+function feedPos(e){const [x,y]=toGame(e);feed.x=x+(rightHand()?-30:30)/S;feed.y=y-46/S;}
+function grabTreat(s,e){feed.item=s;feedPos(e);feedOver();trayKeep();sfx('pop');
+ addEventListener('pointermove',feedMove);addEventListener('pointerup',feedUp);addEventListener('pointercancel',feedUp);}
+function feedMove(e){if(!feed.item)return;feedPos(e);feedOver();}
+function canEat(){return st.stage>=6&&st.nap<=0&&!st.night&&(st.full||0)<=.6;}
+// the monster under the treat (the frontmost if two overlap): its whole body plus a generous margin
+function feedTarget(x,y){let best=null,by=-1;eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),m=40+b.w*.12;
+  if(x>=b.x-m&&x<=b.x+b.w+m&&y>=b.y-m&&y<=baseY()+m*.5&&baseY()>by){by=baseY();best={id:st.id,eat:canEat()};}});return best;}
+function feedOver(){const t=feedTarget(feed.x,feed.y);feed.over=t&&t.eat?t.id:null;}
+function feedUp(){removeEventListener('pointermove',feedMove);removeEventListener('pointerup',feedUp);removeEventListener('pointercancel',feedUp);
+ const s=feed.item,id=feed.over;feed.item=null;feed.over=null;trayKeep();if(!s)return;
+ if(id==null){sfx('tick');return;} // back to the tray, nothing else happens
+ const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you fed becomes the one you're tending
+ CHOMP.set(id,performance.now());sfx(s.s);
+ setTimeout(()=>withPlant(id,()=>{held.tool='snack';held.item=s;useTool();}),CHOMP_MS*3);}
+// mouth while feeding: open over a treat; chomp = closed, open, closed (one 110 ms frame each)
+function feedMouth(){const t=CHOMP.get(st.id);if(t!=null){const f=Math.floor((performance.now()-t)/CHOMP_MS);if(f<3)return f===1?2:8;CHOMP.delete(st.id);}return feed.item&&feed.over===st.id?2:0;}
+function chompDip(){const t=CHOMP.get(st.id);if(t==null)return 0;const f=Math.floor((performance.now()-t)/CHOMP_MS);return f===1?2:0;} // squash 2 px down on the open frame, back up after
+function drawFeed(){if(trayEl&&!feed.item&&performance.now()-feed.trayT>TRAY_HIDE)closeTray();if(!feed.item)return;const im=TREAT_IMG[feed.item.id];if(!ok(im))return;
+ const k=.4*overK(feed.x,feed.y),w=Math.round(im.naturalWidth*k),h=Math.round(im.naturalHeight*k);g.drawImage(im,Math.round(feed.x-w/2),Math.round(feed.y-h/2),w,h);}
+addEventListener('resize',()=>setTimeout(placeTray,50));
 function openBooks(x,y){openBubble(x+20,y-40,'Read aloud from…<br>'+BOOKS.map((b,i)=>`<button data-k="${i}">${b.name}</button>`).join(''),Object.fromEntries(BOOKS.map((b,i)=>[i,()=>{held.tool='book';held.item=b;closeBubble();sfx('page');}])));}

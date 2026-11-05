@@ -170,7 +170,7 @@ function potted(im,pim){const key=im.src+'|'+pim.src;let c=potCache.get(key);if(
  spx.drawImage(tmp,0,0,pw,ph);const spd=spx.getImageData(0,0,pw,ph),SP=spd.data;for(let q=3;q<SP.length;q+=4)SP[q]=SP[q]>110?255:0;spx.putImageData(spd,0,0);
  x.drawImage(sp,ox,oy+up);x.drawImage(lay(plant),0,shiftP+up);x.drawImage(lay(drape),0,shiftP+up);
  c.naturalWidth=W2;c.naturalHeight=H3;c.complete=true;c.src=key;c.lift=-shiftP;if(potCache.size>60)potCache.clear();potCache.set(key,c);return c;}
-function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===ACT?Math.round(BOING.ox):0)+MO[0]};const bob=((st.stage>=4&&!st.night)?Math.round(Math.sin(T*2.2)*1.5):0)+(st.id===ACT?Math.round(BOING.oy):0)+MO[1];
+function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===ACT?Math.round(BOING.ox):0)+MO[0]};const bob=((st.stage>=4&&!st.night)?Math.round(Math.sin(T*2.2)*1.5):0)+(st.id===ACT?Math.round(BOING.oy):0)+MO[1]+chompDip();
  if(!b.img){if(b.seed)drawSeedPot(b);return b;}
  if(!ok(b.img)||b.w<1||b.h<1)return b; // still loading
  const asleep=st.nap>0||st.night;
@@ -193,7 +193,7 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  return b;}
 // mouth set B (Jackie's second sheet): 1 w,2 big open+tongue,3 blep,4 sly fang smirk,5 blushing smile,6 small cat w,7 fang grin+tongue,8 flat line,9 blushing frown,10 w+fang,11 shark grin,12 heart tongue
 const MOUTH_BY={'Lawful Good':5,'Neutral Good':1,'Chaotic Good':12,'Lawful Neutral':8,'True Neutral':6,'Chaotic Neutral':3,'Lawful Evil':4,'Neutral Evil':10,'Chaotic Evil':11};
-function mouthNow(){if(st.grump>0)return 9;if(grinning())return 10;const sad=st.lightState!=='ok'||st.needs.thirst>.8||st.needs.attention>.6;if(sad)return 9;return MOUTH_BY[align()]||6;}
+function mouthNow(){const fm=feedMouth();if(fm)return fm;if(st.grump>0)return 9;if(grinning())return 10;const sad=st.lightState!=='ok'||st.needs.thirst>.8||st.needs.attention>.6;if(sad)return 9;return MOUTH_BY[align()]||6;}
 function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/mood. drawn at the same scale as the body
  const aa=ageArt(),f=aa?aa.face:FACE[st.species],sc=TARGET_H[st.stage>=8?'adult':'teen']/601*.54*(b.dk||1); /* 10% smaller again (Jackie) *//* faces 40% smaller (Jackie) */const cx=b.x+b.w*f[0],cy=b.y+b.h*f[1]+bob;
  const closed=st.nap>0||st.night||blink>0||st.listen>0||squinting();
