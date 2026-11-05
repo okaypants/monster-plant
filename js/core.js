@@ -44,7 +44,7 @@ const P=6; // comic-mark pixel size
      info      : a reply to something you just did
      ambient   : chatter (voice lines, quirks, friends and bickering): at most one every 45-90 s, never while you're busy
    Nothing but important lines repeats within 10 minutes (by its text, or by key: one event, however it's worded). who = a plant id or 'cat': the bubble gets a little tail pointing at them.
-   Shows about 1 s per 4 words (at least 3 s), fades in and out. */
+   Shows 2 s + 0.3 s a word: short lines 3-5 s, the longest 6-8 s (never more); fades in and out. */
 const cap=document.getElementById('caption'),capText=cap.querySelector('.ct'),capTail=cap.querySelector('.tail');
 const CAP_REPEAT=10*60*1000,CAP={q:[],cur:null,until:0,nextAt:0,lastAmb:-1e9,ambGap:45+Math.random()*45,seen:new Map(),log:[]};
 function capBusy(){return !!(typeof held!=='undefined'&&held.tool)||!!(typeof drag!=='undefined'&&(drag.on||drag.down))||!!bubble||!!document.querySelector('.screen')||(typeof pointerHeld!=='undefined'&&pointerHeld);} // carrying, dragging, holding a tap, or reading (treat jar, books, journal)
@@ -54,7 +54,7 @@ function tell(t,o={}){if(!t)return false;const kind=o.kind||'info',now=performan
  const rk=kind==='teach'?t:(o.key||t);if(kind!=='important'&&(capRecent(rk)||capRecent(t)))return false;
  if(CAP.q.some(i=>i.t===t)||(CAP.cur&&CAP.cur.t===t))return false;
  if(kind==='ambient'){if(!ambientOK())return false;CAP.lastAmb=now;CAP.ambGap=rnd(45,90);}
- const item={t,rk,kind,who:o.who??null,dur:Math.max(3,t.trim().split(/\s+/).length/4)};
+ const item={t,rk,kind,who:o.who??null,dur:clamp(2+t.trim().split(/\s+/).length*.3,3,8)};
  if(kind==='important'){const i=CAP.q.findIndex(x=>x.kind!=='important');CAP.q.splice(i<0?CAP.q.length:i,0,item);if(CAP.cur&&CAP.cur.kind==='ambient')CAP.until=now;} // jumps the queue; a chatty line steps aside
  else{CAP.q=CAP.q.filter(x=>x.kind!=='ambient');CAP.q.push(item);if(CAP.q.length>4)CAP.q.splice(CAP.q.findIndex(x=>x.kind!=='important'),1);}
  return true;}
