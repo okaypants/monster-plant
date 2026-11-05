@@ -102,7 +102,7 @@ CASES = [
      "(()=>{const R=[...document.querySelectorAll('.jrib')];if(R.length!==2)return 'ribbons: '+R.length;R[1].click();__step(.5);return jPage==='cat'||'cat page';})()"),
     # names (Jackie, Nov 4): a name when its eyes open, with one hello; old saves get named; two plants never share a first name; rename in the journal
     ("names_eyes_open", "s.stage=1;s.species=2;s.timer=29;s.nge=.5;s.nlc=0;s.giftSeed=1;", "", 0.2,
-     "(st.stage===4&&!!st.name&&NAME_FIRST.good.includes(firstName())&&CAP.log.filter(l=>l.t==='Its eyes open! Hello, '+st.name+'!').length===1)||'name '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+     "(st.stage===4&&!!st.name&&NAME_FIRST.good.includes(firstName())&&CAP.log.filter(l=>l.t==='Hello, '+st.name+'! Its eyes are open.').length===1)||'name '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
     ("names_old_save", "s.stage=8;s.species=3;s.free={x:300,y:918};s.giftSeed=1;delete s.name;",
      "const p=freshPlant();p.species=6;p.stage=8;p.free={x:1250,y:918};addPlant(p);", 0.2,
      "(()=>{const A=allRaw();if(!A.every(q=>q.name))return 'unnamed: '+A.map(q=>q.name).join(',');const f=A.map(q=>firstName(q));return f[0]!==f[1]||'same first name '+f;})()"),
@@ -112,6 +112,18 @@ CASES = [
      "q('.jrename').click();let i=q('.jnameinput');i.value='Sir Leafington the Third';enter(i);if(st.name!=='Sir Leafington t')return 'renamed to '+st.name;"
      "q('.jrename').click();i=q('.jnameinput');i.value='   ';enter(i);if(st.name!=='Sir Leafington t')return 'cleared name changed it to '+st.name;"
      "return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Back to Sir Leafington t.')||'no gentle back-to caption';})()"),
+    # with the cat and two monsters around, a caption never starts with a bare "it": it names the monster (Jackie, Nov 4)
+    ("names_in_captions_two", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:300,y:918};s.giftSeed=1;",
+     "const p=freshPlant();p.species=6;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);"
+     "held.tool='book';held.item=BOOKS[0];useTool();st.full=.9;held.tool='snack';held.item=SNACKS[3];useTool();"
+     "eachPlant(()=>{st.lastNight='well';});st.night=true;wakeRoom();", 1,
+     "(()=>{const L=CAP.log.map(l=>l.t).concat(CAP.q.map(l=>l.t));if(!L.some(t=>/^Mortie listens to the fairy tale/.test(t)))return 'reading: '+L.join(' | ');"
+     "if(!L.some(t=>t==='Mortie is full. Maybe later.'))return 'full: '+L.join(' | ');if(!L.some(t=>/Both slept well/.test(t)))return 'morning: '+L.join(' | ');"
+     "const bare=L.filter(t=>/^(It|Its|It's) /.test(t));return !bare.length||'bare it: '+bare.join(' | ');})()"),
+    # a seed can be named in the journal right away; when its eyes open it keeps that name
+    ("names_seed_named_early", "s.stage=1;s.species=2;s.timer=0;s.giftSeed=1;delete s.name;",
+     "openJournal();const b=document.querySelector('.jrename');b.click();const i=document.querySelector('.jnameinput');i.value='Sprinkles';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));closeJournal();st.timer=29.5;", 0.2,
+     "(st.stage===4&&st.name==='Sprinkles'&&CAP.log.some(l=>l.t==='Hello, Sprinkles! Its eyes are open.'))||'seed name: '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

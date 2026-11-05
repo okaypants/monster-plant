@@ -102,7 +102,7 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
 /* ---------- a plant's pages ---------- */
 function plantPages(L,R){
  const id=st.id,steps=ageSprites(),at=ageStep();
- L.appendChild(st.name?nameTag(id):jdiv('jname',[],NAMES[st.species])); // its name once its eyes are open; the species small underneath
+ L.appendChild(nameTag(id)); // its name on top (tap to name it, even as a seed); the species small underneath
  if(st.name)L.appendChild(jdiv('jspecies',[],NAMES[st.species]));
  L.appendChild(jdiv('jportrait',[plantPortrait(id,240,196)]));
  L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at))));
@@ -124,10 +124,10 @@ function plantPages(L,R){
  R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint')))]));}
 
 // tap the name to type a new one (16 letters at most); cleared = it keeps its old name
-function nameTag(id){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name;b.setAttribute('aria-label','Rename '+st.name);
- b.addEventListener('click',e=>{e.stopPropagation();const old=st.name,inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old;inp.setAttribute('aria-label','Name');
+function nameTag(id){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name||NAMES[st.species];b.setAttribute('aria-label',st.name?'Rename '+st.name:'Name it'); // no name yet (a seed or sprout): it shows the species, and a tap names it
+ b.addEventListener('click',e=>{e.stopPropagation();const old=st.name,inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old||'';inp.setAttribute('aria-label','Name');
   let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);
-   withPlant(id,()=>{if(v)st.name=v;else tell('Back to '+old+'.',{kind:'info'});});sfx('tick');save();renderJournal();};
+   withPlant(id,()=>{if(v)st.name=v;else if(old)tell('Back to '+old+'.',{kind:'info'});});sfx('tick');save();renderJournal();};
   inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')finish();if(ev.key==='Escape'){inp.value=old;finish();}});
   inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
  return b;}

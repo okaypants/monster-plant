@@ -50,25 +50,25 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
   st.needs.thirst=0;held.tool=null;return;}
  if(st.stage<4){tell(held.tool==='snack'?'This tyke\'s not eating whole food yet.':'Too little for that yet.',{kind:'info',who:st.id});held.tool=null;return;}
  if(held.tool==='snack'&&(st.full||0)>.6){ // full (Jackie): it won't eat; a little head-shake, treat stays in your hand
-  BOING.vx+=6;sfx('hmm');tell('It\'s full. Maybe later.',{kind:'info',who:st.id});return;}
- if(held.tool==='snack'&&((st.full||0)>.6||st.nap>0)){held.tool=null;sfx('hmm');plantBoing(b.x+b.w/2);tell(st.nap>0?'Shh... it\'s sleeping off its snack.':'It\'s full. Maybe later.',{kind:'info',who:st.id});return;} // full: won't eat (Jackie)
+  BOING.vx+=6;sfx('hmm');tell(who()+' is full. Maybe later.',{kind:'info',who:st.id});return;}
+ if(held.tool==='snack'&&((st.full||0)>.6||st.nap>0)){held.tool=null;sfx('hmm');plantBoing(b.x+b.w/2);tell(st.nap>0?'Shh... '+who()+' is sleeping off a snack.':who()+' is full. Maybe later.',{kind:'info',who:st.id});return;} // full: won't eat (Jackie)
  if(held.tool==='snack'){const s=held.item;sfx(s.s);burst('crumb',b.x+b.w/2,b.y+b.h*.5,8,s.ge<0?C.vio:C.coral);
   const P=pers(),love=(P.g==='good'&&s.ge>.05)||(P.g==='evil'&&s.ge<-.05)||(P.l==='lawful'&&st.lastTreat===s.id)||(P.l==='chaotic'&&st.lastTreat&&st.lastTreat!==s.id),
    meh=!love&&((P.g==='good'&&s.ge<-.05)||(P.g==='evil'&&s.ge>.05));
   const why=love?(P.g==='good'&&s.ge>.05?'sweet':P.g==='evil'&&s.ge<-.05?'dark':P.l==='lawful'?'usual':'novel'):meh?(P.g==='good'?'sweet':'dark'):'';
-  const W=who(),tn=s.name.toLowerCase(),rx=love?({sweet:W+' loves the '+tn+'!',dark:'Ooh, '+(W==='It'?'its':W+'\'s')+' favorite. Mwah-ha-hah!',usual:(W==='It'?'Its':W+'\'s')+' usual!',novel:'Something new! '+W+' loves it.'})[why]:meh?W+' eats it… politely.':'Nom.';
+  const W=who(),tn=s.name.toLowerCase(),rx=love?({sweet:W+' loves the '+tn+'!',dark:'Ooh, '+whose()+' favorite. Mwah-ha-hah!',usual:whose()+' usual!',novel:'Something new! '+W+' loves it.'})[why]:meh?W+' eats it… politely.':'Nom.';
   const qf=why?notice(why,QUIRK_TXT[why]):false;st.lastTreat=s.id;if(love)st.fav=s.id; // the journal draws the last treat it lovedif(love)st.needs.attention=Math.max(0,st.needs.attention-.1);
   setTimeout(()=>{plantBoing(b.x+b.w/2);sfx('pop');burst('heart',b.x+b.w*.15,b.y-20,love?4:meh?1:2);if(love)setTimeout(()=>doMove(),300);},350); // the happy 'pop' after it eats
-  if((st.full||0)+.35>.6){setTimeout(()=>{sfx('burp');st.nap=60;},900);tell('Burp! This monster\'s so full it\'s dozing off.',{kind:'info',who:st.id});} // full = a full-minute nap (Jackie)
-  else tell('Treats aren\'t food. They help it grow into itself.',{kind:'teach',key:'snack'});
+  if((st.full||0)+.35>.6){setTimeout(()=>{sfx('burp');st.nap=60;},900);tell('Burp! '+who()+' is so full it\'s dozing off.',{kind:'info',who:st.id});} // full = a full-minute nap (Jackie)
+  else tell('Treats aren\'t food. They help monsters grow into themselves.',{kind:'teach',key:'snack'});
   st.full=clamp((st.full||0)+.35,0,1);st.ge=clamp(st.ge+s.ge,-1,1);
   st.treats=st.treats||{};st.traits=st.traits||[];st.treats[s.id]=(st.treats[s.id]||0)+1;st.tLast=st.tLast||{};st.tLast[s.id]=st.day;
-  if(st.treats[s.id]>=((st.dormant||[]).includes(s.trait)?3:TRAIT_AT)&&!st.traits.includes(s.trait)){st.dormant=(st.dormant||[]).filter(t=>t!==s.trait);st.traits.push(s.trait);setTimeout(()=>{sfx('chime');st.listen=3;tell('It grew a '+s.trait.toLowerCase()+'!',{kind:'important'});},900);}
+  if(st.treats[s.id]>=((st.dormant||[]).includes(s.trait)?3:TRAIT_AT)&&!st.traits.includes(s.trait)){st.dormant=(st.dormant||[]).filter(t=>t!==s.trait);st.traits.push(s.trait);const gw=who(),gid=st.id;setTimeout(()=>{sfx('chime');st.listen=3;tell(gw+' grew a '+s.trait.toLowerCase()+'!',{kind:'important',who:gid});},900);}
   logEv(s.name);if(bump('treats')>=10)earnPot('lavender');if(!(st.full>.95))tell(rx,{kind:'info',who:st.id}); // just its reaction: no game terms or numbers (progress lives in the journal)
   save();held.tool=null;return;}
  if(held.tool==='book'){const bk=held.item;sfx('page');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
   st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=5)earnPot({fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'}[bk.id]);
-  tell(({fairy:'It listens to the fairy tale, very still.',almanac:'It nods along to the rules.',nonsense:'It giggles at the nonsense poems.',grimoire:'It leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
+  tell(who()+' '+({fairy:'listens to the fairy tale, very still.',almanac:'nods along to the rules.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
 function openSnacks(x,y){const av=SNACKS;sfx('tick');
- openBubble(x-260,y-300,'Treat jar<br>'+av.map((s,i)=>`<button data-k="${i}">${s.name}</button>`).join(''),Object.fromEntries(av.map((s,i)=>[i,()=>{held.tool='snack';held.item=s;closeBubble();sfx('pop');tell('Tap your plant to offer it.',{kind:'teach',key:'feed'});}])));}
+ openBubble(x-260,y-300,'Treat jar<br>'+av.map((s,i)=>`<button data-k="${i}">${s.name}</button>`).join(''),Object.fromEntries(av.map((s,i)=>[i,()=>{held.tool='snack';held.item=s;closeBubble();sfx('pop');tell('Tap a monster to offer the treat.',{kind:'teach',key:'feed'});}])));}
 function openBooks(x,y){openBubble(x+20,y-40,'Read aloud from…<br>'+BOOKS.map((b,i)=>`<button data-k="${i}">${b.name}</button>`).join(''),Object.fromEntries(BOOKS.map((b,i)=>[i,()=>{held.tool='book';held.item=b;closeBubble();sfx('page');}])));}

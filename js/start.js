@@ -14,26 +14,28 @@ function wake(){eachPlant(()=>{if(st.stage>=0)wakePlant();});wakeRoom();}
 function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n]).length/3;
  st.lc=clamp(st.lc+(Object.keys(st.met).length>=2?.05:-.05),-1,1);const ng=st.nge||0,nl=st.nlc||0;st.ge=ng+(st.ge-ng)*.9;st.lc=nl+(st.lc-nl)*.9; // drifts back toward its NATURE, not toward bland
  if(st.stage<4){st.stage=4;st.timer=0;}
- else{st.credit+=.3+.7*q;st.lastNight=q>=.99?'It slept well and its dreams were pleasant and relaxing.':''; // only a perfect day gets a line: nothing that feels like being gradedif(q>=.99&&bump('perfectDays')>=5)earnPot('gold');
+ else{st.credit+=.3+.7*q;st.lastNight=q>=.99?'well':''; // wakeRoom names who slept well // only a perfect day gets a line: nothing that feels like being gradedif(q>=.99&&bump('perfectDays')>=5)earnPot('gold');
    if(st.credit>=1&&st.stage<8){st.stage=NEXT[st.stage]??8;st.credit=0;if(st.stage===6)earnPot('drip');if(st.stage===8)earnPot('speckle');
-   const gid=st.id,gt=st.stage===6?'Already a teen with big ideas and a bigger pot.':st.stage===8?'All grown up and ready to eat everything!':'It\'s '+STAGES[st.stage]+' now, in a bigger pot.';
+   const gid=st.id,gw=who(),gt=st.stage===6?gw+' is already a teen with big ideas and a bigger pot.':st.stage===8?gw+' is all grown up and ready to eat everything!':gw+' is a '+STAGES[st.stage]+' now, in a bigger pot.';
    setTimeout(()=>{sfx('chime');sfx('boing');tell(gt,{kind:'important',who:gid});},600);}}
  st.met={};st.lightGood=0;st.needs.thirst=Math.max(st.needs.thirst,.65);
  // COMMITMENT (Jackie): a charm stays while you keep giving its treat; after KEEP days without it, the charm drifts away (it comes back faster: 3 treats)
  const KEEP=3,FADE_WORD={solar:'sunny',peat:'moss',cotton:'sugar',pizza:'pizza',plants:'flower',fossil:'dino',blood:'blood'};st.tLast=st.tLast||{};const faded=[];
  for(const t of SNACKS){if((st.traits||[]).includes(t.trait)&&st.day-(st.tLast[t.id]||st.day)>KEEP){st.traits=st.traits.filter(x=>x!==t.trait);st.dormant=(st.dormant||[]).concat(t.trait);st.treats[t.id]=0;if(st.wear===t.trait)st.wear=null;faded.push(t);}}
- if(faded.length)setTimeout(()=>tell('No longer a '+faded.map(t=>FADE_WORD[t.id]).join(' or ')+'-monster? Try a new snack for a new accessory and trait.',{kind:'info'}),5500);
+ if(faded.length){const fw=who();setTimeout(()=>tell(fw+', no longer a '+faded.map(t=>FADE_WORD[t.id]).join(' or ')+'-monster? Try a new snack for a new accessory and trait.',{kind:'info'}),5500);}
 }
 function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
  const d=new Date(),season=seasonNow();
- tell(`Morning! Day ${st.day}.`+(st.stage>=4&&st.lastNight?' '+st.lastNight:''),{kind:'important'});bugArrive();save();}
+ const slept=allRaw().filter(q=>q.stage>=4&&q.lastNight),all=allRaw().filter(q=>q.stage>=4); // who slept well, by name
+ const well=!slept.length?'':slept.length>1&&slept.length===all.length?' Both slept well and their dreams were pleasant and relaxing.':' '+slept.map(q=>nameOf(q,true)).join(' and ')+(slept.length>1?' slept well and their dreams were':' slept well and its dreams were')+' pleasant and relaxing.';
+ tell(`Morning! Day ${st.day}.`+well,{kind:'important'});bugArrive();save();}
 /* ---------- start + quiz ---------- */
 function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=[];
- if(away>30){st.needs.thirst=Math.max(st.needs.thirst,.55);bits.push('It got a little thirsty.');}
+ if(away>30){eachPlant(()=>{if(st.stage>=0)st.needs.thirst=Math.max(st.needs.thirst,.55);});const A=allNames(true);bits.push(A.plural&&allRaw().filter(q=>q.stage>=0).length===2?'Both got a little thirsty.':A.text+(A.plural?' all':'')+' got a little thirsty.');}
  const ps=catTrust()>=TRUST_BFF?plantSideSpot():null;if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push('The cat waited right by '+(firstName()||'your plant')+'.');}
  else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&catSpotFree(k));const k=ks[Math.floor(Math.random()*ks.length)];if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);bits.push('The cat napped on '+({bed:'its bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
  setTimeout(()=>{if(st.stage>=4){const b=plantBox();plantBoing(b.x+b.w/2);burst('heart',b.x+b.w*.15,b.y-20,2);sfx('giggle');}
-  const t=away<2?'Welcome back!':away<60?'Welcome back! It missed you.':away<1440?'Welcome back! It\'s so happy to see you.':'You\'re back! It waited for you.';
+  const A=allNames(true),t=!A.text||away<2?'Welcome back!':away<60?'Welcome back! '+A.text+' missed you.':away<1440?'Welcome back! '+A.text+(A.plural?' are':' is')+' so happy to see you.':'You\'re back! '+A.text+' waited for you.';
   tell(t+(bits.length?' While you were away: '+bits.join(' '):'')+(st.stage>=4?' '+line('greet'):''),{kind:'important'});},400);save();}
 function startFlow(){
  if(st.started&&st.stage>=0){const s=screen(`<h1>Monster Plant</h1><p>Welcome back. Day ${st.day}.</p><div class="opts"><button data-k="go">Continue</button>${plantCount()<MAX_PLANTS?'<button data-k="add">Plant another seed</button>':''}<button data-k="new">Start over</button></div>`,{go:d=>{d.remove();audioInit();welcomeBack();},add:d=>{d.remove();audioInit();addingSeed=true;quiz();},new:d=>{d.remove();audioInit();st=fresh();quiz();}});return;}

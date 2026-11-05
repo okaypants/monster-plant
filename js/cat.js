@@ -126,8 +126,8 @@ function huffSettle(){cat.state='settle';cat.t=0;cat.huffF='back';const n=cat.hu
 function petCat(){const tr=catTrust();if(cat.state==='walk'||cat.state==='annoyed'||(cat.shyT||0)>0)return;const b=catBox();
  if(cat.state==='settle'||cat.state==='loafwake'){huffWalk();return;} // still settling: he calmly moves once more (no penalty)
  if(tr<TRUST_SHY){ // shy: only says hi when it's awake, and only once
-  if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell('It\'s still shy. Let it nap.',{kind:'teach',key:'catShy'});return;}
-  cat.state='sniff';cat.t=0;catSaw('sniff');trustGain(.06);tell('It sniffs your hand. A start.',{kind:'teach',key:'catSniff',who:'cat'});return;}
+  if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell('The cat is still shy. Let it nap.',{kind:'teach',key:'catShy'});return;}
+  cat.state='sniff';cat.t=0;catSaw('sniff');trustGain(.06);tell('The cat sniffs your hand. A start.',{kind:'teach',key:'catSniff',who:'cat'});return;}
  const max=tr>=TRUST_FOND?3:1;if(cat.pets>=max){catLeave();return;} // enough for now: it wanders off, no penalty
  cat.state='pet';cat.t=0;cat.pets++;cat.belly=!OLD_CAT&&tr>=TRUST_BFF&&Math.random()<.35; // very trusting: sometimes rolls belly-up for a tummy scratch
 sfx('purr');fplay('cat_purr');if(b)burst('heart',b.x+b.w/2,b.y,tr>=TRUST_FOND?2:1);trustGain(tr>=TRUST_FOND?.03:.04);
