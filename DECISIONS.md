@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The journal is a keepsake book (Nov 4)
+
+- Jackie wanted the journal to be a cozy keepsake, not a status screen: calm, almost no words, no numbers, no meters, no settings screens, no new art.
+- It's an open book over the room (cream pages, dark stepped pixel outline) that fits an iPhone held sideways with no scrolling. Ribbons along the top pick the page: one per plant (two at most) and one for the cat. A page turn is a 2-frame swap (the right page lifts, then lands on the left). Tap outside the book or the little x corner to close.
+- **A plant's pages:** its portrait as it looks now (age, face, worn charm, drawn by the game itself), a growth row of five silhouettes from its own sprites filled in up to its age, "Born ..." from its nature; Likes (a sun, cloud or moon for its light, and the last treat it loved, blank until then); Friends (a tiny portrait of the other plant with a heart or a squiggle, or nothing); Titles as stamps once earned; Charms as stickers once earned (tap to wear, tap again to take it off); Quirks as ten stamp spots that fill in the first time each is seen (unseen = faint dashed outline).
+- **The cat's pages:** his picture, trust as 1-4 paw prints, his three favorite nap spots as tiny icons (counted from where he settles), and four quirks as stamps (Sniffs hands, Purrs, Plant buddy, Had enough) that fill in the first time you see them.
+- A hidden "Out in the world" page waits for later (freed plants, postcards, Doctor Bug's notes); it shows only once it has something in it.
+- Gone from the journal: day, time of day, today's checklist, teaching paragraphs, the good/evil and lawful/chaotic bars, "Lately", the x/5 treat counters, Say goodnight (the armchair does that) and pots. All that save data is kept; the debug drawer's plant section shows treat counts, Lately, pots and today's checklist next to the alignment sliders.
+- The left-handed carafe setting is a tiny hand inside the back cover (tap to flip); Doctor Bug's "Not yet" note is a little paper airplane tucked beside it.
+- New save fields: `fav` (per plant), `catNaps` and `catSeen`.
+
 ### Idle wiggle: these seven, more often (Nov 4)
 
 - For now only the floor lamp, desk lamp, snow globe, journal drawers, SNACKS cupboard, carafe and the readable books (the shelf the book menu opens from) wiggle. One at a time, every 30-60 s (was every 2.5-5 minutes), each under half a second (4 frames x 110 ms, one art pixel). Why: Jackie wants the things you can use to gently show themselves more often. The armchair, the shelf plant and the doodad fidgets (snail etc.) are off the list for now; the snow globe is perfect as an interaction as it is.

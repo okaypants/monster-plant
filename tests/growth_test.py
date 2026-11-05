@@ -39,8 +39,7 @@ async def main():
             await pg.evaluate("()=>__step(.2)")
 
         async def night_and_morning(label):
-            await pg.evaluate("()=>openJournal()")
-            await pg.locator(".screen button", has_text="Say goodnight").click()
+            await pg.evaluate("()=>tuckIn()")  # goodnight (the armchair; the journal no longer has a button for it)
             await pg.evaluate("()=>__step(.1)")
             await pg.evaluate("()=>__step(3)")  # the 2.5 s dusk
             check(await pg.evaluate("()=>st.night"), f"{label}: not night after Say goodnight")

@@ -83,6 +83,23 @@ CASES = [
     ("floor_light_seek", "s.stage=8;s.species=3;s.pref='night';s.free={x:400,y:918};s.giftSeed=1;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);swapIn(0);st.lightBad=500;st.lightState='hi';", 1,
      "!document.getElementById('errbox')||'error box: '+document.getElementById('errbox').textContent"),
+    # the journal is a keepsake book (Jackie, Nov 4): it opens, the ribbons switch pages, a charm can be worn and taken off
+    ("journal_one_plant", "s.stage=8;s.species=3;s.giftSeed=1;s.free={x:1250,y:918};s.traits=['Pizza bow','Moss sprout'];s.titles=['evil'];s.quirks={bonk:'x',boo:'x'};s.fav='blood';s.catNaps={bed:3,sill:1};s.catSeen={purr:1};",
+     "openJournal();", 0.2,
+     "(()=>{const q=s=>document.querySelector(s),R=()=>[...document.querySelectorAll('.jrib')];if(!q('.jbook'))return 'no book';if(R().length!==2)return 'ribbons: '+R().length;"
+     "R()[1].click();__step(.5);if(jPage!=='cat'||!q('.jpaws'))return 'the cat ribbon did not turn to his page ('+jPage+')';"
+     "R()[0].click();__step(.5);if(jPage!=='p'+st.id)return 'the plant ribbon did not turn back ('+jPage+')';"
+     "if(wornCharm()!=='Moss sprout')return 'wearing '+wornCharm();q('.jcharm[data-trait=\"Pizza bow\"]').click();if(wornCharm()!=='Pizza bow')return 'tapping a charm did not wear it';"
+     "q('.jcharm[data-trait=\"Pizza bow\"]').click();if(wornCharm()!==null||st.wear!=='none')return 'tapping it again did not take it off';"
+     "if(document.querySelectorAll('.jquirks .jstamp:not(.jfaint)').length!==2)return 'quirk stamps';if(q('.jbook').scrollHeight>q('.jbook').clientHeight+1)return 'the book scrolls';"
+     "q('.jclose').click();return !q('.jbook')||'close corner did not close';})()"),
+    ("journal_two_plants", "s.stage=8;s.species=3;s.giftSeed=1;s.free={x:300,y:918};s.ge=.6;s.lc=.6;",
+     "const p=freshPlant();p.species=7;p.stage=8;p.ge=.6;p.lc=.6;p.free={x:1250,y:918};addPlant(p);openJournal();", 0.2,
+     "(()=>{const R=[...document.querySelectorAll('.jrib')];if(R.length!==3)return 'ribbons: '+R.length;if(!document.querySelector('.jpal'))return 'no friend portrait';"
+     "R[1].click();__step(.5);if(jPage===R[0].dataset.page)return 'second plant ribbon did not turn';const e=new MouseEvent('click',{bubbles:true});document.querySelector('.journal').dispatchEvent(e);return !document.querySelector('.jbook')||'tapping outside did not close';})()"),
+    ("journal_old_save", "s.stage=6;s.species=4;s.place={grown:'rugC'};delete s.others;delete s.id;delete s.quirks;delete s.titles;delete s.traits;delete s.catNaps;delete s.catSeen;s.giftSeed=1;",
+     "openJournal();", 0.2,
+     "(()=>{const R=[...document.querySelectorAll('.jrib')];if(R.length!==2)return 'ribbons: '+R.length;R[1].click();__step(.5);return jPage==='cat'||'cat page';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
