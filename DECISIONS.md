@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Idle wiggle: these seven, more often (Nov 4)
+
+- For now only the floor lamp, desk lamp, snow globe, journal drawers, SNACKS cupboard, carafe and the readable books (the shelf the book menu opens from) wiggle. One at a time, every 30-60 s (was every 2.5-5 minutes), each under half a second (4 frames x 110 ms, one art pixel). Why: Jackie wants the things you can use to gently show themselves more often. The armchair, the shelf plant and the doodad fidgets (snail etc.) are off the list for now; the snow globe is perfect as an interaction as it is.
+
 ### Seedling pot sits on the windowsill (Nov 4)
 
 - The windowsill spot was below the ledge (y 564, the bottom of its orange front) and right at the armchair's edge (x 478), so the seedling pot looked like it floated in front of the chair. Now it's on top of the ledge (y 539) in the open middle of the sill (x 400). The cat's sill nap spot uses the same surface, so he sits on the ledge too (he and a seedling never share the sill). Doctor Bug's note moved over to x 452 to stay on the sill.
