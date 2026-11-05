@@ -42,7 +42,7 @@ async def main():
             r = await pg.evaluate("()=>{const c=getComputedStyle(cap.querySelector('.ci'));return {bg:c.backgroundColor,radius:parseFloat(c.borderTopLeftRadius),weight:c.fontWeight};}")
             check(r["bg"] == "rgb(255, 244, 226)" and r["radius"] >= 20 and r["weight"] == "500", f"{name}: caption isn't a cream pill ({r})")
             await pg.screenshot(path=os.path.join(OUT, f"{name}_2_caption.png"))
-            await pg.evaluate("()=>{capClear();openSnacks(1300,600);}")
+            await pg.evaluate("()=>{capClear();openBooks(1300,500);}")  # a bubble with buttons (the book menu)
             await pg.wait_for_timeout(300)
             r = await pg.evaluate("()=>{const b=document.querySelector('.bubble'),c=getComputedStyle(b),bt=getComputedStyle(b.querySelector('button'));return {bg:c.backgroundColor,radius:parseFloat(c.borderTopLeftRadius),btnBorder:bt.borderTopStyle};}")
             check(r["bg"] == "rgb(255, 244, 226)" and r["radius"] >= 12 and r["btnBorder"] == "none", f"{name}: bubble look ({r})")
