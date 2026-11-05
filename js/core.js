@@ -37,7 +37,7 @@ const C={out:'#341839',wine:'#833343',plum:'#490d40',brick:'#b8594d',rust:'#d372
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const rnd=(a,b)=>a+Math.random()*(b-a);
 const P=6; // comic-mark pixel size
 /* ---------- ui helpers ---------- */
-/* ---------- CAPTIONS (Jackie): a cream pixel speech bubble at the top centre ----------
+/* ---------- CAPTIONS (Jackie): a cream rounded pill at the top centre ----------
    tell(text,{kind,key,who}):
      important : always shows (welcome back, a new seed, a new age, a bloom, a title...); bumps a chatty line that's up
      teach     : a teaching tip, shown ONCE EVER (remembered in the save under st.taught[key])
@@ -72,7 +72,7 @@ function capSpeakerX(w){try{if(w==='cat'){const b=catBox();return b?b.x+b.w/2:nu
 function capFaces(){const F=[];try{eachPlant(()=>{if(st.stage<0)return;const b=plantBox();F.push({x0:b.x+b.w*.2,x1:b.x+b.w*.8,y0:b.y+b.h*.2,y1:b.y+b.h*.65});});}catch(e){}return F;}
 let capPlaceT=0;
 function capRight(){const fb=document.getElementById('fsBtn'),r=fb&&fb.getBoundingClientRect(),c=cv.getBoundingClientRect();return r&&r.width?(r.left-c.left)/S-12:W-8;} // keep clear of the buttons at the top right
-function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.6,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=14;
+function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.6,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=Math.round(H*.03);
  if(force||now-capPlaceT>=400){capPlaceT=now;const F=capFaces();let best=Math.min(W/2,R-bw/2); // top centre, or the nearest place along the top that leaves every plant's face clear
   for(const c of[W/2,W*.36,W*.64,W*.25,W*.75]){const x0=c-bw/2,x1=c+bw/2;if(x0<8||x1>R)continue;if(!F.some(f=>f.x1>x0&&f.x0<x1&&f.y0<top+bh+20)){best=c;break;}}cap.dataset.cx=best;}
  const cx=+cap.dataset.cx||W/2;cap.style.left=Math.round((cx-bw/2)*S)+'px';cap.style.top=Math.round(top*S)+'px';

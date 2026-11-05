@@ -70,7 +70,7 @@ async def main():
                 check(not over, f"{dev_name} {when}: the bubble overlaps the buttons at the top right")
                 check(6 <= r["dur"] <= 8 and abs(r["dur"] - min(8, max(3, 2 + .3 * len(LONG.split())))) < .01, f"duration {r['dur']} for {len(LONG.split())} words (the longest lines stay 6-8 s)")
                 if dev_name == "phone":
-                    check(11 <= r["font"] <= 13, f"phone font {r['font']} px (small but readable)")
+                    check(13 <= r["font"] <= 16, f"phone font {r['font']} px (small but readable)")
                 await pg.wait_for_timeout(700)  # the fade-in runs on real time
                 await pg.screenshot(path=os.path.join(OUT, f"{dev_name}_{when}_tip_no_tail.png"))
                 r = await pg.evaluate(SHOW, ["It leans into your hand.", {"kind": "info", "who": 1}])

@@ -194,7 +194,7 @@ function drawDepthLines(){g.save();const pct=d=>Math.round(depthK(d)*100)+'%';
 const LM_STEPS=[[.1,'#1b1b4a'],[.2,'#2e3a8c'],[.3,'#3c6fb4'],[.45,'#4fa3a5'],[.6,'#8cc152'],[.75,'#e2d23c'],[.95,'#f5a524'],[99,'#ff6a3d']];
 const lmColor=L=>LM_STEPS.find(s=>L<s[0])[1],LM_CELL=20,LM_MAX=1.2;
 function lmVerdict(f){return f==='hi'?'too bright':f==='lo'?'too dark':'just right';}
-function lmText(t,x,y,al='center'){g.font='16px "Pixelify Sans", monospace';g.textAlign=al;g.textBaseline='middle';const w=Math.ceil(g.measureText(t).width)+12,x0=Math.round(al==='center'?x-w/2:x-6);
+function lmText(t,x,y,al='center'){g.font='16px Fredoka, sans-serif';g.textAlign=al;g.textBaseline='middle';const w=Math.ceil(g.measureText(t).width)+12,x0=Math.round(al==='center'?x-w/2:x-6);
  g.fillStyle='rgba(25,16,27,.85)';g.fillRect(x0,Math.round(y-11),w,22);g.fillStyle=C.ivory;g.fillText(t,Math.round(x),Math.round(y)+1);}
 function lmBox(x,y,w,h){g.fillStyle=C.ivory;g.fillRect(x,y,w,3);g.fillRect(x,y+h-3,w,3);g.fillRect(x,y,3,h);g.fillRect(x+w-3,y,3,h);}
 function lmRing(x,y,rx,ry,col,dot){g.fillStyle=col;const n=Math.round((rx+ry)/4);for(let a=0;a<n;a++){const t=a/n*Math.PI*2;g.fillRect(Math.round(x+Math.cos(t)*rx-dot/2),Math.round(y+Math.sin(t)*ry-dot/2),dot,dot);}}
@@ -215,11 +215,11 @@ function drawLightTags(){const rows=[],act=st.id;g.save();
   lmText(i.L.toFixed(2)+' '+v+' · '+i.zone+says+(st.night||st.nap>0?' (asleep)':''),b.x+b.w/2,Math.max(20,Math.round(b.y-14)));
   rows.push({name:NAMES[st.species]+' ('+STAGES[st.stage]+')',pref:st.pref,need:NEED[st.pref],L:i.L,act:st.id===act,v:v+says});});
  const src=lightSources(),patch=src[0],X=500,Y=8,BW=620,RH=36,h=168+rows.length*RH,bx=X+20,sx=v=>bx+Math.round(clamp(v,0,LM_MAX)/LM_MAX*BW);
- g.fillStyle='rgba(25,16,27,.88)';g.fillRect(X,Y,BW+40,h);g.fillStyle=C.ivory;g.textAlign='left';g.textBaseline='middle';g.font='16px "Pixelify Sans", monospace';
+ g.fillStyle='rgba(25,16,27,.88)';g.fillRect(X,Y,BW+40,h);g.fillStyle=C.ivory;g.textAlign='left';g.textBaseline='middle';g.font='16px Fredoka, sans-serif';
  g.fillText('Light map · '+phase(st.dayT)+' ('+st.dayT.toFixed(2)+')'+(st.night?' · night':'')+' · curtains '+st.curtain+' · sun patch '+(patch.harsh?'harsh (midday)':'gentle'),bx,Y+16);
  g.fillText('Grow lights: '+LAMPS.map(p=>p.name+' '+(lampOn(p)?'on':'off')).join(' · ')+' · room light everywhere else',bx,Y+38);
  for(let i=0;i<LM_STEPS.length;i++){const a=i?LM_STEPS[i-1][0]:0;if(a>=LM_MAX)break;g.fillStyle=LM_STEPS[i][1];g.fillRect(sx(a),Y+54,sx(LM_STEPS[i][0])-sx(a),14);}
- g.font='13px "Pixelify Sans", monospace';g.textAlign='center';g.fillStyle=C.ivory;for(const v of[0,.3,.6,.9,1.2]){g.fillRect(sx(v)-1,Y+68,2,5);g.fillText(v.toFixed(1),sx(v),Y+81);}
+ g.font='13px Fredoka, sans-serif';g.textAlign='center';g.fillStyle=C.ivory;for(const v of[0,.3,.6,.9,1.2]){g.fillRect(sx(v)-1,Y+68,2,5);g.fillText(v.toFixed(1),sx(v),Y+81);}
  g.textAlign='left';rows.forEach((r,i)=>{const y=Y+96+i*RH;g.fillStyle=C.vio;g.fillRect(sx(r.need),y,sx(LM_MAX)-sx(r.need),8);g.fillStyle=C.ivory;g.fillRect(sx(r.need),y-3,2,14);g.fillStyle=C.fl1;g.fillRect(sx(r.L)-2,y-5,4,18);
   g.fillStyle=C.ivory;g.fillText((r.act?'* ':'')+r.name+' likes '+r.pref+' (needs '+r.need.toFixed(2)+'+) · now '+r.L.toFixed(2)+' '+r.v,bx,y+21);});
  g.fillText('bar = light it\'s happy with · red tick = its light now · too bright only in midday sun or right under a lamp',bx,Y+h-48);
