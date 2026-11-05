@@ -84,7 +84,7 @@ function jTurn(to){if(to===jPage||!jEl)return;sfx('page');const bk=jEl.querySele
 function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage))jPage=P[0];
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
  P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.background=RIB_COLORS[i%RIB_COLORS.length];r.style.left=(430+i*52)+'px';
-  r.setAttribute('aria-label',p==='cat'?'The cat':p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
+  r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';
  if(jPage==='cat')catPages(L,R);else if(jPage==='world')worldPages(L,R);else withPlant(+jPage.slice(1),()=>plantPages(L,R));
@@ -132,10 +132,17 @@ function nameTag(id){const b=document.createElement('button');b.type='button';b.
   inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
  return b;}
 
+function catNameTag(){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=catName();b.setAttribute('aria-label','Rename '+catName());
+ b.addEventListener('click',e=>{e.stopPropagation();const old=catName(),inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old;inp.setAttribute('aria-label','Name');
+  let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);if(v)st.catName=v;else tell('Back to '+old+'.',{kind:'info'});sfx('tick');save();renderJournal();};
+  inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')finish();if(ev.key==='Escape'){inp.value=old;finish();}});
+  inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
+ return b;}
+
 /* ---------- the cat's pages ---------- */
 function catPages(L,R){
  const tr=catTrust(),paws=1+[TRUST_SHY,TRUST_FOND,TRUST_BFF].filter(t=>tr>=t).length;
- L.appendChild(jdiv('jname',[],'The cat'));
+ L.appendChild(catNameTag()); // his name (tap to rename)
  const f=CATF.loaf1&&ok(CATF.loaf1)?CATF.loaf1:CATF.sit1;
  L.appendChild(jdiv('jportrait',[imgPic(f,220,170)]));
  L.appendChild(jdiv('jpaws',Array.from({length:paws},()=>pix('paw',5))));

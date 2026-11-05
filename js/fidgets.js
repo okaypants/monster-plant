@@ -107,18 +107,18 @@ function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3
  for(const t of fTreats)g.drawImage(t.img,Math.round(t.x-t.w/2),Math.round(t.y-t.h/2),Math.round(t.w),Math.round(t.h));}
 
 /* ---------- IDLE WIGGLE (Jackie, Nov 3; RULES.md 10) ----------
-   Now and then ONE thing you can use gives a tiny wiggle: one art pixel, a couple of frames, every 30-60 s,
+   Now and then ONE thing you can use gives a tiny wiggle: one art pixel, a couple of frames, one item every 10 s,
    never two at once, never while you're touching something (or while anything else is moving). It's not a hint about needs.
    Only usable things: the carafe, the SNACKS cabinet, both lamps, the desk drawers (journal), the armchair, the doodad fidgets
    and seasonal items. Books: ONLY the four special readable books (not placed in the room yet), never any other books
    (the shelves, the book stack, the crate book). 'obj' = only the item's own pixels move; 'plain' = a part inside the item (the lamp shade, the chair's back cushion, the cabinet door, the drawers). */
-/* Jackie, Nov 4: for now ONLY these wiggle, more often (every 30-60 s), one at a time, under half a second each (4 frames x 110 ms):
+/* Jackie, Nov 4: for now ONLY these wiggle, one item every 10 s, one at a time, under half a second each (4 frames x 110 ms):
    both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from). */
 const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
  {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
  {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
  {n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}];
-const IDLE_GAP=[30,60],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
+const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
@@ -126,6 +126,6 @@ function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!fDrag
 function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||fTreats.some(t=>t.vx||t.vy||t.held)||!!(BOING.oy||BOING.vy);}
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
- if(!st.started||touching()||somethingMoving())return; // skipped; the next try is minutes away
- idleOn={it:IDLE_ITEMS[Math.floor(Math.random()*IDLE_ITEMS.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>50)idleLog.shift();}
+ if(!st.started||touching()||somethingMoving()){idleNext=now+1000;return;} // busy: try again in a second, so the 10 s rhythm holds
+ idleOn={it:IDLE_ITEMS[Math.floor(Math.random()*IDLE_ITEMS.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>400)idleLog.shift();}
 function idleOffset(now){return idleOn?(IDLE_FRAMES[Math.floor((now-idleOn.t0)/IDLE_MS)]||0)*ART_PX:0;}

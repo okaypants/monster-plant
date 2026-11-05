@@ -42,6 +42,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/names_shots.py` lets a sprout open its eyes on a phone held sideways, checks the hello caption has its new name, and shows the journal page with the name on top; saved to `tests/screenshots/names/`. The smoke test also checks old saves get named, two plants never share a first name, and renaming in the journal (16 letters, cleared = back to the old name).
 
+`python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
+
 `python tests/placard_shots.py` pictures the JOURNAL nameplate on the desk drawers at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the journal; saved to `tests/screenshots/placard/`.
 
 `python tests/journal_shots.py` opens the keepsake journal on an iPhone 13 held sideways (a kid's page; an adult with titles, charms and quirks; two friends; the cat at low and high trust), checks the book fits with nothing scrolling, and saves pictures to `tests/screenshots/journal/`. The smoke test also opens it with one plant, two plants and an old save, turns pages with the ribbons, and wears and takes off a charm.
