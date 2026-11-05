@@ -62,7 +62,7 @@ CASES = [
      "st.nge!=null&&plantCount()>=2||'old save: nature '+st.nge+', plants '+plantCount()"),
     # new plants only with your OK: the gift seed asks first and nothing appears until you say yes
     ("gift_seed_asks_first", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};", "", 1,
-     "(plantCount()===1&&!!document.querySelector('.bubble [data-k=y]')&&/tapping at the window/.test(bubble.textContent))||'gift seed: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
+     "(plantCount()===1&&!!document.querySelector('.bubble [data-k=y]')&&/Doctor Bug/.test(bubble.textContent))||'gift seed: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
     ("gift_seed_not_now", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};",
      "window.__no=setInterval(()=>{const n=document.querySelector('.bubble [data-k=n]');if(n)n.click();},200);", 1,
      "(plantCount()===1&&st.giftAskDay===st.day+3&&!st.giftSeed)||'not now: plants '+plantCount()+', ask again day '+st.giftAskDay+' (today '+st.day+')'"),

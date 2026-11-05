@@ -133,6 +133,16 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### Captions in Jackie's words (Nov 4)
+
+- Every caption now uses Jackie's final wording from her "Monster Plant captions" doc: short, a cozy storybook voice, no game terms or numbers (no good/evil/lawful/chaotic, no "2/5 toward ...", no "counts as company"). The journal holds the mechanics.
+- No parenthetical hints like "(New quirk in the journal.)", and nothing flashes in their place.
+- After a treat you only see its reaction ("Nom.", "Its favorite!", "It eats it… politely."). Each book has its own line. Mornings say "Morning! Day N." plus a line only after a perfect day; there's no "it would have grown faster with..." line, because that felt like being graded.
+- The professor is **Doctor Bug**: the gift seed arrives "on a paper airplane note from Doctor Bug" (still asked in the consent bubble).
+- A sprout gets one "A sprout!", not one line per sprout step. A faded charm says "No longer a moss-monster? ..." (the word comes from the treat).
+- How long a caption shows: 2 s + 0.3 s a word, so short lines get 3-5 s and the longest 6-8 s (never more).
+- Doc lines with no place in the game yet: the too-bright, too-dark, light-spot and "it scooted somewhere shadier" captions were taken out earlier (needs show on the monster, no light text boxes), so they weren't added back. The hunger hint is gone.
+
 ### Never more than two plants (Nov 4)
 
 - At most two plants live in the room at once (`MAX_PLANTS` in js/saving.js). The window's gift seed doesn't ask when the room is full, "Plant another" on the start screen hides, and debug won't add a third.
@@ -161,7 +171,7 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ### New plants only with your OK (Nov 4)
 
-- Nothing appears out of nowhere. The window's gift seed and a seed your two adults make are both offered in a little bubble by the window ("A little seed is tapping at the window. Plant it in the little pot?" / "Your … and your … made a seed together. Plant it?"), with Yes, plant it and Not now. A seed is planted only on yes.
+- Nothing appears out of nowhere. The window's gift seed and a seed your two adults make are both offered in a little bubble by the window ("Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug. Plant it in the little pot?" / "Your … and your … made a seed together. Plant it?"), with Yes, plant it and Not now. A seed is planted only on yes.
 - Not now, or tapping away, means no seed. The gift seed asks again 3 days later; two adults can make another seed on a later day. It never asks at night, or while you're carrying something or have a menu, a book or the journal open.
 - Why: a second plant once appeared while Jackie was in the debug drawer, and it was confusing, not calm.
 - Also: when you drag one plant, only that plant follows your finger (before, every plant was drawn following it). The debug drawer's plant tabs show each plant's age, so you can see which one you're changing.

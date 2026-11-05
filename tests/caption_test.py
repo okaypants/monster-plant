@@ -21,7 +21,7 @@ SAVE = ("()=>{const s=fresh();Object.assign(s,{started:true,stage:8,species:3,id
         "ge:.6,lc:-.6,nge:.5,nlc:-.5,pref:'shade',free:{x:1250,y:918},nextId:5,"
         "others:[Object.assign((()=>{const f=fresh(),q={};for(const k in f)if(!GLOBAL.has(k))q[k]=f[k];return q;})(),{id:2,stage:8,species:7,ge:-.6,lc:.6,nge:-.5,nlc:.5,pref:'sun',free:{x:300,y:900}})]});"
         "localStorage.setItem(KEY,JSON.stringify(s));}")
-LONG = "Golden hour. When you're ready, tap the armchair (or the journal in the desk drawers) to say goodnight."
+LONG = "Your little seed is on the window sill growing, or move it to the desk and turn on the lamp."
 
 
 async def page_for(b, device, night=False):
@@ -68,7 +68,7 @@ async def main():
                 check(not r["covers"], f"{dev_name} {when}: the bubble covers a plant's face")
                 over = await pg.evaluate("()=>{const a=cap.getBoundingClientRect();return [...document.querySelectorAll('#fsBtn,#dbgBtn')].some(b=>{const r=b.getBoundingClientRect();return r.width&&a.right>r.left&&a.left<r.right&&a.bottom>r.top&&a.top<r.bottom;});}")
                 check(not over, f"{dev_name} {when}: the bubble overlaps the buttons at the top right")
-                check(abs(r["dur"] - max(3, len(LONG.split()) / 4)) < .01, f"duration {r['dur']} for {len(LONG.split())} words")
+                check(6 <= r["dur"] <= 8 and abs(r["dur"] - min(8, max(3, 2 + .3 * len(LONG.split())))) < .01, f"duration {r['dur']} for {len(LONG.split())} words (the longest lines stay 6-8 s)")
                 if dev_name == "phone":
                     check(11 <= r["font"] <= 13, f"phone font {r['font']} px (small but readable)")
                 await pg.wait_for_timeout(700)  # the fade-in runs on real time
@@ -76,11 +76,11 @@ async def main():
                 r = await pg.evaluate(SHOW, ["It leans into your hand.", {"kind": "info", "who": 1}])
                 check(r["show"] and r["tail"], f"{dev_name} {when}: a plant's line should have a tail")
                 check(abs(r["tailX"] - r["plantX"]) < abs(r["cx"] - r["plantX"]), f"{dev_name} {when}: the tail doesn't lean toward the plant (tail {r['tailX']:.0f}, plant {r['plantX']:.0f})")
-                check(r["dur"] == 3, f"a short line stays {r['dur']} s, expected the 3 s minimum")
+                check(3 <= r["dur"] <= 5, f"a short line stays {r['dur']} s, expected 3-5 s")
                 await pg.wait_for_timeout(700)  # the fade-in runs on real time
                 await pg.screenshot(path=os.path.join(OUT, f"{dev_name}_{when}_plant_speaking_tail.png"))
                 if not night and dev_name == "phone":
-                    r = await pg.evaluate(SHOW, ["It sniffs your hand. That's a start.", {"kind": "info", "who": "cat"}])
+                    r = await pg.evaluate(SHOW, ["It sniffs your hand. A start.", {"kind": "info", "who": "cat"}])
                     check(r["tail"], "the cat's line should have a tail")
                     await pg.wait_for_timeout(700)
                     await pg.screenshot(path=os.path.join(OUT, "phone_day_cat_tail.png"))
