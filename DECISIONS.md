@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Every monster gets a silly, cute name (Nov 4)
+
+- When a seed opens its eyes (becomes a kid) it gets a two-part name, and the caption says hello once: "Its eyes open! Hello, Pip Wobblebean!" The name is saved with the plant and goes everywhere with it (later: freed plants' postcards).
+- The names live in **js/names.js** for Jackie to edit: 30 first names and 30 last names in four flavors. The plant's nature picks the flavor (its strongest lean): good = soft and sweet, evil = spooky-cute, lawful = tidy and proper, chaotic = wiggly and zany; an easygoing plant mixes them all. Two plants never share a first name.
+- The journal page shows the name on top with the species small underneath. Tap the name to type a new one (16 letters at most); clearing it keeps the old name, with a gentle "Back to Pip Wobblebean." No other naming screens or buttons.
+- Captions use the first name where a plant is the subject: voice lines ("Pip waves every leaf at you."), "Right on time! Pip loves a routine.", treat reactions ("Pip loves the cotton candy!", "Pip's usual!", "Pip eats it… politely."), friends and bickering ("Pip and Mortie are friends!"), "The cat curled up next to Pip." Seeds and sprouts are still "it".
+- Old saves: plants that already have their eyes open get named quietly on load, with the same generator.
+
 ### A JOURNAL placard on the desk drawers (Nov 4)
 
 - A little brass nameplate reading JOURNAL sits on the plain bottom panel of the desk drawers (under the third drawer, the only part of the drawer front with room for it; the drawers above each have a knob in the middle). Drawn in code from the room palette on whole 2-unit pixels, dark outline, a tiny 3x5 pixel-font label, four little screws. Why: like the SNACKS sign, it says what the drawers are for without any hint that blinks.

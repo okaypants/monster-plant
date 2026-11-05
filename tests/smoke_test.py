@@ -100,6 +100,18 @@ CASES = [
     ("journal_old_save", "s.stage=6;s.species=4;s.place={grown:'rugC'};delete s.others;delete s.id;delete s.quirks;delete s.titles;delete s.traits;delete s.catNaps;delete s.catSeen;s.giftSeed=1;",
      "openJournal();", 0.2,
      "(()=>{const R=[...document.querySelectorAll('.jrib')];if(R.length!==2)return 'ribbons: '+R.length;R[1].click();__step(.5);return jPage==='cat'||'cat page';})()"),
+    # names (Jackie, Nov 4): a name when its eyes open, with one hello; old saves get named; two plants never share a first name; rename in the journal
+    ("names_eyes_open", "s.stage=1;s.species=2;s.timer=29;s.nge=.5;s.nlc=0;s.giftSeed=1;", "", 0.2,
+     "(st.stage===4&&!!st.name&&NAME_FIRST.good.includes(firstName())&&CAP.log.filter(l=>l.t==='Its eyes open! Hello, '+st.name+'!').length===1)||'name '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+    ("names_old_save", "s.stage=8;s.species=3;s.free={x:300,y:918};s.giftSeed=1;delete s.name;",
+     "const p=freshPlant();p.species=6;p.stage=8;p.free={x:1250,y:918};addPlant(p);", 0.2,
+     "(()=>{const A=allRaw();if(!A.every(q=>q.name))return 'unnamed: '+A.map(q=>q.name).join(',');const f=A.map(q=>firstName(q));return f[0]!==f[1]||'same first name '+f;})()"),
+    ("names_rename", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.name='Pip Wobblebean';",
+     "openJournal();", 0.2,
+     "(()=>{const q=s=>document.querySelector(s),enter=i=>i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));if(q('.jrename').textContent!=='Pip Wobblebean')return 'journal shows '+q('.jrename').textContent;"
+     "q('.jrename').click();let i=q('.jnameinput');i.value='Sir Leafington the Third';enter(i);if(st.name!=='Sir Leafington t')return 'renamed to '+st.name;"
+     "q('.jrename').click();i=q('.jnameinput');i.value='   ';enter(i);if(st.name!=='Sir Leafington t')return 'cleared name changed it to '+st.name;"
+     "return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Back to Sir Leafington t.')||'no gentle back-to caption';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
