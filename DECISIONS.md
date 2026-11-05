@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A JOURNAL placard on the desk drawers (Nov 4)
+
+- A little brass nameplate reading JOURNAL sits on the plain bottom panel of the desk drawers (under the third drawer, the only part of the drawer front with room for it; the drawers above each have a knob in the middle). Drawn in code from the room palette on whole 2-unit pixels, dark outline, a tiny 3x5 pixel-font label, four little screws. Why: like the SNACKS sign, it says what the drawers are for without any hint that blinks.
+- It never glows, blinks or bounces; it moves only with the journal drawers' idle wiggle.
+- Lit like the wood around it: the panel's color in the current room picture (time of day, lamps, curtains) against the daytime picture shades it, so it's darker at night and warm under the desk lamp. When lighting moves into code, it should use the same light as everything else.
+- Tapping it opens the journal (it's inside the drawers' tap area). `python tests/placard_shots.py` pictures it at day, golden hour and night with the desk lamp on and off.
+
 ### The journal is a keepsake book (Nov 4)
 
 - Jackie wanted the journal to be a cozy keepsake, not a status screen: calm, almost no words, no numbers, no meters, no settings screens, no new art.
