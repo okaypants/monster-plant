@@ -102,7 +102,8 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
 /* ---------- a plant's pages ---------- */
 function plantPages(L,R){
  const id=st.id,steps=ageSprites(),at=ageStep();
- L.appendChild(jdiv('jname',[],NAMES[st.species]));
+ L.appendChild(st.name?nameTag(id):jdiv('jname',[],NAMES[st.species])); // its name once its eyes are open; the species small underneath
+ if(st.name)L.appendChild(jdiv('jspecies',[],NAMES[st.species]));
  L.appendChild(jdiv('jportrait',[plantPortrait(id,240,196)]));
  L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at))));
  L.appendChild(jdiv('jborn',[],bornLine()));
@@ -121,6 +122,15 @@ function plantPages(L,R){
   R.appendChild(jdiv('jgroup',[jlabel('Charms'),row]));}
  const seen=st.quirks||{};
  R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint')))]));}
+
+// tap the name to type a new one (16 letters at most); cleared = it keeps its old name
+function nameTag(id){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name;b.setAttribute('aria-label','Rename '+st.name);
+ b.addEventListener('click',e=>{e.stopPropagation();const old=st.name,inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old;inp.setAttribute('aria-label','Name');
+  let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);
+   withPlant(id,()=>{if(v)st.name=v;else tell('Back to '+old+'.',{kind:'info'});});sfx('tick');save();renderJournal();};
+  inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')finish();if(ev.key==='Escape'){inp.value=old;finish();}});
+  inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
+ return b;}
 
 /* ---------- the cat's pages ---------- */
 function catPages(L,R){

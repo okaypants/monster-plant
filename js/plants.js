@@ -218,7 +218,7 @@ function plantUpdate(dt){const sp=gameSpeed();
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
  if(st.stage<4){st.timer+=dt*sp;if(st.timer>30){st.timer=0;st.stage=NEXT[st.stage]??4;
-   if(st.stage===4){sfx('chime');sfx('boing');tell('Its eyes open! Hello little baby monster bun.',{kind:'important',who:st.id});}
+   if(st.stage===4){sfx('chime');sfx('boing');if(!st.name)st.name=makeName(st);tell('Its eyes open! Hello, '+st.name+'!',{kind:'important',who:st.id});}
    else{sfx('soil');if(st.stage===1)tell('A sprout!',{kind:'important'});}}}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
@@ -256,7 +256,9 @@ function scootTick(dt){if(stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(
    change with alignment; Cult of the Lamb traits flip reactions (what one hates, another loves); Petz used a fixed personality
    sheet + "constrained randomness", never punished the player, and aimed for every interaction to give you a story to tell. */
 function pers(){return {g:st.ge>.33?'good':st.ge<-.33?'evil':'',l:st.lc>.33?'lawful':st.lc<-.33?'chaotic':''};}
-function who(){return plantCount()>1?'The '+NAMES[st.species]:'It';}
+function who(){return firstName()||(plantCount()>1?'The '+NAMES[st.species]:'It');} // its first name once its eyes are open
+function nameOf(q){return firstName(q)||'the '+NAMES[q.species];} // another plant, by name
+function plantsWord(){const P=allRaw().filter(q=>q.stage>=4);return P.length===1&&firstName(P[0])?firstName(P[0]):P.length>1?'your plants':'your plant';}
 const VOICE={
  pet:{good:['{W} leans into your hand.','{W} hums a tiny thank-you.'],evil:['{W} pretends not to like it. It likes it.','{W} lets you, this once.'],
   lawful:['{W} holds perfectly still to be petted.','{W} straightens up afterwards, very proper.'],chaotic:['{W} nibbles your finger, gently.','{W} wiggles every leaf at once.'],'':['{W} wiggles happily.']},
@@ -305,16 +307,16 @@ function rel(a,b){const s=v=>v>.33?1:v<-.33?-1:0;let f=0,x=0;for(const k of['ge'
 function relWord(a,b){const r=rel(a,b);return r};
 let socialT=rnd(40,70);
 function socialTick(dt){if(st.night)return;const P=allRaw().filter(q=>q.stage>=4&&q.nap<=0&&q._pos);if(P.length<2){socialT=rnd(40,70);return;}socialT-=dt;if(socialT>0)return;socialT=rnd(60,110);
- const a=P[Math.floor(Math.random()*P.length)],others=P.filter(q=>q!==a),b=others[Math.floor(Math.random()*others.length)],r=rel(a,b),n=q=>NAMES[q.species];
+ const a=P[Math.floor(Math.random()*P.length)],others=P.filter(q=>q!==a),b=others[Math.floor(Math.random()*others.length)],r=rel(a,b),n=q=>nameOf(q),cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
  const both=(f)=>{for(const q of[a,b]){const i=(st.others||[]).indexOf(q);if(i<0)f();else{swapIn(i);try{f();}finally{swapIn(i);}}}};
  const hearts=()=>{for(let i=0;i<4;i++)setTimeout(()=>burst('heart',a._pos.x+(b._pos.x-a._pos.x)*(i+.5)/4,Math.min(a._pos.y,b._pos.y)-300,1),i*180);};
  if(r==='bicker'){both(()=>{st.grump=6;doMove('grin');});sfx('hmm');
-  const said=tell('The '+n(a)+' and the '+n(b)+' are bickering. Grumpy faces all around.',{kind:'ambient',key:'bicker'});
+  const said=tell(cap(n(a))+' and '+n(b)+' are bickering. Grumpy faces all around.',{kind:'ambient',key:'bicker'});
   setTimeout(()=>{hearts();sfx('chime');if(said)tell('…and they made up. They always do.',{kind:'info',key:'madeup'});},6500);bumpRel(a,b,-1);}
  else if(r==='friends'){const p=pers.call(null);both(()=>doMove());hearts();sfx('giggle');
   const both2=(k,v)=>a[k]*v>0.33&&b[k]*v>0.33;
   const t=both2('lc',-1)?'egging each other on':both2('lc',1)?'bowing politely to each other':both2('ge',1)?'swaying together':both2('ge',-1)?'scheming together':'getting along';
-  tell('The '+n(a)+' and the '+n(b)+' are friends!',{kind:'ambient',key:'friends'});bumpRel(a,b,1);}
+  tell(cap(n(a))+' and '+n(b)+' are friends!',{kind:'ambient',key:'friends'});bumpRel(a,b,1);}
  else{both(()=>doMove('bob'));}}
 function bumpRel(a,b,v){for(const[x,y]of[[a,b],[b,a]]){x.rel=x.rel||{};x.rel[y.id]=(x.rel[y.id]||0)+v;}}
 // extremes earn a title + a one-time celebration
@@ -372,7 +374,7 @@ function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.nee
  sfx('chime');tell('Please excuse the mess.',{kind:'important'});
  setTimeout(()=>{const pick=(k,n)=>Math.random()<.08?Math.floor(Math.random()*n):(Math.random()<.5?a:b)[k];
   const c=freshPlant();c.species=pick('species',16);c.eye=pick('eye',16);c.pref=Math.random()<.08?['sun','shade','night'][Math.floor(Math.random()*3)]:(Math.random()<.5?a:b).pref;c.parents=[a.id,b.id];c.nge=clamp(((a.nge||0)+(b.nge||0))/2+rnd(-.2,.2),-.6,.6);c.nlc=clamp(((a.nlc||0)+(b.nlc||0))/2+rnd(-.2,.2),-.6,.6);c.ge=clamp((a.ge+b.ge)/2*.5+c.nge*.5,-1,1);c.lc=clamp((a.lc+b.lc)/2*.5+c.nlc*.5,-1,1); // born leaning a little like its parents
-  const nm=q=>NAMES[q.species];
-  offerSeed({text:'Your '+nm(a)+' and your '+nm(b)+' made a seed together. Plant it?',
+  const nm=q=>nameOf(q),cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+  offerSeed({text:cap(nm(a))+' and '+nm(b)+' made a seed together. Plant it?',
    yes:()=>{addPlant(c);sfx('soil');sfx('boing');tell('Hurray! A new generation of monsters!',{kind:'important'});save();}});},1800);}
 function align(){const a=st.lc>.33?'Lawful':st.lc<-.33?'Chaotic':'Neutral',b=st.ge>.33?'Good':st.ge<-.33?'Evil':'Neutral';return a===b?'True Neutral':a+' '+b;}

@@ -30,7 +30,7 @@ function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
 /* ---------- start + quiz ---------- */
 function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=[];
  if(away>30){st.needs.thirst=Math.max(st.needs.thirst,.55);bits.push('It got a little thirsty.');}
- const ps=catTrust()>=TRUST_BFF?plantSideSpot():null;if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push('The cat waited right by your plant.');}
+ const ps=catTrust()>=TRUST_BFF?plantSideSpot():null;if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push('The cat waited right by '+(firstName()||'your plant')+'.');}
  else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&catSpotFree(k));const k=ks[Math.floor(Math.random()*ks.length)];if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);bits.push('The cat napped on '+({bed:'its bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
  setTimeout(()=>{if(st.stage>=4){const b=plantBox();plantBoing(b.x+b.w/2);burst('heart',b.x+b.w*.15,b.y-20,2);sfx('giggle');}
   const t=away<2?'Welcome back!':away<60?'Welcome back! It missed you.':away<1440?'Welcome back! It\'s so happy to see you.':'You\'re back! It waited for you.';
