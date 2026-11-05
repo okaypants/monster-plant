@@ -26,7 +26,7 @@ function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n])
 }
 function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
  const d=new Date(),season=seasonNow();
- tell(`Morning! Day ${st.day}.`+(st.stage>=4&&st.lastNight?' '+st.lastNight:''),{kind:'important'});save();}
+ tell(`Morning! Day ${st.day}.`+(st.stage>=4&&st.lastNight?' '+st.lastNight:''),{kind:'important'});bugArrive();save();}
 /* ---------- start + quiz ---------- */
 function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=[];
  if(away>30){st.needs.thirst=Math.max(st.needs.thirst,.55);bits.push('It got a little thirsty.');}

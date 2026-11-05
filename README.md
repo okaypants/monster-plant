@@ -40,6 +40,8 @@ Checks a brand-new game, an old save, the gift seed, breeding, night/morning, an
 
 Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a teen, a kid on the book stack, the cat in every nap spot, curtains closed with lamps off) for a minute of game time each at speed 20 in about 20 seconds, fails on any error or missing image, and saves a screenshot of each case to `tests/screenshots/` (kept on your computer, not uploaded).
 
+`python tests/bug_note_shots.py` plays Doctor Bug's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
+
 `python tests/ui_shots.py` checks the soft UI look (Fredoka text, cream caption pill, rounded bubbles, outline-free pill buttons) and saves the start screen, a caption, the treat jar bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
 
 `python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
