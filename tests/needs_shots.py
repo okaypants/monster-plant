@@ -127,9 +127,9 @@ async def wiggles(b, fails):
     names = await pg.evaluate("()=>IDLE_ITEMS.map(i=>i.n)")
     gaps = [round((log[i][1] - log[i - 1][1]) / 1000) for i in range(1, len(log))]
     print(f"idle wiggles in 40 min untouched: {len(log)} ({', '.join(n for n, _ in log)}); gaps {gaps} s")
-    if not 4 <= len(log) <= 16: fails.append(f"{len(log)} idle wiggles in 40 minutes (expected a few)")
-    if gaps and min(gaps) < 150: fails.append(f"two idle wiggles only {min(gaps)} s apart")
-    if any("book" in n for n in names): fails.append("a book is in the idle wiggle list")
+    if not 25 <= len(log) <= 85: fails.append(f"{len(log)} idle wiggles in 40 minutes (expected one every 30-60 s, some skipped)")
+    if gaps and min(gaps) < 30: fails.append(f"two idle wiggles only {min(gaps)} s apart")
+    if sorted(names) != sorted(["carafe", "SNACKS cabinet", "floor lamp", "desk lamp", "desk drawers (journal)", "readable books", "snow globe"]): fails.append(f"idle wiggle list is {names}")
     if await pg.evaluate("()=>IDLE_FRAMES.some(v=>Math.abs(v)>1)||IDLE_FRAMES.length>4"): fails.append("idle wiggle is more than 1 px or a couple of frames")
     n0 = len(log)
     await pg.evaluate("()=>{pointerHeld=true;__step(20*60,250);}")  # 20 minutes touching
@@ -169,7 +169,7 @@ async def main():
     print("saved to tests/screenshots/needs/")
     if fails:
         sys.exit(1)
-    print("PASS: every need shows on the plant in steps and heals in steps; idle wiggles are rare, 1 px, never while touching")
+    print("PASS: every need shows on the plant in steps and heals in steps; idle wiggles: one item at a time, every 30-60 s, one art pixel, never while touching")
 
 
 if __name__ == "__main__":
