@@ -262,7 +262,7 @@ const VOICE={
   lawful:['{W} holds perfectly still to be petted.','{W} straightens up afterwards, very proper.'],chaotic:['{W} nibbles your finger, gently.','{W} wiggles every leaf at once.'],'':['{W} wiggles happily.']},
  water:{good:['{W} sighs happily.','{W} glows a little.'],evil:['{W} slurps it down loudly. Mwah-ha-hah.','{W} drinks like a tiny villain.'],
   lawful:['{W} drinks exactly half, then the other half.'],chaotic:['{W} splashes some on the floor on purpose.','{W} blows bubbles in it.'],'':['Gulp gulp.']},
- greet:{good:'{W} waves every leaf at you.',evil:'{W} acts like it didn\'t notice you. It noticed.',lawful:'{W} was waiting in exactly the same spot.',chaotic:'{W} is somehow facing a different direction.','':'{W} perks up.'},
+ greet:{good:'{W} waves every leaf at you.',lawful:'{W} was waiting in exactly the same spot.',chaotic:'{W} is somehow facing a different direction.','':'{W} perks up.'},
  idle:{good:['{W} is humming to itself.','{W} is watching the cat sleep, fondly.'],evil:['{W} is plotting something small.','{W} is doing a tiny evil laugh.'],
   lawful:['{W} is tidying its leaves into neat rows.','{W} is counting the books on the shelf.'],chaotic:['{W} is trying to lick the window.','{W} is doing a little dance for no reason.'],'':['{W} is just vibing.']}};
 // voice lines come out of a shuffle bag: never one of the last 15 picked for that event, never one shown in the last 10 minutes ('' = nothing fresh, stay quiet)
@@ -338,7 +338,7 @@ function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.queryS
      Yes, please -> the seed arrives the next morning in the little pot (wakeRoom in start.js).
      Not yet     -> the note goes into the journal (accept it there anytime); Doctor Bug asks again in a few days.
    Never with two plants. This is the only way a second seed comes without you starting it yourself ("Plant another seed"). */
-const BUG_NOTE={x:474,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
+const BUG_NOTE={x:452,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
 const BUG_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
 let bugLand=null; // when it landed this visit (for the glide in); null = already there
 function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend)return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.credit||0)>0));}
