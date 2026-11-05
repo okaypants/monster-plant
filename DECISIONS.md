@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Seedling pot sits on top of the desk (Nov 4)
+
+- The desk spot was at the bottom of the desk's front apron (y 558), so the pot hung in front of the desk and over the chair. It now stands on the desktop just behind the front edge (y 536), between the radio and the desk lamp (x 1268), in the lamp's pool of light. Same depth as the desk (its legs), so it stays about the radio's size.
+
 ### Captions always name the monster; seeds can be named early (Nov 4)
 
 - With the cat and often two monsters in the room, a bare "it" doesn't say who. Every caption about a monster now names it first, and "it" only follows a name in the same caption: "Pip is full. Maybe later.", "Shh... Pip is sleeping off a snack.", "Burp! Pip is so full it's dozing off.", "Pip grew a pizza bow!", "Pip listens to the fairy tale, very still.", "A little frown: Pip is lonely. Pet it or read to it.", "Pip is already a teen with big ideas and a bigger pot.", "Pip, no longer a moss-monster? ...", "Hello, Pip Wobblebean! Its eyes are open." Unnamed seeds and sprouts are "The seed" / "The sprout".
