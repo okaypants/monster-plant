@@ -66,14 +66,11 @@ CASES = [
     ("gift_seed_not_now", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};",
      "window.__no=setInterval(()=>{const n=document.querySelector('.bubble [data-k=n]');if(n)n.click();},200);", 1,
      "(plantCount()===1&&st.giftAskDay===st.day+3&&!st.giftSeed)||'not now: plants '+plantCount()+', ask again day '+st.giftAskDay+' (today '+st.day+')'"),
-    ("breeding", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=1;",  # they already bred today on their own, so only this one counts
-     "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);window.__before=plantCount();"
-     "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);window.__yes=setInterval(()=>{const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # says yes when asked  # a second later, once both stand in the room
-     "plantCount()===window.__before+1&&allRaw().some(q=>q.parents)||'no seed from breeding (plants '+plantCount()+')'"),
-    ("breeding_asks_first", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=1;",
-     "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);"
+    # never more than two plants (Jackie, Nov 4): two happy adults don't offer a seed, and the window gift doesn't ask, when the room is full
+    ("no_third_plant", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=0;s.day=4;delete s.giftSeed;",
+     "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);eachPlant(()=>{st.needs={thirst:0,hunger:0,attention:0};});"
      "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,
-     "(plantCount()===2&&/made a seed together/.test(bubble&&bubble.textContent||''))||'breeding without a yes: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
+     "(plantCount()===2&&!bubble)||'room full: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
     # two plants on the floor, one in the wrong light for a long while, so it walks toward better light (this once crashed: "bd is not defined")
     ("floor_light_seek", "s.stage=8;s.species=3;s.pref='night';s.free={x:400,y:918};s.giftSeed=1;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);swapIn(0);st.lightBad=500;st.lightState='hi';", 1,

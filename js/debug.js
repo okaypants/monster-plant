@@ -130,13 +130,13 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
  dbgSync();dbg.scrollTop=sc;}
 
 // plants
-function dbgAddPlant(){if(plantCount()>=3){say('Room for 3 plants at most.',3,true);return;}if(!st.started||st.stage<0){Object.assign(st,{started:true,stage:0});dbgPid=st.id;return;}const p=freshPlant();addPlant(p);dbgPid=p.id;}
+function dbgAddPlant(){if(plantCount()>=MAX_PLANTS){say('Room for '+MAX_PLANTS+' plants at most.',3,true);return;}if(!st.started||st.stage<0){Object.assign(st,{started:true,stage:0});dbgPid=st.id;return;}const p=freshPlant();addPlant(p);dbgPid=p.id;}
 function dbgRemovePlant(){const id=pRaw().id;if(plantCount()<=1){say('Keep at least one plant (or use Brand-new game).',3,true);return;}
  if(st.id===id)swapIn(0);st.others=st.others.filter(q=>q.id!==id);dbgPid=st.id;ACT=st.id;pickChair();}
 function dbgTwoAdults(){while(plantCount()<2)addPlant(freshPlant());const ids=allRaw().filter(q=>q.stage>=0).slice(0,2).map(q=>q.id),xy=[[SPOT.rugL.x,SPOT.rugL.y],[SPOT.rugR.x,SPOT.rugR.y]];
  ids.forEach((id,i)=>withPlant(id,()=>{st.stage=8;st.nap=0;st.free={x:xy[i][0],y:xy[i][1]};st.walk=null;}));dbgPid=ids[0];}
 function dbgBreed(){eachPlant(()=>{if(st.stage>=0){const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y};}});const A=allRaw().filter(q=>q.stage>=8);
- if(A.length>=2&&plantCount()<3)crossPollinate(A[0],A[1]);else say('Breeding needs two adults and room for a third plant.',3,true);}
+ if(A.length>=2&&plantCount()<MAX_PLANTS)crossPollinate(A[0],A[1]);else say('Breeding needs two adults and room for one more plant (at most '+MAX_PLANTS+').',3,true);}
 // cat
 let dbgWalk=true;
 function dbgCatState(v){cat.force=null;cat.hold=false;cat.huff=0;

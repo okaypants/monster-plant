@@ -36,7 +36,7 @@ function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)
   const t=away<2?'Welcome back!':away<60?'Welcome back! It missed you.':away<1440?'Welcome back! It\'s so happy to see you.':'You\'re back! It waited for you.';
   tell(t+(bits.length?' While you were away, '+bits.join(' and ')+'.':'')+(st.stage>=4?' '+line('greet'):''),{kind:'important'});},400);save();}
 function startFlow(){
- if(st.started&&st.stage>=0){const s=screen(`<h1>Monster Plant</h1><p>Welcome back. Day ${st.day}.</p><div class="opts"><button data-k="go">Continue</button>${plantCount()<3?'<button data-k="add">Plant another seed</button>':''}<button data-k="new">Start over</button></div>`,{go:d=>{d.remove();audioInit();welcomeBack();},add:d=>{d.remove();audioInit();addingSeed=true;quiz();},new:d=>{d.remove();audioInit();st=fresh();quiz();}});return;}
+ if(st.started&&st.stage>=0){const s=screen(`<h1>Monster Plant</h1><p>Welcome back. Day ${st.day}.</p><div class="opts"><button data-k="go">Continue</button>${plantCount()<MAX_PLANTS?'<button data-k="add">Plant another seed</button>':''}<button data-k="new">Start over</button></div>`,{go:d=>{d.remove();audioInit();welcomeBack();},add:d=>{d.remove();audioInit();addingSeed=true;quiz();},new:d=>{d.remove();audioInit();st=fresh();quiz();}});return;}
  screen(`<h1>Monster Plant</h1><p>prototype v2 · your real plants</p><p>Sound on. A few silly questions decide which seed you get.</p><div class="opts"><button data-k="go">Begin</button></div>`,{go:d=>{d.remove();audioInit();quiz();}});}
 function quiz(){const picks=QUIZ.map(pool=>pool[Math.floor(Math.random()*pool.length)]);let bits=0,i=0;
  const ask=()=>{const q=picks[i];sfx('pop');

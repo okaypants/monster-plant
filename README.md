@@ -133,6 +133,12 @@ Jackie's non-negotiables live in [RULES.md](RULES.md). Read them before changing
 
 ## DECISIONS (newest first, with why)
 
+### Never more than two plants (Nov 4)
+
+- At most two plants live in the room at once (`MAX_PLANTS` in js/saving.js). The window's gift seed doesn't ask when the room is full, "Plant another" on the start screen hides, and debug won't add a third.
+- So two adults no longer make a seed: breeding needs two adults, and that already fills the room. The breeding code stays in place for if the cap ever changes.
+- An old save that already has three plants keeps all three (nothing is taken away); no new one comes until there's room.
+
 ### Smaller sparkle, close to the plant (Nov 4)
 
 - The sparkle that twinkles when a plant is listening (petted, read to, the cat nearby) is half its old size and tucked against the plant's upper right side, half on the plant. It used to be as big as a kid's face and sat far enough out that an adult's sparkle landed on the plant next to it.
