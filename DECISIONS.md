@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Seedling pot sits on the windowsill (Nov 4)
+
+- The windowsill spot was below the ledge (y 564, the bottom of its orange front) and right at the armchair's edge (x 478), so the seedling pot looked like it floated in front of the chair. Now it's on top of the ledge (y 539) in the open middle of the sill (x 400). The cat's sill nap spot uses the same surface, so he sits on the ledge too (he and a seedling never share the sill). Doctor Bug's note moved over to x 452 to stay on the sill.
+- Removed the mischievous welcome-back greeting "... acts like it didn't notice you. It noticed." (Jackie asked.)
+
 ### The second plant is opt-in: Doctor Bug's note (Nov 4)
 
 - When your only plant is a late teen (it has spent at least one night as a teen, or is already grown), a little pixel paper airplane from Doctor Bug glides onto the windowsill once and sits there. Nothing blinks or loops.
