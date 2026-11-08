@@ -36,6 +36,7 @@ const ICONS={
  books:['.vvvvv.','kkkkkkk','.GGGGG.'],
  byplant:['..g..g.','.ggg.gg','..ggg..','...g...','.ppppp.','..ppp..'],
  left:['...k','..kk','.kkk','kkkk','.kkk','..kk','...k'],right:['k...','kk..','kkk.','kkkk','kkk.','kk..','k...'],
+ sloth:['bbbbbbbbbbbbbbbb','...b........b...','...b........b...','...bb......bb...','....bbbbbbbb....','...bbbbbbbbbb...','..bbbbbbbbbbbb..','..bb...bb...bb..','..bb...bb...bb..','..bbbbbbbbbbbb..','...bbbb..bbbb...','....bbbbbbbb....','.....bbbbbb.....'], // a sloth hanging from a branch, stamp-style
  plane:BUG_PLANE.map(r=>r.replace(/1/g,'i').replace(/2/g,'s').replace(/0/g,'.'))};
 function pix(name,px=4,flip=false){const m=ICONS[name],h=m.length,w=m[0].length,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;c.className='jpix';
  const x=c.getContext('2d'),cell=(i,j)=>{const ch=m[j]&&m[j][i];return ch&&ch!=='.';},at=i=>flip?w-1-i:i;
@@ -100,7 +101,9 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
  // Slowmallow's note, tucked in until you say yes
  if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Slowmallow');n.appendChild(pix('plane',3));
-  n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}}
+  n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}
+ if(letterInJournal())letterJournalNote(R);}
+function letterJournalNote(R){const n=document.createElement('button');n.type='button';n.className='jbugnote jletternote';n.setAttribute('aria-label','A letter from Slowmallow');n.appendChild(pix('plane',3));n.addEventListener('click',e=>{e.stopPropagation();openLetter(true);});R.appendChild(n);}
 function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();return;}sfx('page');
  const c=jdiv('jbugask jstep',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div><div class="jbtns"><button type="button" data-k="y">Yes, please</button><button type="button" data-k="n">Not yet</button></div>';
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});

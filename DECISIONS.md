@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A letter from Slowmallow can ask for a monster (Nov 8)
+
+- Now and then Slowmallow's paper airplane lands on the windowsill, like the seedling note, asking to have an adult come stay. One roll a day: 8%, or 20% for an adult with an evil lean. Never a kid or teen, never within 3 days of another ask, never while another note, ask or seed choice is waiting, and other asks and the seedling note wait for it.
+- Tap it for the letter over the room (cream paper, Fredoka) with a stamp in the corner: a code-drawn silhouette of a sloth hanging from a branch, in a dashed frame, for now. When the real art exists, add `slowmallow_portrait.png` to the game folder and set `LETTER_ART.ready` to true in js/plants.js.
+- **Yes:** "<Name> will set off in the morning." The next morning `moveOut()` runs with "Staying with Slowmallow". **Not yet:** the letter waits in the journal (accept it anytime) and lands again in 3 days, exactly like the seedling note. No penalty. Tapping away leaves it on the sill.
+- The brief was written for Doctor Bug and "the lab"; per Jackie's note those are Slowmallow now, so the placeholder reads "Dear friend, I would love to have <Name> come stay with me for a while. May <Name> come?" (`slowmallowLetter` in js/names.js) and the portrait slot is `slowmallow_portrait.png`.
+- Debug (test mode): **Slowmallow letter now**. `python3 tests/letter_shots.py` checks it.
+
 ### Two adults can make a seed again, and you choose where it goes (Nov 8)
 
 - Two content adults may make a seed even though they fill the room (this is the only case allowed past `MAX_PLANTS`, and nobody becomes a third monster on the spot). A bubble names both, with two choices.

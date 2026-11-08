@@ -100,7 +100,7 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   chips(b,'Titles',Object.entries(TITLES),t=>(pRaw().titles||[]).includes(t),t=>onP(()=>{st.titles=st.titles||[];st.titles=st.titles.includes(t)?st.titles.filter(x=>x!==t):st.titles.concat(t);}));
   b.appendChild(el('div','status',(()=>{const q=pRaw(),T=q.treats||{};return 'Treats: '+SNACKS.map(s=>esc(s.name)+' '+(T[s.id]||0)+'/'+TRAIT_AT).join(' · ')+'<br>Lately: '+esc((q.log||[]).join(', ')||'nothing yet')+'<br>Pots: '+esc((st.pots||[]).join(', ')||'none')+(q.potOn?' (on: '+esc(q.potOn)+')':'')+'<br>Today: water '+(q.met&&q.met.thirst?'✓':'·')+' light '+(q.met&&q.met.light?'✓':'·')+' company '+(q.met&&q.met.attention?'✓':'·');})())); // what the old journal showed
   btns(b,[['Reset quirks',()=>onP(()=>{st.quirks={};st.quirkT=null;})],['Grow one age',()=>onP(()=>{if(NEXT[st.stage]!=null){st.stage=NEXT[st.stage];st.timer=0;}})]]);
-  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
+  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Slowmallow letter now',dbgLetter],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
 
  group(body,'Cat',true,b=>{
   slider(b,'Trust',0,1,.01,()=>catTrust(),v=>{st.catTrust=v;},v=>trustName(v)+' '+(+v).toFixed(2));
@@ -139,6 +139,7 @@ function dbgRemovePlant(){const id=pRaw().id;if(plantCount()<=1){say('Keep at le
 const DBG_PLACES=['Off to see the ocean','Staying with Slowmallow','Gone to live in the mountains'];let dbgPlace=0;
 function dbgMoveOut(){if(!TESTING)return;moveOut(pRaw().id,DBG_PLACES[dbgPlace++%DBG_PLACES.length]);dbgPid=st.id;}
 function dbgAskGo(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Only adults ask to go.',3,true);return;}goAsk(q.id);}
+function dbgLetter(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Letters only ask for adults.',3,true);return;}letterClear();letterLand(q.id);}
 function dbgTwoAdults(){while(plantCount()<2)addPlant(freshPlant());const ids=allRaw().filter(q=>q.stage>=0).slice(0,2).map(q=>q.id),xy=[[SPOT.rugL.x,SPOT.rugL.y],[SPOT.rugR.x,SPOT.rugR.y]];
  ids.forEach((id,i)=>withPlant(id,()=>{st.stage=8;st.nap=0;st.free={x:xy[i][0],y:xy[i][1]};st.walk=null;}));dbgPid=ids[0];}
 function dbgBreed(){eachPlant(()=>{if(st.stage>=0){const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y};}});const A=allRaw().filter(q=>q.stage>=8);

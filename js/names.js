@@ -11,6 +11,8 @@ const GO_REASONS={
  chaotic:[["wants to see the ocean","Off to see the ocean"],["has heard about a kite festival by the sea","Following a kite festival by the sea"],["has spotted a parade that could use one more","Marching with a parade"]],
  evil:[["has heard a big spooky conservatory needs a new resident","Living in a big spooky conservatory"],["has been invited to a very old, very drafty castle greenhouse","Lurking in a drafty castle greenhouse"]],
  neutral:[["is curious what's out there","Finding out what's out there"],["has been wondering what's over the next hill","Somewhere over the next hill"]]};
+// Slowmallow's letter asking to have a monster come stay (Jackie, Nov 8): placeholder wording, edit freely. n = the monster's name.
+const slowmallowLetter=n=>'Dear friend, I would love to have '+n+' come stay with me for a while. May '+n+' come?';
 const NAME_FIRST={
  good:['Pip','Mallow','Bun','Lulu','Honey','Posy','Tuffet','Mimi'],
  evil:['Grimble','Mortie','Hex','Vexy','Murkle','Nox','Skritch'],
