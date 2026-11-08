@@ -6,8 +6,8 @@ function toGame(e){const r=cv.getBoundingClientRect();return [(e.clientX-r.left)
 const inR=(x,y,r)=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
 const alphaCache=new Map();function alphaAt(im,u,v){let a=alphaCache.get(im.src);if(!a){const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);try{a=x.getImageData(0,0,c.width,c.height).data;}catch(e){a=null;}alphaCache.set(im.src,a||0);}if(!a)return 255;u=Math.floor(u);v=Math.floor(v);if(u<0||v<0||u>=im.naturalWidth||v>=im.naturalHeight)return 0;return a[(v*im.naturalWidth+u)*4+3];}
 // tap only on the plant's painted pixels (with a little slack), so things peeking out behind it stay clickable
-function onPlantPx(x,y){if(st.stage<0)return false;const b=plantBox();if(!b.img||!ok(b.img))return onPlant(x,y);const sx=b.img.naturalWidth/b.w,sy=b.img.naturalHeight/b.h;for(const[dx,dy]of[[0,0],[10,0],[-10,0],[0,10],[0,-10]])if(alphaAt(b.img,(x+dx-b.x)*sx,(y+dy-b.y)*sy)>40)return true;return false;}
-function onPlant(x,y){if(st.stage<0)return false;const b=plantBox();return x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=baseY()+4;}
+function onPlantPx(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();if(!b.img||!ok(b.img))return onPlant(x,y);const sx=b.img.naturalWidth/b.w,sy=b.img.naturalHeight/b.h;for(const[dx,dy]of[[0,0],[10,0],[-10,0],[0,10],[0,-10]])if(alphaAt(b.img,(x+dx-b.x)*sx,(y+dy-b.y)*sy)>40)return true;return false;}
+function onPlant(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();return x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=baseY()+4;}
 cv.addEventListener('mousemove',e=>{[mx,my]=toGame(e);cv.style.cursor=held.tool?'none':'pointer';});
 cv.addEventListener('mouseleave',()=>{mx=my=-99;});
 function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hk=box==='can'?holdK(x,y):1,hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y,hk):box?onPlant(x,y):onPlantPx(x,y));
