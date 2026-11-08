@@ -10,7 +10,7 @@ const QUIZ=[
 /* ---------- day cycle ---------- */
 function tuckIn(){if(st.stage>=4)setTimeout(()=>earnPot('moon'),2600);closeBubble();held.tool=null;sfx('sigh');const start=st.dayT,t0=performance.now();
  const step=()=>{const k=Math.min(1,(performance.now()-t0)/2500);st.dayT=start+(.9-start)*k;if(k<1)requestAnimationFrame(step);else{st.night=true;tell('Goodnight, sleep tight, the bed bugs are nice here. Tap anywhere to sleep.',{kind:'important'});}};step();}
-function wake(){eachPlant(()=>{if(st.stage>=0)wakePlant();});wakeRoom();}
+function wake(){eachPlant(()=>{if(st.stage>=0)wakePlant();});wakeRoom();goMorning();}
 function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n]).length/3;
  st.lc=clamp(st.lc+(Object.keys(st.met).length>=2?.05:-.05),-1,1);const ng=st.nge||0,nl=st.nlc||0;st.ge=ng+(st.ge-ng)*.9;st.lc=nl+(st.lc-nl)*.9; // drifts back toward its NATURE, not toward bland
  st.lastNight=st.stage>=4&&q>=.99?'well':''; // wakeRoom names who slept well; growing happens on the clock now (Tamagotchi time), not here

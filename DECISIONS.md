@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A grown monster can ask to move out (Nov 8)
+
+- Now and then a content adult asks to go somewhere that fits its nature: a cream bubble by the monster, naming it, with Yes / Not yet. The reasons are one easy list per nature, `GO_REASONS` at the top of js/names.js; each has what the ask says and what the keepsake's "Out in the world" page says.
+- **How rare:** one roll a day at 1 in 5, after 20 calm seconds; never in the 3 days after any ask; a monster that just grew up settles in for 3 days first. Never a kid or teen, never an unhappy or napping monster, and never while another ask, Slowmallow's note or a seed is waiting.
+- **Yes:** "<Name> will set off in the morning." The next morning `moveOut()` runs with that destination. **Not yet** (or tapping away): "<Name> snuggles back in." with a heart and a little bounce, no penalty of any kind; it asks again in 3 days.
+- **When the last monster leaves** (the brief didn't cover this): the room stays empty for a moment so the caption can be read, then the start screen offers a new seed. The archive, the cat and the day stay. Why: an empty room with nothing to do would be a dead end.
+- Debug (test mode): **Ask to go now**. `python3 tests/go_ask_shots.py` checks all of it.
+
 ### The Archive drawer holds the journals of monsters who moved out (Nov 8)
 
 - Tapping the desk drawers opens the Archive over the room in 3 stepped frames, in the same keepsake-book style as the journal: one closed, code-drawn book per monster that has moved out, with its name and a tiny portrait. Two rows of three a page; more than a spread gets arrows, never a scrollbar. Close by tapping outside or the x. Journals keep opening from the name tags; there's no other journal button.

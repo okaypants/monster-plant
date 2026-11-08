@@ -3,6 +3,14 @@
    Edit these lists freely: short first names, silly last names, all easy to say out loud, nothing mean, no real brands or characters.
    The plant's nature flavors the sound (its strongest lean: good / evil / lawful / chaotic); an easygoing plant mixes them all.
    Two plants never share a first name. You can rename a plant by tapping its name in the journal. */
+/* WHERE A GROWN MONSTER MIGHT WANT TO GO (Jackie, Nov 8): edit freely. Each line: [how the ask reads after the monster's name, what its keepsake says on "Out in the world"].
+   The monster picks from its own nature (both, if it's two things); an easygoing one uses neutral. */
+const GO_REASONS={
+ good:[["wants to help out at a friend's garden down the road","Helping out at a friend's garden down the road"],["has heard the community garden needs a welcoming committee","Welcoming everyone at the community garden"],["has a friend by the pond who could use some company","Keeping a friend company by the pond"]],
+ lawful:[["has been offered a spot in a very tidy greenhouse","In a very tidy greenhouse"],["has heard the botanical garden needs someone to keep the labels straight","Keeping the labels straight at the botanical garden"]],
+ chaotic:[["wants to see the ocean","Off to see the ocean"],["has heard about a kite festival by the sea","Following a kite festival by the sea"],["has spotted a parade that could use one more","Marching with a parade"]],
+ evil:[["has heard a big spooky conservatory needs a new resident","Living in a big spooky conservatory"],["has been invited to a very old, very drafty castle greenhouse","Lurking in a drafty castle greenhouse"]],
+ neutral:[["is curious what's out there","Finding out what's out there"],["has been wondering what's over the next hill","Somewhere over the next hill"]]};
 const NAME_FIRST={
  good:['Pip','Mallow','Bun','Lulu','Honey','Posy','Tuffet','Mimi'],
  evil:['Grimble','Mortie','Hex','Vexy','Murkle','Nox','Skritch'],
