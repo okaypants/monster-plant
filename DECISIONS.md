@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### An ARCHIVE sign on the desk drawers replaces the JOURNAL plate (Nov 8)
+
+- Jackie: the JOURNAL plate was so small it went unnoticed, and that spot was disliked. It's gone; instead a sign reading ARCHIVE in the same style as the SNACKS sign (cream label, gold rim, dark outline, clipped corners, wine letters) sits on the top drawer, in front of its knob. Drawn in code on whole 2-unit pixels with 4x6 pixel letters, lit like the drawer wood (darker at night, warm under the desk lamp), moves only with the drawers' idle wiggle, and tapping it opens the journal like the rest of the drawers.
+
 ### Doctor Bug is now Slowmallow, a sloth; every chatter line is backed by what you see (Nov 7)
 
 - **Slowmallow** (Jackie): no more Doctor Bug, no doctor or professor. The one who sends seedlings is a cute sloth named Slowmallow (Jackie first wrote Slow Marmamallow, then settled on Slowmallow) who only communicates by paper airplane and is helping monsters become good members of society. Every caption, the journal note and the code comments use the new name; the paper-airplane note on the windowsill is the same.
@@ -102,7 +106,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Captions use the first name where a plant is the subject: voice lines ("Pip waves every leaf at you."), "Right on time! Pip loves a routine.", treat reactions ("Pip loves the cotton candy!", "Pip's usual!", "Pip eats it… politely."), friends and bickering ("Pip and Mortie are friends!"), "The cat curled up next to Pip." Seeds and sprouts are still "it".
 - Old saves: plants that already have their eyes open get named quietly on load, with the same generator.
 
-### A JOURNAL placard on the desk drawers (Nov 4)
+### A JOURNAL placard on the desk drawers (Nov 4; replaced by the ARCHIVE sign Nov 8)
 
 - A little brass nameplate reading JOURNAL sits on the plain bottom panel of the desk drawers (under the third drawer, the only part of the drawer front with room for it; the drawers above each have a knob in the middle). Drawn in code from the room palette on whole 2-unit pixels, dark outline, a tiny 3x5 pixel-font label, four little screws. Why: like the SNACKS sign, it says what the drawers are for without any hint that blinks.
 - It never glows, blinks or bounces; it moves only with the journal drawers' idle wiggle.

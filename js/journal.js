@@ -197,25 +197,24 @@ function relPages(L,R,sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q
 /* ---------- out in the world (hidden until it has something) ---------- */
 function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(const it of worldItems())R.appendChild(jdiv('jgroup',[jlabel(it.label||'')]));}
 
-/* JOURNAL PLACARD (Jackie, Nov 4): a little brass nameplate on the plain bottom panel of the desk drawers, like the SNACKS sign.
-   Drawn in code from the room palette on whole pixels (2 room units each), dark outline, a tiny 3x5 pixel-font label. It never
-   glows, blinks or bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the panel's color in the
-   current room picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms
-   under the desk lamp. Tapping it is tapping the drawers: the journal opens. */
-const PLACARD={x:1092,y:699,u:2}; // top-left of the plate and its pixel size, on the panel under the third drawer (x 1084-1170, y 698-722)
-const PFONT={J:['011','001','001','101','010'],O:['010','101','101','101','010'],U:['101','101','101','101','111'],R:['110','101','110','101','101'],N:['101','111','111','111','101'],A:['010','101','111','101','101'],L:['100','100','100','100','111']};
-const PLATE=(()=>{const t='JOURNAL',w=t.length*4-1+6,h=11,rows=[];for(let j=0;j<h;j++){let r='';for(let i=0;i<w+2;i++){
-  const edge=j===0||j===h-1||i===0||i===w+1,corner=(j===0||j===h-1)&&(i===0||i===w+1);
-  if(corner){r+='.';continue;}if(edge){r+='o';continue;}
-  let ch=j===1?'h':j===h-2?'d':'b'; // brass: a light top row, a shaded bottom row
-  if((j===2||j===h-3)&&(i===2||i===w-1))ch='s'; // four little screws
-  const tx=i-4,ty=j-3,gi=Math.floor(tx/4),gx=tx%4;if(ty>=0&&ty<5&&tx>=0&&gi<t.length&&gx<3&&PFONT[t[gi]][ty][gx]==='1')ch='t';
-  r+=ch;}rows.push(r);}return rows;})();
-const PCOL={o:C.out,h:C.g4,b:C.fl3,d:C.fl2,s:C.rust,t:C.wine};
+/* ARCHIVE SIGN (Jackie, Nov 8; replaces the Nov 4 JOURNAL plate, which was too small to notice): a sign in the SNACKS
+   sign's style (cream label, gold rim, dark outline, clipped corners, wine letters) set over the top drawer's knob.
+   Drawn in code from the room palette on whole pixels (2 room units each), 4x6 pixel letters. It never glows, blinks or
+   bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the current room
+   picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms under the
+   desk lamp. Tapping it is tapping the drawers: the journal opens. */
+const PLACARD={x:1088,y:570,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
+const PFONT={A:['.##.','#..#','#..#','####','#..#','#..#'],R:['###.','#..#','#..#','###.','#.#.','#..#'],C:['.###','#...','#...','#...','#...','.###'],
+ H:['#..#','#..#','####','#..#','#..#','#..#'],I:['###','.#.','.#.','.#.','.#.','###'],V:['#..#','#..#','#..#','#..#','.##.','.##.'],E:['####','#...','###.','#...','#...','####']};
+const PLATE=(()=>{const t='ARCHIVE',tw=[...t].reduce((n,ch)=>n+PFONT[ch][0].length+1,-1),w=tw+6,h=12,rows=[];
+  const ink=new Set();let cx=3;for(const ch of t){PFONT[ch].forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='#')ink.add((cx+i)+','+(3+j));}));cx+=PFONT[ch][0].length+1;}
+  for(let j=0;j<h;j++){let r='';for(let i=0;i<w;i++){const dx=Math.min(i,w-1-i),dy=Math.min(j,h-1-j),d=dx+dy;
+    r+=d<2?'.':(d===2||dx===0||dy===0)?'o':(d===3||dx===1||dy===1)?'h':ink.has(i+','+j)?'t':'b';}rows.push(r);}return rows;})();
+const PCOL={o:C.out,h:C.fl3,b:C.ivory,t:C.wine};
 let placardCv=null,placardKey='',placardRef=null;
 function panelAvg(src,sx,sy){const c=document.createElement('canvas');c.width=60;c.height=12;const x=c.getContext('2d');x.drawImage(src,sx,sy,60,12,0,0,60,12);const d=x.getImageData(0,0,60,12).data;let r=0,gg=0,b=0;for(let i=0;i<d.length;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];}const n=d.length/4;return [r/n,gg/n,b/n];}
 function drawPlacard(key){if(!ok(ROOMS.day))return;
- if(key!==placardKey){placardKey=key;placardRef=placardRef||panelAvg(ROOMS.day,PLACARD.x+5,PLACARD.y+5);const cur=panelAvg(cv,PLACARD.x+5,PLACARD.y+5);
+ if(key!==placardKey){placardKey=key;placardRef=placardRef||panelAvg(ROOMS.day,1097,704);const cur=panelAvg(cv,1097,704);
   const f=[0,1,2].map(i=>clamp(cur[i]/Math.max(1,placardRef[i]),0,1)),u=PLACARD.u,c=document.createElement('canvas');c.width=PLATE[0].length*u;c.height=PLATE.length*u;const x=c.getContext('2d');
   PLATE.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch==='.')return;x.fillStyle=PCOL[ch];x.fillRect(i*u,j*u,u,u);}));
   x.globalCompositeOperation='multiply';x.fillStyle=`rgb(${Math.round(f[0]*255)},${Math.round(f[1]*255)},${Math.round(f[2]*255)})`;x.fillRect(0,0,c.width,c.height); // lit like the panel
