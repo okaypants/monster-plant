@@ -38,7 +38,7 @@ function spotCover(s,frames){return Math.max(0,...(frames||napFrames(s.poses)).m
 function spotVisible(s,frames){return spotCover(s,frames)<=COVER_MAX;}
 // on the floor he can shift sideways: the nearest x (to the one he'd like) where he isn't covered
 function floorX(s,x0=FLOOR_X0,x1=FLOOR_X1){for(let d=0;d<=x1-x0;d+=30)for(const x of d?[s.x+d,s.x-d]:[s.x])if(x>=x0&&x<=x1&&spotVisible({...s,x}))return x;return null;}
-function catSpotFree(k,frames){if(CAT_SPOTS[k]&&k!=='rug'&&!spotVisible(CAT_SPOTS[k],frames))return false;if(['sill','crate','books','chair'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&chairId!=null)return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
+function catSpotFree(k,frames){if(CAT_SPOTS[k]&&k!=='rug'&&!spotVisible(CAT_SPOTS[k],frames))return false;if(['sill','crate','books','chair'].includes(k)&&otherPos().concat(st._pos?[st._pos]:[]).some(q=>q.k===k))return false;if(k==='chair'&&(chairId!=null||allRaw().some(q=>q.stage>=4&&q.perch==='chair')))return false;if(k==='sill'&&st.curtain==='closed')return false;const pk=st.started&&st.stage>=0?spotKey():'';if(k==='chair'&&typeof onChair==='function'&&onChair())return false;if(k==='sill'&&pk==='sill')return false;if(k==='crate'&&pk==='crate')return false;if(k==='books'&&pk==='books')return false;return true;}
 function plantSideSpot(){if(!(st.started&&st.stage>=6)||(typeof onChair==='function'&&onChair())||spotKey()!=='free')return null;const b=plantBox(),side=(b.x+b.w/2)<835?1:-1,sc=catSc(plantDepth()),half=Math.ceil(CATF.belly.naturalWidth*CAT_K*sc/2); // clear of the plant even in his widest pose (belly-up)
  const y=SPOT[spotKey()].y,poses=['curl','loaf'];
  for(const sd of[side,-side]){const near=Math.round(b.x+b.w/2+sd*(b.w/2+half+12)),s={x:near,y,sc,poses}; // his side of the plant first, then the other; slide further out if another plant is in front
@@ -52,7 +52,7 @@ const RUG_X=760;
 function catGo(k){const s=CAT_SPOTS[k],FLOOR_Y=925;cat.to=k;cat.huff=0;cat.path=[{x:cat.x,y:FLOOR_Y,hop:cat.y<FLOOR_Y-20},{x:s.x,y:FLOOR_Y},{x:s.x,y:s.y,hop:s.y<FLOOR_Y-20}];cat.state='walk';cat.t=0;}
 function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  cat.t+=dt;if(cat.shyT>0)cat.shyT-=dt;
- if(['sleep','settle','loafwake'].includes(cat.state)&&((cat.spot==='sill'&&st.curtain==='closed')||(cat.spot==='chair'&&chairId!=null))){if(cat.state==='sleep'){cat.state='wake';cat.t=1.2;}else huffWalk();} // curtains closed: hop off the ledge
+ if(['sleep','settle','loafwake','pet'].includes(cat.state)&&((cat.spot==='sill'&&st.curtain==='closed')||(cat.spot==='chair'&&(chairId!=null||allRaw().some(q=>q.stage>=4&&q.perch==='chair'))))){if(cat.state==='sleep'&&cat.spot!=='chair'){cat.state='wake';cat.t=1.2;}else huffWalk();} // a monster in the armchair (napping or awake): he gets up and goes // curtains closed: hop off the ledge
  if(['sleep','settle','loafwake'].includes(cat.state)&&!drag.on){cat.coverChk=(cat.coverChk||0)-dt;if(cat.coverChk<=0){cat.coverChk=.5;const f=catFrame();cat.hidden=catCover(cat.x,cat.y,cat.sc,f)>COVER_MAX?(cat.hidden||0)+.5:0;}
   if((cat.hidden||0)>=1.5){cat.hidden=0;if(cat.state==='sleep'){cat.state='wake';cat.t=0;}else huffWalk();}} // a plant moved, scooted, wandered or grew in front of him: after a moment he gets up and walks somewhere he can be seen
  if(cat.state==='sleep'){cat.nap-=dt;if(cat.nap<=0){cat.state='wake';cat.t=0;cat.pets=0;trustGain(.015);}} // a nap left undisturbed builds trust
@@ -63,6 +63,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   if(cat.t>a){cat.state='loafwake';cat.t=0;cat.loafT=rnd(60,90);}}
  else if(cat.state==='loafwake'){if(cat.t>cat.loafT){cat.state='sleep';cat.pose='loaf';cat.t=0;cat.nap=rnd(60,150);cat.huff=0;cat.huffN=0;cat.pets=0;}} // only now does he doze off for real
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
+ else if(cat.state==='walk'&&(cat.pauseT||0)>0){cat.pauseT-=dt;} // stopped for a touch
  else if(cat.state==='walk'){const p=cat.path[0];if(!p&&!spotVisible(CAT_SPOTS[cat.to],cat.huff?HUFF_FRAMES():null)&&(cat.retry=(cat.retry||0)+1)<6){if(cat.huff)huffWalk();else catGo(catPick(cat.to));return;} // a plant moved in front while he walked: he never stops behind it
   if(!p&&cat.huff){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;huffSettle();return;}
   if(!p){cat.retry=0;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;st.catNaps=st.catNaps||{};st.catNaps[cat.to]=(st.catNaps[cat.to]||0)+1;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){catSaw('byplant');st.listen=3;sfx('purr');tell(catName()+' curled up next to '+(firstName()||'your plant')+'.',{kind:'teach',key:'catPlant',who:'cat'});}return;}
@@ -79,6 +80,7 @@ function catFrame(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // deb
  if(cat.state==='settle')return CATF[cat.huffF||'back'];
  if(cat.state==='loafwake')return CATF.loaf1;
  if(cat.state==='pet')return cat.belly?CATF.belly:CATF['pet'+(catPetF()+1)];
+ if(cat.state==='walk'&&(cat.pauseT||0)>0)return CATF.sit1; // stopped for a touch
  if(cat.state==='walk')return CATF[(cat.dir<0?'walkL':'walk')+(Math.floor(T*6)%2+1)];return CATF.sit1;}
 const catPetF=()=>Math.floor(T*4)%2; // petted frame; the back-scratcher rocks with it
 // BREATHING (Jackie, calm-down): almost completely still. Once every ~4.6 s the body (not the paws) rises 1 px for about 1.8 s, then settles back.
@@ -123,7 +125,10 @@ function huffSpot(){const from=cat.huffFrom??cat.x,pl=[];if(st.started)eachPlant
  const r=CAT_SPOTS.rug,fx=from<835?FLOOR_X1:FLOOR_X0,x=floorX({...r,x:fx}); r.x=x??fx; return 'rug';} // nowhere up high: the far end of the rug
 function huffWalk(){catSaw('huff');cat.huffN=(cat.huffN||0)+1;cat.huffFrom=cat.x;catGo(huffSpot());cat.huff=1;}
 function huffSettle(){cat.state='settle';cat.t=0;cat.huffF='back';const n=cat.huffN||1;cat.awake=n>1?Math.max(rnd(30,90)*(1+.35*(n-1)),(cat.awake||0)+10):rnd(30,90);fplay('cat_settle');} // each extra move: a little longer before he's open to pets
-function petCat(){const tr=catTrust();if(cat.state==='walk'||cat.state==='annoyed'||(cat.shyT||0)>0)return;const b=catBox();
+function petCat(){const tr=catTrust();const b=catBox();
+ // he always answers a touch (Jackie, Nov 7): walking, he stops for a moment (a purr and a heart once he trusts you, a little 'hmm' while shy); had enough, a flick of the tail ('hmm') and he keeps going
+ if(cat.state==='walk'||cat.state==='annoyed'||(cat.shyT||0)>0){const warm=tr>=TRUST_SHY&&cat.state!=='annoyed';sfx(warm?'purr':'hmm');
+  if(cat.state==='walk')cat.pauseT=.9;if(warm&&b){burst('heart',b.x+b.w/2,b.y,1);trustGain(.01);}return;}
  if(cat.state==='settle'||cat.state==='loafwake'){huffWalk();return;} // still settling: he calmly moves once more (no penalty)
  if(tr<TRUST_SHY){ // shy: only says hi when it's awake, and only once
   if(cat.state==='sleep'||cat.state==='pet'||cat.state==='sniff'){catLeave();tell(catName()+' is still shy. Let him nap.',{kind:'teach',key:'catShy'});return;}

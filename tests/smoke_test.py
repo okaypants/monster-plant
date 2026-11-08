@@ -140,7 +140,7 @@ CASES = [
      "document.querySelector('.ttreat[data-id=solar]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));if(feed.over!=null)return 'the floor counted as a monster';"
      "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.5);if(((st.treats||{}).solar||0)!==0)return 'a treat dropped on the floor got eaten';if(feed.item)return 'still holding';"
      "if(!document.querySelector('.ttray'))return 'tray closed too soon';__step(5);return !document.querySelector('.ttray')||'tray did not hide after a few seconds';})()"),
-    # reading (Jackie, Nov 7): touch any book (bookcases, crate book, book stack) -> a tray of the four books; drag one to a monster -> it reads in the room
+    # reading (Jackie, Nov 7): touch any book (bookcases, crate book, book stack) -> a tray of the four books; drag one to a monster -> it hops into the armchair, the story opens facing us, tap to turn, it goes back
     ("read_drag", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;s.nap=0;s.needs={thirst:0,hunger:0,attention:.8};", "", 0.1,
      "(()=>{const logs=()=>(st.log||[]);st.needs.attention=.8;st.nap=0;st.night=false;closeBookTray();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});"
      "for(const [x,y] of [[100,190],[1560,360],[340,632],[975,700]]){closeBookTray();cv.dispatchEvent(new MouseEvent('click',cl(x,y)));if(document.querySelectorAll('.btray .tbook').length!==4)return 'tapping the book at '+x+','+y+' did not open the book tray';}"
@@ -149,9 +149,23 @@ CASES = [
      "document.querySelector('.tbook[data-id=fairy]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));if(bookDrag.over!==st.id)return 'book over the monster does not count';"
      "dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));__step(.2);if(!READ.has(st.id))return 'not reading';if(st.needs.attention>.3)return 'reading did not keep it company: '+st.needs.attention+' log '+logs().join('|');"
      "if(!CAP.log.concat(CAP.q).concat(CAP.cur||[]).some(l=>l.t==='Pip listens to the fairy tale, very still.'))return 'no reading caption';"
-     "__step(9);if(READ.has(st.id))return 'still reading after 9 s';"
+     "if(spotKey()!=='chair')return 'did not hop into the armchair: '+spotKey();const sb=document.querySelector('.story');if(!sb||sb.querySelector('.sl').textContent!==STORIES.fairy[0])return 'no story book with page one';"
+     "for(let i=0;i<3;i++){sb.click();__step(.3);}if(document.querySelector('.story'))return 'story still open after the last page';if(READ.has(st.id))return 'still reading';if(spotKey()!=='free'||Math.abs(st.free.x-1250)>1)return 'did not go back to its spot: '+spotKey()+' '+JSON.stringify(st.free);"
      "cv.dispatchEvent(new MouseEvent('click',cl(100,190)));document.querySelector('.tbook[data-id=almanac]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));"
      "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.3);if(READ.size)return 'a book dropped on the floor got read';return !bookDrag.item||'still holding';})()"),
+    # a kid offered big monster food says why it can't (Jackie, Nov 7)
+    ("kid_food_caption", "s.stage=4;s.species=2;s.name='Pip Wobblebean';s.perch=null;s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;", "", 0.1,
+     "(()=>{capClear();CAP.seen.clear();openSnacks();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;"
+     "document.querySelector('.ttreat[data-id=pizza]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));"
+     "return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Pip is too little for big monster food.')||'caption: '+CAP.q.map(c=>c.t).join('|');})()"),
+    # the cat answers a touch even while he's walking: he stops for a moment (Jackie, Nov 7)
+    ("cat_touch_walking", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.catTrust=.5;", "", 0.1,
+     "(()=>{catGo(catPick());if(cat.state!=='walk')return 'cat not walking: '+cat.state;const x0=cat.x;petCat();if(!(cat.pauseT>0))return 'no pause';__step(.5);if(Math.abs(cat.x-x0)>1)return 'he kept walking';__step(1);return cat.state!=='walk'||Math.abs(cat.x-x0)>0||cat.path.length===0||'he never went on';})()"),
+    # any monster can be dragged into the armchair, dropped anywhere over it (Jackie, Nov 7)
+    ("chair_drop_kid", "s.stage=4;s.species=2;s.perch=null;s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;", "", 0.1,
+     "(()=>{cat.x=-999;const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),c=[b.x+b.w/2,b.y+b.h*.6];"
+     "cv.dispatchEvent(new PointerEvent('pointerdown',cl(...c)));cv.dispatchEvent(new PointerEvent('pointermove',cl(c[0]-200,c[1]-100)));cv.dispatchEvent(new PointerEvent('pointermove',cl(600,520)));dispatchEvent(new PointerEvent('pointerup',cl(600,520)));__step(.3);"
+     "return spotKey()==='chair'||'kid not in the armchair: '+spotKey();})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

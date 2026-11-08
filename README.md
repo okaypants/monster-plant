@@ -42,7 +42,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/names_shots.py` lets a sprout open its eyes on a phone held sideways, checks the hello caption has its new name, and shows the journal page with the name on top; saved to `tests/screenshots/names/`. The smoke test also checks old saves get named, two plants never share a first name, and renaming in the journal (16 letters, cleared = back to the old name).
 
-`python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen, and pictures the reading and the book hopping home; saved to `tests/screenshots/reading/`.
+`python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen; it hops into the armchair and the story opens facing us; it turns the pages to the end, the book hops home and the monster goes back; then a kid reads the grimoire in the armchair; saved to `tests/screenshots/reading/`.
 
 `python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
 
@@ -105,6 +105,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
+  | `stories.js` | What's inside the four special books (six short pages each; edit freely) |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
   | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon |
   | `input.js` | Taps, drags, and what each spot in the room does |

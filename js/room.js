@@ -24,7 +24,7 @@ const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','
 SPOT.chair={x:628,y:SURFACE.chair,name:'in the armchair'};
 // WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big
 // for those and stand on the floor. Teens and adults can also sit in the armchair awake (any age can nap there). st.perch = the furniture, or null = the floor.
-const PERCH={kid:['crate','books'],teen:['crate','books','chair'],adult:['chair']};
+const PERCH={kid:['crate','books','chair'],teen:['crate','books','chair'],adult:['chair']}; // Nov 7: kids may sit in the armchair too
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}

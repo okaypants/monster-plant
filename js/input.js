@@ -18,7 +18,7 @@ addEventListener('pointerup',e=>{if(!drag.down)return;drag.down=false;if(!drag.o
  const gp=stageGroup();
  const from=drag.from||{};
  if(gp!=='seed'){const was=spotKey(); // kids, teens, adults: onto a free piece of furniture their age fits on, if you drop it near one; anywhere else, the floor
-  const near=PERCH[ageName()].filter(k=>(k===was||!perchTaken(k))&&spaceFree(k)).map(k=>[k,Math.hypot(mx-SPOT[k].x,my-SPOT[k].y)]).sort((a,b)=>a[1]-b[1])[0];
+  const near=PERCH[ageName()].filter(k=>(k===was||!perchTaken(k))&&spaceFree(k)).map(k=>[k,k==='chair'&&inR(mx,my,CHAIR)?0:Math.hypot(mx-SPOT[k].x,my-SPOT[k].y)]).sort((a,b)=>a[1]-b[1])[0]; // anywhere over the armchair (back or seat) counts as the chair
   if(near&&near[1]<130){st.perch=near[0];st.walk=null;pickChair();sfx(near[0]===was?'tick':'pop');save();return;}
   const h=plantBoxRaw().h,spot=nearestClearFloor(mx,my+h*.15); // the clear bit of floor nearest where you let go
   if(spot){st.perch=null;st.free=spot;sfx('pop');}else{st.perch=from.perch;if(from.free)st.free=from.free;sfx('tick');} // nowhere clear: back where you picked it up

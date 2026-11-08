@@ -2,7 +2,8 @@
 
 Run from the repository root:  python tests/reading_shots.py
 On an iPhone 13 held sideways with a real mouse: tap a book on the bookcase, the tray of four books; drag the fairy tales
-onto an adult; the open book in front of it with a page turning and little hearts rising; the book hopping home.
+onto an adult; it hops into the armchair and the story opens facing us; tap to turn; after the last page the book hops home
+and the monster goes back. Then a kid reading the grimoire in the armchair.
 Pictures go to tests/screenshots/reading/. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -44,15 +45,29 @@ async def main():
         await pg.evaluate("()=>__step(.05)")
         await pg.screenshot(path=os.path.join(OUT, "2_dragging_over_monster.png"))
         await pg.mouse.up()
-        await pg.evaluate("()=>__step(1.1)")
-        if not await pg.evaluate("()=>READ.has(st.id)"):
-            fails.append("it isn't reading")
-        await pg.screenshot(path=os.path.join(OUT, "3_reading.png"))
-        await pg.evaluate("()=>__step(.3)")  # a page standing up mid-turn
+        await pg.evaluate("()=>__step(2.5)")  # it hops in; the cat, if he was napping there, walks off
+        r = await pg.evaluate("()=>({chair:spotKey(),story:!!document.querySelector('.story'),text:document.querySelector('.story .sl')?.textContent})")
+        if r["chair"] != "chair" or not r["story"]:
+            fails.append(f"reading: {r}")
+        await pg.wait_for_timeout(300)
+        await pg.screenshot(path=os.path.join(OUT, "3_story_in_the_chair.png"))
+        sb = await pg.locator(".story").bounding_box()
+        await pg.mouse.click(sb["x"] + sb["width"] * .7, sb["y"] + sb["height"] / 2)
+        await pg.evaluate("()=>__step(.1)")
         await pg.screenshot(path=os.path.join(OUT, "4_page_turning.png"))
-        await pg.evaluate("()=>__step(6.95)")
+        await pg.evaluate("()=>__step(.2)")
+        await pg.screenshot(path=os.path.join(OUT, "5_next_pages.png"))
+        for _ in range(2):
+            await pg.mouse.click(sb["x"] + sb["width"] * .7, sb["y"] + sb["height"] / 2)
+            await pg.evaluate("()=>__step(.3)")
         await pg.evaluate("()=>__step(.25)")
-        await pg.screenshot(path=os.path.join(OUT, "5_book_hops_home.png"))
+        await pg.screenshot(path=os.path.join(OUT, "6_book_hops_home.png"))
+        if await pg.evaluate("()=>!!document.querySelector('.story')||spotKey()==='chair'"):
+            fails.append("after the last page the book should close and the monster go back")
+        # a kid in the armchair with the grimoire
+        await pg.evaluate("()=>{st.stage=4;st.perch='books';st.nge=-.5;__step(1);capClear();startReading(st.id,BOOKS[3]);__step(.4);}")
+        await pg.wait_for_timeout(300)
+        await pg.screenshot(path=os.path.join(OUT, "7_kid_reading_grimoire.png"))
         fails += errs
         await b.close()
     for f in fails:
