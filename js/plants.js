@@ -412,11 +412,11 @@ let bugLand=null; // when it landed this visit (for the glide in); null = alread
 function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend||allRaw().some(q=>q.goDest))return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.timer||0)>=GROW_FOR[6]/2));}
 function bugNoteBox(){const p=P,w=BUG_PLANE[0].length*p,h=BUG_PLANE.length*p;return {x:BUG_NOTE.x-w/2,y:BUG_NOTE.y-h,w,h};}
 function bugOnSill(){return st.bugNote==='sill'&&bugReady();}
-function bugNoteHit(x,y){if(!bugOnSill())return false;const b=bugNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}
+function bugNoteHit(x,y){if(!bugOnSill()&&!letterOnSill())return false;const b=bugNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}
 function drawPlane(x0,y0){const p=P,X=Math.round(x0/p)*p,Y=Math.round(y0/p)*p; // on whole pixels
  g.fillStyle=C.out;BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='0')g.fillRect(X+i*p-2,Y+j*p-2,p+4,p+4);}));
  BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));return [X,Y];}
-function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==null?1:clamp((T-bugLand)/1.6,0,1);drawPlane(b.x-(1-u)*140,b.y-(1-u)*170);} // glides down from the window once
+function drawBugNote(){if(!bugOnSill()&&!letterOnSill())return;const b=bugNoteBox(),u=bugLand==null?1:clamp((T-bugLand)/1.6,0,1);drawPlane(b.x-(1-u)*140,b.y-(1-u)*170);} // glides down from the window once
 // the seed leaving for Slowmallow's: the airplane lifts off the sill and flies up out of the room, a little seed riding on it
 function drawSeedFly(){if(seedFly==null)return;const u=(T-seedFly)/2.4;if(u>=1){seedFly=null;return;}const b=bugNoteBox(),[X,Y]=drawPlane(b.x+u*760,b.y-u*640),p=P;
  g.fillStyle=C.out;g.fillRect(X+3*p-2,Y-p-2,2*p+4,2*p+4);g.fillStyle=C.brick;g.fillRect(X+3*p,Y-p,2*p,2*p);}
@@ -433,7 +433,8 @@ function bugArrive(){ // the next morning
    Yes: it sets off the next morning (moveOut). Not yet, or tapping away: no penalty of any kind, it asks again in 3 days. */
 const GO_CHANCE=.2,GO_CALM=20,GO_AGAIN=3,GO_SETTLED=3;let goCalm=0; // chance per day; seconds of calm first; days until it asks again; days an adult settles in before it can ask
 function goContent(){return st.stage>=8&&st.nap<=0&&!want('thirst')&&!want('attention')&&st.lightState==='ok'&&!st.float&&!(st.grump>0)&&!READ.has(st.id)&&(st.adultDay==null||st.day>=st.adultDay+GO_SETTLED)&&(st.goAgain||0)<=st.day;}
-function goWaiting(){return !!bubble||bugOnSill()||!!(st.bugJournal&&bugReady())||!!st.bugSend||!!st.seedOffer||!!st.seedKeep||allRaw().some(q=>q.goDest);}
+function goWaiting(){return goBusy()||letterWaiting();}
+function goBusy(){return !!bubble||bugOnSill()||!!(st.bugJournal&&bugReady())||!!st.bugSend||!!st.seedOffer||!!st.seedKeep||allRaw().some(q=>q.goDest);}
 function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  if(st.night||T<8||goWaiting()||(st.goNext||0)>st.day||st.goRolled===st.day||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){goCalm=0;return;}
  const ids=[];eachPlant(()=>{if(goContent())ids.push(st.id);});if(!ids.length){goCalm=0;return;}goCalm+=dt;if(goCalm<GO_CALM)return;goCalm=0;st.goRolled=st.day;
@@ -450,9 +451,37 @@ function goMorning(){const L=allRaw().filter(q=>q.goDest&&st.day>=q.goDay),go=L.
  if(st.seedKeep)seedKeptArrives();
  if(plantCount()===0)setTimeout(()=>{if(plantCount()===0&&!document.querySelector('.screen'))startFlow();},GO_EMPTY_MS);}
 const GO_EMPTY_MS=10000;
+/* A LETTER FROM SLOWMALLOW (Jackie, Nov 8): now and then Slowmallow's paper airplane lands on the windowsill asking to have an adult come stay.
+   A little more often for one with an evil lean. One roll a day, after things have been calm; never while another note, ask or seed choice is waiting.
+   Tap it for the letter (the words are in names.js). Yes: it sets off the next morning (moveOut). Not yet: the letter waits in the journal,
+   where you can accept it anytime, and lands again in 3 days, exactly like the seedling note. No penalty. Tapping away leaves it on the sill.
+   Portrait: a code-drawn stamp for now. When the real art exists: add slowmallow_portrait.png to the game folder and set LETTER_ART.ready to true. */
+const LETTER_CHANCE=.08,LETTER_EVIL=.2,LETTER_CALM=20,LETTER_DEST='Staying with Slowmallow',LETTER_ART={file:'slowmallow_portrait.png',ready:false};let letterCalm=0,letterEl=null,letterFrom=false;
+function letterQ(){const q=allRaw().find(x=>x.id===st.letterFor);return q&&q.stage>=8&&!q.goDest?q:null;}
+function letterOnSill(){return st.letterNote==='sill'&&!!letterQ();}
+function letterInJournal(){return !!st.letterJournal&&!!letterQ();}
+function letterWaiting(){return letterOnSill()||letterInJournal();}
+function letterClear(){st.letterNote=null;st.letterFor=null;st.letterJournal=0;st.letterAgain=0;}
+function letterLand(id){st.letterNote='sill';st.letterFor=id;bugLand=T;st.goNext=st.day+GO_AGAIN;sfx('page');save();}
+function letterTick(dt){if((st.letterNote||st.letterJournal)&&!letterQ()){letterClear();return;}if(letterOnSill()||!quiet())return;
+ if(st.night||T<8||goBusy()||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){letterCalm=0;return;}
+ if(st.letterJournal){if(st.day>=(st.letterAgain||0))letterLand(st.letterFor);return;} // you said not yet: it lands again in 3 days
+ if((st.goNext||0)>st.day||st.letterRolled===st.day)return;
+ const A=allRaw().filter(q=>q.stage>=8&&!q.goDest&&(q.adultDay==null||st.day>=q.adultDay+GO_SETTLED));if(!A.length){letterCalm=0;return;}letterCalm+=dt;if(letterCalm<LETTER_CALM)return;letterCalm=0;st.letterRolled=st.day;
+ for(const q of A.slice().sort((a,b)=>a.ge-b.ge))if(Math.random()<(q.ge<-.33?LETTER_EVIL:LETTER_CHANCE)){letterLand(q.id);return;}save();}
+function closeLetter(){if(letterEl){letterEl.remove();letterEl=null;}}
+function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jletter'),r=wrap.getBoundingClientRect(),k=Math.min(r.width*.9/p.offsetWidth,r.height*.9/p.offsetHeight,1.5);p.style.transform=`translate(-50%,-50%) scale(${k})`;}
+addEventListener('resize',()=>setTimeout(fitLetter,50));
+function letterStamp(){const f=jdiv('jlstamp',[pix('sloth',4)]);if(LETTER_ART.ready){const im=new Image();im.onload=()=>{f.innerHTML='';f.appendChild(imgPic(im,64,72));};im.src=LETTER_ART.file;}return f;} // real art later: same slot, same size
+function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('page');letterFrom=!!fromJournal;
+ const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter jstep');p.appendChild(letterStamp());p.appendChild(jdiv('jltext',[],slowmallowLetter(N)));p.appendChild(jdiv('jlsign',[],'Slowmallow'));
+ const row=jdiv('jlbtns');for(const[k,t,f]of[['y','Yes',letterYes],['n','Not yet',letterNotYet]]){const b=document.createElement('button');b.type='button';b.dataset.k=k;b.textContent=t;b.addEventListener('click',e=>{e.stopPropagation();f();});row.appendChild(b);}
+ p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();}
+function letterYes(){const q=letterQ();closeLetter();if(!q)return;const id=q.id;letterClear();goYes(id,LETTER_DEST);if(jEl)renderJournal();}
+function letterNotYet(){closeLetter();if(letterFrom)return;st.letterNote=null;st.letterJournal=1;st.letterAgain=st.day+GO_AGAIN;st.goNext=Math.max(st.goNext||0,st.day+GO_AGAIN);sfx('page');save();} // from the journal it simply stays there
 function seedTick(dt){
  offerTick();
- if(st.bugNote==='sill'||st.night||T<8||!quiet()||!bugReady())return; // not in the first moments after you arrive: the welcome comes first
+ if(st.bugNote==='sill'||letterWaiting()||st.night||T<8||!quiet()||!bugReady())return; // not in the first moments after you arrive: the welcome comes first
  if((st.giftAskDay||0)>st.day)return; // you said not yet: ask again in a few days
  st.bugNote='sill';bugLand=T;sfx('page');save();}
 const BREED_CHANCE=.25,BREED_FRIENDS=.4; // two content adults may make a seed: rolled once a day at most, and never in the 3 days after any ask

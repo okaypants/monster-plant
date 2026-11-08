@@ -69,6 +69,10 @@ CASES = [
     ("go_ask_yes_then_gone", "s.stage=8;s.species=3;s.giftSeed=1;s.day=9;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';s.ge=s.nge=0;s.lc=s.nlc=-.6;",
      "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);capClear();goAsk(1);window.__ask=bubble.textContent;document.querySelector('.bubble [data-k=y]').click();window.__said=st.goDest;st.night=true;wake();", 0.2,
      "(/Tuffet .+\\. May Tuffet go\\?/.test(__ask)&&plantCount()===1&&st.archive.length===1&&st.archive[0].name==='Tuffet Mossmuffin'&&st.archive[0].dest===__said&&!!__said&&CAP.log.some(l=>l.t==='Tuffet will set off in the morning.'))||'go: ask '+__ask+', plants '+plantCount()+', archive '+JSON.stringify(st.archive)"),
+    # Slowmallow's letter (Jackie, Nov 8): it lands on the sill, the letter names the monster, yes means staying with Slowmallow the next morning
+    ("letter_yes_then_gone", "s.stage=8;s.species=3;s.giftSeed=1;s.day=9;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';",
+     "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);letterLand(1);window.__sill=letterOnSill();openLetter();window.__l=document.querySelector('.jletter').textContent;document.querySelector('.jletter [data-k=y]').click();st.night=true;wake();", 0.2,
+     "(__sill&&/Dear friend, .*Tuffet.*May Tuffet come\\?/.test(__l)&&plantCount()===1&&st.archive[0].name==='Tuffet Mossmuffin'&&st.archive[0].dest==='Staying with Slowmallow'&&!letterWaiting())||'letter: '+__l+', plants '+plantCount()+', archive '+JSON.stringify(st.archive)"),
     # the second plant is opt-in (Jackie, Nov 4): Slowmallow's note lands on the sill when the only plant is a late teen; tap it to be asked
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;",
      "window.__yes=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes
