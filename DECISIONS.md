@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Archive drawer holds the journals of monsters who moved out (Nov 8)
+
+- Tapping the desk drawers opens the Archive over the room in 3 stepped frames, in the same keepsake-book style as the journal: one closed, code-drawn book per monster that has moved out, with its name and a tiny portrait. Two rows of three a page; more than a spread gets arrows, never a scrollbar. Close by tapping outside or the x. Journals keep opening from the name tags; there's no other journal button.
+- Tap a book: that monster's journal as a read-only keepsake (no renaming, no charm toggling), frozen as of the day it left, relationship pages included, with a last page "Out in the world": where it went, the day it moved out in words, and an empty spot for postcards. The x goes back to the drawer. Its portrait is drawn healthy and awake, so nobody is thirsty forever.
+- Empty drawer: Jackie's note, one paragraph per string in `ARCHIVE_NOTE` at the top of the archive section of js/journal.js (Jackie will rewrite it). The placeholder caption is `moveOutCaption` beside it.
+- `moveOut(plant, destination)` is the one way out of the room: it saves a frozen copy in `st.archive`, removes the monster from the room, its name tag and its ribbon, and captions it. The cat's page stays live. Old saves load with an empty archive. Nothing in play calls it yet; for now only debug's **Move out** button does, on the test copy.
+- **Two changes from the brief, because Jackie had already decided otherwise:** the brief said to reword the brass JOURNAL placard, but Jackie removed that plate on Nov 8 ("I hate that placement") for the SNACKS-style ARCHIVE sign on the top drawer, so the sign stays. And the brief's note and example said Doctor Bug and "the lab"; Doctor Bug is Slowmallow now and is meant to be less sciencey, so the note says Slowmallow and "anyone staying over".
+- `python3 tests/archive_shots.py` checks save/load, the empty note, moving out, the keepsake, debug on the test copy and iPhone fit; pictures in `tests/screenshots/archive/`.
+
 ### A seedling on the windowsill hides behind closed curtains (Nov 8)
 
 - Jackie: hide the seedling behind the curtains when they close. The closed curtains hang down past the ledge, so the fabric sweeps over the pot as they close (the same whole-pixel sweep as the curtains themselves), and once they're shut the seedling isn't drawn at all. Opening them shows it again.

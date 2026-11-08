@@ -90,6 +90,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid grows into a teen right on time, a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) grows at half speed, one age at most.
 
+`python3 tests/archive_shots.py` checks the ARCHIVE drawer: the empty note, `moveOut()`, save and reload, one closed book per monster, the read-only keepsake with its "Out in the world" page, debug's Move out staying on the test copy, and iPhone fit; saved to `tests/screenshots/archive/`.
+
 `python3 tests/curtain_seedling_shots.py` checks that a seedling on the windowsill hides behind the curtains when they close (fabric sweeps over it, then it is not drawn or tappable; tapping there works the curtains) and comes back when they open; saved to `tests/screenshots/curtain_seedling/`.
 
 `python tests/seedling_shots.py` pictures the seedling pot at every stage and frame on the windowsill and the desk, checks it rests on the surface line and the frames line up, and compares its size to baby_01; saved to `tests/screenshots/seedlings/` (committed).
