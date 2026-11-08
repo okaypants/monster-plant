@@ -13,7 +13,7 @@ const QUIRK_SHORT={moon:'Moon bouncer',bonk:'Bonks things',wander:'Wanders',tidy
  catfriend:'Cat buddy',share:'Shares joy',boo:'Spooky',dark:'Dark tastes',sweet:'Sweet tooth'};
 const NAP_SPOTS=['bed','rug','chair','sill','crate','books','byplant'];
 const RIB_COLORS=[C.coral,C.lav,C.blue,C.g2];
-let jPage=null,jEl=null;
+let jPage=null,jEl=null,jSub=0; // jSub: which spread of that animal (0 = its main pages, then one per relationship)
 // pages that only show up once they have something in them (later: freed plants, postcards, Doctor Bug's notes)
 function worldItems(){return [];}
 
@@ -35,6 +35,7 @@ const ICONS={
  crate:['yyyyyyy','y.y.y.y','yy.y.yy','y.y.y.y','yyyyyyy'],
  books:['.vvvvv.','kkkkkkk','.GGGGG.'],
  byplant:['..g..g.','.ggg.gg','..ggg..','...g...','.ppppp.','..ppp..'],
+ left:['...k','..kk','.kkk','kkkk','.kkk','..kk','...k'],right:['k...','kk..','kkk.','kkkk','kkk.','kk..','k...'],
  plane:BUG_PLANE.map(r=>r.replace(/1/g,'i').replace(/2/g,'s').replace(/0/g,'.'))};
 function pix(name,px=4,flip=false){const m=ICONS[name],h=m.length,w=m[0].length,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;c.className='jpix';
  const x=c.getContext('2d'),cell=(i,j)=>{const ch=m[j]&&m[j][i];return ch&&ch!=='.';},at=i=>flip?w-1-i:i;
@@ -77,17 +78,23 @@ function openJournal(page){sfx('page');closeJournal();
  jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
  ui.appendChild(jEl);fitBook();renderJournal();}
 addEventListener('resize',()=>setTimeout(fitBook,50));
-function jTurn(to){if(to===jPage||!jEl)return;sfx('page');const bk=jEl.querySelector('.jcover');
+function jTurn(to,sub=0){if((to===jPage&&sub===jSub)||!jEl)return;sfx('page');const bk=jEl.querySelector('.jcover');
  const f=document.createElement('div');f.className='jturn jturn1 jstep';bk.appendChild(f); // frame 1: the right page lifts
  setTimeout(()=>{f.className='jturn jturn2 jstep';},90); // frame 2: it lands on the left
- setTimeout(()=>{f.remove();jPage=to;renderJournal();},180);}
-function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage))jPage=P[0];
+ setTimeout(()=>{f.remove();jPage=to;jSub=sub;renderJournal();},180);}
+function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage)){jPage=P[0];jSub=0;}
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
  P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.background=RIB_COLORS[i%RIB_COLORS.length];r.style.left=(430+i*52)+'px';
   r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';
- if(jPage==='cat')catPages(L,R);else if(jPage==='world')worldPages(L,R);else withPlant(+jPage.slice(1),()=>plantPages(L,R));
+ const subs=relSpreads(jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
+ if(sp.k==='main'){if(jPage==='cat')catPages(L,R);else if(jPage==='world')worldPages(L,R);else withPlant(+jPage.slice(1),()=>plantPages(L,R));}
+ else relPages(L,R,sp);
+ // little pixel arrows: flip through this animal's spreads (its main pages, then one per relationship)
+ const arrow=(side,to)=>{const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
+  a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});(side==='jprev'?L:R).appendChild(a);};
+ if(jSub>0)arrow('jprev',jSub-1);if(jSub<subs.length-1)arrow('jnext',jSub+1);
  // inside the back cover: which hand carries the carafe (tap to flip)
  const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
  hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
@@ -152,6 +159,40 @@ function catPages(L,R){
  if(naps.length)R.appendChild(jdiv('jgroup',[jlabel('Favorite naps'),jdiv('jicons',naps.map(([k])=>pix(k,5)))]));
  const seen=st.catSeen||{};
  R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(CAT_QUIRKS).map(k=>seen[k]?jdiv('jstamp',[],CAT_QUIRKS[k]):jdiv('jstamp jfaint')))]));}
+
+/* ---------- RELATIONSHIPS (Jackie, Nov 7): each one gets its own spread ----------
+   A monster: it & you, it & the other monster, it & the cat.  The cat: the cat & you, the cat & each monster.
+   Left page: the two of them side by side (a heart, a squiggle or a little hand between) and a fun detail or two.
+   Right page: milestones as stamps that fill in when they happen (faint until then). No numbers. */
+function relSpreads(page){if(page==='world')return [{k:'main'}];const P=allRaw().filter(q=>q.stage>=0);
+ if(page==='cat')return [{k:'main'},{k:'catyou'}].concat(P.map(q=>({k:'catpl',q:q.id})));
+ const id=+page.slice(1);return [{k:'main'},{k:'you',q:id}].concat(P.filter(o=>o.id!==id).map(o=>({k:'pair',q:id,o:o.id}))).concat([{k:'cat',q:id}]);}
+const raw=id=>allRaw().find(q=>q.id===id);
+const msOf=(q,k)=>!!(q&&q.ms&&q.ms[k]);
+const readMost=q=>{const c=q.cnt||{};let best=null,bn=0;for(const b of BOOKS){const n=c['read_'+b.id]||0;if(n>bn){bn=n;best=b.id;}}return best;};
+function relMilestones(sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q.id]||{}):{},cs=st.catSeen||{},tr=catTrust(),c=(q&&q.cnt)||{};
+ if(sp.k==='you')return [['First hello',q.stage>=4],['First pet',(c.pets||0)>0],['First treat',(c.treats||0)>0],['First story',!!readMost(q)],['A favorite treat',!!q.fav],['Right on time',msOf(q,'routine')],['A title',(q.titles||[]).length>0],['All grown up',q.stage>=8]];
+ if(sp.k==='pair')return [['Met',q.stage>=4&&o.stage>=4],['First bicker',msOf(q,'bicker:'+o.id)],['Made up',msOf(q,'madeup:'+o.id)],['Cheered up',msOf(q,'share:'+o.id)||msOf(o,'share:'+q.id)],['Friends',rel(q,o)==='friends'||msOf(q,'friends:'+o.id)]];
+ if(sp.k==='cat'||sp.k==='catpl')return [['First sniff hello',(cb.bond||0)+(cb.hmph||0)>0||!!(q.quirks||{}).catfriend],['Napped nearby',(cb.bond||0)>0],['Cat buddy',!!(q.quirks||{}).catfriend],['Spooky face',(cb.hmph||0)>0]];
+ return [['First sniff',!!cs.sniff],['First purr',!!cs.purr],['Lets you pet',tr>=TRUST_SHY],['Naps by your monster',tr>=TRUST_FOND],['Adores you',tr>=TRUST_BFF]];}
+function catPic(w,h){const f=CATF.loaf1&&ok(CATF.loaf1)?CATF.loaf1:CATF.sit1;return imgPic(f,w,h);}
+function relPages(L,R,sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q.id]||{}):{},paws=1+[TRUST_SHY,TRUST_FOND,TRUST_BFF].filter(t=>catTrust()>=t).length;
+ const nm=x=>firstName(x)||NAMES[x.species],you=()=>jdiv('jyou',[pix('hand',6,!!st.leftHand)]);
+ let title,a,b,mark,details=[];
+ if(sp.k==='you'){title=nm(q)+' & you';a=plantPortrait(q.id,118,130);b=you();mark=pix('heart',5);
+  if(q.fav)details.push(jdiv('jgroup',[jlabel('Favorite treat'),jdiv('jicons',[imgPic(TREAT_IMG[q.fav],40,40)])]));
+  const rb=readMost(q);if(rb)details.push(jdiv('jgroup',[jlabel('Favorite story'),jdiv('jicons',[bookPix(rb,4)])]));}
+ else if(sp.k==='pair'){const r=rel(q,o);title=nm(q)+' & '+nm(o);a=plantPortrait(q.id,118,130);b=plantPortrait(o.id,118,130);mark=r==='friends'?pix('heart',5):r==='bicker'?pix('squiggle',5):null;
+  details.push(jdiv('jdetail',[],r==='friends'?'Best friends':r==='bicker'?'Bicker, then make up':'Getting to know each other'));}
+ else if(sp.k==='cat'||sp.k==='catpl'){const m=catMark(q.id);title=sp.k==='cat'?nm(q)+' & '+catName():catName()+' & '+nm(q);a=sp.k==='cat'?plantPortrait(q.id,118,130):catPic(118,92);b=sp.k==='cat'?catPic(118,92):plantPortrait(q.id,118,130);mark=m?pix(m,5):null;
+  details.push(jdiv('jdetail',[],m==='heart'?'Naps close by':m==='squiggle'?'Keeps an eye on each other':'Still sniffing around'));}
+ else{title=catName()+' & you';a=catPic(118,92);b=you();mark=pix('heart',5);
+  details.push(jdiv('jdetail',[],['Still shy','Lets you pet','Fond of you','Adores you'][paws-1]));details.push(jdiv('jpaws',Array.from({length:paws},()=>pix('paw',4))));
+  const nap=Object.entries(st.catNaps||{}).filter(([k,n])=>n>0&&NAP_SPOTS.includes(k)).sort((x,y)=>y[1]-x[1])[0];if(nap)details.push(jdiv('jgroup',[jlabel('Favorite nap'),jdiv('jicons',[pix(nap[0],5)])]));}
+ L.appendChild(jdiv('jname',[],title));
+ L.appendChild(jdiv('jpair',[jdiv('jpairpic',[a]),mark?jdiv('jpairmark',[mark]):jdiv('jpairmark'),jdiv('jpairpic',[b])]));
+ L.appendChild(jdiv('jdetails',details)); // the fun details, side by side
+ R.appendChild(jdiv('jgroup',[jlabel('Milestones'),jdiv('jstamps jmiles',relMilestones(sp).map(([t,done])=>done?jdiv('jstamp',[],t):jdiv('jstamp jfaint',[],t)))]));}
 
 /* ---------- out in the world (hidden until it has something) ---------- */
 function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(const it of worldItems())R.appendChild(jdiv('jgroup',[jlabel(it.label||'')]));}

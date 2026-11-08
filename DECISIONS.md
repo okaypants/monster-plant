@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Every relationship gets its own spread in the journal (Nov 7)
+
+- Jackie: in each animal's journal, each relationship should get its own page with fun details and milestones, simple and very nice.
+- After an animal's main spread, little pixel arrows at the bottom corners flip to one spread per relationship (same 2-frame page turn): a monster has "Pip & you", "Pip & Mortie" (the other monster) and "Pip & Tofu"; the cat has "Tofu & you" and "Tofu & Pip" for each monster.
+- **Left page:** the two side by side (your tiny hand for you, the cat's picture for the cat) with a heart or a squiggle between, and a fun detail: favorite treat and favorite story (the book read most) for you; "Best friends" / "Bicker, then make up" / "Getting to know each other" between monsters; "Naps close by" / "Keeps an eye on each other" / "Still sniffing around" with the cat; the cat's trust words, paws and favorite nap for the cat & you.
+- **Right page:** milestones as stamps that fill in (faint until then). You: first hello, first pet, first treat, first story, a favorite treat, right on time, a title, all grown up. Two monsters: met, first bicker, made up, cheered up, friends. A monster & the cat: first sniff hello, napped nearby, cat buddy, spooky face. The cat & you: first sniff, first purr, lets you pet, naps by your monster, adores you.
+- Most milestones come from what the save already knows, so old games fill in right away; the new ones (bicker, made up, friends, cheered up, right on time) are remembered from now on with the day they happened (`ms` on each monster). The carafe hand moved to the right page's bottom left to make room for the arrows.
+
 ### Tap a book and the story zooms open (Nov 7)
 
 - Jackie: touching a book should open it right away instead of dragging. Tap a book in the tray and the story zooms open from it in three quick steps (small, bigger, full; no smooth scaling). You're the reader: the monster you're tending listens (or the other one if yours is asleep), cozy in the armchair with its eyes closed. Dragging a book onto a particular monster still works.
