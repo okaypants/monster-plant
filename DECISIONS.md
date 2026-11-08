@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Seeing their nature: quirks happen on screen (Nov 7)
+
+- Jackie: the game notes monster behavior but we never see it. Now the quirks are things you watch, not just captions:
+  - **Moon bouncer** (new): a really chaotic monster (lawful-chaotic -0.6 or wilder) on the floor sometimes floats up and bounces slowly around the room in moon gravity (a "boing" each landing, drifting side to side, turning at the room's edges), and keeps going until you drag it back down to earth. At bedtime it lands and stays. Caption: "Penny floats off in moon gravity! Drag Penny back down to earth." It's a quirk stamp in the journal.
+  - **Bonks things:** it hops over toward the thing it bonks, then back, and the thing bounces as it lands.
+  - **Spooky face:** a shark grin at the cat, with a hop toward the cat.
+  - **Tidy:** a quick, neat little shuffle in place.
+- All moves are whole steps of 5 room units (one art pixel). `python tests/nature_shots.py` pictures them.
+
 ### No genders; the cat's page shows how the cat feels about you and each monster (Nov 7)
 
 - **No genders** (Jackie): no he/him/his or she/her in anything the game says. The cat's lines use the cat's name ("Tofu lets you give pets now.", "Tofu is still shy. Let Tofu nap."), the fairy tale's moss sprite is "the sprite", and the debug drawer says "the cat".

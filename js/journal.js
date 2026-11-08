@@ -9,7 +9,7 @@
    is still in the save; the numbers live in the debug drawer. */
 const DRAWERS={x:1062,y:560,w:118,h:180};
 const JB={w:760,h:400,rib:46}; // the book's design size; scaled to fit the room
-const QUIRK_SHORT={bonk:'Bonks things',wander:'Wanders',tidy:'Tidy',usual:'Its usual',novel:'New treats',
+const QUIRK_SHORT={moon:'Moon bouncer',bonk:'Bonks things',wander:'Wanders',tidy:'Tidy',usual:'Its usual',novel:'New treats',
  catfriend:'Cat buddy',share:'Shares joy',boo:'Spooky',dark:'Dark tastes',sweet:'Sweet tooth'};
 const NAP_SPOTS=['bed','rug','chair','sill','crate','books','byplant'];
 const RIB_COLORS=[C.coral,C.lav,C.blue,C.g2];
