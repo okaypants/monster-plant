@@ -31,7 +31,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){held.tool=null;closeBubble()
 cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;return;}if(!st.started||st.stage<0)return;const [x,y]=toGame(e);closeBubble();sfx('tick');
  if(!held.tool&&!onPlantPx(x,y)&&bugNoteHit(x,y)){bugAsk();return;} // Slowmallow's note on the windowsill
  if(!held.tool&&!onPlantPx(x,y)&&catHit(x,y)){petCat();return;}
- if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openJournal();return;}
+ if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openArchive();return;} // the drawers hold the archive of past monsters (Jackie, Nov 8); the journal opens from a name tag
  if(!held.tool&&!st.night&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks();return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
  if(st.night){ // night: lights and curtains still work; wake only on purpose
