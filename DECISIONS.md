@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tap a book and the story zooms open (Nov 7)
+
+- Jackie: touching a book should open it right away instead of dragging. Tap a book in the tray and the story zooms open from it in three quick steps (small, bigger, full; no smooth scaling). You're the reader: the monster you're tending listens (or the other one if yours is asleep), cozy in the armchair with its eyes closed. Dragging a book onto a particular monster still works.
+
 ### Seeing their nature: quirks happen on screen (Nov 7)
 
 - Jackie: the game notes monster behavior but we never see it. Now the quirks are things you watch, not just captions:

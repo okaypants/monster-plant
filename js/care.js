@@ -146,14 +146,17 @@ function closeBookTray(){if(btrayEl){btrayEl.remove();btrayEl=null;}}
 cv.addEventListener('pointerdown',()=>{if(!bookDrag.item)closeBookTray();});
 addEventListener('resize',()=>setTimeout(placeBookTray,50));
 function bookPos(e){const [x,y]=toGame(e);bookDrag.x=x+(rightHand()?-30:30)/S;bookDrag.y=y-46/S;}
-function grabBook(bk,e){bookDrag.item=bk;bookPos(e);bookOver();bookDrag.trayT=performance.now();sfx('page');
+function grabBook(bk,e){bookDrag.item=bk;bookDrag.sx=e.clientX;bookDrag.sy=e.clientY;bookDrag.btn=e.currentTarget&&e.currentTarget.getBoundingClientRect?e.currentTarget.getBoundingClientRect():null;bookDrag.moved=false;bookPos(e);bookOver();bookDrag.trayT=performance.now();sfx('page');
  addEventListener('pointermove',bookMove);addEventListener('pointerup',bookUp);addEventListener('pointercancel',bookUp);}
-function bookMove(e){if(!bookDrag.item)return;bookPos(e);bookOver();}
+function bookMove(e){if(!bookDrag.item)return;if(Math.hypot(e.clientX-bookDrag.sx,e.clientY-bookDrag.sy)>10)bookDrag.moved=true;bookPos(e);bookOver();}
 function canRead(){return st.stage>=4&&st.nap<=0&&!st.night;}
+// who listens when you just tap a book: the monster you're tending, else the other one if it's awake
+function listener(){let L=null;if(canRead())L=st.id;else eachPlant(()=>{if(L==null&&canRead())L=st.id;});return L;}
 function bookOver(){let best=null,by=-1;const x=bookDrag.x,y=bookDrag.y;eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),m=40+b.w*.12;
   if(x>=b.x-m&&x<=b.x+b.w+m&&y>=b.y-m&&y<=baseY()+m*.5&&baseY()>by){by=baseY();best=canRead()?st.id:null;}});bookDrag.over=best;}
 function bookUp(){removeEventListener('pointermove',bookMove);removeEventListener('pointerup',bookUp);removeEventListener('pointercancel',bookUp);
- const bk=bookDrag.item,id=bookDrag.over;bookDrag.item=null;bookDrag.over=null;bookDrag.trayT=performance.now();if(!bk)return;
+ const bk=bookDrag.item,id=bookDrag.over,tap=!bookDrag.moved,from=bookDrag.btn;bookDrag.item=null;bookDrag.over=null;bookDrag.trayT=performance.now();if(!bk)return;
+ if(tap){const L=listener();if(L==null){tell('Nobody is awake to listen right now.',{kind:'info'});return;}const i=(st.others||[]).findIndex(q=>q.id===L);if(i>=0){swapIn(i);ACT=st.id;}closeBookTray();startReading(L,bk,from);return;} // a tap: you read it to the monster you're tending
  if(id==null){sfx('tick');return;} // back to the tray
  const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you read to becomes the one you're tending
  closeBookTray();startReading(id,bk);}
@@ -162,14 +165,18 @@ function bookUp(){removeEventListener('pointermove',bookMove);removeEventListene
    Tap the book to turn the page (a 2-frame flip); after the last page the book closes, hops back to the shelf, and the monster
    goes back to where it was. Tap the room to close it early. */
 let storyEl=null;
-function startReading(id,bk){closeStory(true);
+function startReading(id,bk,from){closeStory(true);
  withPlant(id,()=>{held.tool='book';held.item=bk;useTool();let from=null;
   if(spotKey()!=='chair'&&!perchTaken('chair')&&spaceFree('chair')){from={perch:st.perch,free:st.free&&{...st.free}};st.perch='chair';st.walk=null;pickChair();sfx('pop');}
   READ.set(id,{bk,from,page:0});st.listen=2;});
  storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
  storyEl.innerHTML='<div class="scover jstep"><div class="spage jstep sl"></div><div class="spage jstep sr"></div></div>';
  storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();turnStory();});
- ui.appendChild(storyEl);placeStory();showStory();}
+ ui.appendChild(storyEl);placeStory();showStory();if(from)zoomStory(from);}
+// it zooms open from the book you tapped: three quick steps (small, bigger, full), no smooth scaling
+function zoomStory(r){const el=storyEl,b=el.getBoundingClientRect(),dx=r.left+r.width/2-(b.left+b.width/2),dy=r.top+r.height/2-(b.top+b.height/2);
+ const step=s=>{if(el===storyEl)el.style.transform=`translate(${Math.round(dx*(1-s))}px,${Math.round(dy*(1-s))}px) scale(${s})`;};step(.3);setTimeout(()=>step(.65),80);
+ setTimeout(()=>{if(el===storyEl)el.style.transform='';},160);}
 function placeStory(){if(!storyEl)return;const X=900,Y=470,w=640,h=320; // the right half of the room, clear of the armchair
  Object.assign(storyEl.style,{left:Math.round(X*S)+'px',top:Math.round(Y*S)+'px',width:Math.round(w*S)+'px',height:Math.round(h*S)+'px'});}
 addEventListener('resize',()=>setTimeout(placeStory,50));
