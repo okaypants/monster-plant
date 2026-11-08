@@ -5,9 +5,9 @@
 const STORIES={
  fairy:[
   'Once, a tiny moss sprite lived inside a teacup.',
-  'Every morning she polished the moon’s reflection in her tea.',
+  'Every morning the sprite polished the moon’s reflection in the tea.',
   'One day a lost bee bumped into the cup, very dizzy.',
-  'The sprite gave the bee her softest petal to rest on.',
+  'The sprite gave the bee the softest petal to rest on.',
   'The bee hummed a thank-you so warm the tea turned to honey.',
   'And from then on, every cup in the land tasted a little sweeter.'],
  almanac:[
