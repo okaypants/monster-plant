@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No genders; the cat's page shows how the cat feels about you and each monster (Nov 7)
+
+- **No genders** (Jackie): no he/him/his or she/her in anything the game says. The cat's lines use the cat's name ("Tofu lets you give pets now.", "Tofu is still shy. Let Tofu nap."), the fairy tale's moss sprite is "the sprite", and the debug drawer says "the cat".
+
+- Jackie asked for a place to see Tofu's relationship with her and with the monsters. It's the cat's journal page (the paw ribbon), not a separate menu, and stays wordless with no numbers (the journal's rules).
+- **You:** a tiny hand next to the cat's trust paw prints (1-4).
+- **Friends:** a tiny portrait of each monster with a heart (the cat naps curled up by it) or a little squiggle (it makes spooky faces at him more than he naps by it); nothing until something has happened between them. Counted from what actually happens in the room (new save field `catBond`).
+- The numbers (naps by each monster / spooky faces, nap spots) are in the debug drawer's Cat section, under Trust.
+
 ### Story time in the armchair; kids in the armchair; the cat always answers (Nov 7)
 
 - **Reading, take two** (Jackie: the book should open toward us, small enough to see the monster cozy in the chair, and she wants to see the story). A monster given a book hops into the armchair (if nobody's there; otherwise it reads where it is) and a small open book faces us on the right half of the room with the story on its pages, two at a time. Tap the book to turn the page (a 2-frame flip); after the last page it closes, hops back to the shelf, and the monster goes back to where it was. Tap the room to close it early. The in-room open book and rising symbols are gone.

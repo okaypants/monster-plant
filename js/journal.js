@@ -145,7 +145,9 @@ function catPages(L,R){
  L.appendChild(catNameTag()); // his name (tap to rename)
  const f=CATF.loaf1&&ok(CATF.loaf1)?CATF.loaf1:CATF.sit1;
  L.appendChild(jdiv('jportrait',[imgPic(f,220,170)]));
- L.appendChild(jdiv('jpaws',Array.from({length:paws},()=>pix('paw',5))));
+ L.appendChild(jdiv('jpaws',[pix('hand',4,!!st.leftHand)].concat(Array.from({length:paws},()=>pix('paw',5))))); // you: how much he trusts you
+ const pals=allRaw().filter(q=>q.stage>=0).map(q=>({q,m:catMark(q.id)})).filter(o=>o.m); // each monster: a heart if he naps by it, a squiggle if it spooks him
+ if(pals.length)R.appendChild(jdiv('jgroup',[jlabel('Friends'),jdiv('jicons',pals.flatMap(o=>[jdiv('jpal',[plantPortrait(o.q.id,44,48)]),pix(o.m,4)]))]));
  const naps=Object.entries(st.catNaps||{}).filter(([k,n])=>n>0&&NAP_SPOTS.includes(k)).sort((a,b)=>b[1]-a[1]).slice(0,3);
  if(naps.length)R.appendChild(jdiv('jgroup',[jlabel('Favorite naps'),jdiv('jicons',naps.map(([k])=>pix(k,5)))]));
  const seen=st.catSeen||{};

@@ -104,10 +104,11 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
 
  group(body,'Cat',true,b=>{
   slider(b,'Trust',0,1,.01,()=>catTrust(),v=>{st.catTrust=v;},v=>trustName(v)+' '+(+v).toFixed(2));
+  b.appendChild(el('div','status',(()=>'With each monster (naps by it / spooky faces): '+(allRaw().filter(q=>q.stage>=0).map(q=>{const r=(st.catBond||{})[q.id]||{bond:0,hmph:0};return esc(q.name||NAMES[q.species])+' '+r.bond+' / '+r.hmph;}).join(' · ')||'none')+'<br>Naps: '+(Object.entries(st.catNaps||{}).map(([k,n])=>esc(k)+' '+n).join(' · ')||'none'))())); // the numbers behind his journal page
   seg(b,'State',[['sleep','sleeping'],['wake','awake'],['walk','walking'],['pet','petted'],['settle','settling'],['annoyed','had enough']],()=>cat.state==='loafwake'?'settle':cat.state,v=>dbgCatState(v));
-  toggle(b,'Walk there (off = put him there)',()=>dbgWalk,v=>{dbgWalk=v;});
+  toggle(b,'Walk there (off = put the cat there)',()=>dbgWalk,v=>{dbgWalk=v;});
   btns(b,['bed','rug','chair','sill','crate','books','byplant'].map(k=>[{bed:'Cat bed',rug:'Rug',chair:'Armchair',sill:'Windowsill',crate:'Milk crate',books:'Book stack',byplant:'By the plant'}[k],()=>dbgCatTo(k)]));
-  pick(b,'Pose (holds it)',[['','(none: he does his thing)']].concat(Object.keys(CATF).filter(n=>!n.startsWith('scratcher')).map(n=>[n,n])),()=>cat.force||'',v=>{cat.force=v||null;cat.hold=!!v;});});
+  pick(b,'Pose (holds it)',[['','(none: the cat does its own thing)']].concat(Object.keys(CATF).filter(n=>!n.startsWith('scratcher')).map(n=>[n,n])),()=>cat.force||'',v=>{cat.force=v||null;cat.hold=!!v;});});
 
  group(body,'Effects and reactions',false,b=>{
   for(const[n,t]of[['hearts','Hearts'],['sparkles','Sparkles (listening)'],['sweat','Sweat'],['zzz','Zzz'],['flames','Little flame'],['puddle','Puddle'],['drops','Water drops']]){
