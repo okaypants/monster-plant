@@ -13,11 +13,7 @@ function tuckIn(){if(st.stage>=4)setTimeout(()=>earnPot('moon'),2600);closeBubbl
 function wake(){eachPlant(()=>{if(st.stage>=0)wakePlant();});wakeRoom();}
 function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n]).length/3;
  st.lc=clamp(st.lc+(Object.keys(st.met).length>=2?.05:-.05),-1,1);const ng=st.nge||0,nl=st.nlc||0;st.ge=ng+(st.ge-ng)*.9;st.lc=nl+(st.lc-nl)*.9; // drifts back toward its NATURE, not toward bland
- if(st.stage<4){st.stage=4;st.timer=0;}
- else{st.credit+=.3+.7*q;st.lastNight=q>=.99?'well':''; // wakeRoom names who slept well // only a perfect day gets a line: nothing that feels like being gradedif(q>=.99&&bump('perfectDays')>=5)earnPot('gold');
-   if(st.credit>=1&&st.stage<8){st.stage=NEXT[st.stage]??8;st.credit=0;if(st.stage===6)earnPot('drip');if(st.stage===8)earnPot('speckle');
-   const gid=st.id,gw=who(),gt=st.stage===6?gw+' is already a teen with big ideas and a bigger pot.':st.stage===8?gw+' is all grown up and ready to eat everything!':gw+' is a '+STAGES[st.stage]+' now, in a bigger pot.';
-   setTimeout(()=>{sfx('chime');sfx('boing');tell(gt,{kind:'important',who:gid});},600);}}
+ st.lastNight=st.stage>=4&&q>=.99?'well':''; // wakeRoom names who slept well; growing happens on the clock now (Tamagotchi time), not here
  st.met={};st.lightGood=0;st.needs.thirst=Math.max(st.needs.thirst,.65);
  // COMMITMENT (Jackie): a charm stays while you keep giving its treat; after KEEP days without it, the charm drifts away (it comes back faster: 3 treats)
  const KEEP=3,FADE_WORD={solar:'sunny',peat:'moss',cotton:'sugar',pizza:'pizza',plants:'flower',fossil:'dino',blood:'blood'};st.tLast=st.tLast||{};const faded=[];
@@ -71,7 +67,7 @@ function greetNow(){if(st.stage<4)return '';const p=pers(),b=plantBox(),W=who();
  if(p.l==='chaotic'){st.tidyT=1.2;return W+' does a happy wiggle.';}
  if(p.l==='lawful'){st.bonkT=.5;st.bonkDir=1;return W+' gives you a small, proper nod.';}
  plantBoing(b.x+b.w/2);return W+' perks up.';}
-function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=awayStory(away);
+function welcomeBack(){const away=LOADED_LAST_SEEN?(Date.now()-LOADED_LAST_SEEN)/60000:0;const bits=catchUp(away*60).concat(awayStory(away)); // grown first, so the rest sees the new ages
  setTimeout(()=>{if(st.stage>=4){const b=plantBox();plantBoing(b.x+b.w/2);sfx('giggle');}
   const A=allNames(true),t=!A.text||away<2?'Welcome back!':away<60?'Welcome back! '+A.text+' missed you.':away<1440?'Welcome back! '+A.text+(A.plural?' are':' is')+' so happy to see you.':'You\'re back! '+A.text+' waited for you.';
   const g=Math.random()<.5?greetNow():'';

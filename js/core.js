@@ -34,6 +34,11 @@ const FX_OFF=new Set();let PAUSED=false;function gameSpeed(){return PAUSED?0:st.
 function fx(n,x,y,rate=3,ph=0,sc=FX_SCALE){if(FX_OFF.has(n))return;const f=FX[n][(Math.floor(T*rate+ph))%2];if(!ok(f))return;const w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);g.drawImage(f,Math.round(x-w/2),Math.round(y-h/2),w,h);}
 /* ---------- palette ---------- */
 const C={out:'#341839',wine:'#833343',plum:'#490d40',brick:'#b8594d',rust:'#d37259',coral:'#eb905d',peach:'#f5ab6b',sand:'#fbbe7b',cream:'#fcd6a5',ivory:'#fdebc9',lav:'#8d8bb5',vio:'#6c61a4',navy:'#1f3f8f',g1:'#4f7a16',g2:'#70a71c',g3:'#b8d725',g4:'#f2ec6a',fl1:'#d33d3b',fl2:'#f88c26',fl3:'#fcc93f',blue:'#3c9ab4'};
+/* TAMAGOTCHI TIME (Jackie, Nov 8): monsters grow on the real clock, not at Good morning. Seconds in each age at normal speed
+   (2x), full rate while cared for: seed 5 min, sprout 1 hour, kid 1 day, teen 2 days. Missing care (thirsty, lonely, wrong light)
+   only slows it to half, the same as being away, so keeping the game open never does worse than closing it. Away: half rate,
+   at most one age per absence. Nothing ever dies or gets sick. */
+const GROW_FOR={0:300,1:3600,4:86400,6:172800},GROW_SLOW=.5;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const rnd=(a,b)=>a+Math.random()*(b-a);
 const P=6; // comic-mark pixel size
 /* ---------- ui helpers ---------- */

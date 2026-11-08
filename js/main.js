@@ -10,7 +10,11 @@ function update(dt){const sp=gameSpeed();T+=dt;catUpdate(PAUSED?0:dt);
  ACT=st.id;pickChair();
  eachPlant(()=>{if(st.stage<0)return;plantUpdate(dt);const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y,box:plantBoxRaw()};}); // box: so nobody is dropped or walks on top of it
  namesTick();seedTick(dt);breedTick(dt);socialTick(dt);}
-function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;try{update(dt);}catch(e){showErr('update: '+e.message);}try{draw();}catch(e){showErr('draw: '+e.message);}requestAnimationFrame(loop);}
+// a tab left in the background stops the loop: when it comes back after a while, that time counts like being away
+let lastWall=Date.now();
+function awayInTab(){const w=Date.now(),gap=(w-lastWall)/1000;lastWall=w;if(gap<60||!st.started||plantCount()===0)return;
+ const said=catchUp(gap);said.forEach((x,i)=>tell((i===0?'While you were away: ':'')+x,{kind:'important',key:'tabaway'+i}));if(said.length)save();}
+function loop(now){try{awayInTab();}catch(e){showErr('away: '+e.message);}const dt=Math.min(.1,(now-last)/1000);last=now;try{update(dt);}catch(e){showErr('update: '+e.message);}try{draw();}catch(e){showErr('draw: '+e.message);}requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 setInterval(()=>{if(st.started)save();if(dbgOpen)dbgSync();},500);
 startFlow();

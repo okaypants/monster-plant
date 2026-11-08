@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tamagotchi time: monsters grow on the real clock (Nov 8)
+
+- Jackie: growth and progress felt too slow; go Tamagotchi time, but nobody should be sad about losing a monster, being away a while shouldn't be a big deal, and players who keep the game open shouldn't be burdened.
+- **Pace** (normal speed, cared for): a seed sprouts in about 5 minutes, a sprout opens its eyes after about an hour, a kid becomes a teen after about a day, a teen grows up after about 2 more days. Growing goes on at night too. `GROW_FOR` in js/core.js.
+- **Missing care slows, never stops or hurts.** Thirsty, lonely or in the wrong light, a monster grows at half speed until you help. (Planned as "pauses", but thirst comes back every few minutes, so pausing would make a game left open grow slower than one that's closed. Half speed matches being away, so keeping the game open never does worse.)
+- **Away: half speed, at most one age per absence**, so nobody misses a whole age. A background tab counts as away too. Needs only drift to "a little thirsty". Nothing ever dies, gets sick or runs off. Welcome back says what grew ("While you were away: Pip grew into a teen!"), and you see it in the room.
+- **Good morning no longer ages anyone.** Bedtime stays as a cozy thing to do; the morning line still names who slept well. Old saves: a night's growing credit counts as at least half the current age already grown.
+- `python3 tests/growth_test.py` checks it: on-time growth with a caption, half speed when thirsty, no aging at Good morning, 3 hours away = half speed and one age at most, 5 days away = still one age, a 2-hour background tab counts as away.
+
 ### An ARCHIVE sign on the desk drawers replaces the JOURNAL plate (Nov 8)
 
 - Jackie: the JOURNAL plate was so small it went unnoticed, and that spot was disliked. It's gone; instead a sign reading ARCHIVE in the same style as the SNACKS sign (cream label, gold rim, dark outline, clipped corners, wine letters) sits on the top drawer, in front of its knob. Drawn in code on whole 2-unit pixels with 4x6 pixel letters, lit like the drawer wood (darker at night, warm under the desk lamp), moves only with the drawers' idle wiggle, and tapping it opens the journal like the rest of the drawers.
@@ -204,7 +213,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - The old cat has 13 frames. Moments that only the new cat had a drawing for borrow the nearest old one: sitting for annoyed, back turned and grooming; his blink-sit for the slow blink; his normal pet frames instead of belly-up. Walking left mirrors his walk, as he used to. His old pet frames have the back-scratcher drawn in, so the separate one is off.
 - Everything he does stays the same: naps, trust, the had-enough walk-off, never hidden behind a plant.
 
-### Growing up again: the right light counts, and any tap at night says good morning (Nov 4)
+### Growing up again: the right light counts, and any tap at night says good morning (Nov 4; growing replaced by Tamagotchi time Nov 8)
 
 - Plants were growing about half as fast as they should. "The right light" only counted for the day when you moved a plant out of bad light, so a plant that sat happily in its right light all day never got it, and topped out at 2 of the 3 needs (about an age every two nights). Now it counts once the plant has spent a little while in its right light that day (LIGHT_OK_FOR = 30 game s, about 15 s at normal speed).
 - The goodnight caption says "Click anywhere to sleep until morning", but only the plant or the armchair worked. Now any tap at night (except the lamps and the curtains, which still switch) offers Good morning. Plants only age at Good morning, so a day has to be put to bed (Say goodnight in the journal) for them to grow.
@@ -340,7 +349,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 **Ages and sizes (Nov 3)**
 - Five ages: seed → sprout → kid → teen → adult. Teens 45% of room height, adults 60%. Squat drawings aren't blown up. Face kit 0.54× original (eyes made smaller twice).
-- Grows one age per night when well cared for.
+- Grows one age per night when well cared for. (Replaced Nov 8 by Tamagotchi time: growing on the real clock.)
 
 **Treats and charms (Nov 2–3)**
 - Food is optional; needs are water, light and company. Treats pop out of the SNACKS cabinet into your hand; tap the plant: it eats, then **pops** (boing + hearts). Too full = it refuses; a burp and a one-minute nap.
