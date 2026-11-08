@@ -1,7 +1,7 @@
-"""The JOURNAL placard on the desk drawers.
+"""The ARCHIVE sign on the desk drawers (SNACKS style, over the top knob).
 
 Run from the repository root:  python tests/placard_shots.py
-Pictures the brass nameplate at day, golden hour and night (desk lamp on and off), room and close-up, to
+Pictures the sign at day, golden hour and night (desk lamp on and off), room and close-up, to
 tests/screenshots/placard/. Checks it gets darker at night like the wood around it, stays warm under the desk lamp, and
 that tapping it opens the journal. Exit code 1 if a check fails.
 """
@@ -32,7 +32,7 @@ async def main():
         lum = {}
         for name, js in STATES:
             await pg.evaluate("()=>{" + js + "capClear();__step(2);}")
-            px = await pg.evaluate("()=>Array.from(g.getImageData(PLACARD.x+6,PLACARD.y+16,1,1).data)")  # a brass pixel
+            px = await pg.evaluate("()=>Array.from(g.getImageData(PLACARD.x+3,PLACARD.y+13,1,1).data)")  # a gold rim pixel
             lum[name] = px
             await pg.screenshot(path=os.path.join(OUT, f"{name}_room.png"))
             await pg.screenshot(path=os.path.join(OUT, f"{name}_closeup.png"), clip={"x": 1060, "y": 560, "width": 140, "height": 180})
@@ -43,10 +43,10 @@ async def main():
         if not on[0] > on[2] * 1.5:
             fails.append(f"not warm under the desk lamp: {on}")
         await pg.evaluate("()=>{st.night=false;st.dayT=.3;__step(1);}")
-        await pg.mouse.click(1127, 710)
+        await pg.mouse.click(1127, 582)
         await pg.evaluate("()=>__step(.3)")
         if not await pg.evaluate("()=>!!document.querySelector('.jbook')"):
-            fails.append("tapping the placard didn't open the journal")
+            fails.append("tapping the sign didn't open the journal")
         fails += errs
         await b.close()
     for f in fails:
