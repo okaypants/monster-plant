@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No "Plant another seed" on the start screen (Nov 7)
+
+- Jackie: a second monster should only come through Doctor Bug. The start screen now offers just Continue and Start over; the second-seed code behind that button is gone. Doctor Bug's paper-airplane note (late teen, one plant, your yes) is the only way a second plant arrives.
+
 ### Every relationship gets its own spread in the journal (Nov 7)
 
 - Jackie: in each animal's journal, each relationship should get its own page with fun details and milestones, simple and very nice.
