@@ -30,8 +30,8 @@ function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50&&st.id===drag.id){
 const MOON_G=140,R5=v=>Math.round(v/5)*5;
 function quirkOff(){let x=0,y=0;if(st.float)y-=R5(st.float.h);
  if(st.bonkT>0){const t=st.bonkT,d=st.bonkDir||1;if(t>.38){x+=d*20;y-=15;}else if(t>.25){x+=d*30;y-=5;}else if(t>.12)x+=d*15;}
- if(st.tidyT>0)x+=Math.floor(st.tidyT*8)%2?5:-5;return [x,y];}
-function quirkMotion(dt){if(st.bonkT>0)st.bonkT-=dt;if(st.tidyT>0)st.tidyT-=dt;if(st.spookT>0)st.spookT-=dt;
+ if(st.tidyT>0)x+=Math.floor(st.tidyT*8)%2?5:-5;if(st.nodT>0)y+=st.nodT>.15?5:0;return [x,y];} // nod: dips one art pixel, then back
+function quirkMotion(dt){if(st.bonkT>0)st.bonkT-=dt;if(st.nodT>0)st.nodT-=dt;if(st.tidyT>0)st.tidyT-=dt;if(st.spookT>0)st.spookT-=dt;
  const f=st.float;if(!f)return;if(drag.on&&st.id===drag.id){st.float=null;return;} // grabbed: back to earth
  f.vh-=MOON_G*dt;f.h+=f.vh*dt;
  if(f.h<=0){f.h=0;if(st.night||st.nap>0){st.float=null;return;} // bedtime: it lands and stays
@@ -281,19 +281,37 @@ function whose(){const w=who();return w+(w.endsWith('s')?'\'':'\'s');} // Pip's,
 // every monster in the room, named: "Pip", "Pip and Mortie"; plural = more than one
 function allNames(cap){const P=allRaw().filter(q=>q.stage>=0),n=P.map((q,i)=>nameOf(q,cap&&i===0));return {text:n.length>1?n.slice(0,-1).join(', ')+' and '+n[n.length-1]:n[0]||'',plural:n.length>1};}
 function plantsWord(){const P=allRaw().filter(q=>q.stage>=4);return P.length===1&&firstName(P[0])?firstName(P[0]):P.length>1?'your plants':'your plant';}
+/* VOICE (Jackie, Nov 7): every line says something you can SEE right then. Each line is 'text|action': the action happens the moment
+   the line is picked (nod, wiggle, grin, hop toward someone, hearts, drops on the floor...). Lines with nothing visible behind them were cut.
+   Personality lines are unchanged in spirit: sweet, mischievous, tidy, wiggly, easygoing. */
 const VOICE={
- pet:{good:['{W} leans into your hand.','{W} hums a tiny thank-you.'],evil:['{W} pretends not to like it. It likes it.','{W} lets you, this once.'],
-  lawful:['{W} holds perfectly still to be petted.','{W} straightens up afterwards, very proper.'],chaotic:['{W} nibbles your finger, gently.','{W} wiggles every leaf at once.'],'':['{W} wiggles happily.']},
- water:{good:['{W} sighs happily.','{W} glows a little.'],evil:['{W} slurps it down loudly. Mwah-ha-hah.','{W} drinks like a tiny villain.'],
-  lawful:['{W} drinks exactly half, then the other half.'],chaotic:['{W} splashes some on the floor on purpose.','{W} blows bubbles in it.'],'':['{W} goes gulp gulp.']},
+ pet:{good:['{W} leans into your hand.|lean','{W} hums a tiny thank-you, eyes closed.|hum'],evil:['{W} pretends not to like it. It likes it.|grin','{W} lets you, this once.|nod'],
+  lawful:['{W} gives a small, proper nod.|nod','{W} straightens up afterwards, very proper.|stretch'],chaotic:['{W} wiggles every leaf at once.|wiggle','{W} bounces right back for more.|bounce'],'':['{W} wiggles happily.|wiggle']},
+ water:{good:['{W} sighs happily, eyes closed.|hum','{W} sends you a little heart.|hearts'],evil:['{W} slurps it down. Mwah-ha-hah.|grin','{W} drinks like a tiny villain.|grin'],
+  lawful:['{W} drinks exactly half, then the other half.|sips'],chaotic:['{W} splashes some on the floor on purpose.|splash'],'':['{W} goes gulp gulp.|sips']},
  greet:{good:'{W} sends you a little heart.',evil:'{W} gives you a sly little grin.',lawful:'{W} gives you a small, proper nod.',chaotic:'{W} does a happy wiggle.','':'{W} perks up.'}, /* Nov 7: greetings are things the monster does right then (greetNow in start.js) */
- idle:{good:['{W} is humming to itself.','{W} is watching the cat sleep, fondly.'],evil:['{W} is plotting something small.','{W} is doing a tiny evil laugh.'],
-  lawful:['{W} is tidying its leaves into neat rows.','{W} is counting the books on the shelf.'],chaotic:['{W} is trying to lick the window.','{W} is doing a little dance for no reason.'],'':['{W} is just vibing.']}};
-// voice lines come out of a shuffle bag: never one of the last 15 picked for that event, never one shown in the last 10 minutes ('' = nothing fresh, stay quiet)
+ idle:{good:['{W} hums to itself, eyes closed.|hum','{W} leans over to watch '+'{C}'+' sleep.|watchcat'],evil:['{W} grins at nothing in particular.|grin','{W} is plotting something. Look at that grin.|grin'],
+  lawful:['{W} tidies its leaves into neat rows.|tidy','{W} gives the room a proper nod.|nod'],chaotic:['{W} does a little dance for no reason.|dance','{W} hops in place, just because.|bounce'],'':['{W} bops along to nothing.|bounce']}};
+// the actions behind the lines (whole-pixel moves and the game's own marks), run on the monster the line is about
+function voiceAct(a){const b=plantBox(),cx=b.x+b.w/2;
+ if(a==='lean'){st.bonkT=.5;st.bonkDir=mx<cx?-1:1;}
+ else if(a==='hum'){st.listen=2;sfx('hum');}
+ else if(a==='grin'){st.spookT=1.6;}
+ else if(a==='nod'){st.nodT=.45;}
+ else if(a==='stretch'){st.nodT=.45;st.bonkT=0;}
+ else if(a==='wiggle'||a==='tidy'){st.tidyT=1.2;}
+ else if(a==='dance'){st.tidyT=1.6;setTimeout(()=>plantBoing(cx),400);}
+ else if(a==='bounce'){plantBoing(cx);}
+ else if(a==='hearts'){burst('heart',cx,b.y-20,3);}
+ else if(a==='sips'){st.nodT=.3;setTimeout(()=>{st.nodT=.3;sfx('slurp');},500);sfx('slurp');}
+ else if(a==='splash'){burst('drop',cx-50,baseY()-40,10);setTimeout(()=>burst('drop',cx+50,baseY()-40,10),350);} // two splashes, easy to see
+ else if(a==='watchcat'){st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;st.listen=1.2;}}
+function voiceOK(t){const a=t.split('|')[1];if(a==='watchcat')return cat.state==='sleep'&&cat.x>-500;return true;} // only true lines: no watching a cat that isn't asleep
 const LINE_HIST={};
-function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W}',who());
- const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=ev==='greet'?(st.greetSeen=st.greetSeen||[]):(LINE_HIST[ev]=LINE_HIST[ev]||[]),fresh=all.filter(t=>!h.includes(t)&&!capRecent(t)); // greetings are remembered in the save, so they don't repeat visit after visit
- if(!fresh.length){if(ev==='greet')h.splice(0,h.length-1);return '';}const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>(ev==='greet'?5:15))h.shift();return t;}
+function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W}',who()).replace('{C}',catName());
+ const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).filter(voiceOK).map(fmt))],h=ev==='greet'?(st.greetSeen=st.greetSeen||[]):(LINE_HIST[ev]=LINE_HIST[ev]||[]),fresh=all.filter(t=>!h.includes(t)&&!capRecent(t)); // greetings are remembered in the save, so they don't repeat visit after visit
+ if(!fresh.length){if(ev==='greet')h.splice(0,h.length-1);return '';}const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>(ev==='greet'?5:15))h.shift();
+ const [text,act]=t.split('|');if(act)voiceAct(act);return text;} // the action happens as the line is said
 function notice(q,desc){st.quirks=st.quirks||{};if(!st.quirks[q]){st.quirks[q]=desc;return true;}return false;}
 const QUIRK_TXT={moon:'Chaotic: sometimes bounces around in moon gravity until you bring it back down.',bonk:'Chaotic: bonks things around the room for fun.',wander:'Chaotic: wanders to a new spot when it gets bored.',tidy:'Lawful: tidies its leaves; loves being watered at its usual time.',
  usual:'Lawful: loves its usual treat.',novel:'Chaotic: loves a treat it hasn\'t had lately.',catfriend:'Good: keeps the cat company (the cat warms up to you faster).',share:'Good: shares its happiness with the other plants.',
@@ -310,7 +328,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night||st.float)return;st.qui
   st.bonkT=.5;st.bonkDir=best&&best.x+best.w/2<cx?-1:1;if(best){const bb=best;setTimeout(()=>fidgetPoke(bb.x+bb.w/2,bb.y+bb.h/2),250);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
  else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
- else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
+ else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;t=who()+' tidies its leaves into neat rows.';}
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping '+catName()+' company. '+catName()+' seems to like it.';}
  else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);msSet(st,'share:'+o.id);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
  else if(q==='boo'){st.spookT=1.8;st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;sfx('hmm');catFeel(st.id,'hmph');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
@@ -359,11 +377,12 @@ function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.queryS
  sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,o.text+'<br><button data-k="y">Yes, plant it</button><button data-k="n">Not now</button>',
   {y:()=>{closeBubble();o.yes();},n:()=>{closeBubble();o.no&&o.no();}});
  o.no&&o.no(); /* asked: unless you say yes, it's a no (tapping away included) */}
-/* DOCTOR BUG'S NOTE (Jackie, Nov 4): the second plant is opt-in. When your only plant is a late teen (at least one night as a teen,
-   or already grown), a paper-airplane note from Doctor Bug glides onto the windowsill once and sits there (nothing loops or blinks).
+/* SLOWMALLOW'S NOTE (Jackie, Nov 4; renamed Nov 7): Slowmallow is a cute sloth who only talks by paper airplane and
+   helps monsters become good members of society (no doctor, no professor).  the second plant is opt-in. When your only plant is a late teen (at least one night as a teen,
+   or already grown), a paper-airplane note from Slowmallow glides onto the windowsill once and sits there (nothing loops or blinks).
    Tap it: "I have a seedling in need of a home. May I send it over?"
      Yes, please -> the seed arrives the next morning in the little pot (wakeRoom in start.js).
-     Not yet     -> the note goes into the journal (accept it there anytime); Doctor Bug asks again in a few days.
+     Not yet     -> the note goes into the journal (accept it there anytime); Slowmallow asks again in a few days.
    Never with two plants. This is the only way a second plant comes (Jackie, Nov 7: no "Plant another seed" on the start screen). */
 const BUG_NOTE={x:452,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
 const BUG_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
@@ -378,13 +397,13 @@ function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==nu
  g.fillStyle=C.out;BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='0')g.fillRect(X+i*p-2,Y+j*p-2,p+4,p+4);}));
  BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));}
 function bugAsk(){sfx('page');const b=bugNoteBox();
- openBubble(b.x-140,b.y-190,BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
-function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Doctor Bug will send the seedling over in the morning.',{kind:'info'});save();}
+ openBubble(b.x-140,b.y-190,'<b>From Slowmallow</b><br>'+BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
+function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Slowmallow will send the seedling over in the morning.',{kind:'info'});save();}
 function bugNotYet(){st.bugNote=null;st.bugJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
 function bugArrive(){ // the next morning
  if(!st.bugSend||st.day<st.bugSend)return;st.bugSend=0;if(plantCount()>=MAX_PLANTS)return;
  st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
- tell('Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug.',{kind:'important'});save();}
+ tell('Something taps the window and a seed drifts in on a paper airplane note from Slowmallow.',{kind:'important'});save();}
 function seedTick(dt){
  offerTick();
  if(st.bugNote==='sill'||st.night||T<8||!quiet()||!bugReady())return; // not in the first moments after you arrive: the welcome comes first

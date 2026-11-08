@@ -14,7 +14,7 @@ const QUIRK_SHORT={moon:'Moon bouncer',bonk:'Bonks things',wander:'Wanders',tidy
 const NAP_SPOTS=['bed','rug','chair','sill','crate','books','byplant'];
 const RIB_COLORS=[C.coral,C.lav,C.blue,C.g2];
 let jPage=null,jEl=null,jSub=0; // jSub: which spread of that animal (0 = its main pages, then one per relationship)
-// pages that only show up once they have something in them (later: freed plants, postcards, Doctor Bug's notes)
+// pages that only show up once they have something in them (later: freed plants, postcards, Slowmallow's notes)
 function worldItems(){return [];}
 
 /* ---------- tiny pixel icons (drawn in code, room palette, dark outline like the comic marks) ---------- */
@@ -98,8 +98,8 @@ function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage)){
  // inside the back cover: which hand carries the carafe (tap to flip)
  const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
  hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
- // Doctor Bug's note, tucked in until you say yes
- if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Doctor Bug');n.appendChild(pix('plane',3));
+ // Slowmallow's note, tucked in until you say yes
+ if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Slowmallow');n.appendChild(pix('plane',3));
   n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}}
 function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();return;}sfx('page');
  const c=jdiv('jbugask jstep',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div><div class="jbtns"><button type="button" data-k="y">Yes, please</button><button type="button" data-k="n">Not yet</button></div>';

@@ -52,6 +52,22 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "4_bonk_hop.png"))
         fails += errs
         await ctx.close()
+        # chatter lines come with what they say: a splash on the floor, leaning over to watch the cat sleep
+        ctx, pg, errs = await page(p, b, "stage:8,species:7,name:'Zib Noodlewump',ge:0,lc:-.5,nge:0,nlc:-.4,free:{x:1150,y:918},catTrust:.1")
+        t = await pg.evaluate("()=>{capClear();CAP.seen.clear();LINE_HIST.water=[];const t=line('water');tell(t,{kind:'info',who:st.id});__step(.6);return t;}")
+        if "splashes" not in t:
+            fails.append(f"chaotic water line: {t!r}")
+        await pg.wait_for_timeout(600)
+        await pg.screenshot(path=os.path.join(OUT, "5_splash.png"))
+        await pg.evaluate("()=>{st.ge=.6;st.lc=0;capClear();CAP.seen.clear();cat.state='sleep';}")
+        t = await pg.evaluate("()=>{let t='';for(let i=0;i<8&&!/watch/.test(t);i++){LINE_HIST.idle=[];CAP.seen.clear();t=line('idle');}tell(t,{kind:'info',who:st.id});__step(.6);return t;}")
+        if "watch" not in t:
+            fails.append(f"sweet idle line: {t!r}")
+        await pg.evaluate("()=>{st.bonkT=.45;__step(.05);}")
+        await pg.wait_for_timeout(600)
+        await pg.screenshot(path=os.path.join(OUT, "6_watching_the_cat.png"))
+        fails += errs
+        await ctx.close()
         await b.close()
     for f in fails:
         print("FAIL", f)

@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Doctor Bug is now Slowmallow, a sloth; every chatter line is backed by what you see (Nov 7)
+
+- **Slowmallow** (Jackie): no more Doctor Bug, no doctor or professor. The one who sends seedlings is a cute sloth named Slowmallow (Jackie first wrote Slow Marmamallow, then settled on Slowmallow) who only communicates by paper airplane and is helping monsters become good members of society. Every caption, the journal note and the code comments use the new name; the paper-airplane note on the windowsill is the same.
+- **Chatter lines** (follow-up to the welcome-back rule: anything said must be clearly there). Every pet, water and idle line now comes with an action the moment it's said: leaning toward your hand, a sly grin, a proper nod (a one-pixel dip), a wiggle, a bounce, hearts, eyes closed while humming, two little sips, two splashes of drops on the floor, leaning over toward a sleeping cat (only when the cat is asleep). Lines with nothing visible behind them were cut ("counting the books on the shelf", "trying to lick the window", "glows a little", "blows bubbles", "just vibing", "facing a different direction"). The smoke test checks that every line comes with something visible.
+
 ### Welcome back tells what happened, and it's really there (Nov 7)
 
 - Jackie: the opening message should tell what happened and how everyone is, in fun ways that fit each monster's temperament, mood and relationships, with clear evidence; anytime a status or action is announced it must be clearly reflected in the room, not just a concept. (Before, one greeting per personality repeated every start, and lines like "is somehow facing a different direction" had nothing behind them.)

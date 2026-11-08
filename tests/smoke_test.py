@@ -58,13 +58,13 @@ CASES = [
     # name, save (None = brand-new game), js after the start screen, minutes, check (js returning true or a reason)
     ("new_game", None, "", 1,
      "(st.started&&st.stage===4&&st.nge!=null&&!!st.name&&__open[4]===st.name&&__open[0]===.3&&__open[1]===false&&__open[2]===false&&__open[3]==='open'&&__open[5].startsWith('Hello, '+st.name+'! Your little seed')&&CAP.log.some(l=>l.t===st.name+' opens its eyes!'))||'new game: stage '+st.stage+', name '+st.name+', opening '+JSON.stringify(__open)"),
-    # the second plant is opt-in (Jackie, Nov 4): Doctor Bug's note lands on the sill when the only plant is a late teen; tap it to be asked
+    # the second plant is opt-in (Jackie, Nov 4): Slowmallow's note lands on the sill when the only plant is a late teen; tap it to be asked
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;",
      "window.__yes=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes
      "(st.nge!=null&&plantCount()===1&&st.bugSend===st.day+1&&!bugOnSill())||'old save: nature '+st.nge+', plants '+plantCount()+', send day '+st.bugSend"),
     ("doctor_bug_seed_next_morning", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.bugSend=5;",
      "st.night=true;wake();", 1,
-     "(plantCount()===2&&st.giftSeed===1&&!st.bugSend&&CAP.log.some(l=>/paper airplane note from Doctor Bug/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.bugSend"),
+     "(plantCount()===2&&st.giftSeed===1&&!st.bugSend&&CAP.log.some(l=>/paper airplane note from Slowmallow/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.bugSend"),
     ("gift_seed_asks_first", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};", "", 1,
      "(plantCount()===1&&bugOnSill()&&!bubble)||'note: plants '+plantCount()+', on sill '+bugOnSill()+', bubble '+(bubble&&bubble.textContent)"),
     ("gift_seed_not_now", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};",
@@ -198,6 +198,12 @@ CASES = [
      "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/Penny is bouncing around in moon gravity/.test(L))return 'caption: '+L;return !!st.float||'not floating';})()"),
     ("welcome_cat_far_from_spooky", "s.stage=8;s.species=3;s.name='Mortie Gloomsnack';s.ge=-.7;s.nge=-.5;s.lc=0;s.nlc=0;s.free={x:1300,y:918};s.giftSeed=1;s.catTrust=.2;s.lastSeen=Date.now()-3*3600e3;", "", 0.03,
      "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/napping as far from Mortie as possible/.test(L))return 'caption: '+L;return Math.abs(cat.x-1300)>700||'cat not far: '+cat.x;})()"),
+    # every chatter line comes with something you can see right then (Jackie, Nov 7)
+    ("voice_lines_visible", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:900,y:918};s.giftSeed=1;", "", 0.05,
+     "(()=>{cat.state='sleep';const bad=[];for(const [g,l] of [[.6,0],[-.6,0],[0,.6],[0,-.6],[0,0]]){st.ge=g;st.lc=l;for(const ev of ['pet','water','idle'])for(let i=0;i<6;i++){"
+     "Object.assign(st,{bonkT:0,spookT:0,nodT:0,tidyT:0,listen:0});const p0=parts.length,b0=BOING.vy||0,b0x=BOING.vx||0;CAP.seen.clear();LINE_HIST[ev]=[];const t=line(ev);if(!t)continue;"
+     "if(t.includes('|'))bad.push('raw: '+t);const seen=st.bonkT>0||st.spookT>0||st.nodT>0||st.tidyT>0||st.listen>0||parts.length>p0||(BOING.vy||0)!==b0||(BOING.vx||0)!==b0x;if(!seen)bad.push(t);}}"
+     "return !bad.length||'no visible action for: '+[...new Set(bad)].join(' | ');})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

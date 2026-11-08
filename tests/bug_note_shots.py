@@ -1,9 +1,9 @@
-"""Doctor Bug's note: the opt-in second plant.
+"""Slowmallow's note: the opt-in second plant.
 
 Run from the repository root:  python tests/bug_note_shots.py
 A late teen alone in the room: the paper-airplane note lands on the windowsill; tapping it asks "I have a seedling in need
 of a home. May I send it over?"; "Not yet" puts the note in the journal (where "Yes, please" works); the seed arrives the
-next morning with Doctor Bug's caption. Pictures go to tests/screenshots/bug_note/. Exit code 1 if a check fails.
+next morning with Slowmallow's caption. Pictures go to tests/screenshots/bug_note/. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
 from playwright.async_api import async_playwright
@@ -52,9 +52,9 @@ async def main():
         check(await pg.evaluate("()=>st.bugSend===st.day+1&&plantCount()===1"), "yes in the journal: the seed should come next morning, not now")
         await pg.evaluate("()=>{closeJournal();capClear();st.night=true;wake();__step(1);}")
         check(await pg.evaluate("()=>plantCount()===2&&st.stage===0"), "the seed didn't arrive in the morning")
-        await pg.evaluate("()=>{__step(4.5);}")  # the morning line, then Doctor Bug's
+        await pg.evaluate("()=>{__step(4.5);}")  # the morning line, then Slowmallow's
         await pg.wait_for_timeout(700)
-        check(await pg.evaluate("()=>CAP.log.some(l=>l.t==='Something taps the window and a seed drifts in on a paper airplane note from Doctor Bug.')"), "no Doctor Bug caption")
+        check(await pg.evaluate("()=>CAP.log.some(l=>l.t==='Something taps the window and a seed drifts in on a paper airplane note from Slowmallow.')"), "no Slowmallow caption")
         await pg.screenshot(path=os.path.join(OUT, "4_seed_next_morning.png"))
         fails += errs
         await b.close()
