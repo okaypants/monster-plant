@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Welcome back tells what happened, and it's really there (Nov 7)
+
+- Jackie: the opening message should tell what happened and how everyone is, in fun ways that fit each monster's temperament, mood and relationships, with clear evidence; anytime a status or action is announced it must be clearly reflected in the room, not just a concept. (Before, one greeting per personality repeated every start, and lines like "is somehow facing a different direction" had nothing behind them.)
+- The game now makes it happen, then says it. Away 30+ minutes: everyone got a little thirsty (paler); then, from what's true of them: **friends** scoot close together; **bickering** pairs sulk on opposite sides of the room with grumpy faces, then make up with hearts; a **very chaotic** one is bouncing in moon gravity; a **chaotic** one wandered to a new spot ("wandered over by the window"); after 6+ hours one **dozed off** (Zzz). **The cat** curls up next to the monster it naps with most (or a sweet one once fond of you), naps as far as possible from a **spooky** one, or else naps somewhere named.
+- The welcome is a few short captions one after another (the hello, then each thing that happened), not one long one. Friends are placed side by side, never overlapping.
+- The **greeting** is a small thing the monster does right then: a heart (sweet), a sly grin (mischievous), a happy wiggle (wiggly), a proper nod (tidy), a bounce (easygoing), about half the time.
+- Follow-up: the same rule applies to the idle voice lines (e.g. "is counting the books on the shelf"); each will get a visible action or be cut.
+
 ### No "Plant another seed" on the start screen (Nov 7)
 
 - Jackie: a second monster should only come through Doctor Bug. The start screen now offers just Continue and Start over; the second-seed code behind that button is gone. Doctor Bug's paper-airplane note (late teen, one plant, your yes) is the only way a second plant arrives.

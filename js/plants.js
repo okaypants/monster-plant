@@ -286,14 +286,14 @@ const VOICE={
   lawful:['{W} holds perfectly still to be petted.','{W} straightens up afterwards, very proper.'],chaotic:['{W} nibbles your finger, gently.','{W} wiggles every leaf at once.'],'':['{W} wiggles happily.']},
  water:{good:['{W} sighs happily.','{W} glows a little.'],evil:['{W} slurps it down loudly. Mwah-ha-hah.','{W} drinks like a tiny villain.'],
   lawful:['{W} drinks exactly half, then the other half.'],chaotic:['{W} splashes some on the floor on purpose.','{W} blows bubbles in it.'],'':['{W} goes gulp gulp.']},
- greet:{good:'{W} waves every leaf at you.',lawful:'{W} was waiting in exactly the same spot.',chaotic:'{W} is somehow facing a different direction.','':'{W} perks up.'},
+ greet:{good:'{W} sends you a little heart.',evil:'{W} gives you a sly little grin.',lawful:'{W} gives you a small, proper nod.',chaotic:'{W} does a happy wiggle.','':'{W} perks up.'}, /* Nov 7: greetings are things the monster does right then (greetNow in start.js) */
  idle:{good:['{W} is humming to itself.','{W} is watching the cat sleep, fondly.'],evil:['{W} is plotting something small.','{W} is doing a tiny evil laugh.'],
   lawful:['{W} is tidying its leaves into neat rows.','{W} is counting the books on the shelf.'],chaotic:['{W} is trying to lick the window.','{W} is doing a little dance for no reason.'],'':['{W} is just vibing.']}};
 // voice lines come out of a shuffle bag: never one of the last 15 picked for that event, never one shown in the last 10 minutes ('' = nothing fresh, stay quiet)
 const LINE_HIST={};
 function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)keys.push('');const fmt=t=>t.replace('{W}',who());
- const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=LINE_HIST[ev]=LINE_HIST[ev]||[],fresh=all.filter(t=>!h.includes(t)&&!capRecent(t));
- if(!fresh.length)return '';const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>15)h.shift();return t;}
+ const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=ev==='greet'?(st.greetSeen=st.greetSeen||[]):(LINE_HIST[ev]=LINE_HIST[ev]||[]),fresh=all.filter(t=>!h.includes(t)&&!capRecent(t)); // greetings are remembered in the save, so they don't repeat visit after visit
+ if(!fresh.length){if(ev==='greet')h.splice(0,h.length-1);return '';}const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>(ev==='greet'?5:15))h.shift();return t;}
 function notice(q,desc){st.quirks=st.quirks||{};if(!st.quirks[q]){st.quirks[q]=desc;return true;}return false;}
 const QUIRK_TXT={moon:'Chaotic: sometimes bounces around in moon gravity until you bring it back down.',bonk:'Chaotic: bonks things around the room for fun.',wander:'Chaotic: wanders to a new spot when it gets bored.',tidy:'Lawful: tidies its leaves; loves being watered at its usual time.',
  usual:'Lawful: loves its usual treat.',novel:'Chaotic: loves a treat it hasn\'t had lately.',catfriend:'Good: keeps the cat company (the cat warms up to you faster).',share:'Good: shares its happiness with the other plants.',
