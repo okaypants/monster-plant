@@ -3,7 +3,7 @@
 Run from the repository root:  python tests/placard_shots.py
 Pictures the sign at day, golden hour and night (desk lamp on and off), room and close-up, to
 tests/screenshots/placard/. Checks it gets darker at night like the wood around it, stays warm under the desk lamp, and
-that tapping it opens the journal. Exit code 1 if a check fails.
+that tapping it opens the empty archive (with its note), not the journal. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
 from playwright.async_api import async_playwright
@@ -45,8 +45,10 @@ async def main():
         await pg.evaluate("()=>{st.night=false;st.dayT=.3;__step(1);}")
         await pg.mouse.click(1127, 582)
         await pg.evaluate("()=>__step(.3)")
-        if not await pg.evaluate("()=>!!document.querySelector('.jbook')"):
-            fails.append("tapping the sign didn't open the journal")
+        a = await pg.evaluate("()=>({archive:!!document.querySelector('.journal.archive .jbook'),ribbons:document.querySelectorAll('.jrib').length,note:(document.querySelector('.jarchnote')||{}).textContent||''})")
+        if not (a["archive"] and a["ribbons"] == 0 and a["note"] == await pg.evaluate("()=>ARCHIVE_NOTE")):
+            fails.append(f"tapping the drawers should open the empty archive with its note, not the journal: {a}")
+        await pg.screenshot(path=os.path.join(OUT, "archive_empty.png"))
         fails += errs
         await b.close()
     for f in fails:

@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The desk drawers are the Archive, not the journal (Nov 8)
+
+- Jackie: the drawers shouldn't hold the current journal; they're the archive of past inhabitants, and with none yet they hold nothing, just a note about what will go in there once something happens.
+- Tapping the drawers (or the ARCHIVE sign) opens a book titled Archive with no ribbons. With nobody moved out yet, its only content is the note: "Nothing here yet. When a monster grows up and moves out into the world, that monster's journal pages and keepsakes will be kept here, along with any postcards sent home." (on the left page, clear of the close button).
+- The current journal opens from a monster's name tag (bottom left), as before; the cat's pages are a ribbon inside it.
+- `st.archive` will list past monsters once moving out exists (nothing adds to it yet).
+
 ### Tamagotchi time: monsters grow on the real clock (Nov 8)
 
 - Jackie: growth and progress felt too slow; go Tamagotchi time, but nobody should be sad about losing a monster, being away a while shouldn't be a big deal, and players who keep the game open shouldn't be burdened.

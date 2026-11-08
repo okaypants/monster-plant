@@ -106,6 +106,21 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
 
+/* ---------- the archive (Jackie, Nov 8): the desk drawers ----------
+   The drawers hold monsters who used to live here, not the current journal (that opens from a name tag, bottom left).
+   Nobody has moved out yet, so it's empty, with a note about what will be kept here once something happens.
+   st.archive: [{name}], one per past inhabitant (nothing adds to it yet). */
+const ARCHIVE_NOTE='Nothing here yet. When a monster grows up and moves out into the world, that monster\'s journal pages and keepsakes will be kept here, along with any postcards sent home.';
+function openArchive(){sfx('page');closeJournal();
+ jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
+ jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();});
+ jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
+ const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr'),past=st.archive||[];
+ L.appendChild(jdiv('jname',[],'Archive'));
+ if(!past.length)L.appendChild(jdiv('jborn jarchnote',[],ARCHIVE_NOTE)); // on the left page, clear of the close button
+ else for(const q of past)L.appendChild(jdiv('jgroup',[jlabel(q.name||'')]));
+ ui.appendChild(jEl);fitBook();}
+
 /* ---------- a plant's pages ---------- */
 function plantPages(L,R){
  const id=st.id,steps=ageSprites(),at=ageStep();
@@ -202,7 +217,7 @@ function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(
    Drawn in code from the room palette on whole pixels (2 room units each), 4x6 pixel letters. It never glows, blinks or
    bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the current room
    picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms under the
-   desk lamp. Tapping it is tapping the drawers: the journal opens. */
+   desk lamp. Tapping it is tapping the drawers: the archive opens. */
 const PLACARD={x:1088,y:570,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
 const PFONT={A:['.##.','#..#','#..#','####','#..#','#..#'],R:['###.','#..#','#..#','###.','#.#.','#..#'],C:['.###','#...','#...','#...','#...','.###'],
  H:['#..#','#..#','####','#..#','#..#','#..#'],I:['###','.#.','.#.','.#.','.#.','###'],V:['#..#','#..#','#..#','#..#','.##.','.##.'],E:['####','#...','###.','#...','#...','####']};
