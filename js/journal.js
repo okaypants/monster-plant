@@ -1,5 +1,5 @@
 'use strict';
-/* JOURNAL (Jackie, Nov 4): a cozy keepsake book opened from the desk drawers, not a status screen.
+/* JOURNAL (Jackie, Nov 4): a cozy keepsake book opened from the name tags (the desk drawers are the Archive now), not a status screen.
    Calm and almost wordless: short labels only, no numbers, no meters or bars, no settings screens. No new art: the plants' own
    sprites, the treat and charm pictures and the cat's frames, plus tiny icons drawn here in the room's palette.
    One open book (cream pages, dark stepped pixel outline), fitted to the screen with no scrolling. Ribbons along the top pick the
@@ -68,8 +68,8 @@ function bornLine(){return temperament().replace('It seems ','Born ').replace(/\
 /* ---------- the book ---------- */
 function jdiv(cls,kids=[],txt){const e=document.createElement('div');e.className=cls;if(txt!=null)e.textContent=txt;for(const k of kids)if(k)e.appendChild(k);return e;}
 function jlabel(t){return jdiv('jlab',[],t);}
-function fitBook(){if(!jEl)return;const r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+JB.rib));jEl.querySelector('.jbook').style.transform=`translate(-50%,-50%) scale(${k})`;}
-function closeJournal(){if(jEl){jEl.remove();jEl=null;}}
+function fitBook(){if(!jEl)return;const r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+JB.rib));jEl.bookK=k;jEl.querySelector('.jbook').style.transform=`translate(-50%,-50%) scale(${k})`;}
+function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='archive'||jPage==='keep'){jPage=null;jSub=0;}}
 function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');return P;}
 function openJournal(page){sfx('page');closeJournal();
  const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
@@ -82,7 +82,7 @@ function jTurn(to,sub=0){if((to===jPage&&sub===jSub)||!jEl)return;sfx('page');co
  const f=document.createElement('div');f.className='jturn jturn1 jstep';bk.appendChild(f); // frame 1: the right page lifts
  setTimeout(()=>{f.className='jturn jturn2 jstep';},90); // frame 2: it lands on the left
  setTimeout(()=>{f.remove();jPage=to;jSub=sub;renderJournal();},180);}
-function renderJournal(){if(!jEl)return;const P=jPages();if(!P.includes(jPage)){jPage=P[0];jSub=0;}
+function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();return;}if(jPage==='keep'){renderKeepsake();return;}const P=jPages();if(!P.includes(jPage)){jPage=P[0];jSub=0;}
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
  P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.background=RIB_COLORS[i%RIB_COLORS.length];r.style.left=(430+i*52)+'px';
   r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
@@ -106,20 +106,65 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
 
-/* ---------- the archive (Jackie, Nov 8): the desk drawers ----------
-   The drawers hold monsters who used to live here, not the current journal (that opens from a name tag, bottom left).
-   Nobody has moved out yet, so it's empty, with a note about what will be kept here once something happens.
-   st.archive: [{name}], one per past inhabitant (nothing adds to it yet). */
-const ARCHIVE_NOTE='Nothing here yet. When a monster grows up and moves out into the world, that monster\'s journal pages and keepsakes will be kept here, along with any postcards sent home.';
-function openArchive(){sfx('page');closeJournal();
- jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
- jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();});
- jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
- const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr'),past=st.archive||[];
- L.appendChild(jdiv('jname',[],'Archive'));
- if(!past.length)L.appendChild(jdiv('jborn jarchnote',[],ARCHIVE_NOTE)); // on the left page, clear of the close button
- else for(const q of past)L.appendChild(jdiv('jgroup',[jlabel(q.name||'')]));
- ui.appendChild(jEl);fitBook();}
+/* ---------- THE ARCHIVE (Jackie, Nov 8): the desk drawers hold the journals of monsters who have moved out ----------
+   The current journals open from the name tags, bottom left. Tapping the drawers opens this over the room in 3 stepped frames: one
+   closed, code-drawn book per monster that has moved out. Tap a book for its journal as a read-only keepsake, frozen as of the
+   day it left, with a last page "Out in the world". moveOut() is the one way out of the room, whatever ends up sending a monster off. */
+// THE WORDS, in one place to edit: the empty drawer's note (one string per paragraph; the first two go on the left page) and the moving-out caption
+const ARCHIVE_NOTE=[
+ "This drawer is for the journals of monsters who have grown up and moved out. It's empty for now.",
+ "A grown monster might ask to go somewhere it has its heart set on. You can say yes, or ask it to stay a while longer.",
+ "If two grown monsters make a seed together, they head off to live their own lives and leave the little one in your care.",
+ "Sometimes Slowmallow sends a paper airplane asking to have one back. That's up to you too.",
+ "Wherever they go, their journals rest here. Now and then a postcard finds its way home, and Slowmallow sends word of anyone staying over."];
+const moveOutCaption=n=>n+(n.endsWith('s')?"'":"'s")+' journal is tucked safely in the desk.';
+const ARCH_COVERS=[C.wine,C.vio,C.g1,C.navy],ARCH_PER_PAGE=6; // two rows of three a page; more than a spread gets arrows, never a scrollbar
+const ARCH_CALM={nap:0,listen:0,over:0,overType:'',grump:0,float:null,walk:null,mv:null,bonkT:0,tidyT:0,spookT:0,nodT:0,dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,parch:0,glare:0,lightState:'ok',lightBad:0,needs:{thirst:0,hunger:0,attention:0}}; // a keepsake portrait is a happy one
+const ARCH_WORLD=['catTrust','catBond','catSeen','catNaps','catName','leftHand']; // what its relationship pages read from the room
+let jKeep=null,jArchSub=0; // the archived monster whose keepsake is open; which spread of books to come back to
+const jsonCopy=o=>JSON.parse(JSON.stringify(o));
+function plantFields(o){const c={};for(const k of Object.keys(o))if(!GLOBAL.has(k)&&k!=='_pos')c[k]=o[k];return Object.assign(jsonCopy(c),jsonCopy(ARCH_CALM));}
+/* moveOut(plant or id, where it went): saves a frozen copy of its journal in st.archive, takes it out of the room, its name tag and its
+   ribbon (those read the live plants), and says so. The cat's page stays live. Returns the archive entry. */
+function moveOut(p,dest){const id=p&&typeof p==='object'?p.id:p,q=allRaw().find(x=>x.id===id&&x.stage>=0);if(!q)return null;
+ const world={};for(const k of ARCH_WORLD)if(st[k]!==undefined)world[k]=st[k];
+ const e={id,name:q.name||NAMES[q.species],dest:dest||'',day:st.day,snap:plantFields(q),pals:allRaw().filter(x=>x.id!==id&&x.stage>=0).map(plantFields),world:jsonCopy(world)};
+ if(READ.has(id))closeStory(true);if(drag.id===id){drag.on=false;drag.down=false;}
+ if(st.id!==id)st.others=st.others.filter(x=>x.id!==id);
+ else if((st.others||[]).length){swapIn(0);st.others=st.others.filter(x=>x.id!==id);}
+ else{for(const k of Object.keys(st))if(!GLOBAL.has(k))delete st[k];const f=fresh();for(const k in f)if(!GLOBAL.has(k))st[k]=f[k];st.id=(st.nextId=(st.nextId||1)+1);} // the last one: an empty room, ready for a new seed
+ st.archive=(st.archive||[]).concat(e);ACT=st.id;pickChair();sfx('page');tell(moveOutCaption(firstName(e.snap)||NAMES[e.snap.species]),{kind:'important',key:'moveout'+id});
+ if(jEl)renderJournal();save();return e;}
+// runs f with the room as it was the day that monster left: read-only and all in one go, so nothing is ever drawn or saved from it
+function withKeepsake(e,f){const live=st,t={};for(const k of Object.keys(live))if(GLOBAL.has(k))t[k]=live[k];
+ st=Object.assign(t,jsonCopy(e.world),jsonCopy(e.snap),{others:jsonCopy(e.pals),night:false});try{return f();}finally{st=live;}}
+function archiveShell(){jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
+ jEl.addEventListener('click',e=>{if(e.target===jEl)archiveBack();});jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();archiveBack();});}
+function openArchive(){sfx('page');closeJournal();jPage='archive';jSub=0;archiveShell();ui.appendChild(jEl);fitBook();renderArchive();archiveSteps();}
+// out of a keepsake goes back to the drawer; out of the drawer closes it
+function archiveBack(){if(jPage==='keep'){jKeep=null;jTurn('archive',jArchSub);return;}closeJournal();}
+// the drawer opens in 3 stepped frames: the book comes up out of the drawers, no fade
+function archiveSteps(){const el=jEl,b=el.querySelector('.jbook'),k=el.bookK||1,c=cv.getBoundingClientRect(),r=el.getBoundingClientRect(),dx=c.left+(DRAWERS.x+DRAWERS.w/2)*S-(r.left+r.width/2),dy=c.top+(DRAWERS.y+DRAWERS.h/2)*S-(r.top+r.height/2);
+ const step=s=>{if(el===jEl)b.style.transform=`translate(calc(-50% + ${Math.round(dx*(1-s))}px),calc(-50% + ${Math.round(dy*(1-s))}px)) scale(${k*s})`;};
+ step(.3);setTimeout(()=>step(.65),80);setTimeout(()=>{if(el===jEl)fitBook();},160);}
+function jFlip(side,to){const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
+ a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});jEl.querySelector(side==='jprev'?'.jl':'.jr').appendChild(a);}
+function jClearPages(){const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';jEl.querySelector('.jribs').innerHTML='';return [L,R];}
+function renderArchive(){const [L,R]=jClearPages(),past=st.archive||[],n=ARCH_PER_PAGE;L.appendChild(jdiv('jname',[],'Archive'));
+ if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(jdiv('jarchnote',[],t)));R.firstChild.classList.add('jarchtop');return;}
+ const last=Math.ceil(past.length/(2*n))-1;if(jSub>last)jSub=last;const shown=past.slice(jSub*2*n,(jSub+1)*2*n);
+ L.appendChild(jdiv('jshelf',shown.slice(0,n).map(archiveBook)));if(shown.length>n)R.appendChild(jdiv('jshelf jarchtop',shown.slice(n).map(archiveBook)));
+ if(jSub>0)jFlip('jprev',jSub-1);if(jSub<last)jFlip('jnext',jSub+1);}
+function archiveBook(e){const b=document.createElement('button');b.type='button';b.className='jarchbook jstep';b.dataset.id=e.id;b.style.background=ARCH_COVERS[(st.archive||[]).indexOf(e)%ARCH_COVERS.length];b.setAttribute('aria-label',e.name+"'s journal");
+ b.appendChild(jdiv('jarchlabel',[jdiv('jarchpic',[withKeepsake(e,()=>plantPortrait(e.id,58,58))]),jdiv('jarchname',[],e.name)]));
+ b.addEventListener('click',ev=>{ev.stopPropagation();jKeep=e;jArchSub=jSub;jTurn('keep',0);});return b;}
+const NUM_ONES=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'],NUM_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+function numWords(n){if(n<20)return NUM_ONES[n];if(n<100)return NUM_TENS[Math.floor(n/10)]+(n%10?'-'+NUM_ONES[n%10]:'');if(n<1000)return NUM_ONES[Math.floor(n/100)]+' hundred'+(n%100?' and '+numWords(n%100):'');return numWords(Math.floor(n/1000))+' thousand'+(n%1000?' '+numWords(n%1000):'');}
+function outPages(L,R,e){L.appendChild(jdiv('jname',[],'Out in the world'));if(e.dest)L.appendChild(jdiv('jborn jwent',[],e.dest));L.appendChild(jdiv('jborn',[],'Moved out on day '+numWords(e.day)));
+ R.appendChild(jdiv('jgroup',[jlabel('Postcards'),jdiv('jicons',[jdiv('jblank jpostcard')])]));}
+function renderKeepsake(){const e=jKeep;if(!e){jPage='archive';renderArchive();return;}const [L,R]=jClearPages();let count=1;
+ withKeepsake(e,()=>{const subs=relSpreads('p'+e.id);count=subs.length+1;if(jSub>=count)jSub=0;const sp=subs[jSub];if(!sp)outPages(L,R,e);else if(sp.k==='main')plantPages(L,R);else relPages(L,R,sp);});
+ if(jSub>0)jFlip('jprev',jSub-1);if(jSub<count-1)jFlip('jnext',jSub+1);}
 
 /* ---------- a plant's pages ---------- */
 function plantPages(L,R){
@@ -140,13 +185,14 @@ function plantPages(L,R){
  if(titles.length)R.appendChild(jdiv('jgroup',[jlabel('Titles'),jdiv('jstamps',titles.map(t=>jdiv('jstamp jtitle',[],TITLES[t])))]));
  const charms=(st.traits||[]).filter(t=>TOPPER_IMG[t]),worn=wornCharm();
  if(charms.length){const row=jdiv('jstickers',charms.map(t=>{const b=document.createElement('button');b.type='button';b.className='jcharm'+(t===worn?' worn':'');b.dataset.trait=t;b.setAttribute('aria-label',t);b.appendChild(imgPic(TOPPER_IMG[t],38,38));
-   b.addEventListener('click',e=>{e.stopPropagation();st.wear=wornCharm()===t?'none':t;sfx('pop');save();renderJournal();});return b;}));
+   if(jKeep)b.disabled=true;else b.addEventListener('click',e=>{e.stopPropagation();st.wear=wornCharm()===t?'none':t;sfx('pop');save();renderJournal();});return b;}));
   R.appendChild(jdiv('jgroup',[jlabel('Charms'),row]));}
  const seen=st.quirks||{};
  R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint')))]));}
 
 // tap the name to type a new one (16 letters at most); cleared = it keeps its old name
-function nameTag(id){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name||NAMES[st.species];b.setAttribute('aria-label',st.name?'Rename '+st.name:'Name it'); // no name yet (a seed or sprout): it shows the species, and a tap names it
+function nameTag(id){if(jKeep)return jdiv('jname',[],st.name||NAMES[st.species]); // a keepsake is read-only
+ const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name||NAMES[st.species];b.setAttribute('aria-label',st.name?'Rename '+st.name:'Name it'); // no name yet (a seed or sprout): it shows the species, and a tap names it
  b.addEventListener('click',e=>{e.stopPropagation();const old=st.name,inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old||'';inp.setAttribute('aria-label','Name');
   let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);
    withPlant(id,()=>{if(v)st.name=v;else if(old)tell('Back to '+old+'.',{kind:'info'});});sfx('tick');save();renderJournal();};

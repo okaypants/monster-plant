@@ -61,6 +61,10 @@ CASES = [
     # Tamagotchi time (Jackie, Nov 8): a cared-for kid near the end of its day grows into a teen on the clock, no Good morning needed
     ("grows_on_the_clock", "s.stage=4;s.species=6;s.timer=GROW_FOR[4]-60;s.free={x:1250,y:918};s.giftSeed=1;s.needs={thirst:0,hunger:0,attention:0};", "", 0.2,
      "(st.stage===6&&!st.night&&CAP.log.some(l=>l.t===firstName()+' is a teen now, with big ideas and a bigger pot.'))||'clock growth: stage '+st.stage+', timer '+st.timer+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+    # the archive (Jackie, Nov 8): moving out saves a frozen journal in the desk; an old save opens an empty drawer with its note
+    ("archive_moves_out", "s.stage=8;s.species=3;s.giftSeed=1;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';delete s.archive;",
+     "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);window.__empty=(openArchive(),__step(.3),document.querySelectorAll('.jarchnote').length);closeJournal();moveOut(p.id,'Off to see the ocean');openArchive();", 0.2,
+     "(__empty===ARCHIVE_NOTE.length&&plantCount()===1&&st.archive.length===1&&st.archive[0].name==='Mortie Gloomsnack'&&document.querySelectorAll('.jarchbook').length===1&&!document.querySelector('.jarchnote')&&!JSON.parse(localStorage.getItem(KEY)).others.length&&JSON.parse(localStorage.getItem(KEY)).archive.length===1&&CAP.log.some(l=>l.t===\"Mortie's journal is tucked safely in the desk.\"))||'archive: empty '+__empty+', plants '+plantCount()+', archive '+JSON.stringify((st.archive||[]).map(e=>e.name))"),
     # the second plant is opt-in (Jackie, Nov 4): Slowmallow's note lands on the sill when the only plant is a late teen; tap it to be asked
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;",
      "window.__yes=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes

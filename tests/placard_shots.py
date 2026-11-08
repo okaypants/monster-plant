@@ -45,7 +45,7 @@ async def main():
         await pg.evaluate("()=>{st.night=false;st.dayT=.3;__step(1);}")
         await pg.mouse.click(1127, 582)
         await pg.evaluate("()=>__step(.3)")
-        a = await pg.evaluate("()=>({archive:!!document.querySelector('.journal.archive .jbook'),ribbons:document.querySelectorAll('.jrib').length,note:(document.querySelector('.jarchnote')||{}).textContent||''})")
+        a = await pg.evaluate("()=>({archive:!!document.querySelector('.journal.archive .jbook'),ribbons:document.querySelectorAll('.jrib').length,note:[...document.querySelectorAll('.jarchnote')].map(n=>n.textContent)})")
         if not (a["archive"] and a["ribbons"] == 0 and a["note"] == await pg.evaluate("()=>ARCHIVE_NOTE")):
             fails.append(f"tapping the drawers should open the empty archive with its note, not the journal: {a}")
         await pg.screenshot(path=os.path.join(OUT, "archive_empty.png"))
