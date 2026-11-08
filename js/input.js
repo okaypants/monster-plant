@@ -32,6 +32,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&bugNoteHit(x,y)){bugAsk();return;} // Doctor Bug's note on the windowsill
  if(!held.tool&&!onPlantPx(x,y)&&catHit(x,y)){petCat();return;}
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openJournal();return;}
+ if(!held.tool&&!st.night&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks();return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
  if(st.night){ // night: lights and curtains still work; wake only on purpose
   if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx(st.lamp?'chime':'sigh');save();return;}
@@ -45,7 +46,6 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(inR(x,y,CAN)){held.tool='can';carryFace.dir=0;return;}
  // treats only come from the SNACKS box (Jackie)
  if(inR(x,y,JAR)){openSnacks(x,y);return;}
- if(inR(x,y,SHELF)){openBooks(x,y);return;}
  if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');return;}
  if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx('tick');sfx(st.lamp?'chime':'sigh');save();return;}
  if(inR(x,y,LAMP)){st.desk=st.desk===false;sfx('tick');save();return;}

@@ -42,6 +42,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/names_shots.py` lets a sprout open its eyes on a phone held sideways, checks the hello caption has its new name, and shows the journal page with the name on top; saved to `tests/screenshots/names/`. The smoke test also checks old saves get named, two plants never share a first name, and renaming in the journal (16 letters, cleared = back to the old name).
 
+`python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen, and pictures the reading and the book hopping home; saved to `tests/screenshots/reading/`.
+
 `python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
 
 `python tests/feed_shots.py` taps the SNACKS cabinet, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.

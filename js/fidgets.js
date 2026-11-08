@@ -108,7 +108,7 @@ const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds be
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
-function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!feed.item||!!bubble||!!document.querySelector('.screen');}
+function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!feed.item||!!bookDrag.item||!!bubble||!!document.querySelector('.screen');}
 function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||!!(BOING.oy||BOING.vy);}
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
