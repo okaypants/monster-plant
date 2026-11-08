@@ -4,7 +4,7 @@ const BABY=[],ELDER=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');
 // seedling pot (Jackie's sheet, 2 frames per stage): soil, first sprout, then the bigger sprout halfway through the sprout stage.
 // Drawn at half size in code (never resized): the sheet's pot is 238 px across, baby_01's is 140, so it lands a bit smaller, and halving stays crisp.
 const SEEDLING={soil:[img('seedling_soil1.png'),img('seedling_soil2.png')],sprout:[img('seedling_sprout1.png'),img('seedling_sprout2.png')],bigsprout:[img('seedling_bigsprout1.png'),img('seedling_bigsprout2.png')]},SEED_K=.65; // at the front of the rug; depthK makes it ~.43 on the desk
-function seedFrame(){const k=st.stage<1?'soil':st.timer<15?'sprout':'bigsprout';return SEEDLING[k][Math.floor(T*.6)%2];} // slow 2-frame swap
+function seedFrame(){const k=st.stage<1?'soil':st.timer<GROW_FOR[1]/2?'sprout':'bigsprout';return SEEDLING[k][Math.floor(T*.6)%2];} // slow 2-frame swap
 const BABY_SLEEP=[];for(let i=1;i<=16;i++)BABY_SLEEP.push(img('baby_'+String(i).padStart(2,'0')+'_sleep.png'));
 const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3], [1, 3], [0, 4], [0, 4], [-2, 4], [-1, 5], [1, -2], [0, 2], [2, 3], [0, 2]]; // sleeping baby offset vs awake; only x is used now (the bottom is anchored by the real bottom)
 const EYE_O=[],EYE_C=[],MOUTH=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');EYE_O.push(img('eyes_'+n+'_open.png'));EYE_C.push(img('eyes_'+n+'_blink.png'));if(i<=12)MOUTH.push(img('mouthB_'+n+'.png'));}
@@ -226,17 +226,30 @@ function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toast
  else{const nh=b.seed.naturalHeight,cut=nh-172; // the sprout above the pot's rim moves (the pot is the frame's bottom 172 rows), the pot doesn't
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*b.seedK),w,h-Math.round(cut*b.seedK));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*b.seedK));}
  g.restore();}
+/* ---------- growing up (Tamagotchi time, see GROW_FOR in core.js) ---------- */
+function growHappy(){return !want('thirst')&&!want('attention')&&(st.night||st.stage<1||st.lightState==='ok');}
+function growTick(dt){if(st.stage<0||st.stage>=8)return;st.timer=(st.timer||0)+dt*gameSpeed()/2*(growHappy()?1:GROW_SLOW);
+ if(st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
+// one age up, right now; returns what to say. The sound and the bigger body are the proof.
+function stageUp(){st.stage=NEXT[st.stage]??8;st.timer=0;st.walk=null;const W=()=>who();
+ if(st.stage===1){sfx('soil');return 'A sprout!';}
+ sfx('chime');sfx('boing');
+ if(st.stage===4){const had=!!st.name;if(!had)st.name=makeName(st);return had?W()+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.';}
+ if(st.stage===6){earnPot('drip');return W()+' is a teen now, with big ideas and a bigger pot.';}
+ earnPot('speckle');return W()+' is all grown up and ready to eat everything!';}
+// away: half rate, at most one age per absence (the rest of the time away is let go); returns what happened, by name
+function catchUp(sec){const said=[];eachPlant(()=>{if(st.stage<0||st.stage>=8)return;const need=GROW_FOR[st.stage]-(st.timer||0),gain=sec*GROW_SLOW;
+  if(gain<need){st.timer=(st.timer||0)+gain;return;}const n=nameOf(st,true),to=NEXT[st.stage]??8;stageUp();
+  said.push(to===1?n+'\'s seed sprouted!':to===4?n+' opened its eyes!':to===6?n+' grew into a teen!':n+' is all grown up!');});return said;}
 function want(n){if(st.stage<0)return false;if(st.stage<4)return n==='thirst'&&st.needs.thirst>.6;return st.needs[n]>.6;}
 function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  st.listen=Math.max(0,st.listen-dt);st.over=Math.max(0,st.over-dt);st.nap=Math.max(0,st.nap-dt);
  if(st.mv)st.mv.t+=dt;if(st.grump>0)st.grump-=dt;
  needTick(dt); // real seconds, so looks come back over a couple of seconds at any speed
+ growTick(dt); // growing goes on while it sleeps
  if(st.night)return;
  scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
- if(st.stage<4){st.timer+=dt*sp;if(st.timer>30){st.timer=0;st.stage=NEXT[st.stage]??4;
-   if(st.stage===4){sfx('chime');sfx('boing');const had=!!st.name;if(!had)st.name=makeName(st);tell(had?st.name+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.',{kind:'important',who:st.id});}
-   else{sfx('soil');if(st.stage===1)tell('A sprout!',{kind:'important'});}}}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
@@ -387,7 +400,7 @@ function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.queryS
 const BUG_NOTE={x:452,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
 const BUG_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
 let bugLand=null; // when it landed this visit (for the glide in); null = already there
-function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend)return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.credit||0)>0));}
+function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend)return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.timer||0)>=GROW_FOR[6]/2));}
 function bugNoteBox(){const p=P,w=BUG_PLANE[0].length*p,h=BUG_PLANE.length*p;return {x:BUG_NOTE.x-w/2,y:BUG_NOTE.y-h,w,h};}
 function bugOnSill(){return st.bugNote==='sill'&&bugReady();}
 function bugNoteHit(x,y){if(!bugOnSill())return false;const b=bugNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}

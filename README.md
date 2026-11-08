@@ -88,6 +88,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/cat_shots.py` saves the cat in every spot (bed, rug, armchair, windowsill, milk crate, book stack, next to a plant, walking) in every frame (petted with the back-scratcher and belly-up too) to `tests/screenshots/cat/`, and fails if he ever overlaps a plant.
 
+`python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid grows into a teen right on time, a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) grows at half speed, one age at most.
+
 `python tests/seedling_shots.py` pictures the seedling pot at every stage and frame on the windowsill and the desk, checks it rests on the surface line and the frames line up, and compares its size to baby_01; saved to `tests/screenshots/seedlings/` (committed).
 
 `python tests/position_audit.py` renders every species at every age in every spot, and the cat in every nap spot and pose, measures whether each pot (or the cat) rests on its surface, floats or sinks, and saves contact sheets plus `off_by_more_than_2px.txt` to `tests/screenshots/positions/` (these are committed).

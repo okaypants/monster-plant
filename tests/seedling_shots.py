@@ -11,8 +11,8 @@ from playwright.async_api import async_playwright
 from smoke_test import PORT, SHOTS, VIRTUAL_TIME, serve
 
 OUT = os.path.join(SHOTS, "seedlings")
-# stage 0 = soil; stage 1 with timer < 15 = first sprout, timer >= 15 = bigger sprout
-STAGES = [("soil", 0, 0), ("sprout", 1, 2), ("bigger sprout", 1, 20)]
+# stage 0 = soil; stage 1 in its first half hour = first sprout, after that = bigger sprout (GROW_FOR[1] is an hour)
+STAGES = [("soil", 0, 0), ("sprout", 1, 2), ("bigger sprout", 1, 2000)]
 SHOT_JS = """async(it)=>{Object.assign(st,{others:[],nap:0,listen:0,over:0,lightState:'ok',lightBad:0,glare:0,dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,mv:null,
   needs:{thirst:0,hunger:0,attention:0},dayT:.3,curtain:'open',lamp:true,desk:true,started:true,night:false,stage:it.stage,timer:it.timer,place:{seed:it.spot}});
  drag.on=false;parts.length=0;cat.x=-999;T=it.frame/.6+.01;
