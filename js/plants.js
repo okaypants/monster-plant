@@ -364,7 +364,7 @@ function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.queryS
    Tap it: "I have a seedling in need of a home. May I send it over?"
      Yes, please -> the seed arrives the next morning in the little pot (wakeRoom in start.js).
      Not yet     -> the note goes into the journal (accept it there anytime); Doctor Bug asks again in a few days.
-   Never with two plants. This is the only way a second seed comes without you starting it yourself ("Plant another seed"). */
+   Never with two plants. This is the only way a second plant comes (Jackie, Nov 7: no "Plant another seed" on the start screen). */
 const BUG_NOTE={x:452,y:SURFACE.sill},BUG_ASK='I have a seedling in need of a home. May I send it over?';
 const BUG_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
 let bugLand=null; // when it landed this visit (for the glide in); null = already there
