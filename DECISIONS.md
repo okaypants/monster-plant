@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Story time in the armchair; kids in the armchair; the cat always answers (Nov 7)
+
+- **Reading, take two** (Jackie: the book should open toward us, small enough to see the monster cozy in the chair, and she wants to see the story). A monster given a book hops into the armchair (if nobody's there; otherwise it reads where it is) and a small open book faces us on the right half of the room with the story on its pages, two at a time. Tap the book to turn the page (a 2-frame flip); after the last page it closes, hops back to the shelf, and the monster goes back to where it was. Tap the room to close it early. The in-room open book and rising symbols are gone.
+- **The stories** live in **js/stories.js** for Jackie to edit: six short pages each for the fairy tales, the Almanac of Rules, the nonsense poems and the forbidden grimoire, about 12 words a page so they fit on a phone.
+- **Any monster can sit in the armchair**, kids too (Jackie chose that), and dropping it anywhere over the chair, back or seat, counts. The cat gets up and leaves when a monster takes the armchair, napping or awake, and doesn't pick it while one is there.
+- **The cat always answers a touch:** while walking he stops for a moment (a purr and a heart once he trusts you, a little "hmm" while shy); when he's had enough, a flick and a "hmm" and he keeps going.
+- **Kids and big monster food:** a treat dropped on a kid goes back to the tray with "Pip is too little for big monster food."
+
 ### Reading: a book tray and a monster that reads in the room (Nov 7)
 
 - Before, a text bubble listed the books, a plain rectangle followed your finger, and the monster just got a caption. Jackie: neither the delivery nor the reading was good.

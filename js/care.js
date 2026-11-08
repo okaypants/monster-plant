@@ -100,7 +100,7 @@ function feedTarget(x,y){let best=null,by=-1;eachPlant(()=>{if(st.stage<0)return
 function feedOver(){const t=feedTarget(feed.x,feed.y);feed.over=t&&t.eat?t.id:null;}
 function feedUp(){removeEventListener('pointermove',feedMove);removeEventListener('pointerup',feedUp);removeEventListener('pointercancel',feedUp);
  const s=feed.item,id=feed.over;feed.item=null;feed.over=null;trayKeep();if(!s)return;
- if(id==null){sfx('tick');return;} // back to the tray, nothing else happens
+ if(id==null){sfx('tick');const t=feedTarget(feed.x,feed.y);if(t)withPlant(t.id,()=>{if(st.stage>=4&&st.stage<6){plantBoing(plantBox().x+plantBox().w/2);tell(who()+' is too little for big monster food.',{kind:'info',who:st.id});}});return;} // back to the tray; a kid says why
  const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you fed becomes the one you're tending
  CHOMP.set(id,performance.now());sfx(s.s);
  setTimeout(()=>withPlant(id,()=>{held.tool='snack';held.item=s;useTool();}),CHOMP_MS*3);}
@@ -130,19 +130,9 @@ function bookPix(id,px){const L=BOOK_LOOK[id],w=10,h=13,c=document.createElement
  for(let j=1;j<h-1;j+=3)cell(w-1,j,C.sand); // page lines
  L.e.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch!=='.')cell(4+i,5+j,BPAL[ch]);}));
  cell(2,0,C.ivory);cell(3,0,C.ivory);return c;} // a little highlight
-// the open book being read: 3 frames (flat, a page standing up, flat with the page over) as maps; c = cover color, d = its dark
-function openBookCanvas(id,frame,px){const L=BOOK_LOOK[id],W=18,H=9,c=document.createElement('canvas');c.width=W*px;c.height=(H+3)*px;const x=c.getContext('2d');
- const f=(i,j,w,h,col)=>{x.fillStyle=col;x.fillRect(i*px,j*px,w*px,h*px);};
- f(0,3,W,H,C.out);f(1,4,W-2,H-2,L.c); // the cover under the pages
- f(2,3,6,H-2,C.out);f(10,3,6,H-2,C.out);f(3,4,4,H-4,C.ivory);f(11,4,4,H-4,C.ivory); // two pages
- for(let j=5;j<H;j+=2){f(4,j,3,1,C.sand);f(11,j,3,1,C.sand);} // lines of words
- f(8,3,2,H-2,L.d); // the spine
- if(frame===1){f(8,0,2,8,C.out);f(8,1,2,6,C.ivory);} // a page standing up, mid-turn
- if(frame===2){f(11,4,4,H-4,C.cream);for(let j=5;j<H;j+=2)f(11,j,3,1,C.sand);} // it lands on the other side
- return c;}
 const BOOK_CACHE=new Map();function bookImg(key,make){if(!BOOK_CACHE.has(key))BOOK_CACHE.set(key,make());return BOOK_CACHE.get(key);}
 const bookDrag={item:null,x:0,y:0,over:null,trayT:0};let btrayEl=null;
-const READ=new Map(),READ_S=8,BOOK_HOP=.6; // id -> {bk,t0}; flights: closed books hopping back to the shelf
+const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books hopping back to the shelf
 const bookHops=[];
 function openBooks(){sfx('page');if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray';
   for(const bk of BOOKS){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
@@ -159,26 +149,43 @@ function bookPos(e){const [x,y]=toGame(e);bookDrag.x=x+(rightHand()?-30:30)/S;bo
 function grabBook(bk,e){bookDrag.item=bk;bookPos(e);bookOver();bookDrag.trayT=performance.now();sfx('page');
  addEventListener('pointermove',bookMove);addEventListener('pointerup',bookUp);addEventListener('pointercancel',bookUp);}
 function bookMove(e){if(!bookDrag.item)return;bookPos(e);bookOver();}
-function canRead(){return st.stage>=4&&st.nap<=0&&!st.night&&!READ.has(st.id);}
+function canRead(){return st.stage>=4&&st.nap<=0&&!st.night;}
 function bookOver(){let best=null,by=-1;const x=bookDrag.x,y=bookDrag.y;eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),m=40+b.w*.12;
   if(x>=b.x-m&&x<=b.x+b.w+m&&y>=b.y-m&&y<=baseY()+m*.5&&baseY()>by){by=baseY();best=canRead()?st.id:null;}});bookDrag.over=best;}
 function bookUp(){removeEventListener('pointermove',bookMove);removeEventListener('pointerup',bookUp);removeEventListener('pointercancel',bookUp);
  const bk=bookDrag.item,id=bookDrag.over;bookDrag.item=null;bookDrag.over=null;bookDrag.trayT=performance.now();if(!bk)return;
  if(id==null){sfx('tick');return;} // back to the tray
  const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you read to becomes the one you're tending
- closeBookTray();withPlant(id,()=>{held.tool='book';held.item=bk;useTool();READ.set(id,{bk,t0:performance.now()});st.listen=READ_S;});}
-// the symbols that rise from each book while it's read
-const BOOK_BITS={fairy:['.r.r.','rrrrr','.rrr.','..r..'],almanac:['yyy','y.y','yyy'],nonsense:['v..','.v.','..v','.v.'],grimoire:['.w.','www','.w.']};
-const BITPAL={r:C.fl1,y:C.fl3,v:C.vio,w:C.lav};
+ closeBookTray();startReading(id,bk);}
+/* THE STORY (Jackie, Nov 7): the monster hops cozy into the armchair (if nobody's there; otherwise it reads where it is), and a
+   small open book faces us with the story (js/stories.js), two pages at a time, small enough to still see the monster in the chair.
+   Tap the book to turn the page (a 2-frame flip); after the last page the book closes, hops back to the shelf, and the monster
+   goes back to where it was. Tap the room to close it early. */
+let storyEl=null;
+function startReading(id,bk){closeStory(true);
+ withPlant(id,()=>{held.tool='book';held.item=bk;useTool();let from=null;
+  if(spotKey()!=='chair'&&!perchTaken('chair')&&spaceFree('chair')){from={perch:st.perch,free:st.free&&{...st.free}};st.perch='chair';st.walk=null;pickChair();sfx('pop');}
+  READ.set(id,{bk,from,page:0});st.listen=2;});
+ storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
+ storyEl.innerHTML='<div class="scover jstep"><div class="spage jstep sl"></div><div class="spage jstep sr"></div></div>';
+ storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();turnStory();});
+ ui.appendChild(storyEl);placeStory();showStory();}
+function placeStory(){if(!storyEl)return;const X=900,Y=470,w=640,h=320; // the right half of the room, clear of the armchair
+ Object.assign(storyEl.style,{left:Math.round(X*S)+'px',top:Math.round(Y*S)+'px',width:Math.round(w*S)+'px',height:Math.round(h*S)+'px'});}
+addEventListener('resize',()=>setTimeout(placeStory,50));
+function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=STORIES[r.bk.id]||[];
+ storyEl.querySelector('.sl').textContent=P[r.page]||'';storyEl.querySelector('.sr').textContent=P[r.page+1]||'';}
+function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
+ if(r.page+2>=(STORIES[r.bk.id]||[]).length)return closeStory();sfx('page');storyEl.dataset.turning=1;
+ const f=document.createElement('div');f.className='sturn sturn1 jstep';storyEl.querySelector('.scover').appendChild(f); // the right page lifts
+ setTimeout(()=>{f.className='sturn sturn2 jstep';},90); // and lands on the left
+ setTimeout(()=>{f.remove();r.page+=2;delete storyEl.dataset.turning;showStory();},180);}
+function closeStory(quiet){if(!storyEl)return;const id=+storyEl.dataset.id,r=READ.get(id);storyEl.remove();storyEl=null;if(!r)return;READ.delete(id);
+ if(!quiet)sfx('page');bookHops.push({id:r.bk.id,x:1220,y:630,t0:performance.now()}); // the closed book hops home
+ if(r.from)withPlant(id,()=>{st.perch=r.from.perch;if(r.from.free)st.free=r.from.free;st.walk=null;pickChair();});save();}
+cv.addEventListener('pointerdown',()=>{if(storyEl&&!bookDrag.item)closeStory();}); // tap the room: close the book
 function drawReading(){const now=performance.now();
- eachPlant(()=>{const r=READ.get(st.id);if(!r)return;const u=(now-r.t0)/1000;
-  if(u>=READ_S||st.nap>0||st.night){READ.delete(st.id);const b=plantBox();bookHops.push({id:r.bk.id,x:b.x+b.w/2,y:baseY()-b.h*.22,t0:now});sfx('page');return;}
-  const b=plantBox(),k=depthK(plantDepth()),px=Math.max(5,Math.round(12*k)),cyc=(u%1.4)/1.4,fr=cyc<.08?1:cyc<.16?2:0; // a page flips every 1.4 s
-  const im=bookImg(r.bk.id+fr+'_'+px,()=>openBookCanvas(r.bk.id,fr,px)),x=Math.round(b.x+b.w/2-im.width/2),y=Math.round(baseY()-b.h*.3-im.height/2); // held in front of its body, above the pot
-  g.drawImage(im,x,y);
-  const bits=BOOK_BITS[r.bk.id];for(let n=0;n<3;n++){const t=(u-n*.9)%2.7;if(t<0||t>1.2)continue; // a few small symbols rise, one at a time, on whole pixels
-   const bx=Math.round(x+im.width*(.2+.27*n)),by=y-Math.round(t*90/px)*px;bits.forEach((row,j)=>[...row].forEach((ch,i)=>{if(ch==='.')return;g.fillStyle=C.out;g.fillRect(bx+i*px-1,by+j*px-1,px+2,px+2);}));
-   bits.forEach((row,j)=>[...row].forEach((ch,i)=>{if(ch==='.')return;g.fillStyle=BITPAL[ch];g.fillRect(bx+i*px,by+j*px,px,px);}));}});
+ if(storyEl){const id=+storyEl.dataset.id;let gone=true;withPlant(id,()=>{gone=st.nap>0||st.night;if(!gone)st.listen=Math.max(st.listen,.5);});if(gone||!READ.has(id))closeStory();} // eyes softly closed while it listens
  for(let i=bookHops.length-1;i>=0;i--){const h=bookHops[i],u=(now-h.t0)/1000/BOOK_HOP;if(u>=1){bookHops.splice(i,1);continue;} // the closed book hops back to the shelf
   const sx=SHELF.x+SHELF.w/2,sy=SHELF.y+SHELF.h/2,px=4,x=Math.round((h.x+(sx-h.x)*u)/px)*px,y=Math.round((h.y+(sy-h.y)*u-Math.sin(u*Math.PI)*90)/px)*px,im=bookImg('c'+h.id,()=>bookPix(h.id,px));
   g.drawImage(im,x-im.width/2,y-im.height/2);}

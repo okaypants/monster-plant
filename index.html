@@ -43,6 +43,13 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 /* NAME TAGS (Jackie, Nov 4): each monster's name in a small cream pill at the bottom left (both, when there are two). Tap one to open its journal page. */
 #nameTags{position:absolute;left:1.2%;bottom:2%;display:flex;gap:6px;z-index:30;pointer-events:none}
 #nameTags button{pointer-events:auto;font:inherit;font-weight:600;font-size:max(12px,calc(var(--S)*20px));color:#4a2a4f;background:#fff4e2;border:2px solid #e8c9a8;border-radius:999px;padding:max(2px,calc(var(--S)*4px)) max(8px,calc(var(--S)*14px));box-shadow:0 2px 0 #d9b08c;cursor:pointer;opacity:.92}
+/* THE STORY (Jackie, Nov 7): a small open book facing us, two cream pages with a dark stepped outline, the book's color as its cover edge */
+.story{position:absolute;z-index:44;pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;font-size:max(11px,calc(var(--S)*27px));font-weight:500;line-height:1.3;color:#4a2a4f}
+.story .scover{position:absolute;inset:0;background:var(--bc);outline:max(2px,calc(var(--S)*5px)) solid #341839;padding:max(3px,calc(var(--S)*8px));box-sizing:border-box;display:flex;gap:max(2px,calc(var(--S)*6px));box-shadow:inset 0 0 0 max(2px,calc(var(--S)*6px)) var(--bc)}
+.story .spage{flex:1;background:#fff4e2;padding:max(5px,calc(var(--S)*16px)) max(6px,calc(var(--S)*18px));box-sizing:border-box;display:flex;align-items:center;text-align:center;overflow:hidden}
+.story .sl{box-shadow:inset -6px 0 0 #f3e2c8}.story .sr{box-shadow:inset 6px 0 0 #f3e2c8}
+.story .sturn{position:absolute;top:8%;height:84%;background:#fff4e2;outline:3px solid #341839}
+.story .sturn1{left:50%;width:32%}.story .sturn2{left:18%;width:32%}
 /* JOURNAL (Jackie, Nov 4): a keepsake book. Cream pages, dark stepped pixel outline; design size 760x446, scaled to fit (fitBook in journal.js). */
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
 .jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:500}
@@ -152,6 +159,7 @@ body.testing #testBadge{display:block}
 <script src="js/saving.js"></script>
 <script src="js/nudges.js"></script>
 <script src="js/names.js"></script>
+<script src="js/stories.js"></script>
 <script src="js/room.js"></script>
 <script src="js/light.js"></script>
 <script src="js/plants.js"></script>
