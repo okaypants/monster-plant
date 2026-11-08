@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Reading: a book tray and a monster that reads in the room (Nov 7)
+
+- Before, a text bubble listed the books, a plain rectangle followed your finger, and the monster just got a caption. Jackie: neither the delivery nor the reading was good.
+- **Touch any book** (both bookcases, the book on the milk crate, the book stack by the desk) and a small cream tray of the four special books slides out along the bottom, each a pixel cover drawn in code in its own color with a little emblem. The tap areas are the rows of books only, kept clear of the snail, the boxes, the floor lamp, the snow globe, the moon box and SNACKS; a monster or the cat sitting on the crate or book stack is tapped first.
+- **Drag a book to a monster** (kid, teen or adult, awake), same feel as the treat tray. Let go anywhere else and it goes back to the tray; the tray hides after a few seconds or when you tap away.
+- **It reads in the room** for about 8 s: an open book in front of its body, a page standing up and landing every 1.4 s (a 2-frame swap), a few tiny symbols from that book rising on whole pixels (hearts, little squares, squiggles, sparkles), eyes softly closed while it listens. Then the book closes and hops back to the shelf. The reading caption and everything reading does (company, nature, pots) are as before.
+
 ### The opening, name tags, the cat's name, bigger captions, a wiggle every 10 s (Nov 4)
 
 - **Every new game opens in the daytime with the curtains open and both lamps off** (from the quiz on), whatever the room was doing before.

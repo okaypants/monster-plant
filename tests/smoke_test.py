@@ -140,6 +140,18 @@ CASES = [
      "document.querySelector('.ttreat[data-id=solar]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));if(feed.over!=null)return 'the floor counted as a monster';"
      "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.5);if(((st.treats||{}).solar||0)!==0)return 'a treat dropped on the floor got eaten';if(feed.item)return 'still holding';"
      "if(!document.querySelector('.ttray'))return 'tray closed too soon';__step(5);return !document.querySelector('.ttray')||'tray did not hide after a few seconds';})()"),
+    # reading (Jackie, Nov 7): touch any book (bookcases, crate book, book stack) -> a tray of the four books; drag one to a monster -> it reads in the room
+    ("read_drag", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;s.nap=0;s.needs={thirst:0,hunger:0,attention:.8};", "", 0.1,
+     "(()=>{const logs=()=>(st.log||[]);st.needs.attention=.8;st.nap=0;st.night=false;closeBookTray();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});"
+     "for(const [x,y] of [[100,190],[1560,360],[340,632],[975,700]]){closeBookTray();cv.dispatchEvent(new MouseEvent('click',cl(x,y)));if(document.querySelectorAll('.btray .tbook').length!==4)return 'tapping the book at '+x+','+y+' did not open the book tray';}"
+     "for(const [x,y] of [[95,390],[1540,260],[1550,650],[220,500]]){closeBookTray();cv.dispatchEvent(new MouseEvent('click',cl(x,y)));if(document.querySelector('.btray'))return 'a non-book spot '+x+','+y+' opened the book tray';}"
+     "cv.dispatchEvent(new MouseEvent('click',cl(100,190)));const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;"
+     "document.querySelector('.tbook[data-id=fairy]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));if(bookDrag.over!==st.id)return 'book over the monster does not count';"
+     "dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));__step(.2);if(!READ.has(st.id))return 'not reading';if(st.needs.attention>.3)return 'reading did not keep it company: '+st.needs.attention+' log '+logs().join('|');"
+     "if(!CAP.log.concat(CAP.q).concat(CAP.cur||[]).some(l=>l.t==='Pip listens to the fairy tale, very still.'))return 'no reading caption';"
+     "__step(9);if(READ.has(st.id))return 'still reading after 9 s';"
+     "cv.dispatchEvent(new MouseEvent('click',cl(100,190)));document.querySelector('.tbook[data-id=almanac]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));"
+     "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.3);if(READ.size)return 'a book dropped on the floor got read';return !bookDrag.item||'still holding';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
