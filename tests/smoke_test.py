@@ -174,6 +174,13 @@ CASES = [
      "cv.dispatchEvent(new PointerEvent('pointerdown',cl(...c)));cv.dispatchEvent(new PointerEvent('pointermove',cl(c[0],c[1]+60)));__step(.05);cv.dispatchEvent(new PointerEvent('pointermove',cl(800,900)));dispatchEvent(new PointerEvent('pointerup',cl(800,900)));__step(5);"
      "if(st.float)return 'still floating after being dragged down';"
      "st.bonkT=.5;st.bonkDir=1;const bx=plantBoxRaw().x;__step(.15);const hop=plantBox().x-bx;__step(.5);if(hop<=0)return 'bonk did not hop';st.spookT=1.8;return mouthNow()===11||'no spooky face';})()"),
+    # tap a book in the tray: the story zooms open right away, read to the monster you're tending (Jackie, Nov 7)
+    ("read_tap", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;", "", 0.1,
+     "(()=>{st.nap=0;st.night=false;const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});cv.dispatchEvent(new MouseEvent('click',cl(100,190)));"
+     "const b=document.querySelector('.tbook[data-id=nonsense]'),br=b.getBoundingClientRect(),c={clientX:br.left+br.width/2,clientY:br.top+br.height/2,bubbles:true,pointerId:1,isPrimary:true};"
+     "b.dispatchEvent(new PointerEvent('pointerdown',c));dispatchEvent(new PointerEvent('pointerup',c));const sb=document.querySelector('.story');if(!sb)return 'tapping a book did not open the story';"
+     "if(!/scale/.test(sb.style.transform))return 'no zoom';__step(.3);if(sb.style.transform)return 'zoom did not finish';if(sb.querySelector('.sl').textContent!==STORIES.nonsense[0])return 'wrong story';"
+     "return (spotKey()==='chair'&&READ.has(st.id))||'the tended monster is not listening in the armchair';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,
