@@ -187,6 +187,17 @@ CASES = [
      "(()=>{const t=()=>document.querySelector('.jl .jname').textContent,want=['Pip & you','Pip & Mortie','Pip & Tofu'];for(const w of want){document.querySelector('.jarrow.jnext').click();__step(.3);if(t()!==w)return 'expected '+w+', got '+t();}"
      "if(document.querySelector('.jarrow.jnext'))return 'an arrow past the last spread';document.querySelector('.jarrow.jprev').click();__step(.3);if(t()!=='Pip & Mortie')return 'back arrow';"
      "document.querySelector('.jrib[data-page=cat]').click();__step(.3);if(t()!=='Tofu')return 'cat ribbon did not open the cat main page';document.querySelector('.jarrow.jnext').click();__step(.3);return t()==='Tofu & you'||'cat & you: '+t();})()"),
+    # welcome back (Jackie, Nov 7): what it says happened while you were away is really there in the room
+    ("welcome_friends", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.ge=.6;s.lc=.6;s.free={x:300,y:918};s.giftSeed=1;s.lastSeen=Date.now()-3*3600e3;"
+     "s.others=[Object.assign((()=>{const f=fresh(),q={};for(const k in f)if(!GLOBAL.has(k))q[k]=f[k];return q;})(),{id:2,stage:8,species:7,name:'Mortie Gloomsnack',ge:.6,lc:.6,free:{x:1350,y:918}})];s.id=1;s.nextId=3;", "", 0.05,
+     "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/Pip and Mortie scooted close together/.test(L))return 'caption: '+L;const [a,b]=allRaw();const d=Math.abs(a.free.x-b.free.x);return (d<650&&d>200)||'not side by side: '+a.free.x+' '+b.free.x;})()"),
+    ("welcome_bicker", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.ge=.6;s.lc=.6;s.free={x:700,y:918};s.giftSeed=1;s.lastSeen=Date.now()-3*3600e3;"
+     "s.others=[Object.assign((()=>{const f=fresh(),q={};for(const k in f)if(!GLOBAL.has(k))q[k]=f[k];return q;})(),{id:2,stage:8,species:7,name:'Mortie Gloomsnack',ge:-.6,lc:-.6,free:{x:950,y:918}})];s.id=1;s.nextId=3;", "", 0.03,
+     "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/sulking on opposite sides/.test(L))return 'caption: '+L;const [a,b]=allRaw();if(Math.abs(a.free.x-b.free.x)<800)return 'not apart: '+a.free.x+' '+b.free.x;return allRaw().every(q=>q.grump>0)||'no grumpy faces';})()"),
+    ("welcome_moon", "s.stage=8;s.species=3;s.name='Penny Flapdoodle';s.lc=-.8;s.nlc=-.6;s.ge=0;s.nge=0;s.free={x:700,y:918};s.giftSeed=1;s.lastSeen=Date.now()-3*3600e3;", "", 0.03,
+     "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/Penny is bouncing around in moon gravity/.test(L))return 'caption: '+L;return !!st.float||'not floating';})()"),
+    ("welcome_cat_far_from_spooky", "s.stage=8;s.species=3;s.name='Mortie Gloomsnack';s.ge=-.7;s.nge=-.5;s.lc=0;s.nlc=0;s.free={x:1300,y:918};s.giftSeed=1;s.catTrust=.2;s.lastSeen=Date.now()-3*3600e3;", "", 0.03,
+     "(()=>{const L=CAP.log.concat(CAP.q).concat(CAP.cur||[]).map(l=>l.t).join('|');if(!/napping as far from Mortie as possible/.test(L))return 'caption: '+L;return Math.abs(cat.x-1300)>700||'cat not far: '+cat.x;})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

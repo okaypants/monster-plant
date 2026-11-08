@@ -42,6 +42,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/names_shots.py` lets a sprout open its eyes on a phone held sideways, checks the hello caption has its new name, and shows the journal page with the name on top; saved to `tests/screenshots/names/`. The smoke test also checks old saves get named, two plants never share a first name, and renaming in the journal (16 letters, cleared = back to the old name).
 
+`python tests/welcome_shots.py` comes back after 3 hours on a phone held sideways and checks each welcome-back line is really there: friends side by side, bickering pair on opposite sides, a moon bouncer in the air, the cat napping far from a spooky monster; saved to `tests/screenshots/welcome/`.
+
 `python tests/nature_shots.py` shows the quirks you can see on a phone held sideways: a very chaotic monster bouncing in moon gravity (and still up 20 s later), a spooky face at the cat, a bonk hop; saved to `tests/screenshots/nature/`.
 
 `python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen; it hops into the armchair and the story opens facing us; it turns the pages to the end, the book hops home and the monster goes back; then a kid reads the grimoire in the armchair; saved to `tests/screenshots/reading/`.
