@@ -44,7 +44,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
   if(st.needs.thirst<.3){st.over=PUDDLE_T;st.overType='water';setTimeout(()=>sfx('blub'),900);tell('No harm done.',{kind:'teach',key:'puddle'});}
   else{if(st.needs.thirst>.6)met('thirst');setTimeout(()=>sfx('sigh'),1300);
    const P=pers(),onTime=st.routine!=null&&Math.abs(st.dayT-st.routine)<.07;st.routine=st.routine==null?st.dayT:st.routine*.7+st.dayT*.3;
-   if(P.l==='lawful'&&onTime&&st.stage>=4){st.needs.attention=Math.max(0,st.needs.attention-.15);setTimeout(()=>burst('heart',b.x+b.w*.15,b.y-20,2),1300);const f=notice('tidy',QUIRK_TXT.tidy);tell('Right on time! '+who()+' loves a routine.',f?{kind:'teach',key:'quirk_tidy',who:st.id}:{kind:'info',who:st.id});}
+   if(P.l==='lawful'&&onTime&&st.stage>=4){msSet(st,'routine');st.needs.attention=Math.max(0,st.needs.attention-.15);setTimeout(()=>burst('heart',b.x+b.w*.15,b.y-20,2),1300);const f=notice('tidy',QUIRK_TXT.tidy);tell('Right on time! '+who()+' loves a routine.',f?{kind:'teach',key:'quirk_tidy',who:st.id}:{kind:'info',who:st.id});}
    if(st.stage>=4)setTimeout(()=>doMove(),1300);
    if(P.l==='lawful'&&onTime&&st.stage>=4){}else if(st.stage>=4&&quiet()&&Math.random()<.6)setTimeout(()=>{if(ambientOK())tell(line('water'),{kind:'ambient',who:st.id});},1400);}
   st.needs.thirst=0;held.tool=null;return;}

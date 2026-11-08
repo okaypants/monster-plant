@@ -181,6 +181,12 @@ CASES = [
      "b.dispatchEvent(new PointerEvent('pointerdown',c));dispatchEvent(new PointerEvent('pointerup',c));const sb=document.querySelector('.story');if(!sb)return 'tapping a book did not open the story';"
      "if(!/scale/.test(sb.style.transform))return 'no zoom';__step(.3);if(sb.style.transform)return 'zoom did not finish';if(sb.querySelector('.sl').textContent!==STORIES.nonsense[0])return 'wrong story';"
      "return (spotKey()==='chair'&&READ.has(st.id))||'the tended monster is not listening in the armchair';})()"),
+    # each relationship has its own spread in the journal, reached with the little arrows (Jackie, Nov 7)
+    ("journal_relationships", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:300,y:918};s.giftSeed=1;s.catName='Tofu';",
+     "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);openJournal('p'+allRaw().find(q=>q.name==='Pip Wobblebean').id);", 0.2,
+     "(()=>{const t=()=>document.querySelector('.jl .jname').textContent,want=['Pip & you','Pip & Mortie','Pip & Tofu'];for(const w of want){document.querySelector('.jarrow.jnext').click();__step(.3);if(t()!==w)return 'expected '+w+', got '+t();}"
+     "if(document.querySelector('.jarrow.jnext'))return 'an arrow past the last spread';document.querySelector('.jarrow.jprev').click();__step(.3);if(t()!=='Pip & Mortie')return 'back arrow';"
+     "document.querySelector('.jrib[data-page=cat]').click();__step(.3);if(t()!=='Tofu')return 'cat ribbon did not open the cat main page';document.querySelector('.jarrow.jnext').click();__step(.3);return t()==='Tofu & you'||'cat & you: '+t();})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

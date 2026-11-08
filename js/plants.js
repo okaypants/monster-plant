@@ -312,7 +312,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night||st.float)return;st.qui
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
  else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping '+catName()+' company. '+catName()+' seems to like it.';}
- else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
+ else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);msSet(st,'share:'+o.id);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
  else if(q==='boo'){st.spookT=1.8;st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;sfx('hmm');catFeel(st.id,'hmph');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
  else if(q==='moon'){st.walk=null;st.float={h:0,vh:rnd(260,320),vx:(Math.random()<.5?-1:1)*rnd(40,70)};sfx('boing');t=who()+' floats off in moon gravity! Drag '+who()+' back down to earth.';}
  const first=notice(q,QUIRK_TXT[q]);if(t)tell(t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
@@ -334,13 +334,15 @@ function socialTick(dt){if(st.night)return;const P=allRaw().filter(q=>q.stage>=4
  const both=(f)=>{for(const q of[a,b]){const i=(st.others||[]).indexOf(q);if(i<0)f();else{swapIn(i);try{f();}finally{swapIn(i);}}}};
  const hearts=()=>{for(let i=0;i<4;i++)setTimeout(()=>burst('heart',a._pos.x+(b._pos.x-a._pos.x)*(i+.5)/4,Math.min(a._pos.y,b._pos.y)-300,1),i*180);};
  if(r==='bicker'){both(()=>{st.grump=6;doMove('grin');});sfx('hmm');
+  msSet(a,'bicker:'+b.id);msSet(b,'bicker:'+a.id);setTimeout(()=>{msSet(a,'madeup:'+b.id);msSet(b,'madeup:'+a.id);},6500);
   const said=tell(cap(n(a))+' and '+n(b)+' are bickering. Grumpy faces all around.',{kind:'ambient',key:'bicker'});
   setTimeout(()=>{hearts();sfx('chime');if(said)tell('…and they made up. They always do.',{kind:'info',key:'madeup'});},6500);bumpRel(a,b,-1);}
  else if(r==='friends'){const p=pers.call(null);both(()=>doMove());hearts();sfx('giggle');
   const both2=(k,v)=>a[k]*v>0.33&&b[k]*v>0.33;
   const t=both2('lc',-1)?'egging each other on':both2('lc',1)?'bowing politely to each other':both2('ge',1)?'swaying together':both2('ge',-1)?'scheming together':'getting along';
-  tell(cap(n(a))+' and '+n(b)+' are friends!',{kind:'ambient',key:'friends'});bumpRel(a,b,1);}
+  msSet(a,'friends:'+b.id);msSet(b,'friends:'+a.id);tell(cap(n(a))+' and '+n(b)+' are friends!',{kind:'ambient',key:'friends'});bumpRel(a,b,1);}
  else{both(()=>doMove('bob'));}}
+function msSet(q,k){q.ms=q.ms||{};q.ms[k]=q.ms[k]||(st.day||1);} // a milestone, remembered with the day it happened
 function bumpRel(a,b,v){for(const[x,y]of[[a,b],[b,a]]){x.rel=x.rel||{};x.rel[y.id]=(x.rel[y.id]||0)+v;}}
 // extremes earn a title + a one-time celebration
 const TITLES={good:'Little saint',evil:'Little menace',lawful:'Stickler',chaotic:'Wild child'};
