@@ -38,7 +38,7 @@ async def main():
             await pg.evaluate(SAVE % extra)
             await pg.reload(wait_until="load")
             await pg.click(".screen button")
-            await pg.evaluate("()=>{__step(10);capClear();CAP.log.length=0;for(const q of allRaw())q.nap=0;}")
+            await pg.evaluate("()=>{breedTick=()=>{};__step(10);capClear();CAP.log.length=0;for(const q of allRaw())q.nap=0;}")  # breeding has its own test
 
         await load()
         # the first ask comes by itself; every monster here is adult and content. Random 0 picks the first of each list

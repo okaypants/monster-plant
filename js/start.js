@@ -86,6 +86,7 @@ function quiz(){openingRoom();const picks=QUIZ.map(pool=>pool[Math.floor(Math.ra
 function plantSeed(sp){
  giveNature(st);st.species=sp;
  nameStep(st,()=>{st.started=true;st.stage=0;st.timer=0;openingRoom();sfx('soil');
-  tell('Hello, '+st.name+'! Your little seed is on the window sill growing, or move it to the desk and turn on the lamp.',{kind:'important'});save();});}
+  tell(seedHello(st.name),{kind:'important'});save();});}
+function seedHello(n){return 'Hello, '+n+'! Your little seed is on the window sill growing, or move it to the desk and turn on the lamp.';}
 // its name is picked for it (js/names.js) and shared in the hello; rename it anytime by tapping its name in the journal (no naming screens)
 function nameStep(p,done){if(!p.name)p.name=makeName(p);done();}

@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Two adults can make a seed again, and you choose where it goes (Nov 8)
+
+- Two content adults may make a seed even though they fill the room (this is the only case allowed past `MAX_PLANTS`, and nobody becomes a third monster on the spot). A bubble names both, with two choices.
+- **Send it to Slowmallow:** a paper airplane carries the seed up and out of the room; both parents stay. Payment isn't decided, so `seedSentHook` in js/plants.js is the place for it.
+- **Keep it here:** "<A> and <B> will head off in the morning to live their own lives." The next morning both move out ("Out living their own lives"), each keepsake still knowing the other, and the seed is on the windowsill with its own name and the usual hello. The curtains open so you can see it.
+- **Decisions the brief left open:** the existing code would have bred every day, too often when the choice can send both parents away, so it's one roll a day (1 in 4, friends 2 in 5), adults settle in for 3 days first, and it shares the 3-day gap with the asks to move out. Tapping away decides nothing: the bubble comes back 15 seconds later, and a waiting seed is kept in the save. The caption before the bubble is still "Please excuse the mess."
+- Debug (test mode): **Breed now** follows the same flow. `python3 tests/pollination_shots.py` checks it.
+
 ### A grown monster can ask to move out (Nov 8)
 
 - Now and then a content adult asks to go somewhere that fits its nature: a cream bubble by the monster, naming it, with Yes / Not yet. The reasons are one easy list per nature, `GO_REASONS` at the top of js/names.js; each has what the ask says and what the keepsake's "Out in the world" page says.

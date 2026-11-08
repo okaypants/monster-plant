@@ -90,6 +90,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid grows into a teen right on time, a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) grows at half speed, one age at most.
 
+`python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Slowmallow (airplane, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
+
 `python3 tests/go_ask_shots.py` checks that a content adult asks to go by itself (Yes / Not yet), that Not yet costs nothing and asks again in 3 days, that Yes means moved out next morning, who never asks, and that the last monster leaving is not a dead end; saved to `tests/screenshots/go_ask/`.
 
 `python3 tests/archive_shots.py` checks the ARCHIVE drawer: the empty note, `moveOut()`, save and reload, one closed book per monster, the read-only keepsake with its "Out in the world" page, debug's Move out staying on the test copy, and iPhone fit; saved to `tests/screenshots/archive/`.

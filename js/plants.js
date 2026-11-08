@@ -381,15 +381,24 @@ function titleCheck(){const out=[];if(st.ge>.85)out.push('good');if(st.ge<-.85)o
  st.titles=st.titles||[];const id=st.id;for(const t of out)if(!st.titles.includes(t)){st.titles.push(t);setTimeout(()=>withPlant(id,()=>{const b=plantBox();doMove();burst('heart',b.x+b.w/2,b.y-30,4);sfx('chime');tell(who()+' is officially a '+TITLES[t]+'!',{kind:'important',who:id});}),2500);}}
 /* ---------- a second seed, and breeding ---------- */
 function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.length-1);ACT=st.id;} // the new one becomes the one you're tending
-/* NEW PLANTS ONLY WITH YOUR OK (Jackie, Nov 4): nothing appears out of nowhere. A seed (the window gift, or one your two adults made)
-   is offered in a little bubble, and planted only if you say yes. "Not now", or tapping away, means no seed; the gift asks again a few days later. */
-let seedOffer=null;
-function offerSeed(o){seedOffer=o;}
-function offerTick(){if(!seedOffer||bubble||capBusy()||st.night||document.querySelector('.screen'))return; // never while you're busy, in a menu, or at night
- const o=seedOffer;seedOffer=null;if(plantCount()>=MAX_PLANTS||allRaw().some(q=>q.stage>=0&&q.stage<4)){o.no&&o.no();return;}
- sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,o.text+'<br><button data-k="y">Yes, plant it</button><button data-k="n">Not now</button>',
-  {y:()=>{closeBubble();o.yes();},n:()=>{closeBubble();o.no&&o.no();}});
- o.no&&o.no(); /* asked: unless you say yes, it's a no (tapping away included) */}
+/* A SEED FROM TWO ADULTS (Jackie, Nov 8): nothing appears out of nowhere. The bubble names both parents and asks where the seed goes:
+     Send it to Slowmallow: it flies off on a paper airplane and both parents stay.
+     Keep it here: both parents head off the next morning (moveOut) and the seed is planted on the windowsill.
+   Tapping away doesn't decide anything: the bubble comes back a little later. Waiting offers live in the save (st.seedOffer). */
+const SEED_REASK=15;let offerAt=0; // seconds before a dismissed bubble comes back
+function offerTick(){const o=st.seedOffer;if(!o||bubble||T<offerAt||capBusy()||st.night||document.querySelector('.screen'))return; // never while you're busy, in a menu, or at night
+ const [a,b]=o.ids.map(id=>allRaw().find(q=>q.id===id));if(!a||!b){st.seedOffer=null;return;} // a parent is gone (debug): nothing to decide
+ offerAt=T+SEED_REASK;sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,esc(nameOf(a,true))+' and '+esc(nameOf(b,true))+' made a seed together!<br><button data-k="s">Send it to Slowmallow</button><button data-k="k">Keep it here</button>',
+  {s:()=>{closeBubble();seedSend();},k:()=>{closeBubble();seedKeep();}});}
+// PAYMENT ISN'T DECIDED (Jackie): whatever Slowmallow gives for a seed goes here
+function seedSentHook(seed){st.seedsSent=(st.seedsSent||0)+1;}
+let seedFly=null; // when the airplane took off this visit
+function seedSend(){const o=st.seedOffer;st.seedOffer=null;seedFly=T;sfx('page');seedSentHook(o.seed);tell('Off it goes to Slowmallow on a paper airplane.',{kind:'important'});save();}
+const KEEP_DEST='Out living their own lives';
+function seedKeep(){const o=st.seedOffer;st.seedOffer=null;st.seedKeep=o.seed;const P=o.ids.map(id=>allRaw().find(q=>q.id===id));for(const q of P){q.goDest=KEEP_DEST;q.goDay=st.day+1;delete q.goAgain;}
+ sfx('chime');tell(nameOf(P[0],true)+' and '+nameOf(P[1],true)+' will head off in the morning to live their own lives.',{kind:'important'});save();}
+// the morning after "Keep it here": the seed takes over the windowsill, with its own name and the usual hello
+function seedKeptArrives(){const c=st.seedKeep;st.seedKeep=null;if(plantCount()===0)Object.assign(st,c);else addPlant(c);ACT=st.id;pickChair();st.curtain='open';sfx('soil');tell(seedHello(st.name),{kind:'important',who:st.id});}
 /* SLOWMALLOW'S NOTE (Jackie, Nov 4; renamed Nov 7): Slowmallow is a cute sloth who only talks by paper airplane and
    helps monsters become good members of society (no doctor, no professor).  the second plant is opt-in. When your only plant is a late teen (at least one night as a teen,
    or already grown), a paper-airplane note from Slowmallow glides onto the windowsill once and sits there (nothing loops or blinks).
@@ -404,11 +413,13 @@ function bugReady(){if(plantCount()!==1||st.giftSeed||st.bugSend||allRaw().some(
 function bugNoteBox(){const p=P,w=BUG_PLANE[0].length*p,h=BUG_PLANE.length*p;return {x:BUG_NOTE.x-w/2,y:BUG_NOTE.y-h,w,h};}
 function bugOnSill(){return st.bugNote==='sill'&&bugReady();}
 function bugNoteHit(x,y){if(!bugOnSill())return false;const b=bugNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}
-function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==null?1:clamp((T-bugLand)/1.6,0,1),p=P;
- const x0=b.x-(1-u)*140,y0=b.y-(1-u)*170; // glides down from the window once, on whole pixels
- const X=Math.round(x0/p)*p,Y=Math.round(y0/p)*p;
+function drawPlane(x0,y0){const p=P,X=Math.round(x0/p)*p,Y=Math.round(y0/p)*p; // on whole pixels
  g.fillStyle=C.out;BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='0')g.fillRect(X+i*p-2,Y+j*p-2,p+4,p+4);}));
- BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));}
+ BUG_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));return [X,Y];}
+function drawBugNote(){if(!bugOnSill())return;const b=bugNoteBox(),u=bugLand==null?1:clamp((T-bugLand)/1.6,0,1);drawPlane(b.x-(1-u)*140,b.y-(1-u)*170);} // glides down from the window once
+// the seed leaving for Slowmallow's: the airplane lifts off the sill and flies up out of the room, a little seed riding on it
+function drawSeedFly(){if(seedFly==null)return;const u=(T-seedFly)/2.4;if(u>=1){seedFly=null;return;}const b=bugNoteBox(),[X,Y]=drawPlane(b.x+u*760,b.y-u*640),p=P;
+ g.fillStyle=C.out;g.fillRect(X+3*p-2,Y-p-2,2*p+4,2*p+4);g.fillStyle=C.brick;g.fillRect(X+3*p,Y-p,2*p,2*p);}
 function bugAsk(){sfx('page');const b=bugNoteBox();
  openBubble(b.x-140,b.y-190,'<b>From Slowmallow</b><br>'+BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
 function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Slowmallow will send the seedling over in the morning.',{kind:'info'});save();}
@@ -422,7 +433,7 @@ function bugArrive(){ // the next morning
    Yes: it sets off the next morning (moveOut). Not yet, or tapping away: no penalty of any kind, it asks again in 3 days. */
 const GO_CHANCE=.2,GO_CALM=20,GO_AGAIN=3,GO_SETTLED=3;let goCalm=0; // chance per day; seconds of calm first; days until it asks again; days an adult settles in before it can ask
 function goContent(){return st.stage>=8&&st.nap<=0&&!want('thirst')&&!want('attention')&&st.lightState==='ok'&&!st.float&&!(st.grump>0)&&!READ.has(st.id)&&(st.adultDay==null||st.day>=st.adultDay+GO_SETTLED)&&(st.goAgain||0)<=st.day;}
-function goWaiting(){return !!bubble||bugOnSill()||!!(st.bugJournal&&bugReady())||!!st.bugSend||!!seedOffer||allRaw().some(q=>q.goDest);}
+function goWaiting(){return !!bubble||bugOnSill()||!!(st.bugJournal&&bugReady())||!!st.bugSend||!!st.seedOffer||!!st.seedKeep||allRaw().some(q=>q.goDest);}
 function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  if(st.night||T<8||goWaiting()||(st.goNext||0)>st.day||st.goRolled===st.day||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){goCalm=0;return;}
  const ids=[];eachPlant(()=>{if(goContent())ids.push(st.id);});if(!ids.length){goCalm=0;return;}goCalm+=dt;if(goCalm<GO_CALM)return;goCalm=0;st.goRolled=st.day;
@@ -434,7 +445,9 @@ function goAsk(id){withPlant(id,()=>{const p=pers(),R=[p.g,p.l].filter(Boolean).
 function goYes(id,dest){withPlant(id,()=>{st.goDest=dest;st.goDay=st.day+1;delete st.goAgain;sfx('chime');tell(who()+' will set off in the morning.',{kind:'important',who:st.id});});save();}
 function goNotYet(id){withPlant(id,()=>{const b=plantBox();st.goAgain=st.day+GO_AGAIN;burst('heart',b.x+b.w/2,b.y-20,3);plantBoing(b.x+b.w/2);tell(who()+' snuggles back in.',{kind:'important',who:st.id});});save();}
 // the morning after a yes (wake in start.js): gone, journal in the desk. If that was the last monster, the room waits a moment, then a new seed can be planted
-function goMorning(){for(const q of allRaw().filter(q=>q.goDest&&st.day>=q.goDay)){const d=q.goDest;delete q.goDest;delete q.goDay;moveOut(q.id,d);}
+function goMorning(){const L=allRaw().filter(q=>q.goDest&&st.day>=q.goDay),go=L.map(q=>({id:q.id,d:q.goDest}));for(const q of L){delete q.goDest;delete q.goDay;}
+ const copies=L.map(plantFields);go.forEach((x,i)=>moveOut(x.id,x.d,copies.slice(0,i))); // leaving together: each keepsake still knows the other
+ if(st.seedKeep)seedKeptArrives();
  if(plantCount()===0)setTimeout(()=>{if(plantCount()===0&&!document.querySelector('.screen'))startFlow();},GO_EMPTY_MS);}
 const GO_EMPTY_MS=10000;
 function seedTick(dt){
@@ -442,16 +455,15 @@ function seedTick(dt){
  if(st.bugNote==='sill'||st.night||T<8||!quiet()||!bugReady())return; // not in the first moments after you arrive: the welcome comes first
  if((st.giftAskDay||0)>st.day)return; // you said not yet: ask again in a few days
  st.bugNote='sill';bugLand=T;sfx('page');save();}
-function breedTick(dt){ // two happy adults on the same day cross-pollinate and leave a seed (if there's room)
- if(st.night||plantCount()>=MAX_PLANTS||st.breedDay===st.day){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok');
- if(A.length<2||allRaw().some(q=>q.stage>=0&&q.stage<4)){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
- st.bloomT=0;st.breedDay=st.day;const [a,b]=A;crossPollinate(a,b);}
+const BREED_CHANCE=.25,BREED_FRIENDS=.4; // two content adults may make a seed: rolled once a day at most, and never in the 3 days after any ask
+function breedTick(dt){ // MAX_PLANTS is 2, so the room being full of two adults is the one case that's allowed (Jackie, Nov 8)
+ if(st.night||st.breedDay===st.day||goWaiting()||(st.goNext||0)>st.day||st.seedKeep){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok'&&(q.adultDay==null||st.day>=q.adultDay+GO_SETTLED));
+ if(A.length<2){st.bloomT=0;return;}const R=rel(A[0],A[1]);st.bloomT=(st.bloomT||0)+dt*gameSpeed();if(st.bloomT<(R==='friends'?25:R==='bicker'?70:40))return; // friends pollinate sooner
+ st.bloomT=0;st.breedDay=st.day;if(Math.random()<(R==='friends'?BREED_FRIENDS:BREED_CHANCE)){const [a,b]=A;crossPollinate(a,b);}else save();}
 function crossPollinate(a,b){a={...a,needs:{...a.needs}};b={...b,needs:{...b.needs}};const pa=a._pos,pb=b._pos; // snapshot: 'st' changes when the seed arrives
  for(let i=0;i<10;i++)setTimeout(()=>{const t=i/9;burst('heart',pa.x+(pb.x-pa.x)*t,Math.min(pa.y,pb.y)-380-Math.sin(t*Math.PI)*80,1);},i*160);
  sfx('chime');tell('Please excuse the mess.',{kind:'important'});
  setTimeout(()=>{const pick=(k,n)=>Math.random()<.08?Math.floor(Math.random()*n):(Math.random()<.5?a:b)[k];
   const c=freshPlant();c.species=pick('species',16);c.eye=pick('eye',16);c.pref=Math.random()<.08?['sun','shade','night'][Math.floor(Math.random()*3)]:(Math.random()<.5?a:b).pref;c.parents=[a.id,b.id];c.nge=clamp(((a.nge||0)+(b.nge||0))/2+rnd(-.2,.2),-.6,.6);c.nlc=clamp(((a.nlc||0)+(b.nlc||0))/2+rnd(-.2,.2),-.6,.6);c.ge=clamp((a.ge+b.ge)/2*.5+c.nge*.5,-1,1);c.lc=clamp((a.lc+b.lc)/2*.5+c.nlc*.5,-1,1); // born leaning a little like its parents
-  const nm=q=>nameOf(q),cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
-  offerSeed({text:cap(nm(a))+' and '+nm(b)+' made a seed together. Plant it?',
-   yes:()=>{addPlant(c);sfx('soil');sfx('boing');tell('Hurray! A new generation of monsters!',{kind:'important'});save();}});},1800);}
+  c.name=makeName(c);c.place={seed:'sill'};st.seedOffer={ids:[a.id,b.id],seed:JSON.parse(JSON.stringify(c))};st.goNext=st.day+GO_AGAIN;save();},1800);}
 function align(){const a=st.lc>.33?'Lawful':st.lc<-.33?'Chaotic':'Neutral',b=st.ge>.33?'Good':st.ge<-.33?'Evil':'Neutral';return a===b?'True Neutral':a+' '+b;}
