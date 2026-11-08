@@ -85,11 +85,11 @@ CASES = [
      "(!bugOnSill()&&!st.bugNote)||'a brand-new teen already got the note'"),
     ("late_teen_note", "s.stage=6;s.species=4;s.credit=.4;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;", "", 1,
      "bugOnSill()||'no note for a late teen'"),
-    # never more than two plants (Jackie, Nov 4): two happy adults don't offer a seed, and the window gift doesn't ask, when the room is full
+    # never more than two plants (Jackie, Nov 4): two adults making a seed never adds a third on the spot; a bubble asks where it goes (Nov 8), and the window gift doesn't ask when the room is full
     ("no_third_plant", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=0;s.day=4;delete s.giftSeed;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);eachPlant(()=>{st.needs={thirst:0,hunger:0,attention:0};});"
      "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,
-     "(plantCount()===2&&!bubble&&!bugOnSill())||'room full: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
+     "(plantCount()===2&&!!bubble&&/made a seed together!/.test(bubble.textContent)&&!bugOnSill())||'room full: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
     # two plants on the floor, one in the wrong light for a long while, so it walks toward better light (this once crashed: "bd is not defined")
     ("floor_light_seek", "s.stage=8;s.species=3;s.pref='night';s.free={x:400,y:918};s.giftSeed=1;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);swapIn(0);st.lightBad=500;st.lightState='hi';", 1,

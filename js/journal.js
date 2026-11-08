@@ -124,11 +124,11 @@ const ARCH_WORLD=['catTrust','catBond','catSeen','catNaps','catName','leftHand']
 let jKeep=null,jArchSub=0; // the archived monster whose keepsake is open; which spread of books to come back to
 const jsonCopy=o=>JSON.parse(JSON.stringify(o));
 function plantFields(o){const c={};for(const k of Object.keys(o))if(!GLOBAL.has(k)&&k!=='_pos')c[k]=o[k];return Object.assign(jsonCopy(c),jsonCopy(ARCH_CALM));}
-/* moveOut(plant or id, where it went): saves a frozen copy of its journal in st.archive, takes it out of the room, its name tag and its
+/* moveOut(plant or id, where it went, [copies of monsters who left with it]): saves a frozen copy of its journal in st.archive, takes it out of the room, its name tag and its
    ribbon (those read the live plants), and says so. The cat's page stays live. Returns the archive entry. */
-function moveOut(p,dest){const id=p&&typeof p==='object'?p.id:p,q=allRaw().find(x=>x.id===id&&x.stage>=0);if(!q)return null;
+function moveOut(p,dest,also=[]){const id=p&&typeof p==='object'?p.id:p,q=allRaw().find(x=>x.id===id&&x.stage>=0);if(!q)return null;
  const world={};for(const k of ARCH_WORLD)if(st[k]!==undefined)world[k]=st[k];
- const e={id,name:q.name||NAMES[q.species],dest:dest||'',day:st.day,snap:plantFields(q),pals:allRaw().filter(x=>x.id!==id&&x.stage>=0).map(plantFields),world:jsonCopy(world)};
+ const e={id,name:q.name||NAMES[q.species],dest:dest||'',day:st.day,snap:plantFields(q),pals:allRaw().filter(x=>x.id!==id&&x.stage>=0).map(plantFields).concat(also),world:jsonCopy(world)};
  if(READ.has(id))closeStory(true);if(drag.id===id){drag.on=false;drag.down=false;}
  if(st.id!==id)st.others=st.others.filter(x=>x.id!==id);
  else if((st.others||[]).length){swapIn(0);st.others=st.others.filter(x=>x.id!==id);}

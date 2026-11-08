@@ -142,7 +142,7 @@ function dbgAskGo(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Only ad
 function dbgTwoAdults(){while(plantCount()<2)addPlant(freshPlant());const ids=allRaw().filter(q=>q.stage>=0).slice(0,2).map(q=>q.id),xy=[[SPOT.rugL.x,SPOT.rugL.y],[SPOT.rugR.x,SPOT.rugR.y]];
  ids.forEach((id,i)=>withPlant(id,()=>{st.stage=8;st.nap=0;st.free={x:xy[i][0],y:xy[i][1]};st.walk=null;}));dbgPid=ids[0];}
 function dbgBreed(){eachPlant(()=>{if(st.stage>=0){const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y};}});const A=allRaw().filter(q=>q.stage>=8);
- if(A.length>=2&&plantCount()<MAX_PLANTS)crossPollinate(A[0],A[1]);else say('Breeding needs two adults and room for one more plant (at most '+MAX_PLANTS+').',3,true);}
+ if(A.length>=2)crossPollinate(A[0],A[1]);else say('Breeding needs two adults.',3,true);}
 // cat
 let dbgWalk=true;
 function dbgCatState(v){cat.force=null;cat.hold=false;cat.huff=0;

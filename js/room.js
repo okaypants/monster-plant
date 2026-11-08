@@ -105,7 +105,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
-  if(!catDone)drawCat();}
+  if(!catDone)drawCat();drawSeedFly();}
  function drawOnePlant(){let b;const pb=plantBox();
   const sill=st.stage<4&&spotKey()==='sill'&&!(drag.on&&drag.id===st.id);if(sill&&st.curtain==='closed'&&curK>.98)return; // shut curtains: the seedling is behind them
 
