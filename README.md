@@ -58,7 +58,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/journal_shots.py` opens the keepsake journal on an iPhone 13 held sideways (a kid's page; an adult with titles, charms and quirks; two friends; the cat at low and high trust), checks the book fits with nothing scrolling, and saves pictures to `tests/screenshots/journal/`. The smoke test also opens it with one plant, two plants and an old save, turns pages with the ribbons, and wears and takes off a charm.
 
-`python tests/bug_note_shots.py` plays Doctor Bug's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
+`python tests/bug_note_shots.py` plays Slowmallow's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
 
 `python tests/ui_shots.py` checks the soft UI look (Fredoka text, cream caption pill, rounded bubbles, outline-free pill buttons) and saves the start screen, a caption, the treat jar bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
 
