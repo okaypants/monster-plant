@@ -81,6 +81,11 @@ let curK=0; // 0 open .. 1 closed, eased
 function drawCurtains(k){const CURT=CURTS[timeKey()];if(k<.01||!ok(CURT))return;const e=Math.round(k*12)/12; // eased; each side's leading edge sweeps to the middle like the fabric drawing shut
  const lw=(CURT_MID-CURT_L)*e,rw=(CURT_R-CURT_MID)*e;
  g.save();g.beginPath();g.rect(CURT_L-8,0,lw+8,H);g.rect(CURT_R-rw,0,rw+8,H);g.clip();g.drawImage(CURT,CURT_AT.x,CURT_AT.y);g.restore();}
+/* BEHIND THE CURTAINS (Jackie, Nov 8): a seedling on the windowsill is hidden when the curtains are closed. The closed curtains hang
+   down past the ledge, so the fabric sweeps over it as they close (whole curtain pixels, the same sweep as drawCurtains), and once
+   they're shut it isn't drawn or tappable at all; tapping there works the curtains. Opening them shows it again. */
+function behindCurtain(){return st.stage>=0&&st.stage<4&&st.curtain==='closed'&&spotKey()==='sill'&&!(drag.on&&drag.id===st.id);}
+function curtainOver(b){if(curK<.01)return;g.save();g.beginPath();g.rect(b.x-4,b.y-4,b.w+8,b.h+8);g.clip();drawCurtains(curK);g.restore();}
 let dtDraw=.016,lastDraw=performance.now();
 function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/1000);lastDraw=nowD;g.clearRect(0,0,W,H);const tk=timeKey(),fOn=st.lamp!==false,dOn=st.desk!==false,lk=(fOn?'on':'off')+(dOn?'on':'off'),mxc=st.curtain==='closed'&&curK>.98?MIX[tk+'_c_'+lk]:null,exactC=!!(mxc&&ok(mxc)),mx2=exactC?mxc:MIX[tk+'_'+lk],exact=!!(mx2&&ok(mx2)),rm=exact?mx2:ROOMS[tk];if(ok(rm))g.drawImage(rm,0,0);else if(ok(room))g.drawImage(room,0,0);
  if(!exactC){const ws=(WIN_SEASON[tk]||{})[seasonNow()];if(ws&&ok(ws))g.drawImage(ws,318,88);}
@@ -102,8 +107,11 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
   if(!catDone)drawCat();}
  function drawOnePlant(){let b;const pb=plantBox();
+  const sill=st.stage<4&&spotKey()==='sill'&&!(drag.on&&drag.id===st.id);if(sill&&st.curtain==='closed'&&curK>.98)return; // shut curtains: the seedling is behind them
+
   if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
-  b=drawPlant();if(inChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
+  b=drawPlant();if(sill)curtainOver(b); // the fabric sweeping over it as the curtains close (or back as they open)
+  if(inChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
   const cx=b.x+b.w/2,top=b.y;
   // each reaction has its own slot around the plant, outside its outline (Jackie: no overlaps, more space)
   const base=baseY(),M=34,vh=inChair()?b.h:Math.max(b.h,440),vt=base-vh; // small plants get a taller virtual box so slots never stack

@@ -18,7 +18,7 @@ function faceAt(x){const f=carryFace;if(!f.dir){f.dir=rightHand()?-1:1;f.far=x;}
  else if(Math.abs(x-f.far)>=FACE_TURN){f.dir=-f.dir;f.far=x;} // moved far enough back the other way: turn
  return f.dir;}
 function pourPoint(x,y,k){const c=carafeAt(x,y);return {x:c.x+carryFace.dir*SPOUT.x*k,y:c.y+SPOUT.y*k};} // the spout is on the side it faces // k = the carafe's depth scale (holdK)
-function pourOver(x,y,k){if(st.stage<0)return false;const p=pourPoint(x,y,k),b=plantBox();return p.x>=b.x-10&&p.x<=b.x+b.w+10&&p.y>=b.y-150&&p.y<=baseY()+4;} // the stream lands on the plant (falling water reaches it from a little above)
+function pourOver(x,y,k){if(st.stage<0||behindCurtain())return false;const p=pourPoint(x,y,k),b=plantBox();return p.x>=b.x-10&&p.x<=b.x+b.w+10&&p.y>=b.y-150&&p.y<=baseY()+4;} // the stream lands on the plant (falling water reaches it from a little above)
 // PERSPECTIVE: what you carry is sized for the depth of the plant you hold it over (the same curve as everything else), else the front of the room.
 // Never call these inside eachPlant (they loop over the plants themselves).
 function holdK(x,y){let d=DEPTH_FRONT;eachPlant(()=>{if(st.stage>=0&&pourOver(x,y,depthK(plantDepth())))d=plantDepth();});return depthK(d);}

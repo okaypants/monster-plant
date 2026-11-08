@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A seedling on the windowsill hides behind closed curtains (Nov 8)
+
+- Jackie: hide the seedling behind the curtains when they close. The closed curtains hang down past the ledge, so the fabric sweeps over the pot as they close (the same whole-pixel sweep as the curtains themselves), and once they're shut the seedling isn't drawn at all. Opening them shows it again.
+- While hidden it can't be petted, dragged or watered; tapping there works the curtains. A seedling on the desk is never hidden, and one you're dragging stays in your hand.
+- `python3 tests/curtain_seedling_shots.py` checks it: visible open, mid-sweep, gone when shut (the sill looks exactly like the room with no plant), tapping opens the curtains, back when open, never on the desk.
+
 ### The desk drawers are the Archive, not the journal (Nov 8)
 
 - Jackie: the drawers shouldn't hold the current journal; they're the archive of past inhabitants, and with none yet they hold nothing, just a note about what will go in there once something happens.
