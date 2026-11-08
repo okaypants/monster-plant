@@ -166,6 +166,14 @@ CASES = [
      "(()=>{cat.x=-999;const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),c=[b.x+b.w/2,b.y+b.h*.6];"
      "cv.dispatchEvent(new PointerEvent('pointerdown',cl(...c)));cv.dispatchEvent(new PointerEvent('pointermove',cl(c[0]-200,c[1]-100)));cv.dispatchEvent(new PointerEvent('pointermove',cl(600,520)));dispatchEvent(new PointerEvent('pointerup',cl(600,520)));__step(.3);"
      "return spotKey()==='chair'||'kid not in the armchair: '+spotKey();})()"),
+    # its nature on screen (Jackie, Nov 7): a very chaotic monster bounces in moon gravity until dragged back down; bonk hops; boo pulls a spooky face
+    ("moon_bounce", "s.stage=8;s.species=3;s.name='Penny Flapdoodle';s.lc=-.8;s.nlc=-.6;s.ge=0;s.nge=0;s.free={x:700,y:918};s.giftSeed=1;s.dayT=.3;s.quirkT=999;", "", 0.1,
+     "(()=>{cat.x=-999;st.quirkT=999;const x0=st.free.x;st.float={h:0,vh:300,vx:60};let top=0;for(let i=0;i<40;i++){__step(.25);top=Math.max(top,st.float?st.float.h:0);}"
+     "if(!st.float)return 'stopped floating by itself';if(top<200)return 'never got high: '+top;if(Math.abs(st.free.x-x0)<50)return 'did not drift';if(plantBox().y>=plantBoxRaw().y)return 'not drawn in the air';"
+     "const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),c=[b.x+b.w/2,b.y+b.h*.5];"
+     "cv.dispatchEvent(new PointerEvent('pointerdown',cl(...c)));cv.dispatchEvent(new PointerEvent('pointermove',cl(c[0],c[1]+60)));__step(.05);cv.dispatchEvent(new PointerEvent('pointermove',cl(800,900)));dispatchEvent(new PointerEvent('pointerup',cl(800,900)));__step(5);"
+     "if(st.float)return 'still floating after being dragged down';"
+     "st.bonkT=.5;st.bonkDir=1;const bx=plantBoxRaw().x;__step(.15);const hop=plantBox().x-bx;__step(.5);if(hop<=0)return 'bonk did not hop';st.spookT=1.8;return mouthNow()===11||'no spooky face';})()"),
     ("night_morning", "s.stage=4;s.species=2;s.day=3;", "tuckIn();", 1,
      "st.night||'tuckIn did not reach night'"),
     ("teen", TEEN, "", 1,

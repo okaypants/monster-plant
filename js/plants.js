@@ -20,7 +20,24 @@ const TEACH={thirst:'Someone\'s thirsty -- try dragging over the water carafe or
 const NEXT={0:1,1:4,4:6,6:8},AGES=[0,1,4,6,8];
 const ELDER_SCALE={6:.62,7:.62,8:.82}; // shown smaller so elder pixels match the room's (Jackie OK'd); swap to 1 when finer-pixel redraws arrive
 const FACE=[[0.531, 0.511], [0.505, 0.403], [0.487, 0.493], [0.509, 0.409], [0.525, 0.47], [0.508, 0.377], [0.536, 0.435], [0.503, 0.364], [0.51, 0.461], [0.417, 0.516], [0.5, 0.488], [0.497, 0.375], [0.505, 0.376], [0.5, 0.413], [0.506, 0.406], [0.494, 0.456]]; // per-elder face point (fraction of sprite), from blank body area
-function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50&&st.id===drag.id){ /* only the plant you grabbed follows your finger */const dx=mx-(pb.x+pb.w/2),dy=my-(pb.y+pb.h*.85);return {...pb,x:pb.x+dx,y:pb.y+dy};}return pb;}
+function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50&&st.id===drag.id){ /* only the plant you grabbed follows your finger */const dx=mx-(pb.x+pb.w/2),dy=my-(pb.y+pb.h*.85);return {...pb,x:pb.x+dx,y:pb.y+dy};}
+ const q=quirkOff();return q[0]||q[1]?{...pb,x:pb.x+q[0],y:pb.y+q[1]}:pb;}
+/* SEEING ITS NATURE (Jackie, Nov 7): the quirks happen on screen, not just in a caption. All moves are whole steps of 5 (one art pixel).
+   moon  : a really chaotic monster (lawful-chaotic at -0.6 or wilder) sometimes floats up and bounces slowly around the room in
+           moon gravity, and keeps at it until you drag it back down to earth.
+   bonk  : it hops over toward the thing it bonks, then back.   tidy: a quick, neat little shuffle in place.
+   boo   : a shark-grin spooky face at the cat (teens and adults), with a hop toward the cat. */
+const MOON_G=140,R5=v=>Math.round(v/5)*5;
+function quirkOff(){let x=0,y=0;if(st.float)y-=R5(st.float.h);
+ if(st.bonkT>0){const t=st.bonkT,d=st.bonkDir||1;if(t>.38){x+=d*20;y-=15;}else if(t>.25){x+=d*30;y-=5;}else if(t>.12)x+=d*15;}
+ if(st.tidyT>0)x+=Math.floor(st.tidyT*8)%2?5:-5;return [x,y];}
+function quirkMotion(dt){if(st.bonkT>0)st.bonkT-=dt;if(st.tidyT>0)st.tidyT-=dt;if(st.spookT>0)st.spookT-=dt;
+ const f=st.float;if(!f)return;if(drag.on&&st.id===drag.id){st.float=null;return;} // grabbed: back to earth
+ f.vh-=MOON_G*dt;f.h+=f.vh*dt;
+ if(f.h<=0){f.h=0;if(st.night||st.nap>0){st.float=null;return;} // bedtime: it lands and stays
+  f.vh=rnd(250,330);sfx('boing');}
+ st.free=st.free||{x:SPOT.rugC.x,y:SPOT.rugC.y};st.free.x+=f.vx*dt;
+ if(st.free.x<FLOOR_X0+60){st.free.x=FLOOR_X0+60;f.vx=Math.abs(f.vx);}if(st.free.x>FLOOR_X1-60){st.free.x=FLOOR_X1-60;f.vx=-Math.abs(f.vx);}}
 // NEW teen/adult art per species (Jackie via ChatGPT), shown at target heights: teen 45%, adult 60% of the room
 const NEWART={1:{teen:img('teen_01.png'),adult:img('adult_01.png'),face:{teen:[0.494, 0.398],adult:[0.491, 0.511]}},2:{teen:img('teen_02.png'),adult:img('adult_02.png'),face:{teen:[0.499, 0.363],adult:[0.493, 0.375]}},3:{teen:img('teen_03.png'),adult:img('adult_03.png'),face:{teen:[0.493, 0.477],adult:[0.498, 0.532]}},4:{teen:img('teen_04.png'),adult:img('adult_04.png'),face:{teen:[0.5, 0.503],adult:[0.486, 0.523]}},5:{teen:img('teen_05.png'),adult:img('adult_05.png'),face:{teen:[0.494, 0.414],adult:[0.503, 0.497]}},6:{teen:img('teen_06.png'),adult:img('adult_06.png'),face:{teen:[0.492, 0.401],adult:[0.507, 0.364]}},7:{teen:img('teen_07.png'),adult:img('adult_07.png'),face:{teen:[0.501, 0.445],adult:[0.5, 0.491]}},8:{teen:img('teen_08.png'),adult:img('adult_08.png'),face:{teen:[0.497, 0.352],adult:[0.499, 0.414]}},9:{teen:img('teen_09.png'),adult:img('adult_09.png'),face:{teen:[0.495, 0.42],adult:[0.509, 0.465]}},10:{teen:img('teen_10.png'),adult:img('adult_10.png'),face:{teen:[0.542, 0.48],adult:[0.491, 0.532]}},11:{teen:img('teen_11.png'),adult:img('adult_11.png'),face:{teen:[0.491, 0.53],adult:[0.469, 0.528]}},12:{teen:img('teen_12.png'),adult:img('adult_12.png'),face:{teen:[0.503, 0.431],adult:[0.495, 0.385]}},13:{teen:img('teen_13.png'),adult:img('adult_13.png'),face:{teen:[0.499, 0.242],adult:[0.505, 0.267]}},14:{teen:img('teen_14.png'),adult:img('adult_14.png'),face:{teen:[0.499, 0.289],adult:[0.503, 0.318]}},15:{teen:img('teen_15.png'),adult:img('adult_15.png'),face:{teen:[0.499, 0.368],adult:[0.499, 0.419]}},16:{teen:img('teen_16.png'),adult:img('adult_16.png'),face:{teen:[0.5, 0.419],adult:[0.498, 0.422]}}};
 // AGE SIZES at the front of the rug (100%); depthK shrinks them farther back. A teen is 1.45x a kid, an adult 1.9x (adult = 60% of the room, as Jackie set).
@@ -193,7 +210,7 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  return b;}
 // mouth set B (Jackie's second sheet): 1 w,2 big open+tongue,3 blep,4 sly fang smirk,5 blushing smile,6 small cat w,7 fang grin+tongue,8 flat line,9 blushing frown,10 w+fang,11 shark grin,12 heart tongue
 const MOUTH_BY={'Lawful Good':5,'Neutral Good':1,'Chaotic Good':12,'Lawful Neutral':8,'True Neutral':6,'Chaotic Neutral':3,'Lawful Evil':4,'Neutral Evil':10,'Chaotic Evil':11};
-function mouthNow(){const fm=feedMouth();if(fm)return fm;if(st.grump>0)return 9;if(grinning())return 10;const sad=st.lightState!=='ok'||st.needs.thirst>.8||st.needs.attention>.6;if(sad)return 9;return MOUTH_BY[align()]||6;}
+function mouthNow(){const fm=feedMouth();if(fm)return fm;if(st.spookT>0)return 11; /* the spooky face */if(st.grump>0)return 9;if(grinning())return 10;const sad=st.lightState!=='ok'||st.needs.thirst>.8||st.needs.attention>.6;if(sad)return 9;return MOUTH_BY[align()]||6;}
 function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/mood. drawn at the same scale as the body
  const aa=ageArt(),f=aa?aa.face:FACE[st.species],sc=TARGET_H[st.stage>=8?'adult':'teen']/601*.54*(b.dk||1); /* 10% smaller again (Jackie) *//* faces 40% smaller (Jackie) */const cx=b.x+b.w*f[0],cy=b.y+b.h*f[1]+bob;
  const closed=st.nap>0||st.night||blink>0||st.listen>0||squinting();
@@ -210,7 +227,7 @@ function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toast
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*b.seedK),w,h-Math.round(cut*b.seedK));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*b.seedK));}
  g.restore();}
 function want(n){if(st.stage<0)return false;if(st.stage<4)return n==='thirst'&&st.needs.thirst>.6;return st.needs[n]>.6;}
-function plantUpdate(dt){const sp=gameSpeed();
+function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  st.listen=Math.max(0,st.listen-dt);st.over=Math.max(0,st.over-dt);st.nap=Math.max(0,st.nap-dt);
  if(st.mv)st.mv.t+=dt;if(st.grump>0)st.grump-=dt;
  needTick(dt); // real seconds, so looks come back over a couple of seconds at any speed
@@ -243,7 +260,7 @@ function plantUpdate(dt){const sp=gameSpeed();
    A grown plant that's been in the wrong light for a while shuffles, in whole-pixel steps, to the nearest floor spot that suits it. */
 function squinting(){return st.lightState==='hi'&&Math.floor(T*1.5)%3!==0;} // eyes shut against the light, peeking now and then (frame swap)
 function leanOff(){if(st.lightState!=='hi')return 0;const s=SPOT[spotKey()],i=spotInfo(spotKey()),from=i.sun?WINDOW_LIGHT.x:i.under?i.under.x:WINDOW_LIGHT.x;const n=Math.max(4,Math.round(plantBoxRaw().h*.025));return s.x<from?-n:n;} // whole pixels, away from the light; bigger plants lean further
-function scootTick(dt){if(stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(drag.on&&st.id===drag.id))return;
+function scootTick(dt){if(st.float||stageGroup()==='seed'||spotKey()!=='free'||st.nap>0||(drag.on&&st.id===drag.id))return;
  if(st.walk){const w=st.walk,f=st.free,sp=Math.max(1,Math.round(90*dt));f.x+=clamp(w.x-f.x,-sp,sp);f.y+=clamp(w.y-f.y,-Math.ceil(sp/2),Math.ceil(sp/2));
   if(f.x===w.x&&f.y===w.y){st.walk=null;sfx('pop');}return;}
  if(st.lightState==='ok'||st.lightBad<(st.lightState==='hi'?HI_WAIT+50:70))return; /* plants on the floor move off once it's been withering or burning a good while */
@@ -278,25 +295,26 @@ function line(ev){const p=pers(),keys=[p.g,p.l].filter(Boolean);if(!keys.length)
  const all=[...new Set(keys.flatMap(k=>[].concat(VOICE[ev][k]||[])).map(fmt))],h=LINE_HIST[ev]=LINE_HIST[ev]||[],fresh=all.filter(t=>!h.includes(t)&&!capRecent(t));
  if(!fresh.length)return '';const t=fresh[Math.floor(Math.random()*fresh.length)];h.push(t);if(h.length>15)h.shift();return t;}
 function notice(q,desc){st.quirks=st.quirks||{};if(!st.quirks[q]){st.quirks[q]=desc;return true;}return false;}
-const QUIRK_TXT={bonk:'Chaotic: bonks things around the room for fun.',wander:'Chaotic: wanders to a new spot when it gets bored.',tidy:'Lawful: tidies its leaves; loves being watered at its usual time.',
+const QUIRK_TXT={moon:'Chaotic: sometimes bounces around in moon gravity until you bring it back down.',bonk:'Chaotic: bonks things around the room for fun.',wander:'Chaotic: wanders to a new spot when it gets bored.',tidy:'Lawful: tidies its leaves; loves being watered at its usual time.',
  usual:'Lawful: loves its usual treat.',novel:'Chaotic: loves a treat it hasn\'t had lately.',catfriend:'Good: keeps the cat company (the cat warms up to you faster).',share:'Good: shares its happiness with the other plants.',
  boo:'Evil: makes spooky faces at the cat (the cat is unimpressed).',dark:'Evil: loves dark treats, eats wholesome ones politely.',sweet:'Good: loves wholesome treats, eats dark ones politely.'};
-function quirkTick(dt){if(st.stage<4||st.nap>0||st.night)return;st.quirkT=(st.quirkT??rnd(25,50))-dt;if(st.quirkT>0)return;st.quirkT=rnd(45,95);
+function quirkTick(dt){if(st.stage<4||st.nap>0||st.night||st.float)return;st.quirkT=(st.quirkT??rnd(25,50))-dt;if(st.quirkT>0)return;st.quirkT=rnd(45,95);
  const p=pers(),b=plantBox(),cx=b.x+b.w/2,opts=[];
- if(p.l==='chaotic'){opts.push('bonk');if(stageGroup()!=='seed'&&spotKey()==='free')opts.push('wander');}
+ if(p.l==='chaotic'){opts.push('bonk');if(stageGroup()!=='seed'&&spotKey()==='free')opts.push('wander');if(st.lc<=-.6&&spotKey()==='free')opts.push('moon');}
  if(p.l==='lawful')opts.push('tidy');
  if(p.g==='good'){if(cat.state==='sleep'&&Math.abs(cat.x-cx)<650)opts.push('catfriend');if(allRaw().some(q=>q.id!==st.id&&q.stage>=4&&q.needs.attention>.3))opts.push('share');}
  if(p.g==='evil'&&cat.state==='sleep'&&cat.spot!=='byplant'&&Math.abs(cat.x-cx)<750)opts.push('boo');
  if(!opts.length){if(ambientOK()&&Math.random()<.35)tell(line('idle'),{kind:'ambient',who:st.id});return;}
  const q=opts[Math.floor(Math.random()*opts.length)];let t='';doMove();
  if(q==='bonk'){let best=null,bd=480;for(const f of FP){const d=Math.hypot(f.x+f.w/2-cx,f.y+f.h/2-(b.y+b.h*.4));if(d<bd){bd=d;best=f;}}
-  plantBoing(cx);if(best){fidgetPoke(best.x+best.w/2,best.y+best.h/2);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
+  st.bonkT=.5;st.bonkDir=best&&best.x+best.w/2<cx?-1:1;if(best){const bb=best;setTimeout(()=>fidgetPoke(bb.x+bb.w/2,bb.y+bb.h/2),250);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
  else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
- else if(q==='tidy'){st.listen=1.6;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
+ else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;const L=VOICE.idle.lawful;t=L[Math.floor(Math.random()*L.length)].replace('{W}',who());}
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping '+catName()+' company. '+catName()+' seems to like it.';}
  else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
- else if(q==='boo'){plantBoing(cx);sfx('hmm');catFeel(st.id,'hmph');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
+ else if(q==='boo'){st.spookT=1.8;st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;sfx('hmm');catFeel(st.id,'hmph');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
+ else if(q==='moon'){st.walk=null;st.float={h:0,vh:rnd(260,320),vx:(Math.random()<.5?-1:1)*rnd(40,70)};sfx('boing');t=who()+' floats off in moon gravity! Drag '+who()+' back down to earth.';}
  const first=notice(q,QUIRK_TXT[q]);if(t)tell(t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
 
 /* ---------- born with a nature; visible moves; friends and bickering; titles (Nov 3, no new art) ---------- */
