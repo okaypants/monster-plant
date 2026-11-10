@@ -135,7 +135,7 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
 function dbgAddPlant(){if(plantCount()>=MAX_PLANTS){say('Room for '+MAX_PLANTS+' plants at most.',3,true);return;}if(!st.started||st.stage<0){Object.assign(st,{started:true,stage:0});dbgPid=st.id;return;}const p=freshPlant();addPlant(p);dbgPid=p.id;}
 function dbgRemovePlant(){const id=pRaw().id;if(plantCount()<=1){say('Keep at least one plant (or use Brand-new game).',3,true);return;}
  if(st.id===id)swapIn(0);st.others=st.others.filter(q=>q.id!==id);dbgPid=st.id;ACT=st.id;pickChair();}
-// test mode only (Jackie, Nov 8): sends the plant being tended off to the archive, on the copy; Back to my game undoes it
+// test mode only (Jackie, Nov 8): sends the plant being tended off to the files in the desk, on the copy; Back to my game undoes it
 const DBG_PLACES=['Off to see the ocean','Staying with Slowmallow','Gone to live in the mountains'];let dbgPlace=0;
 function dbgMoveOut(){if(!TESTING)return;moveOut(pRaw().id,DBG_PLACES[dbgPlace++%DBG_PLACES.length]);dbgPid=st.id;}
 function dbgAskGo(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Only adults ask to go.',3,true);return;}goAsk(q.id);}

@@ -1,5 +1,5 @@
 'use strict';
-/* JOURNAL (Jackie, Nov 4): a cozy keepsake book opened from the name tags (the desk drawers are the Archive now), not a status screen.
+/* JOURNAL (Jackie, Nov 4): a cozy keepsake book opened from the name tags (the desk drawers hold the files now), not a status screen.
    Calm and almost wordless: short labels only, no numbers, no meters or bars, no settings screens. No new art: the plants' own
    sprites, the treat and charm pictures and the cat's frames, plus tiny icons drawn here in the room's palette.
    One open book (cream pages, dark stepped pixel outline), fitted to the screen with no scrolling. Ribbons along the top pick the
@@ -109,7 +109,7 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
 
-/* ---------- THE ARCHIVE (Jackie, Nov 8): the desk drawers hold the journals of monsters who have moved out ----------
+/* ---------- THE FILES (Jackie, Nov 8; called the Archive in code): the desk drawers hold the journals of monsters who have moved out ----------
    The current journals open from the name tags, bottom left. Tapping the drawers opens this over the room in 3 stepped frames: one
    closed, code-drawn book per monster that has moved out. Tap a book for its journal as a read-only keepsake, frozen as of the
    day it left, with a last page "Out in the world". moveOut() is the one way out of the room, whatever ends up sending a monster off. */
@@ -153,7 +153,7 @@ function archiveSteps(){const el=jEl,b=el.querySelector('.jbook'),k=el.bookK||1,
 function jFlip(side,to){const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
  a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});jEl.querySelector(side==='jprev'?'.jl':'.jr').appendChild(a);}
 function jClearPages(){const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';jEl.querySelector('.jribs').innerHTML='';return [L,R];}
-function renderArchive(){const [L,R]=jClearPages(),past=st.archive||[],n=ARCH_PER_PAGE;L.appendChild(jdiv('jname',[],'Archive'));
+function renderArchive(){const [L,R]=jClearPages(),past=st.archive||[],n=ARCH_PER_PAGE;L.appendChild(jdiv('jname',[],'Files'));
  if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(jdiv('jarchnote',[],t)));R.firstChild.classList.add('jarchtop');return;}
  const last=Math.ceil(past.length/(2*n))-1;if(jSub>last)jSub=last;const shown=past.slice(jSub*2*n,(jSub+1)*2*n);
  L.appendChild(jdiv('jshelf',shown.slice(0,n).map(archiveBook)));if(shown.length>n)R.appendChild(jdiv('jshelf jarchtop',shown.slice(n).map(archiveBook)));
@@ -261,16 +261,18 @@ function relPages(L,R,sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q
 /* ---------- out in the world (hidden until it has something) ---------- */
 function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(const it of worldItems())R.appendChild(jdiv('jgroup',[jlabel(it.label||'')]));}
 
-/* ARCHIVE SIGN (Jackie, Nov 8; replaces the Nov 4 JOURNAL plate, which was too small to notice): a sign in the SNACKS
-   sign's style (cream label, gold rim, dark outline, clipped corners, wine letters) set over the top drawer's knob.
-   Drawn in code from the room palette on whole pixels (2 room units each), 4x6 pixel letters. It never glows, blinks or
-   bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the current room
-   picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms under the
-   desk lamp. Tapping it is tapping the drawers: the archive opens. */
-const PLACARD={x:1088,y:570,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
-const PFONT={A:['.##.','#..#','#..#','####','#..#','#..#'],R:['###.','#..#','#..#','###.','#.#.','#..#'],C:['.###','#...','#...','#...','#...','.###'],
- H:['#..#','#..#','####','#..#','#..#','#..#'],I:['###','.#.','.#.','.#.','.#.','###'],V:['#..#','#..#','#..#','#..#','.##.','.##.'],E:['####','#...','###.','#...','#...','####']};
-const PLATE=(()=>{const t='ARCHIVE',tw=[...t].reduce((n,ch)=>n+PFONT[ch][0].length+1,-1),w=tw+6,h=12,rows=[];
+/* FILES SIGN (Jackie, Nov 8; replaces the Nov 4 JOURNAL plate, which was too small to notice; the word was ARCHIVE until Nov 10,
+   now FILES so the letters can be bigger): a sign in the SNACKS sign's style (cream label, gold rim, dark outline, clipped corners,
+   wine letters) set over the top drawer's knob. Drawn in code from the room palette on whole pixels (2 room units each); the five
+   letters are 8 pixels tall with 2-pixel stems, as big as the plate allows with the plate filling most of the drawer face. It never
+   glows, blinks or bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the
+   current room picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms
+   under the desk lamp. Tapping it is tapping the drawers: the files open. */
+const PLACARD={x:1089,y:569,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
+const PFONT={F:['######','##....','##....','#####.','##....','##....','##....','##....'],I:['####','.##.','.##.','.##.','.##.','.##.','.##.','####'],
+ L:['##....','##....','##....','##....','##....','##....','##....','######'],E:['######','##....','##....','#####.','##....','##....','##....','######'],
+ S:['.#####','##....','##....','.####.','....##','....##','....##','#####.']};
+const PLATE=(()=>{const t='FILES',tw=[...t].reduce((n,ch)=>n+PFONT[ch][0].length+1,-1),w=tw+6,h=PFONT[t[0]].length+6,rows=[];
   const ink=new Set();let cx=3;for(const ch of t){PFONT[ch].forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='#')ink.add((cx+i)+','+(3+j));}));cx+=PFONT[ch][0].length+1;}
   for(let j=0;j<h;j++){let r='';for(let i=0;i<w;i++){const dx=Math.min(i,w-1-i),dy=Math.min(j,h-1-j),d=dx+dy;
     r+=d<2?'.':(d===2||dx===0||dy===0)?'o':(d===3||dx===1||dy===1)?'h':ink.has(i+','+j)?'t':'b';}rows.push(r);}return rows;})();

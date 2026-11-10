@@ -1,9 +1,9 @@
-"""The ARCHIVE sign on the desk drawers (SNACKS style, over the top knob).
+"""The FILES sign on the desk drawers (SNACKS style, over the top knob).
 
 Run from the repository root:  python tests/placard_shots.py
 Pictures the sign at day, golden hour and night (desk lamp on and off), room and close-up, to
 tests/screenshots/placard/. Checks it gets darker at night like the wood around it, stays warm under the desk lamp, and
-that tapping it opens the empty archive (with its note), not the journal. Exit code 1 if a check fails.
+that tapping it opens the empty files (with their note), not the journal. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
 from playwright.async_api import async_playwright

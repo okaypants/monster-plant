@@ -52,7 +52,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/feed_shots.py` taps the SNACKS cabinet, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.
 
-`python tests/placard_shots.py` pictures the ARCHIVE sign on the desk drawers (SNACKS style, over the top knob) at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the empty Archive with its note (not the journal); saved to `tests/screenshots/placard/`.
+`python tests/placard_shots.py` pictures the FILES sign on the desk drawers (SNACKS style, over the top knob) at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the empty Files with their note (not the journal); saved to `tests/screenshots/placard/`.
 
 `python tests/relationship_shots.py` flips through every relationship spread (Pip & you, Pip & Mortie, Pip & Tofu, Tofu & you, Tofu & Pip) on a phone held sideways and checks each fits; saved to `tests/screenshots/relationships/`.
 
@@ -96,7 +96,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/go_ask_shots.py` checks that a content adult asks to go by itself (Yes / Not yet), that Not yet costs nothing and asks again in 3 days, that Yes means moved out next morning, who never asks, and that the last monster leaving is not a dead end; saved to `tests/screenshots/go_ask/`.
 
-`python3 tests/archive_shots.py` checks the ARCHIVE drawer: the empty note, `moveOut()`, save and reload, one closed book per monster, the read-only keepsake with its "Out in the world" page, debug's Move out staying on the test copy, and iPhone fit; saved to `tests/screenshots/archive/`.
+`python3 tests/archive_shots.py` checks the Files drawer (`st.archive` in code): the empty note, `moveOut()`, save and reload, one closed book per monster, the read-only keepsake with its "Out in the world" page, debug's Move out staying on the test copy, and iPhone fit; saved to `tests/screenshots/archive/`.
 
 `python3 tests/curtain_seedling_shots.py` checks that a seedling on the windowsill hides behind the curtains when they close (fabric sweeps over it, then it is not drawn or tappable; tapping there works the curtains) and comes back when they open; saved to `tests/screenshots/curtain_seedling/`.
 
