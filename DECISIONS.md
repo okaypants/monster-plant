@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The empty Files note never calls a monster "it" (Nov 10)
+
+- "A grown monster might ask to go somewhere it has its heart set on. You can say yes, or ask it to stay a while longer." is now "A grown monster might ask to go somewhere special. You can say yes, or ask the monster to stay a while longer." No genders and no bare "it" in game text.
+
 ### The drawer sign says FILES, with bigger letters (Nov 10)
 
 - The sign on the desk drawers now reads **FILES** instead of ARCHIVE, same SNACKS style (cream label, gold rim, wine letters), still over the top drawer's knob and lit like the wood around it.
