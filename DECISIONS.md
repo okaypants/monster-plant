@@ -2,6 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat's patience: a real cat, separate from trust (Nov 10)
+
+- Jackie asked for the cat to behave like a real cat, with a hidden short-term **patience** apart from trust. It lives only on the in-memory cat (js/cat.js, `PAT`): never saved, never shown in play, never changes trust. Full each morning and after every nap; it comes back slowly when the cat is left alone (about 2.5 minutes from empty, faster while it naps).
+- **It goes down** when you pet past what the cat likes right now, touch it while it's walking and it didn't want to stop, touch it while it's winding down, or a monster makes a spooky face at it or bounces nearby (the moon bouncer).
+- **Pets it enjoys in a row**, by trust: shy none (it only sniffs your hand while awake; asleep, it gets up and goes), trusting 1, fond 3 (as before), adores 5 (new). A full nap or a minute left alone starts the count again.
+- **Body language**, existing frames only (sit, pet, walk, loaf, curl), whole-pixel moves, no expression marks: content = leans in (pet frames), purr and **one** heart (fond cats used to get two). The next pet is the fed-up one: it sits back up and its back end (the tail side of the sit frame) twitches 1 px, twice; no heart. The next: it has had enough, gets up (half a second) and walks off.
+- **Walking off:** to a spot away from where you touched it and not next to a monster, likelier one it naps in most (this replaces "often somewhere higher"). Then the wind-down: it sits awake facing a little away (the sit frame mirrored so its back end is toward you) with a slow 1 px head bob a few times ("grooming") and a slow blink, then loafs with its eyes open (now 40-70 s, was 60-90), then **curls up** and naps (it used to doze in the loaf). The annoyed, back-turned and grooming frames are no longer used, as the brief limits it to the existing everyday frames.
+- **Touched while walking:** trusting or better and patient = it stops, turns to you (pet frames), leans in for one pet with a purr and a heart, and carries on. Shy = no stop, a tiny pause mid-stride, and on it goes. Low patience (or already walking off) = it doesn't stop; it walks a touch quicker (1.35x) somewhere farther from you. **Touched while winding down:** it gets up and moves farther, as before; never a scold.
+- **Captions** (placeholders for Jackie to rewrite): "<Cat> has had enough pets for now." only the first walk-off in a play session (the shy cat keeps its "is still shy" tip instead); "<Cat> wanders back over." when it comes back on its own.
+- **Coming back:** after a walk-off, once its nap has refilled its patience, a fond cat comes to nap by the monster you're tending, and a cat that adores you comes to sit near the front of the room, beside that monster, for a pet (a sit with a slow blink for 25-40 s, then a doze).
+- Never: swatting, hissing, leaving the room, lowering trust, flashing, or a loop that runs by itself.
+- **Debug (test mode only):** the status line shows patience as a word (full / some / low); **Annoy cat** and **Calm cat** in the Cat group.
+
 ### One text style for every word (Nov 10)
 
 - Jackie asked for one shared look for all the words in the game, with no wording changed. It lives in one place: `css/textstyle.css` and `js/textstyle.js`, used by captions, speech bubbles, choice cards, Slowmallow's notes and letter, the Files drawer, the journal and keepsakes, name tags, ribbons, menus, stories, the treat trays and the FILES placard.

@@ -50,7 +50,7 @@ const onP=f=>{withPlant(pRaw().id,f);};
 const AGE_OPTS=[[0,'seed'],[1,'sprout'],[4,'kid'],[6,'teen'],[8,'adult']];
 function statusLine(){const p=pRaw();return `<b>Day ${st.day}</b> · ${phase(st.dayT)}${PAUSED?' (paused)':''} · ${seasonNow()}${SEASON_OVERRIDE?' (set)':''} · plants ${plantCount()}<br>`+
  (p.stage>=0?`${esc(NAMES[p.species])}, ${ageName(p.stage)} · light ${(p.light||0).toFixed(2)} ${p.lightState} · gray ${(p.dryLv||0).toFixed(2)}/4 withered ${p.witherLv||0} burned ${p.burnLv||0} puddle ${p.puddleLv||0}`:'no plant yet')+
- `<br>cat: ${cat.state}${cat.force?' (holding '+cat.force+')':''} at ${cat.spot} · trust ${trustName(catTrust())}`;}
+ `<br>cat: ${cat.state}${cat.force?' (holding '+cat.force+')':''} at ${cat.spot} · trust ${trustName(catTrust())} · patience ${patWord()}`;}
 function trustName(t){return t>=TRUST_BFF?'BFF':t>=TRUST_FOND?'fond':t>=TRUST_SHY?'warming up':'shy';}
 
 function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
@@ -106,6 +106,8 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   slider(b,'Trust',0,1,.01,()=>catTrust(),v=>{st.catTrust=v;},v=>trustName(v)+' '+(+v).toFixed(2));
   b.appendChild(el('div','status',(()=>'With each monster (naps by it / spooky faces): '+(allRaw().filter(q=>q.stage>=0).map(q=>{const r=(st.catBond||{})[q.id]||{bond:0,hmph:0};return esc(q.name||NAMES[q.species])+' '+r.bond+' / '+r.hmph;}).join(' · ')||'none')+'<br>Naps: '+(Object.entries(st.catNaps||{}).map(([k,n])=>esc(k)+' '+n).join(' · ')||'none'))())); // the numbers behind his journal page
   seg(b,'State',[['sleep','sleeping'],['wake','awake'],['walk','walking'],['pet','petted'],['settle','settling'],['annoyed','had enough']],()=>cat.state==='loafwake'?'settle':cat.state,v=>dbgCatState(v));
+  // patience (Nov 10): hidden in the game; here as a word in the status line (full / some / low). Test copy only, like everything in this drawer
+  btns(b,[['Annoy cat',()=>{cat.pat=PAT.low-.05;cat.pets=petLikes();cat.touchT=0;}],['Calm cat',()=>{patFull();cat.touchT=99;}]]);
   toggle(b,'Walk there (off = put the cat there)',()=>dbgWalk,v=>{dbgWalk=v;});
   btns(b,['bed','rug','chair','sill','crate','books','byplant'].map(k=>[{bed:'Cat bed',rug:'Rug',chair:'Armchair',sill:'Windowsill',crate:'Milk crate',books:'Book stack',byplant:'By the plant'}[k],()=>dbgCatTo(k)]));
   pick(b,'Pose (holds it)',[['','(none: the cat does its own thing)']].concat(Object.keys(CATF).filter(n=>!n.startsWith('scratcher')).map(n=>[n,n])),()=>cat.force||'',v=>{cat.force=v||null;cat.hold=!!v;});});
