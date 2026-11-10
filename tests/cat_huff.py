@@ -1,14 +1,14 @@
-"""When the cat has had enough, he leaves like a real cat.
+"""When the cat has had enough, it leaves like a real cat (patience, Nov 10: see also tests/cat_patience_test.py).
 
 Run from the repository root:  python tests/cat_huff.py
 Plays the real game loop at normal speed:
-  1. a fond cat napping by the plant is petted one time too many: a second of the annoyed look, then he walks off at his
-     normal pace to a spot a comfortable way from where he was touched and from the plants; there he sits awake for
-     30-90 s (back turned, grooming, a slow blink), loafs with his eyes open for a minute or more, then really naps.
-     No trust lost, no caption.
+  1. a fond cat napping by the plant enjoys 3 pets, takes a 4th fed up (sits, a tail twitch), and on the 5th gets up
+     (half a second sitting) and walks off at its normal pace to a spot a comfortable way from where it was touched and from
+     the plants; there it sits awake for 30-90 s facing a little away ("grooming": a slow head bob, then a slow blink),
+     loafs with its eyes open for 40 s or more, then curls up and naps. No trust lost; the only caption is the had-enough one.
   2. touched again while settling: he calmly moves once more (no annoyed look), and settling takes longer.
   3. a shy cat touched while napping: the same exit. Shy cats still warm up by sniffing when awake.
-  4. 40 exits from different places: where he goes (often somewhere higher).
+  4. 40 exits from the cat bed: where it goes (likelier the spot it naps in most).
 Saves a picture of every step to tests/screenshots/huff/ (step_1_annoyed.png ... step_7_nap.png). Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -53,19 +53,19 @@ async def main():
         ctx, pg, errs = await page_for(b, .7)
         await nap_by_plant(pg)
         trust0 = await pg.evaluate("()=>catTrust()")
-        for _ in range(3):
-            await pg.evaluate("()=>{petCat();__step(2.4);}")
-        await pg.evaluate("()=>{cap.textContent='';T0=T;petCat();}")
+        for _ in range(4):
+            await pg.evaluate("()=>{petCat();__step(2.6);}")
+        await pg.evaluate("()=>{capClear();T0=T;LOG0=CAP.log.length;petCat();}")
         x_touch = await pg.evaluate("()=>cat.x")
         st0 = await pg.evaluate("()=>cat.state")
         if st0 != "annoyed":
-            fails.append(f"4th pet: state {st0}, expected the annoyed look")
-        await pg.evaluate("()=>__step(.5)")
-        await pg.screenshot(path=os.path.join(OUT, "step_1_annoyed.png"), clip=await pg.evaluate(CLIP))
+            fails.append(f"5th pet: state {st0}, expected it to get up and go")
+        await pg.evaluate("()=>__step(.2)")
+        await pg.screenshot(path=os.path.join(OUT, "step_1_gets_up.png"), clip=await pg.evaluate(CLIP))
         t_walk = await until(pg, "cat.state==='walk'")
         warn = await pg.evaluate("()=>T-T0") if t_walk < 0 else t_walk - await pg.evaluate("()=>T0")
-        if not (.8 <= warn <= 1.5):
-            fails.append(f"the annoyed look lasted {warn:.1f} s, expected about a second")
+        if not (.3 <= warn <= .9):
+            fails.append(f"it sat {warn:.1f} s before going, expected about half a second")
         await pg.evaluate("()=>__step(1.2)")
         await pg.screenshot(path=os.path.join(OUT, "step_2_walking_off.png"))  # whole room: where he's headed
         spot = await pg.evaluate("()=>cat.to")
@@ -76,14 +76,14 @@ async def main():
             fails.append(f"settled too close: x{info['x']:.0f}, touched at x{x_touch:.0f}, plant at x{info['plant']:.0f}")
         if not (30 <= info["awake"] <= 90):
             fails.append(f"sits awake {info['awake']:.0f} s, expected 30-90")
-        await pg.evaluate("()=>{window.SEEN=new Set();window.SEENI=setInterval(()=>{if(cat.state==='settle')SEEN.add(OLD_CAT?cat.huffF:catFrame().catName);},50);__step(1);}")
-        await pg.screenshot(path=os.path.join(OUT, "step_3_back_turned.png"), clip=await pg.evaluate(CLIP))
-        await until(pg, "cat.huffF==='groom2'")
-        await pg.screenshot(path=os.path.join(OUT, "step_4_grooming.png"), clip=await pg.evaluate(CLIP))
+        await pg.evaluate("()=>{window.SEEN=new Set();window.SEENI=setInterval(()=>{if(cat.state==='settle')SEEN.add(catFrame().catName+(catBob()?'+bob':''));},50);__step(1);}")
+        await pg.screenshot(path=os.path.join(OUT, "step_3_sits_facing_away.png"), clip=await pg.evaluate(CLIP))
+        await until(pg, "catBob()")
+        await pg.screenshot(path=os.path.join(OUT, "step_4_grooming_head_bob.png"), clip=await pg.evaluate(CLIP))
         await until(pg, "cat.huffF==='sit2'")
         await pg.screenshot(path=os.path.join(OUT, "step_5_slow_blink.png"), clip=await pg.evaluate(CLIP))
         seen = await pg.evaluate("""()=>{while(cat.state==='settle')__step(.05);clearInterval(SEENI);return [...SEEN];}""")
-        for need in ("back", "groom1", "groom2", "sit1", "sit2"):
+        for need in ("sit1", "sit1+bob", "sit2"):
             if need not in seen:
                 fails.append(f"settling never showed {need} (saw {seen})")
         t1 = await pg.evaluate("()=>T")
@@ -92,22 +92,25 @@ async def main():
         await pg.evaluate("()=>__step(1)")
         await pg.screenshot(path=os.path.join(OUT, "step_6_loaf_eyes_open.png"), clip=await pg.evaluate(CLIP))
         t2 = await until(pg, "cat.state==='sleep'")
-        if t2 - t1 < 60:
-            fails.append(f"eyes-open loaf lasted {t2 - t1:.0f} s, expected a minute or more")
+        if t2 - t1 < 40:
+            fails.append(f"eyes-open loaf lasted {t2 - t1:.0f} s, expected 40 s or more")
+        if await pg.evaluate("()=>cat.pose") != "curl":
+            fails.append("after winding down it should curl up to nap")
         print(f"sat awake {t1 - t0:.0f} s, loafed with eyes open {t2 - t1:.0f} s, then napped")
         await pg.evaluate("()=>{zzNext.cat=T;zzNow=null;__step(.05);__step(1.5);}")
         await pg.screenshot(path=os.path.join(OUT, "step_7_nap.png"), clip=await pg.evaluate(CLIP))
         if await pg.evaluate("()=>catTrust()") < trust0:
             fails.append("trust went down")
-        if "cat" in (await pg.evaluate("()=>cap.textContent")).lower():
-            fails.append(f"a cat caption showed: {await pg.evaluate('()=>cap.textContent')}")
+        said = await pg.evaluate("()=>CAP.log.slice(LOG0).map(l=>l.t).filter(t=>t.includes(catName()))")
+        if said != [await pg.evaluate("()=>catName()+' has had enough pets for now.'")]:
+            fails.append(f"cat captions: {said}, expected only the had-enough one")
         fails += errs
         await ctx.close()
 
         # 2: touched again while settling -> calmly moves once more, settling takes longer
         ctx, pg, errs = await page_for(b, .7)
         await nap_by_plant(pg)
-        await pg.evaluate("()=>{cat.pets=3;petCat();}")
+        await pg.evaluate("()=>{cat.pat=.2;petCat();}")
         await until(pg, "cat.state==='settle'")
         await pg.evaluate("()=>__step(3)")
         a1 = await pg.evaluate("()=>cat.awake")
@@ -138,12 +141,11 @@ async def main():
 
         # 4: where he goes, over many exits from different places
         ctx, pg, errs = await page_for(b, .7)
-        r = await pg.evaluate("""()=>{const out={};for(let i=0;i<40;i++){const ks=['bed','rug','chair','crate','books'],k=ks[i%5],s=CAT_SPOTS[k];
-          Object.assign(cat,{spot:k,x:s.x,y:s.y,sc:s.sc,pose:'loaf',state:'sleep',t:5,nap:1e9,path:null,pets:3,huff:0,huffN:0,hold:false});petCat();__step(1.2);out[cat.to]=(out[cat.to]||0)+1;}return out;}""")
+        r = await pg.evaluate("""()=>{st.catNaps={books:9};const out={};for(let i=0;i<40;i++){const k='bed',s=CAT_SPOTS[k];
+          Object.assign(cat,{spot:k,x:s.x,y:s.y,sc:s.sc,pose:'loaf',state:'sleep',t:5,nap:1e9,path:null,pets:3,pat:.2,huff:0,huffN:0,hold:false});petCat();__step(1.2);out[cat.to]=(out[cat.to]||0)+1;}return out;}""")
         print("40 exits went to:", r)
-        high = sum(v for k, v in r.items() if k in ("crate", "books", "chair", "sill"))
-        if high < 20:
-            fails.append(f"only {high} of 40 exits went somewhere higher")
+        if "undefined" in r or r.get("books", 0) < 12:
+            fails.append(f"exits from the bed should favor the spot it naps in most (books): {r}")
         fails += errs
         await ctx.close()
         await b.close()

@@ -344,7 +344,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night||st.float)return;st.qui
  else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;t=who()+' tidies its leaves into neat rows.';}
  else if(q==='catfriend'){for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(cat.x-cx)*(i+1)/4,Math.min(b.y,cat.y)-40,1),i*200);trustGain(.01);t=who()+' is'+' keeping '+catName()+' company. '+catName()+' seems to like it.';}
  else if(q==='share'){const o=allRaw().find(q2=>q2.id!==st.id&&q2.stage>=4&&q2.needs.attention>.3);o.needs.attention=Math.max(0,o.needs.attention-.2);msSet(st,'share:'+o.id);if(o._pos)for(let i=0;i<3;i++)setTimeout(()=>burst('heart',cx+(o._pos.x-cx)*(i+1)/4,b.y,1),i*200);t=who()+' is'+' cheering up '+nameOf(o)+'.';}
- else if(q==='boo'){st.spookT=1.8;st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;sfx('hmm');catFeel(st.id,'hmph');cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
+ else if(q==='boo'){st.spookT=1.8;st.bonkT=.5;st.bonkDir=cat.x<cx?-1:1;sfx('hmm');catFeel(st.id,'hmph');patHit(.4);cat.state='wake';cat.t=1.2;t=who()+' made a spooky face at '+catName()+'. '+catName()+' is unimpressed and leaves.';}
  else if(q==='moon'){st.walk=null;st.float={h:0,vh:rnd(260,320),vx:(Math.random()<.5?-1:1)*rnd(40,70)};sfx('boing');t=who()+' floats off in moon gravity! Drag '+who()+' back down to earth.';}
  const first=notice(q,QUIRK_TXT[q]);if(t)tell(t,first?{kind:'teach',key:'quirk_'+q,who:st.id}:{kind:'ambient',key:'quirk:'+q+':'+st.id,who:st.id});} // a new quirk is explained once ever; after that it's chatter
 

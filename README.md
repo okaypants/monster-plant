@@ -70,7 +70,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/cat_cover.py` puts plants in every spot (and right in front of the crate, book stack, armchair and cat bed), lets the cat pick and settle again and again, and fails if he's ever more than 20% covered. It also checks that he moves when a plant comes in front of him while he naps.
 
-`python tests/cat_huff.py` plays the cat having had enough (petted too many times, touched again while settling, shy) and saves a picture of every step to `tests/screenshots/huff/`.
+`python tests/cat_huff.py` plays the cat having had enough (3 pets enjoyed, a fed-up 4th, gone on the 5th; touched again while winding down; shy) and saves a picture of every step to `tests/screenshots/huff/`.
+
+`python3 tests/cat_patience_test.py` checks the cat's hidden patience: pet limits per trust level (shy none, trusting 1, fond 3, adores 5, then one fed-up pet, then it walks off), a touch while walking at every trust level with full and low patience, the walk-off and wind-down, the had-enough caption once, patience full after a nap and each morning, spooks and bounces lowering it, trust never going down, coming back (adores: to the front; fond: by the monster), and the debug readout; pictures and `sheet.png` in `tests/screenshots/cat_patience/`.
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 

@@ -20,7 +20,7 @@ function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n])
  for(const t of SNACKS){if((st.traits||[]).includes(t.trait)&&st.day-(st.tLast[t.id]||st.day)>KEEP){st.traits=st.traits.filter(x=>x!==t.trait);st.dormant=(st.dormant||[]).concat(t.trait);st.treats[t.id]=0;if(st.wear===t.trait)st.wear=null;faded.push(t);}}
  if(faded.length){const fw=who();setTimeout(()=>tell(fw+', no longer a '+faded.map(t=>FADE_WORD[t.id]).join(' or ')+'-monster? Try a new snack for a new accessory and trait.',{kind:'info'}),5500);}
 }
-function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');
+function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');patFull(); // the cat's patience is full each morning
  const d=new Date(),season=seasonNow();
  const slept=allRaw().filter(q=>q.stage>=4&&q.lastNight),all=allRaw().filter(q=>q.stage>=4); // who slept well, by name
  const well=!slept.length?'':slept.length>1&&slept.length===all.length?' Both slept well and their dreams were pleasant and relaxing.':' '+slept.map(q=>nameOf(q,true)).join(' and ')+(slept.length>1?' slept well and their dreams were':' slept well and its dreams were')+' pleasant and relaxing.';
@@ -55,7 +55,7 @@ function awayStory(away){const bits=[],P=allRaw().filter(q=>q.stage>=4),cap=t=>t
  const buddy=P.slice().sort((x,y)=>bond(y)-bond(x)).find(q=>bond(q)>0)||(catTrust()>=TRUST_FOND?sweet:null);
  let ps=null;if(buddy)withPlant(buddy.id,()=>{ps=plantSideSpot();});
  if(ps){CAT_SPOTS.byplant=ps;cat.spot='byplant';cat.x=ps.x;cat.y=ps.y;cat.sc=ps.sc;cat.pose='loaf';cat.state='sleep';cat.nap=rnd(40,90);cat.pets=0;bits.push(catName()+' curled up next to '+nm(buddy)+'.');}
- else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&catSpotFree(k));let k=ks[Math.floor(Math.random()*ks.length)],far=false;
+ else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&k!=='front'&&catSpotFree(k));let k=ks[Math.floor(Math.random()*ks.length)],far=false;
   if(spooky&&ks.length){let sx=0;withPlant(spooky.id,()=>{const b=plantBox();sx=b.x+b.w/2;});k=ks.slice().sort((x,y)=>Math.abs(CAT_SPOTS[y].x-sx)-Math.abs(CAT_SPOTS[x].x-sx))[0];far=Math.abs(CAT_SPOTS[k].x-sx)>500;}
   if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);
    bits.push(far?catName()+' is napping as far from '+nm(spooky)+' as possible.':catName()+' napped on '+({bed:'the cat bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
