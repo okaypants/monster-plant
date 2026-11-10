@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The drawer sign says FILES, with bigger letters (Nov 10)
+
+- The sign on the desk drawers now reads **FILES** instead of ARCHIVE, same SNACKS style (cream label, gold rim, wine letters), still over the top drawer's knob and lit like the wood around it.
+- The shorter word frees up room, so the letters are as big as the plate allows: 8 pixels tall with 2-pixel stems (they were 6 tall, 1-pixel strokes), and the plate fills more of the drawer face (76x28 room units, was 78x24).
+- Player-facing text says "Files" or "the desk", never "archive": the title over the empty drawer's note is now "Files". Code names (`openArchive`, `st.archive`, `ARCHIVE_NOTE`) stay as they are.
+
 ### A letter from Slowmallow can ask for a monster (Nov 8)
 
 - Now and then Slowmallow's paper airplane lands on the windowsill, like the seedling note, asking to have an adult come stay. One roll a day: 8%, or 20% for an adult with an evil lean. Never a kid or teen, never within 3 days of another ask, never while another note, ask or seed choice is waiting, and other asks and the seedling note wait for it.

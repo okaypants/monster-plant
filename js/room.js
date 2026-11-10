@@ -93,7 +93,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(!exact&&st.desk===false&&ok(LOFF[tk].desk))g.drawImage(LOFF[tk].desk,831,0);
  if(held.tool==='can'&&ok(STOOL_EMPTY))g.drawImage(STOOL_EMPTY,765,488);
  fidgetDrawProps(rm);
- drawPlacard(tk+'|'+lk+'|'+exact+'|'+exactC+'|'+Math.round(curK*4)); // the ARCHIVE sign on the desk drawers, lit like the wood around it
+ drawPlacard(tk+'|'+lk+'|'+exact+'|'+exactC+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
  curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01&&!exactC)drawCurtains(curK);
  
  const dl=daylight(st.dayT);
