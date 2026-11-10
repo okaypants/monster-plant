@@ -388,7 +388,7 @@ function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.
 const SEED_REASK=15;let offerAt=0; // seconds before a dismissed bubble comes back
 function offerTick(){const o=st.seedOffer;if(!o||bubble||T<offerAt||capBusy()||st.night||document.querySelector('.screen'))return; // never while you're busy, in a menu, or at night
  const [a,b]=o.ids.map(id=>allRaw().find(q=>q.id===id));if(!a||!b){st.seedOffer=null;return;} // a parent is gone (debug): nothing to decide
- offerAt=T+SEED_REASK;sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,esc(nameOf(a,true))+' and '+esc(nameOf(b,true))+' made a seed together!<br><button data-k="s">Send it to Slowmallow</button><button data-k="k">Keep it here</button>',
+ offerAt=T+SEED_REASK;sfx('chime');openBubble(SPOT.sill.x-150,SPOT.sill.y-250,esc(nameOf(a,true))+' and '+esc(nameOf(b,true))+' made a seed together!'+tsChoices(CHOICES.seed),
   {s:()=>{closeBubble();seedSend();},k:()=>{closeBubble();seedKeep();}});}
 // PAYMENT ISN'T DECIDED (Jackie): whatever Slowmallow gives for a seed goes here
 function seedSentHook(seed){st.seedsSent=(st.seedsSent||0)+1;}
@@ -421,7 +421,7 @@ function drawBugNote(){if(!bugOnSill()&&!letterOnSill())return;const b=bugNoteBo
 function drawSeedFly(){if(seedFly==null)return;const u=(T-seedFly)/2.4;if(u>=1){seedFly=null;return;}const b=bugNoteBox(),[X,Y]=drawPlane(b.x+u*760,b.y-u*640),p=P;
  g.fillStyle=C.out;g.fillRect(X+3*p-2,Y-p-2,2*p+4,2*p+4);g.fillStyle=C.brick;g.fillRect(X+3*p,Y-p,2*p,2*p);}
 function bugAsk(){sfx('page');const b=bugNoteBox();
- openBubble(b.x-140,b.y-190,'<b>From Slowmallow</b><br>'+BUG_ASK+'<br><button data-k="y">Yes, please</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}});}
+ openBubble(b.x-140,b.y-230,'<div class="tsfrom">'+tsStampHTML()+'<b>From Slowmallow</b></div>'+BUG_ASK+tsChoices(BUG_CHOICES),{y:()=>{closeBubble();bugYes();},n:()=>{closeBubble();bugNotYet();}},'tsmint');}
 function bugYes(){st.bugSend=st.day+1;st.bugNote=null;st.bugJournal=0;sfx('chime');tell('Slowmallow will send the seedling over in the morning.',{kind:'info'});save();}
 function bugNotYet(){st.bugNote=null;st.bugJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
 function bugArrive(){ // the next morning
@@ -442,7 +442,7 @@ function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  if(Math.random()<GO_CHANCE)goAsk(ids[Math.floor(Math.random()*ids.length)]);else save();}
 function goAsk(id){withPlant(id,()=>{const p=pers(),R=[p.g,p.l].filter(Boolean).flatMap(k=>GO_REASONS[k]),L=R.length?R:GO_REASONS.neutral,r=L[Math.floor(Math.random()*L.length)],b=plantBox(),N=esc(who());
   st.goAgain=st.day+GO_AGAIN;st.goNext=st.day+GO_AGAIN;sfx('page');const right=b.x+b.w+390<W;
-  openBubble(right?b.x+b.w+10:b.x-390,Math.max(20,b.y+10),N+' '+esc(r[0])+'. May '+N+' go?<br><button data-k="y">Yes</button><button data-k="n">Not yet</button>',{y:()=>{closeBubble();goYes(id,r[1]);},n:()=>{closeBubble();goNotYet(id);}});});save();}
+  openBubble(right?b.x+b.w+10:b.x-390,Math.max(20,b.y+10),N+' '+esc(r[0])+'. May '+N+' go?'+tsChoices(CHOICES.go),{y:()=>{closeBubble();goYes(id,r[1]);},n:()=>{closeBubble();goNotYet(id);}});if(bubble)bubble.style.setProperty('--bg',lookOf(st).tint);});save();} // asked in its own tint
 function goYes(id,dest){withPlant(id,()=>{st.goDest=dest;st.goDay=st.day+1;delete st.goAgain;sfx('chime');tell(who()+' will set off in the morning.',{kind:'important',who:st.id});});save();}
 function goNotYet(id){withPlant(id,()=>{const b=plantBox();st.goAgain=st.day+GO_AGAIN;burst('heart',b.x+b.w/2,b.y-20,3);plantBoing(b.x+b.w/2);tell(who()+' snuggles back in.',{kind:'important',who:st.id});});save();}
 // the morning after a yes (wake in start.js): gone, journal in the desk. If that was the last monster, the room waits a moment, then a new seed can be planted
@@ -470,13 +470,15 @@ function letterTick(dt){if((st.letterNote||st.letterJournal)&&!letterQ()){letter
  const A=allRaw().filter(q=>q.stage>=8&&!q.goDest&&(q.adultDay==null||st.day>=q.adultDay+GO_SETTLED));if(!A.length){letterCalm=0;return;}letterCalm+=dt;if(letterCalm<LETTER_CALM)return;letterCalm=0;st.letterRolled=st.day;
  for(const q of A.slice().sort((a,b)=>a.ge-b.ge))if(Math.random()<(q.ge<-.33?LETTER_EVIL:LETTER_CHANCE)){letterLand(q.id);return;}save();}
 function closeLetter(){if(letterEl){letterEl.remove();letterEl=null;}}
-function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jletter'),r=wrap.getBoundingClientRect(),k=Math.min(r.width*.9/p.offsetWidth,r.height*.9/p.offsetHeight,1.5);p.style.transform=`translate(-50%,-50%) scale(${k})`;}
+function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jletter'),r=wrap.getBoundingClientRect();let k=1;
+ for(let i=0;i<3;i++){p.style.setProperty('--lk',k);k=Math.min(r.width*.9/p.offsetWidth,r.height*.9/p.offsetHeight,1.5);} // --lk keeps the words at least their size on screen
+ p.style.setProperty('--lk',k);p.style.transform=`translate(-50%,-50%) scale(${k})`;}
 addEventListener('resize',()=>setTimeout(fitLetter,50));
-function letterStamp(){const f=jdiv('jlstamp',[pix('sloth',4)]);if(LETTER_ART.ready){const im=new Image();im.onload=()=>{f.innerHTML='';f.appendChild(imgPic(im,64,72));};im.src=LETTER_ART.file;}return f;} // real art later: same slot, same size
+function letterStamp(){const f=jdiv('jlstamp',[tsGlyph('sloth',TS.mintInk,'jpix',4)]);if(LETTER_ART.ready){const im=new Image();im.onload=()=>{f.innerHTML='';f.appendChild(imgPic(im,64,72));};im.src=LETTER_ART.file;}return f;} // real art later: same slot, same size
 function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('page');letterFrom=!!fromJournal;
- const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter jstep');p.appendChild(letterStamp());p.appendChild(jdiv('jltext',[],slowmallowLetter(N)));p.appendChild(jdiv('jlsign',[],'Slowmallow'));
- const row=jdiv('jlbtns');for(const[k,t,f]of[['y','Yes',letterYes],['n','Not yet',letterNotYet]]){const b=document.createElement('button');b.type='button';b.dataset.k=k;b.textContent=t;b.addEventListener('click',e=>{e.stopPropagation();f();});row.appendChild(b);}
- p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();}
+ const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slowmallowLetter(N))));p.appendChild(jdiv('jlsign',[],'Slowmallow')); // mint paper (js/textstyle.js)
+ const row=jdiv('jlbtns');row.innerHTML=tsChoices(CHOICES.letter);const act={y:letterYes,n:letterNotYet};row.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();act[b.dataset.k]();}));
+ p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();tsPop(p);}
 function letterYes(){const q=letterQ();closeLetter();if(!q)return;const id=q.id;letterClear();goYes(id,LETTER_DEST);if(jEl)renderJournal();}
 function letterNotYet(){closeLetter();if(letterFrom)return;st.letterNote=null;st.letterJournal=1;st.letterAgain=st.day+GO_AGAIN;st.goNext=Math.max(st.goNext||0,st.day+GO_AGAIN);sfx('page');save();} // from the journal it simply stays there
 function seedTick(dt){

@@ -49,7 +49,9 @@ const P=6; // comic-mark pixel size
      info      : a reply to something you just did
      ambient   : chatter (voice lines, quirks, friends and bickering): at most one every 45-90 s, never while you're busy
    Nothing but important lines repeats within 10 minutes (by its text, or by key: one event, however it's worded). who = a plant id or 'cat': the bubble gets a little tail pointing at them.
-   Shows 2 s + 0.3 s a word: short lines 3-5 s, the longest 6-8 s (never more); fades in and out. */
+   Shows 2 s + 0.3 s a word: short lines 3-5 s, the longest 6-8 s (never more). It appears in three stepped pops (just appears with reduce-motion) and goes
+   without a fade. A line nobody speaks is a cream pill; a spoken one is a bubble in the speaker's tint (js/textstyle.js). Names are bold in their color, with their symbol.
+   One message at a time: a caption waits while a choice card (bubble) or a letter is open. */
 const cap=document.getElementById('caption'),capText=cap.querySelector('.ct'),capTail=cap.querySelector('.tail');
 const CAP_REPEAT=10*60*1000,CAP={q:[],cur:null,until:0,nextAt:0,lastAmb:-1e9,ambGap:45+Math.random()*45,seen:new Map(),log:[]};
 function capBusy(){return !!document.querySelector('.story')||!!(typeof held!=='undefined'&&held.tool)||!!(typeof drag!=='undefined'&&(drag.on||drag.down))||!!bubble||!!document.querySelector('.screen')||(typeof pointerHeld!=='undefined'&&pointerHeld)||!!(typeof feed!=='undefined'&&feed.item);} // carrying, dragging, holding a tap, or reading (treat jar, books, journal)
@@ -67,28 +69,31 @@ function ambientOK(){return !capBusy()&&!CAP.cur&&!CAP.q.length&&performance.now
 function say(t,sec,lock){return tell(t,{kind:lock?'important':'info'});} // older calls; new ones say what kind of line they are
 function quiet(){return !CAP.cur&&!CAP.q.length;}
 function capClear(){CAP.q=[];CAP.cur=null;cap.classList.remove('show');capText.textContent='';}
+const cardOpen=()=>!!bubble||!!document.querySelector('.screen.letter'); // a choice card or a letter: captions wait their turn
 function capTick(){const now=performance.now();
  if(CAP.cur&&now>=CAP.until){CAP.cur=null;cap.classList.remove('show');CAP.nextAt=now+450;}
- if(!CAP.cur&&CAP.q.length&&now>=CAP.nextAt){const it=CAP.q.shift();CAP.cur=it;CAP.until=now+it.dur*1000;CAP.seen.set(it.t,now);CAP.seen.set(it.rk,now);CAP.log.push({t:it.t,kind:it.kind,at:now});if(CAP.log.length>200)CAP.log.shift();
-  capText.textContent=it.t;cap.classList.toggle('talk',it.who!=null);cap.classList.add('show');capPlace(true);}
+ if(CAP.cur&&cardOpen()){CAP.q.unshift(CAP.cur);CAP.cur=null;cap.classList.remove('show');} // it comes back once the card closes
+ if(!CAP.cur&&CAP.q.length&&now>=CAP.nextAt&&!cardOpen()){const it=CAP.q.shift();CAP.cur=it;CAP.until=now+it.dur*1000;CAP.seen.set(it.t,now);CAP.seen.set(it.rk,now);CAP.log.push({t:it.t,kind:it.kind,at:now});if(CAP.log.length>200)CAP.log.shift();
+  capText.textContent=it.t;tsNamify(capText);const lk=it.who==null?null:it.who==='cat'?CAT_LOOK:lookOf(allRaw().find(q=>q.id===it.who));cap.style.setProperty('--tint',lk?lk.tint:TS.paper);
+  cap.classList.toggle('talk',it.who!=null);cap.classList.add('show');capPlace(true);tsPop(cap.querySelector('.ci'));}
  if(CAP.cur)capPlace(false);}
 // where it sits: top centre, unless that would cover a plant's face; the tail points at whoever is talking
 function capSpeakerX(w){try{if(w==='cat'){const b=catBox();return b?b.x+b.w/2:null;}let x=null;withPlant(w,()=>{if(st.stage>=0){const b=plantBox();x=b.x+b.w/2;}});return x;}catch(e){return null;}}
 function capFaces(){const F=[];try{eachPlant(()=>{if(st.stage<0)return;const b=plantBox();F.push({x0:b.x+b.w*.2,x1:b.x+b.w*.8,y0:b.y+b.h*.2,y1:b.y+b.h*.65});});}catch(e){}return F;}
 let capPlaceT=0;
 function capRight(){const fb=document.getElementById('fsBtn'),r=fb&&fb.getBoundingClientRect(),c=cv.getBoundingClientRect();return r&&r.width?(r.left-c.left)/S-12:W-8;} // keep clear of the buttons at the top right
-function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.6,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=Math.round(H*.03);
+function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.8,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=Math.round(H*.03);
  if(force||now-capPlaceT>=400){capPlaceT=now;const F=capFaces();let best=Math.min(W/2,R-bw/2); // top centre, or the nearest place along the top that leaves every plant's face clear
   for(const c of[W/2,W*.36,W*.64,W*.25,W*.75]){const x0=c-bw/2,x1=c+bw/2;if(x0<8||x1>R)continue;if(!F.some(f=>f.x1>x0&&f.x0<x1&&f.y0<top+bh+20)){best=c;break;}}cap.dataset.cx=best;}
  const cx=+cap.dataset.cx||W/2;cap.style.left=Math.round((cx-bw/2)*S)+'px';cap.style.top=Math.round(top*S)+'px';
- if(CAP.cur&&CAP.cur.who!=null){const sx=capSpeakerX(CAP.cur.who);if(sx==null){capTail.style.display='none';return;}capTail.style.display='';const u=parseFloat(getComputedStyle(wrap).getPropertyValue('--u'))||3;
-  capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-3*u,3*u,bw*S-9*u))+'px';}}
+ if(CAP.cur&&CAP.cur.who!=null){const sx=capSpeakerX(CAP.cur.who);if(sx==null){capTail.style.display='none';return;}capTail.style.display='';
+  capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-10,9,bw*S-30))+'px';}} // the tail is 21px wide; it stays clear of the stepped corners
 let bubble=null;
 function closeBubble(){if(bubble){bubble.remove();bubble=null;}}
-function openBubble(x,y,html,binds){closeBubble();const b=document.createElement('div');b.className='bubble';b.innerHTML=html;b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;b.style.left=clamp(x*S,4,Math.max(4,W*S-b.offsetWidth-4))+'px';b.style.top=clamp(y*S,4,Math.max(4,H*S-b.offsetHeight-4))+'px'; /* kept inside the room */
+function openBubble(x,y,html,binds,cls=''){closeBubble();const b=document.createElement('div');b.className='bubble tsb '+cls;b.innerHTML=html;tsNamify(b);b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;b.style.left=clamp(x*S,4,Math.max(4,W*S-b.offsetWidth-4))+'px';b.style.top=clamp(y*S,4,Math.max(4,H*S-b.offsetHeight-4))+'px'; /* kept inside the room */
  const r=b.getBoundingClientRect(),wr=wrap.getBoundingClientRect();if(r.right>wr.right)b.style.left=(wr.width-r.width-6)+'px';if(r.bottom>wr.bottom)b.style.top=(wr.height-r.height-6)+'px';if(r.left<wr.left)b.style.left='6px';if(r.top<wr.top)b.style.top='6px';
- b.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',ev=>{ev.stopPropagation();binds[btn.dataset.k]&&binds[btn.dataset.k]();}));const f=b.querySelector('button');f&&f.focus();}
-function screen(html,binds){const d=document.createElement('div');d.className='screen';d.innerHTML=html;ui.appendChild(d);d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{binds[b.dataset.k](d);}));const f=d.querySelector('button');f&&f.focus();return d;}
+ b.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',ev=>{ev.stopPropagation();binds[btn.dataset.k]&&binds[btn.dataset.k]();}));const f=b.querySelector('button');f&&f.focus();tsPop(b);}
+function screen(html,binds){const d=document.createElement('div');d.className='screen';d.innerHTML='<div class="tsb tsscreen">'+html+'</div>';d.querySelectorAll('button').forEach(b=>b.classList.add('tsb'));tsPop(d.firstChild);ui.appendChild(d);d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{binds[b.dataset.k](d);}));const f=d.querySelector('button');f&&f.focus();return d;}
 /* ---------- comic marks ---------- */
 function blocks(map,x,y,c,p=P){x=Math.round(x);y=Math.round(y);g.fillStyle=C.out;map.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='1')g.fillRect(x+i*p-2,y+j*p-2,p+4,p+4);}));g.fillStyle=c;map.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='1')g.fillRect(x+i*p,y+j*p,p,p);}));}
 const GL={z:['1111','0010','0100','1111'],star:['10101','01110','11111','01110','10101']};

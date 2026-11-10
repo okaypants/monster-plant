@@ -68,29 +68,37 @@ function bornLine(){return temperament().replace('It seems ','Born ').replace(/\
 
 /* ---------- the book ---------- */
 function jdiv(cls,kids=[],txt){const e=document.createElement('div');e.className=cls;if(txt!=null)e.textContent=txt;for(const k of kids)if(k)e.appendChild(k);return e;}
-function jlabel(t){return jdiv('jlab',[],t);}
-function fitBook(){if(!jEl)return;const r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+JB.rib));jEl.bookK=k;jEl.querySelector('.jbook').style.transform=`translate(-50%,-50%) scale(${k})`;}
+const LAB_ICON={Likes:'sun',Friends:'heart',Quirks:'star'}; // small rust pixel icons over these sections
+function jlabel(t){const l=jdiv('jlab',[],null);if(LAB_ICON[t])l.appendChild(tsGlyph(LAB_ICON[t],TS.rust,'tslabicon'));l.appendChild(document.createTextNode(t));return l;}
+function fitBook(){if(!jEl)return;const noRib=jEl.classList.contains('archive'),r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+(noRib?0:JB.rib))),dy=noRib?-Math.round(JB.rib/2*k):0; // the Files have no ribbons: their room goes to the pages
+ jEl.bookK=k;const bk=jEl.querySelector('.jbook');bk.style.setProperty('--jk',k);bk.style.transform=`translate(-50%,calc(-50% + ${dy}px)) scale(${k})`;} // --jk keeps small print at 14px or more on screen (css/textstyle.css)
 function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='archive'||jPage==='keep'){jPage=null;jSub=0;}}
 function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');return P;}
 function openJournal(page){sfx('page');closeJournal();
  const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
- jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
+ jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
  jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();}); // tap outside the book
  jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
  ui.appendChild(jEl);fitBook();renderJournal();}
 addEventListener('resize',()=>setTimeout(fitBook,50));
+// once Fredoka has loaded, lay the open book out again: what fits on a page depends on the real letters
+if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{if(jEl&&!jEl.querySelector('input')){jEl.more={};renderJournal();}});
 function jTurn(to,sub=0){if((to===jPage&&sub===jSub)||!jEl)return;sfx('page');const bk=jEl.querySelector('.jcover');
+ if(tsCalm()){jPage=to;jSub=sub;renderJournal();return;} // reduce motion: the new page just appears
  const f=document.createElement('div');f.className='jturn jturn1 jstep';bk.appendChild(f); // frame 1: the right page lifts
  setTimeout(()=>{f.className='jturn jturn2 jstep';},90); // frame 2: it lands on the left
  setTimeout(()=>{f.remove();jPage=to;jSub=sub;renderJournal();},180);}
 function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();return;}if(jPage==='keep'){renderKeepsake();return;}const P=jPages();if(!P.includes(jPage)){jPage=P[0];jSub=0;}
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
- P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.background=RIB_COLORS[i%RIB_COLORS.length];r.style.left=(430+i*52)+'px';
-  r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':'Plant');r.appendChild(pix(p==='cat'?'paw':p==='world'?'plane':'leaf',3));
+ P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.left=(430+i*52)+'px';
+  const q=p[0]==='p'?allRaw().find(o=>o.id===+p.slice(1)):null,lk=p==='cat'?CAT_LOOK:q?lookOf(q):null; // each ribbon: the monster's ribbon color and symbol (the cat: a paw)
+  r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':(q&&q.name)||'Plant');r.appendChild(tsGlyph(lk?lk.sym:'plane',lk?lk.name:TS.ink,'tssym',3));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';
- const subs=relSpreads(jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
- if(sp.k==='main'){if(jPage==='cat')catPages(L,R);else if(jPage==='world')worldPages(L,R);else withPlant(+jPage.slice(1),()=>plantPages(L,R));}
+ const main=(l,r)=>{if(jPage==='cat')catPages(l,r);else if(jPage==='world')worldPages(l,r);else withPlant(+jPage.slice(1),()=>plantPages(l,r));};
+ const subs=withMore(relSpreads(jPage),jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
+ if(sp.k==='main'){main(L,R);if(spill(R,jPage)){renderJournal();return;}}
+ else if(sp.k==='more')morePages(L,R,main,jPage);
  else relPages(L,R,sp);
  // little pixel arrows: flip through this animal's spreads (its main pages, then one per relationship)
  const arrow=(side,to)=>{const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
@@ -103,9 +111,17 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Slowmallow');n.appendChild(pix('plane',3));
   n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}
  if(letterInJournal())letterJournalNote(R);}
+/* ON A PHONE (Jackie, Nov 10): the print never shrinks below 14px, so a full page (an adult with titles, charms and every quirk) can be
+   too tall. Whatever doesn't fit on the right page moves, whole, to a next spread behind the page arrow, under the same name. */
+function spill(R,key){let n=0;const kids=()=>[...R.children].filter(c=>c.classList.contains('jgroup')||c.classList.contains('jrow'));
+ while(R.scrollHeight>R.clientHeight+1&&kids().length>1){kids().pop().remove();n++;}jEl.more=jEl.more||{};const changed=(jEl.more[key]||0)!==n;jEl.more[key]=n;return changed;}
+function withMore(subs,key){return jEl&&jEl.more&&jEl.more[key]>0?[subs[0],{k:'more'}].concat(subs.slice(1)):subs;}
+function morePages(L,R,build,key){const tL=document.createElement('div'),tR=document.createElement('div');build(tL,tR);const n=jEl.more[key]||0;
+ const items=[...tR.children].filter(c=>c.classList.contains('jgroup')||c.classList.contains('jrow')).slice(-n);if(tL.firstChild)L.appendChild(tL.firstChild); // the name on top
+ for(const it of items)L.appendChild(it);while(L.scrollHeight>L.clientHeight+1&&L.children.length>2)R.prepend(L.lastChild);}
 function letterJournalNote(R){const n=document.createElement('button');n.type='button';n.className='jbugnote jletternote';n.setAttribute('aria-label','A letter from Slowmallow');n.appendChild(pix('plane',3));n.addEventListener('click',e=>{e.stopPropagation();openLetter(true);});R.appendChild(n);}
 function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();return;}sfx('page');
- const c=jdiv('jbugask jstep',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div><div class="jbtns"><button type="button" data-k="y">Yes, please</button><button type="button" data-k="n">Not yet</button></div>';
+ const c=jdiv('jbugask tsb tsmint',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div>'+tsChoices(BUG_CHOICES);tsPop(c); // Slowmallow's mint paper
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
 
@@ -141,32 +157,36 @@ function moveOut(p,dest,also=[]){const id=p&&typeof p==='object'?p.id:p,q=allRaw
 // runs f with the room as it was the day that monster left: read-only and all in one go, so nothing is ever drawn or saved from it
 function withKeepsake(e,f){const live=st,t={};for(const k of Object.keys(live))if(GLOBAL.has(k))t[k]=live[k];
  st=Object.assign(t,jsonCopy(e.world),jsonCopy(e.snap),{others:jsonCopy(e.pals),night:false});try{return f();}finally{st=live;}}
-function archiveShell(){jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose" aria-label="Close">×</button></div>';
+function archiveShell(){jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
  jEl.addEventListener('click',e=>{if(e.target===jEl)archiveBack();});jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();archiveBack();});}
 function openArchive(){sfx('page');closeJournal();jPage='archive';jSub=0;archiveShell();ui.appendChild(jEl);fitBook();renderArchive();archiveSteps();}
 // out of a keepsake goes back to the drawer; out of the drawer closes it
 function archiveBack(){if(jPage==='keep'){jKeep=null;jTurn('archive',jArchSub);return;}closeJournal();}
 // the drawer opens in 3 stepped frames: the book comes up out of the drawers, no fade
-function archiveSteps(){const el=jEl,b=el.querySelector('.jbook'),k=el.bookK||1,c=cv.getBoundingClientRect(),r=el.getBoundingClientRect(),dx=c.left+(DRAWERS.x+DRAWERS.w/2)*S-(r.left+r.width/2),dy=c.top+(DRAWERS.y+DRAWERS.h/2)*S-(r.top+r.height/2);
+function archiveSteps(){if(tsCalm())return;const el=jEl,b=el.querySelector('.jbook'),k=el.bookK||1,c=cv.getBoundingClientRect(),r=el.getBoundingClientRect(),dx=c.left+(DRAWERS.x+DRAWERS.w/2)*S-(r.left+r.width/2),dy=c.top+(DRAWERS.y+DRAWERS.h/2)*S-(r.top+r.height/2);
  const step=s=>{if(el===jEl)b.style.transform=`translate(calc(-50% + ${Math.round(dx*(1-s))}px),calc(-50% + ${Math.round(dy*(1-s))}px)) scale(${k*s})`;};
  step(.3);setTimeout(()=>step(.65),80);setTimeout(()=>{if(el===jEl)fitBook();},160);}
 function jFlip(side,to){const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
  a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});jEl.querySelector(side==='jprev'?'.jl':'.jr').appendChild(a);}
 function jClearPages(){const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';jEl.querySelector('.jribs').innerHTML='';return [L,R];}
 function renderArchive(){const [L,R]=jClearPages(),past=st.archive||[],n=ARCH_PER_PAGE;L.appendChild(jdiv('jname',[],'Files'));
- if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(jdiv('jarchnote',[],t)));R.firstChild.classList.add('jarchtop');return;}
+ if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(jdiv('jarchnote',[],t)));R.firstChild.classList.add('jarchtop');
+  while(R.scrollHeight>R.clientHeight+1&&R.children.length>1&&L.scrollHeight<=L.clientHeight){const m=R.firstChild;m.classList.remove('jarchtop');L.appendChild(m);R.firstChild.classList.add('jarchtop');if(L.scrollHeight>L.clientHeight+1){R.prepend(m);break;}} // the bigger phone print can need the room: never cut a word off
+  return;}
  const last=Math.ceil(past.length/(2*n))-1;if(jSub>last)jSub=last;const shown=past.slice(jSub*2*n,(jSub+1)*2*n);
  L.appendChild(jdiv('jshelf',shown.slice(0,n).map(archiveBook)));if(shown.length>n)R.appendChild(jdiv('jshelf jarchtop',shown.slice(n).map(archiveBook)));
  if(jSub>0)jFlip('jprev',jSub-1);if(jSub<last)jFlip('jnext',jSub+1);}
 function archiveBook(e){const b=document.createElement('button');b.type='button';b.className='jarchbook jstep';b.dataset.id=e.id;b.style.background=ARCH_COVERS[(st.archive||[]).indexOf(e)%ARCH_COVERS.length];b.setAttribute('aria-label',e.name+"'s journal");
- b.appendChild(jdiv('jarchlabel',[jdiv('jarchpic',[withKeepsake(e,()=>plantPortrait(e.id,58,58))]),jdiv('jarchname',[],e.name)]));
+ b.appendChild(jdiv('jarchlabel',[jdiv('jarchpic',[withKeepsake(e,()=>plantPortrait(e.id,58,58))]),tsNamify(jdiv('jarchname',[],e.name))]));
  b.addEventListener('click',ev=>{ev.stopPropagation();jKeep=e;jArchSub=jSub;jTurn('keep',0);});return b;}
 const NUM_ONES=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'],NUM_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
 function numWords(n){if(n<20)return NUM_ONES[n];if(n<100)return NUM_TENS[Math.floor(n/10)]+(n%10?'-'+NUM_ONES[n%10]:'');if(n<1000)return NUM_ONES[Math.floor(n/100)]+' hundred'+(n%100?' and '+numWords(n%100):'');return numWords(Math.floor(n/1000))+' thousand'+(n%1000?' '+numWords(n%1000):'');}
 function outPages(L,R,e){L.appendChild(jdiv('jname',[],'Out in the world'));if(e.dest)L.appendChild(jdiv('jborn jwent',[],e.dest));L.appendChild(jdiv('jborn',[],'Moved out on day '+numWords(e.day)));
  R.appendChild(jdiv('jgroup',[jlabel('Postcards'),jdiv('jicons',[jdiv('jblank jpostcard')])]));}
 function renderKeepsake(){const e=jKeep;if(!e){jPage='archive';renderArchive();return;}const [L,R]=jClearPages();let count=1;
- withKeepsake(e,()=>{const subs=relSpreads('p'+e.id);count=subs.length+1;if(jSub>=count)jSub=0;const sp=subs[jSub];if(!sp)outPages(L,R,e);else if(sp.k==='main')plantPages(L,R);else relPages(L,R,sp);});
+ let again=false;withKeepsake(e,()=>{const key='k'+e.id,subs=withMore(relSpreads('p'+e.id),key);count=subs.length+1;if(jSub>=count)jSub=0;const sp=subs[jSub];
+  if(!sp)outPages(L,R,e);else if(sp.k==='main'){plantPages(L,R);again=spill(R,key);}else if(sp.k==='more')morePages(L,R,plantPages,key);else relPages(L,R,sp);});
+ if(again){renderKeepsake();return;}
  if(jSub>0)jFlip('jprev',jSub-1);if(jSub<count-1)jFlip('jnext',jSub+1);}
 
 /* ---------- a plant's pages ---------- */
@@ -191,24 +211,24 @@ function plantPages(L,R){
    if(jKeep)b.disabled=true;else b.addEventListener('click',e=>{e.stopPropagation();st.wear=wornCharm()===t?'none':t;sfx('pop');save();renderJournal();});return b;}));
   R.appendChild(jdiv('jgroup',[jlabel('Charms'),row]));}
  const seen=st.quirks||{};
- R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint')))]));}
+ R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(QUIRK_SHORT).map(k=>seen[k]?jdiv('jstamp',[],QUIRK_SHORT[k]):jdiv('jstamp jfaint',[],'not seen yet')))]));}
 
 // tap the name to type a new one (16 letters at most); cleared = it keeps its old name
-function nameTag(id){if(jKeep)return jdiv('jname',[],st.name||NAMES[st.species]); // a keepsake is read-only
+function nameTag(id){if(jKeep)return tsNamify(jdiv('jname',[],st.name||NAMES[st.species])); // a keepsake is read-only
  const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=st.name||NAMES[st.species];b.setAttribute('aria-label',st.name?'Rename '+st.name:'Name it'); // no name yet (a seed or sprout): it shows the species, and a tap names it
  b.addEventListener('click',e=>{e.stopPropagation();const old=st.name,inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old||'';inp.setAttribute('aria-label','Name');
   let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);
    withPlant(id,()=>{if(v)st.name=v;else if(old)tell('Back to '+old+'.',{kind:'info'});});sfx('tick');save();renderJournal();};
   inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')finish();if(ev.key==='Escape'){inp.value=old;finish();}});
   inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
- return b;}
+ return tsNamify(b);}
 
 function catNameTag(){const b=document.createElement('button');b.type='button';b.className='jname jrename';b.textContent=catName();b.setAttribute('aria-label','Rename '+catName());
  b.addEventListener('click',e=>{e.stopPropagation();const old=catName(),inp=document.createElement('input');inp.className='jname jnameinput';inp.maxLength=16;inp.value=old;inp.setAttribute('aria-label','Name');
   let done=false;const finish=()=>{if(done)return;done=true;const v=inp.value.replace(/\s+/g,' ').trim().slice(0,16);if(v)st.catName=v;else tell('Back to '+old+'.',{kind:'info'});sfx('tick');save();renderJournal();};
   inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')finish();if(ev.key==='Escape'){inp.value=old;finish();}});
   inp.addEventListener('blur',finish);inp.addEventListener('click',ev=>ev.stopPropagation());b.replaceWith(inp);inp.focus();inp.select();});
- return b;}
+ return tsNamify(b);}
 
 /* ---------- the cat's pages ---------- */
 function catPages(L,R){
@@ -222,7 +242,7 @@ function catPages(L,R){
  const naps=Object.entries(st.catNaps||{}).filter(([k,n])=>n>0&&NAP_SPOTS.includes(k)).sort((a,b)=>b[1]-a[1]).slice(0,3);
  if(naps.length)R.appendChild(jdiv('jgroup',[jlabel('Favorite naps'),jdiv('jicons',naps.map(([k])=>pix(k,5)))]));
  const seen=st.catSeen||{};
- R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(CAT_QUIRKS).map(k=>seen[k]?jdiv('jstamp',[],CAT_QUIRKS[k]):jdiv('jstamp jfaint')))]));}
+ R.appendChild(jdiv('jgroup',[jlabel('Quirks'),jdiv('jstamps jquirks',Object.keys(CAT_QUIRKS).map(k=>seen[k]?jdiv('jstamp',[],CAT_QUIRKS[k]):jdiv('jstamp jfaint',[],'not seen yet')))]));}
 
 /* ---------- RELATIONSHIPS (Jackie, Nov 7): each one gets its own spread ----------
    A monster: it & you, it & the other monster, it & the cat.  The cat: the cat & you, the cat & each monster.
@@ -253,7 +273,7 @@ function relPages(L,R,sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q
  else{title=catName()+' & you';a=catPic(118,92);b=you();mark=pix('heart',5);
   details.push(jdiv('jdetail',[],['Still shy','Lets you pet','Fond of you','Adores you'][paws-1]));details.push(jdiv('jpaws',Array.from({length:paws},()=>pix('paw',4))));
   const nap=Object.entries(st.catNaps||{}).filter(([k,n])=>n>0&&NAP_SPOTS.includes(k)).sort((x,y)=>y[1]-x[1])[0];if(nap)details.push(jdiv('jgroup',[jlabel('Favorite nap'),jdiv('jicons',[pix(nap[0],5)])]));}
- L.appendChild(jdiv('jname',[],title));
+ L.appendChild(tsNamify(jdiv('jname',[],title)));
  L.appendChild(jdiv('jpair',[jdiv('jpairpic',[a]),mark?jdiv('jpairmark',[mark]):jdiv('jpairmark'),jdiv('jpairpic',[b])]));
  L.appendChild(jdiv('jdetails',details)); // the fun details, side by side
  R.appendChild(jdiv('jgroup',[jlabel('Milestones'),jdiv('jstamps jmiles',relMilestones(sp).map(([t,done])=>done?jdiv('jstamp',[],t):jdiv('jstamp jfaint',[],t)))]));}
@@ -262,8 +282,8 @@ function relPages(L,R,sp){const q=raw(sp.q),o=raw(sp.o),cb=q?((st.catBond||{})[q
 function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(const it of worldItems())R.appendChild(jdiv('jgroup',[jlabel(it.label||'')]));}
 
 /* FILES SIGN (Jackie, Nov 8; replaces the Nov 4 JOURNAL plate, which was too small to notice; the word was ARCHIVE until Nov 10,
-   now FILES so the letters can be bigger): a sign in the SNACKS sign's style (cream label, gold rim, dark outline, clipped corners,
-   wine letters) set over the top drawer's knob. Drawn in code from the room palette on whole pixels (2 room units each); the five
+   now FILES so the letters can be bigger): a sign in the SNACKS sign's shape (clipped corners) in the text style's brass
+   (brass face, dark brass letters, toffee rim, cocoa outline; Nov 10) set over the top drawer's knob. Drawn in code from the room palette on whole pixels (2 room units each); the five
    letters are 8 pixels tall with 2-pixel stems, as big as the plate allows with the plate filling most of the drawer face. It never
    glows, blinks or bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the
    current room picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms
@@ -276,7 +296,7 @@ const PLATE=(()=>{const t='FILES',tw=[...t].reduce((n,ch)=>n+PFONT[ch][0].length
   const ink=new Set();let cx=3;for(const ch of t){PFONT[ch].forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='#')ink.add((cx+i)+','+(3+j));}));cx+=PFONT[ch][0].length+1;}
   for(let j=0;j<h;j++){let r='';for(let i=0;i<w;i++){const dx=Math.min(i,w-1-i),dy=Math.min(j,h-1-j),d=dx+dy;
     r+=d<2?'.':(d===2||dx===0||dy===0)?'o':(d===3||dx===1||dy===1)?'h':ink.has(i+','+j)?'t':'b';}rows.push(r);}return rows;})();
-const PCOL={o:C.out,h:C.fl3,b:C.ivory,t:C.wine};
+const PCOL={o:TS.ink,h:TS.toffee,b:TS.brass,t:TS.brassInk}; // the text style's brass plate (Jackie, Nov 10): cocoa outline, toffee rim, brass face, dark brass letters
 let placardCv=null,placardKey='',placardRef=null;
 function panelAvg(src,sx,sy){const c=document.createElement('canvas');c.width=60;c.height=12;const x=c.getContext('2d');x.drawImage(src,sx,sy,60,12,0,0,60,12);const d=x.getImageData(0,0,60,12).data;let r=0,gg=0,b=0;for(let i=0;i<d.length;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];}const n=d.length/4;return [r/n,gg/n,b/n];}
 function drawPlacard(key){if(!ok(ROOMS.day))return;

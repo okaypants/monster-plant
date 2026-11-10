@@ -20,7 +20,7 @@ SAVE = ("()=>{const s=fresh();Object.assign(s,{started:true,stage:8,species:3,id
 FEED = "for(const q of allRaw()){q.needs.thirst=0;q.needs.attention=0;q.lightState='ok';q.lightBad=0;q.nap=0;}"
 # the go-ask is rolled off here so only breeding can raise a bubble
 BLOOM = "()=>{Math.random=()=>0;goAsk=()=>{};for(let i=0;i<220;i++){" + FEED + "__step(.5,50);if(bubble)break;}return bubble?bubble.textContent:'';}"
-WANT = "Zib and Mortie made a seed together!Send it to SlowmallowKeep it here"
+WANT = "Zib and Mortie made a seed together!Send it to Slowmallowflies off right awayKeep it hereboth parents head off in the morning"  # with the line under each choice (Nov 10)
 
 
 async def main():

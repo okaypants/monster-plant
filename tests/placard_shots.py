@@ -2,7 +2,7 @@
 
 Run from the repository root:  python tests/placard_shots.py
 Pictures the sign at day, golden hour and night (desk lamp on and off), room and close-up, to
-tests/screenshots/placard/. Checks it gets darker at night like the wood around it, stays warm under the desk lamp, and
+tests/screenshots/placard/. Checks it gets darker at night like the wood around it (by brightness), stays warm under the desk lamp, and
 that tapping it opens the empty files (with their note), not the journal. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -36,7 +36,7 @@ async def main():
             lum[name] = px
             await pg.screenshot(path=os.path.join(OUT, f"{name}_room.png"))
             await pg.screenshot(path=os.path.join(OUT, f"{name}_closeup.png"), clip={"x": 1060, "y": 560, "width": 140, "height": 180})
-        s = lambda c: sum(c[:3])
+        s = lambda c: .299 * c[0] + .587 * c[1] + .114 * c[2]  # how bright it looks (the rim is toffee since Nov 10, so a plain sum overweights blue night light)
         if not s(lum["night_desklamp_off"]) < s(lum["night_desklamp_on"]) < s(lum["day"]):
             fails.append(f"placard lighting: day {lum['day']}, night lamp on {lum['night_desklamp_on']}, night lamp off {lum['night_desklamp_off']}")
         on = lum["night_desklamp_on"]

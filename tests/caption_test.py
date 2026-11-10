@@ -71,13 +71,13 @@ async def main():
                 check(6 <= r["dur"] <= 8 and abs(r["dur"] - min(8, max(3, 2 + .3 * len(LONG.split())))) < .01, f"duration {r['dur']} for {len(LONG.split())} words (the longest lines stay 6-8 s)")
                 if dev_name == "phone":
                     check(16 <= r["font"] <= 20, f"phone font {r['font']} px (small but readable)")
-                await pg.wait_for_timeout(700)  # the fade-in runs on real time
+                await pg.wait_for_timeout(400)  # the pop runs on real time
                 await pg.screenshot(path=os.path.join(OUT, f"{dev_name}_{when}_tip_no_tail.png"))
                 r = await pg.evaluate(SHOW, ["It leans into your hand.", {"kind": "info", "who": 1}])
                 check(r["show"] and r["tail"], f"{dev_name} {when}: a plant's line should have a tail")
                 check(abs(r["tailX"] - r["plantX"]) < abs(r["cx"] - r["plantX"]), f"{dev_name} {when}: the tail doesn't lean toward the plant (tail {r['tailX']:.0f}, plant {r['plantX']:.0f})")
                 check(3 <= r["dur"] <= 5, f"a short line stays {r['dur']} s, expected 3-5 s")
-                await pg.wait_for_timeout(700)  # the fade-in runs on real time
+                await pg.wait_for_timeout(400)  # the pop runs on real time
                 await pg.screenshot(path=os.path.join(OUT, f"{dev_name}_{when}_plant_speaking_tail.png"))
                 if not night and dev_name == "phone":
                     r = await pg.evaluate(SHOW, ["The cat sniffs your hand. A start.", {"kind": "info", "who": "cat"}])
@@ -89,9 +89,9 @@ async def main():
                       const c=cap.getBoundingClientRect(),cv0=cv.getBoundingClientRect(),r={x0:(c.left-cv0.left)/S,y0:(c.top-cv0.top)/S,x1:(c.right-cv0.left)/S,y1:(c.bottom-cv0.top)/S};
                       return capFaces().some(f=>f.x1>r.x0&&f.x0<r.x1&&f.y0<r.y1&&f.y1>r.y0);}""")
                     check(not r, "the bubble covers the face of a plant in the middle of the room")
-                    # fades: opacity eases in and out
-                    tr = await pg.evaluate("()=>getComputedStyle(cap).transitionDuration")
-                    check(tr not in ("0s", ""), f"no fade ({tr})")
+                    # no fade: it pops in, in stepped frames (Jackie, Nov 10: one text style)
+                    an = await pg.evaluate("()=>getComputedStyle(cap.querySelector('.ci')).animationName")
+                    check(an == "tspop", f"the caption should pop in ({an})")
                 fails += errs
                 await ctx.close()
 

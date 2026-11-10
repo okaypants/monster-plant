@@ -39,12 +39,18 @@ async def main():
             if page == "cat":
                 await pg.click(".jrib[data-page=cat]")
                 await pg.evaluate("()=>__step(.3)")
-            for i in range(count):
+            i = 0
+            while i < count:
                 await pg.click(".jarrow.jnext")
                 await pg.evaluate("()=>__step(.3)")
                 await pg.wait_for_timeout(200)
                 r = await pg.evaluate("()=>({title:document.querySelector('.jl .jname')?.textContent,miles:document.querySelectorAll('.jmiles .jstamp').length,"
                                       "over:[...document.querySelectorAll('.jpage')].some(p=>p.scrollHeight>p.clientHeight+1||p.scrollWidth>p.clientWidth+1)})")
+                if r["title"] and "&" not in r["title"]:  # the rest of the main pages, moved on a phone (Nov 10): it must fit too
+                    if r["over"]:
+                        fails.append(f"the rest of {r['title']}'s pages overflows")
+                    continue
+                i += 1
                 n += 1
                 if not r["title"] or r["miles"] < 3:
                     fails.append(f"spread {n}: {r}")
