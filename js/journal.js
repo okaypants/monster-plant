@@ -116,7 +116,7 @@ function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();
 // THE WORDS, in one place to edit: the empty drawer's note (one string per paragraph; the first two go on the left page) and the moving-out caption
 const ARCHIVE_NOTE=[
  "This drawer is for the journals of monsters who have grown up and moved out. It's empty for now.",
- "A grown monster might ask to go somewhere it has its heart set on. You can say yes, or ask it to stay a while longer.",
+ "A grown monster might ask to go somewhere special. You can say yes, or ask the monster to stay a while longer.",
  "If two grown monsters make a seed together, they head off to live their own lives and leave the little one in your care.",
  "Sometimes Slowmallow sends a paper airplane asking to have one back. That's up to you too.",
  "Wherever they go, their journals rest here. Now and then a postcard finds its way home, and Slowmallow sends word of anyone staying over."];
