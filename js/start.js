@@ -80,7 +80,7 @@ function startFlow(){
 function openingRoom(){Object.assign(st,{dayT:.3,night:false,curtain:'open',lamp:false,desk:false});curK=0;}
 function quiz(){openingRoom();const picks=QUIZ.map(pool=>pool[Math.floor(Math.random()*pool.length)]);let bits=0,i=0;
  const ask=()=>{const q=picks[i];sfx('pop');
-  screen(`<p style="opacity:.7">Question ${i+1} of 4</p><h1 style="font-size:39px">${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
+  screen(`<p class="tssmall">Question ${i+1} of 4</p><h1>${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
  const next=v=>{bits=bits*2+v;i++;if(i<4)ask();else plantSeed(bits);};ask();}
 // a second plant only ever comes from Slowmallow's note (plants.js), never from the start screen (Jackie, Nov 7)
 function plantSeed(sp){

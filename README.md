@@ -52,7 +52,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/feed_shots.py` taps the SNACKS cabinet, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.
 
-`python tests/placard_shots.py` pictures the FILES sign on the desk drawers (SNACKS style, over the top knob) at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the empty Files with their note (not the journal); saved to `tests/screenshots/placard/`.
+`python tests/placard_shots.py` pictures the FILES sign on the desk drawers (SNACKS shape, brass, over the top knob) at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the empty Files with their note (not the journal); saved to `tests/screenshots/placard/`.
 
 `python tests/relationship_shots.py` flips through every relationship spread (Pip & you, Pip & Mortie, Pip & Tofu, Tofu & you, Tofu & Pip) on a phone held sideways and checks each fits; saved to `tests/screenshots/relationships/`.
 
@@ -60,7 +60,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/bug_note_shots.py` plays Slowmallow's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
 
-`python tests/ui_shots.py` checks the soft UI look (Fredoka text, cream caption pill, rounded bubbles, outline-free pill buttons) and saves the start screen, a caption, the treat jar bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
+`python tests/ui_shots.py` checks the UI look (Fredoka text; captions, bubbles and buttons in the one text style, stepped, never round) and saves the start screen, a caption, Slowmallow's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
+
+`python3 tests/textstyle_shots.py` pictures every kind of text at iPhone landscape size, day and night (start menu, caption pill, a monster's and the cat's speech bubbles, a choice card, Slowmallow's note and letter, the Files drawer, a journal page, name tags, the FILES placard, a story page, the seed choice, the Good morning card, a quiz question), with contact sheets `sheet_day.png` and `sheet_night.png`, and checks the built-in accessibility: contrast (text 4.5:1, icons 3:1), no word under 14px on screen, nothing cut off, each monster's own look, names with their symbol, Yes/Not yet by icon and word, two lines at most, one message at a time, stepped pops and reduce-motion; saved to `tests/screenshots/textstyle/`.
 
 `python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
 
@@ -138,6 +140,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 - Five ages: internal stage numbers `0` seed, `1` sprout, `4` kid, `6` teen, `8` adult (`NEXT`, `AGES`). File names still say `baby_` (kid) and `elder_` (old stand-ins).
 - Spots: seed = windowsill or desk; kid = milk crate or book stack; teen/adult = anywhere on the rug (`st.free`, depth-scaled).
 - Room scenes: `ROOMS` (day/golden/night base), `MIX` (exact lamp/curtain pictures), `LOFF` lamp-off cut-outs, `CURTS` curtain layers, `WIN_SEASON` window pieces.
+- **Text style** (Jackie, Nov 10): every word uses one look, set in `css/textstyle.css` (shapes, sizes) and `js/textstyle.js` (the palette `TS`, each monster's `LOOKS` entry: tint, name color, ribbon color and pixel symbol, given at birth by `looksTick`; names in color with their symbol via `tsNamify`; choice buttons via `tsChoices`, with their words in `CHOICES` in js/names.js).
 - Sound: named slots (`sfx(...)`, `fplay(...)`) are ready for Garry's sounds.
 
 ### File map

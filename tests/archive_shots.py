@@ -54,7 +54,7 @@ async def main():
         for _ in range(2):
             await pg.evaluate("()=>__step(.085)")
             frames.append(await pg.evaluate("()=>document.querySelector('.jbook').style.transform"))
-        check(len(set(frames)) == 3 and frames[-1].startswith("translate(-50%, -50%)"), f"the drawer should open in 3 stepped frames: {frames}")
+        check(len(set(frames)) == 3 and frames[-1] == await pg.evaluate("()=>{fitBook();return document.querySelector('.jbook').style.transform;}"), f"the drawer should open in 3 stepped frames: {frames}")
         note = await pg.evaluate("()=>[...document.querySelectorAll('.jarchnote')].map(n=>n.textContent)")
         check(note == await pg.evaluate("()=>ARCHIVE_NOTE") and len(note) == 5, f"the empty note: {note}")
         check(await pg.evaluate("()=>!document.querySelector('.jrib')&&!document.querySelector('.jarchbook')"), "the empty drawer should have no ribbons or books")

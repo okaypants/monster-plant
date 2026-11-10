@@ -54,7 +54,7 @@ async def main():
 
         # the letter
         await tap_note()
-        r = await pg.evaluate("()=>({t:document.querySelector('.jltext').textContent,s:document.querySelector('.jlsign').textContent,c:document.querySelector('.jlstamp canvas').width,y:!!document.querySelector('.jletter [data-k=y]'),n:!!document.querySelector('.jletter [data-k=n]'),bug:document.querySelector('.jletter').textContent.includes('Doctor')})")
+        r = await pg.evaluate("()=>({t:document.querySelector('.jltext').textContent,s:document.querySelector('.jlsign').textContent,c:document.querySelector('.jlstamp img,.jlstamp canvas').getBoundingClientRect().width,y:!!document.querySelector('.jletter [data-k=y]'),n:!!document.querySelector('.jletter [data-k=n]'),bug:document.querySelector('.jletter').textContent.includes('Doctor')})")
         check(r["t"] == "Dear friend, I would love to have Zib come stay with me for a while. May Zib come?" and r["s"] == "Slowmallow" and r["c"] > 20 and r["y"] and r["n"] and not r["bug"], f"letter: {r}")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "2_letter.png"))

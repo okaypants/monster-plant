@@ -38,6 +38,18 @@ function makeName(p){const f=nameFlavor(p),pool=L=>f?L[f]:Object.values(L).flat(
 // the little name tags at the bottom left: one per named monster; hidden on menus and the journal
 let tagKey='';
 function nameTagsDraw(){const el=document.getElementById('nameTags');if(!el)return;const show=st.started&&!document.querySelector('.screen');
- const P=show?allRaw().filter(q=>q.stage>=0&&q.name):[],key=P.map(q=>q.id+':'+q.name).join('|');if(key===tagKey)return;tagKey=key;el.innerHTML='';
- for(const q of P){const b=document.createElement('button');b.type='button';b.textContent=q.name;b.addEventListener('click',e=>{e.stopPropagation();openJournal('p'+q.id);});el.appendChild(b);}}
-function namesTick(){nameTagsDraw();if(st.started)catName();eachPlant(()=>{if(st.stage>=4&&!st.name)st.name=makeName(st);});}
+ const P=show?allRaw().filter(q=>q.stage>=0&&q.name):[],key=P.map(q=>q.id+':'+q.name+':'+q.look).join('|');if(key===tagKey)return;tagKey=key;el.innerHTML='';
+ for(const q of P){const b=document.createElement('button'),lk=lookOf(q);b.type='button';b.className='tsb';b.style.setProperty('--tint',lk.tint);b.style.setProperty('--nm',lk.name); // its tint, name color and symbol (js/textstyle.js)
+  b.appendChild(tsGlyph(lk.sym,lk.name));b.appendChild(document.createTextNode(q.name));b.addEventListener('click',e=>{e.stopPropagation();openJournal('p'+q.id);});el.appendChild(b);}}
+function namesTick(){looksTick();nameTagsDraw();if(st.started)catName();eachPlant(()=>{if(st.stage>=4&&!st.name)st.name=makeName(st);});}
+
+/* THE CHOICES (Jackie, Nov 10): every two-way choice in the room, in one place to edit: [key, button word, one short line under it
+   saying what happens, 'yes' (sage, check) or 'wait' (cream, hourglass), and a different icon when an hourglass doesn't fit] */
+const CHOICES={
+ bug:[['y','Yes, please','arrives in the morning','yes'],['n','Not yet','waits in the journal','wait']],
+ go:[['y','Yes','leaves tomorrow morning','yes'],['n','Not yet','asks again in a few days','wait']],
+ letter:[['y','Yes','sets off in the morning','yes'],['n','Not yet','waits in the journal','wait']],
+ seed:[['s','Send it to Slowmallow','flies off right away','yes','plane'],['k','Keep it here','both parents head off in the morning','wait','heart']],
+ night:[['y','Goodnight','sleep until morning','yes'],['n','Not yet','stay up a while','wait']],
+ wake:[['y','Good morning','start a new day','yes'],['n','Let it sleep','stay in the night','wait','moon']]};
+const BUG_CHOICES=CHOICES.bug;

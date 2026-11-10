@@ -38,7 +38,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
   if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx(st.lamp?'chime':'sigh');save();return;}
   if(inR(x,y,LAMP)){st.desk=st.desk===false;save();return;}
   if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');save();return;}
-  openBubble(x-120,y-90,'Wake up for a new day?<br><button data-k="y">Good morning</button><button data-k="n">Let it sleep</button>',{y:()=>{closeBubble();wake();},n:closeBubble});return;} // any other tap, as the goodnight caption says
+  openBubble(x-120,y-90,'Wake up for a new day?'+tsChoices(CHOICES.wake),{y:()=>{closeBubble();wake();},n:closeBubble});return;} // any other tap, as the goodnight caption says
  const on=held.tool==='can'?(faceAt(x),pourOver(x,y,holdK(x,y))):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
@@ -49,5 +49,5 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');return;}
  if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx('tick');sfx(st.lamp?'chime':'sigh');save();return;}
  if(inR(x,y,LAMP)){st.desk=st.desk===false;sfx('tick');save();return;}
- if(inR(x,y,CHAIR)&&!onPlant(x,y)){openBubble(CHAIR.x,CHAIR.y-90,'Settle in for the night?<br><button data-k="y">Goodnight</button><button data-k="n">Not yet</button>',{y:tuckIn,n:closeBubble});return;}
+ if(inR(x,y,CHAIR)&&!onPlant(x,y)){openBubble(CHAIR.x,CHAIR.y-90,'Settle in for the night?'+tsChoices(CHOICES.night),{y:tuckIn,n:closeBubble});return;}
 });

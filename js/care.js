@@ -77,7 +77,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
    Let go anywhere else, or over one that can't eat: the treat just goes back to the tray. The tray hides when you tap away,
    or a few seconds after the last treat. Pointer events, so a mouse drag works the same way. */
 const feed={item:null,x:0,y:0,over:null,trayT:0},CHOMP=new Map(),CHOMP_MS=110,TRAY_HIDE=4000;let trayEl=null;
-function openSnacks(){sfx('tick');if(!trayEl){trayEl=document.createElement('div');trayEl.className='ttray';
+function openSnacks(){sfx('tick');if(!trayEl){trayEl=document.createElement('div');trayEl.className='ttray tsb';
   for(const s of SNACKS){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
    const im=document.createElement('img');im.src=TREAT_IMG[s.id].src;im.alt='';im.draggable=false;b.appendChild(im);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabTreat(s,e);});trayEl.appendChild(b);}
@@ -134,7 +134,7 @@ const BOOK_CACHE=new Map();function bookImg(key,make){if(!BOOK_CACHE.has(key))BO
 const bookDrag={item:null,x:0,y:0,over:null,trayT:0};let btrayEl=null;
 const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books hopping back to the shelf
 const bookHops=[];
-function openBooks(){sfx('page');if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray';
+function openBooks(){sfx('page');if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';
   for(const bk of BOOKS){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
    const c=bookPix(bk.id,3);c.className='jpix';b.appendChild(c);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabBook(bk,e);});btrayEl.appendChild(b);}
@@ -174,16 +174,17 @@ function startReading(id,bk,from){closeStory(true);
  storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();turnStory();});
  ui.appendChild(storyEl);placeStory();showStory();if(from)zoomStory(from);}
 // it zooms open from the book you tapped: three quick steps (small, bigger, full), no smooth scaling
-function zoomStory(r){const el=storyEl,b=el.getBoundingClientRect(),dx=r.left+r.width/2-(b.left+b.width/2),dy=r.top+r.height/2-(b.top+b.height/2);
+function zoomStory(r){if(tsCalm())return;const el=storyEl,b=el.getBoundingClientRect(),dx=r.left+r.width/2-(b.left+b.width/2),dy=r.top+r.height/2-(b.top+b.height/2);
  const step=s=>{if(el===storyEl)el.style.transform=`translate(${Math.round(dx*(1-s))}px,${Math.round(dy*(1-s))}px) scale(${s})`;};step(.3);setTimeout(()=>step(.65),80);
  setTimeout(()=>{if(el===storyEl)el.style.transform='';},160);}
 function placeStory(){if(!storyEl)return;const X=900,Y=470,w=640,h=320; // the right half of the room, clear of the armchair
- Object.assign(storyEl.style,{left:Math.round(X*S)+'px',top:Math.round(Y*S)+'px',width:Math.round(w*S)+'px',height:Math.round(h*S)+'px'});}
+ const pw=Math.max(Math.round(w*S),430),ph=Math.max(Math.round(h*S),190); // on a phone it's never smaller than 16px words need (css/textstyle.css)
+ Object.assign(storyEl.style,{left:Math.min(Math.round(X*S),Math.round(W*S)-pw-6)+'px',top:Math.min(Math.round(Y*S),Math.round(H*S)-ph-6)+'px',width:pw+'px',height:ph+'px'});}
 addEventListener('resize',()=>setTimeout(placeStory,50));
 function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=STORIES[r.bk.id]||[];
  storyEl.querySelector('.sl').textContent=P[r.page]||'';storyEl.querySelector('.sr').textContent=P[r.page+1]||'';}
 function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
- if(r.page+2>=(STORIES[r.bk.id]||[]).length)return closeStory();sfx('page');storyEl.dataset.turning=1;
+ if(r.page+2>=(STORIES[r.bk.id]||[]).length)return closeStory();sfx('page');if(tsCalm()){r.page+=2;showStory();return;} // reduce motion: the next pages just appearstoryEl.dataset.turning=1;
  const f=document.createElement('div');f.className='sturn sturn1 jstep';storyEl.querySelector('.scover').appendChild(f); // the right page lifts
  setTimeout(()=>{f.className='sturn sturn2 jstep';},90); // and lands on the left
  setTimeout(()=>{f.remove();r.page+=2;delete storyEl.dataset.turning;showStory();},180);}
