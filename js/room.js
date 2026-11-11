@@ -4,7 +4,7 @@ const room=img('room_day.png');
 // ROOM STATES (Jackie's 15-image package, each an edit of her default): whole-room swap per time of day + layered pieces
 const TIMES=['day','golden','night'],ROOMS={},LOFF={},CURTS={};
 for(const t of TIMES){ROOMS[t]=img('room_'+t+'.png');LOFF[t]={floor:img(t+'_floorlamp_off.png'),desk:img(t+'_desklamp_off.png')};CURTS[t]=img(t+'_curtains_closed.png');}
-const WIN_SEASON={day:{summer:img('day_window_summer.png'),spring:img('day_window_spring.png'),autumn:img('day_window_autumn.png'),winter:img('day_window_winter.png')},night:{winter:img('night_window_winter.png')}};
+const WIN_SEASON={day:{summer:img('day_window_summer.png'),spring:img('day_window_spring.png'),autumn:img('day_window_autumn.png'),winter:img('day_window_winter.png')},night:{spring:img('night_window_spring.png'),summer:img('night_window_summer.png'),autumn:img('night_window_autumn.png'),winter:img('night_window_winter.png')}}; // night windows for every season (Jackie, Nov 10): only the glass differs from the winter one
 const STOOL_EMPTY=img('stool_empty.png');
 // exact mixed-lamp rooms from Jackie (used instead of the soft cut-outs when present). key: time + '_' + floor(on/off) + desk(on/off)
 const MIX={golden_onoff:img('room_golden_floorOn_deskOff.png'),golden_offon:img('room_golden_floorOff_deskOn.png'),golden_offoff:img('room_golden_floorOff_deskOff.png'),day_c_onoff:img('room_day_closed_floorOn_deskOff.png'),day_c_offon:img('room_day_closed_floorOff_deskOn.png'),day_offoff:img('room_day_floorOff_deskOff.png'),golden_c_offoff:img('room_golden_closed_floorOff_deskOff.png')}; // _c_ = curtains closed
