@@ -49,7 +49,7 @@ const CHOICES={
  sloth:[['y','Yes, please','arrives in the morning','yes'],['n','Not yet','waits in the journal','wait']],
  go:[['y','Yes','leaves tomorrow morning','yes'],['n','Not yet','asks again in a few days','wait']],
  letter:[['y','Yes','sets off in the morning','yes'],['n','Not yet','waits in the journal','wait']],
- seed:[['s','Send it to Sloth, PhD','flies off right away','yes','plane'],['k','Keep it here','both parents head off in the morning','wait','heart']],
+ seed:[['s','Send it to Sloth, PhD','the paw comes for it','yes'],['k','Keep it here','both parents head off in the morning','wait','heart']],
  night:[['y','Goodnight','sleep until morning','yes'],['n','Not yet','stay up a while','wait']],
  wake:[['y','Good morning','start a new day','yes'],['n','Let it sleep','stay in the night','wait','moon']]};
 const SLOTH_CHOICES=CHOICES.sloth;

@@ -100,7 +100,7 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   chips(b,'Titles',Object.entries(TITLES),t=>(pRaw().titles||[]).includes(t),t=>onP(()=>{st.titles=st.titles||[];st.titles=st.titles.includes(t)?st.titles.filter(x=>x!==t):st.titles.concat(t);}));
   b.appendChild(el('div','status',(()=>{const q=pRaw(),T=q.treats||{};return 'Treats: '+SNACKS.map(s=>esc(s.name)+' '+(T[s.id]||0)+'/'+TRAIT_AT).join(' · ')+'<br>Lately: '+esc((q.log||[]).join(', ')||'nothing yet')+'<br>Pots: '+esc((st.pots||[]).join(', ')||'none')+(q.potOn?' (on: '+esc(q.potOn)+')':'')+'<br>Today: water '+(q.met&&q.met.thirst?'✓':'·')+' light '+(q.met&&q.met.light?'✓':'·')+' company '+(q.met&&q.met.attention?'✓':'·');})())); // what the old journal showed
   btns(b,[['Reset quirks',()=>onP(()=>{st.quirks={};st.quirkT=null;})],['Grow one age',()=>onP(()=>{if(NEXT[st.stage]!=null){st.stage=NEXT[st.stage];st.timer=0;}})]]);
-  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Sloth, PhD letter now',dbgLetter],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
+  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Sloth, PhD letter now',dbgLetter],['Paw delivery now',dbgPaw],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
 
  group(body,'Cat',true,b=>{
   slider(b,'Trust',0,1,.01,()=>catTrust(),v=>{st.catTrust=v;},v=>trustName(v)+' '+(+v).toFixed(2));

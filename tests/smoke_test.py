@@ -79,7 +79,8 @@ CASES = [
      "(st.nge!=null&&plantCount()===1&&st.slothSend===st.day+1&&!slothOnSill())||'old save: nature '+st.nge+', plants '+plantCount()+', send day '+st.slothSend"),
     ("sloth_seed_next_morning", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.slothSend=5;",
      "st.night=true;wake();", 1,
-     "(plantCount()===2&&st.giftSeed===1&&!st.slothSend&&CAP.log.some(l=>/paper airplane note from Sloth, PhD/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.slothSend"),
+     "(()=>{if(st.sillItem!=='seed'||st.pawWait)return 'morning seed: the paw should have left a seed packet on the sill ('+st.sillItem+', waiting '+st.pawWait+')';sillTap();"
+     "return (plantCount()===2&&st.giftSeed===1&&!st.slothSend&&!st.sillItem&&CAP.log.concat(CAP.q).some(l=>/seed packet from Sloth, PhD/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.slothSend;})()"),
     ("gift_seed_asks_first", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};", "", 1,
      "(plantCount()===1&&slothOnSill()&&!bubble)||'note: plants '+plantCount()+', on sill '+slothOnSill()+', bubble '+(bubble&&bubble.textContent)"),
     ("gift_seed_not_now", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};",
