@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Trays sit higher, away from the bottom edge (Nov 10)
+
+- The treat tray (and the book tray, which sat the same way) were 6 px from the bottom, so on a phone a drag that started there could swipe the whole app away. Both now sit 14% of the screen height above the bottom (at least 48 px).
+
 ### Night windows for spring, summer and autumn (Nov 10)
 
 - At night the window now shows the real-calendar season: spring (blossoms and a crescent moon), summer (a full green tree and a round moon) and autumn (orange leaves and a round moon) use the new pieces; winter keeps its snow. Golden hour and daytime are unchanged, and closed curtains cover the window as before.
