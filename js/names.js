@@ -11,8 +11,8 @@ const GO_REASONS={
  chaotic:[["wants to see the ocean","Off to see the ocean"],["has heard about a kite festival by the sea","Following a kite festival by the sea"],["has spotted a parade that could use one more","Marching with a parade"]],
  evil:[["has heard a big spooky conservatory needs a new resident","Living in a big spooky conservatory"],["has been invited to a very old, very drafty castle greenhouse","Lurking in a drafty castle greenhouse"]],
  neutral:[["is curious what's out there","Finding out what's out there"],["has been wondering what's over the next hill","Somewhere over the next hill"]]};
-// Slowmallow's letter asking to have a monster come stay (Jackie, Nov 8): placeholder wording, edit freely. n = the monster's name.
-const slowmallowLetter=n=>'Dear friend, I would love to have '+n+' come stay with me for a while. May '+n+' come?';
+// Sloth's letter asking to have a monster come stay (Jackie, Nov 8): placeholder wording, edit freely. n = the monster's name.
+const slothLetter=n=>'Dear friend, I would love to have '+n+' come stay with me for a while. May '+n+' come?';
 const NAME_FIRST={
  good:['Pip','Mallow','Bun','Lulu','Honey','Posy','Tuffet','Mimi'],
  evil:['Grimble','Mortie','Hex','Vexy','Murkle','Nox','Skritch'],
@@ -46,10 +46,10 @@ function namesTick(){looksTick();nameTagsDraw();if(st.started)catName();eachPlan
 /* THE CHOICES (Jackie, Nov 10): every two-way choice in the room, in one place to edit: [key, button word, one short line under it
    saying what happens, 'yes' (sage, check) or 'wait' (cream, hourglass), and a different icon when an hourglass doesn't fit] */
 const CHOICES={
- bug:[['y','Yes, please','arrives in the morning','yes'],['n','Not yet','waits in the journal','wait']],
+ sloth:[['y','Yes, please','arrives in the morning','yes'],['n','Not yet','waits in the journal','wait']],
  go:[['y','Yes','leaves tomorrow morning','yes'],['n','Not yet','asks again in a few days','wait']],
  letter:[['y','Yes','sets off in the morning','yes'],['n','Not yet','waits in the journal','wait']],
- seed:[['s','Send it to Slowmallow','flies off right away','yes','plane'],['k','Keep it here','both parents head off in the morning','wait','heart']],
+ seed:[['s','Send it to Sloth, PhD','flies off right away','yes','plane'],['k','Keep it here','both parents head off in the morning','wait','heart']],
  night:[['y','Goodnight','sleep until morning','yes'],['n','Not yet','stay up a while','wait']],
  wake:[['y','Good morning','start a new day','yes'],['n','Let it sleep','stay in the night','wait','moon']]};
-const BUG_CHOICES=CHOICES.bug;
+const SLOTH_CHOICES=CHOICES.sloth;

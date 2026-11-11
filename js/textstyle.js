@@ -1,6 +1,6 @@
 'use strict';
 /* TEXT STYLE (Jackie, Nov 10): one look for every word in the game. The colors and shapes are here and in css/textstyle.css;
-   everything else (captions, speech bubbles, notes, Slowmallow's letters, the FILES drawer, journal pages, name tags, buttons,
+   everything else (captions, speech bubbles, notes, Sloth's letters, the FILES drawer, journal pages, name tags, buttons,
    the FILES placard) uses them. Cream paper, cocoa ink, 3px cocoa outline, stepped pixel corners, a solid toffee shadow.
    Every text color is at least 4.5:1 on its paper and every icon at least 3:1 (tests/textstyle_shots.py checks). */
 const TS={paper:'#FFF4E0',ink:'#5B3A2E',rust:'#A84B26',sage:'#CFE3C2',mint:'#E4F4EA',mintInk:'#2F6B57',toffee:'#B98C66',brass:'#E2B04A',brassInk:'#3A2406'};
@@ -65,6 +65,6 @@ function tsChoices(list){return '<div class="tschoices">'+list.map(([k,label,sub
 
 /* words appear in 2-3 stepped pops (never a fade, never a typewriter); with the phone's reduce-motion setting they just appear */
 const tsCalm=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
-// Slowmallow's postage stamp: a code-drawn silhouette (real art later: slowmallow_portrait.png, see LETTER_ART in js/plants.js)
+// Sloth's postage stamp: a code-drawn silhouette (real art later: sloth_portrait.png, see LETTER_ART in js/plants.js)
 function tsStampHTML(px=2){return '<span class="jlstamp"><img class="jpix" alt="" aria-hidden="true" src="'+tsGlyphURL('sloth',TS.mintInk,px)+'"></span>';}
 function tsPop(el){if(!el)return;el.classList.remove('tspop');void el.offsetWidth;el.classList.add('tspop');}

@@ -74,7 +74,7 @@ async def main():
         await pg.evaluate("()=>closeJournal()")
 
         # the second one (the one being tended) goes too: the room empties, the books stay
-        await pg.evaluate("()=>{const p=freshPlant();Object.assign(p,{stage:6,species:5,name:'Pip Wobblebean',free:{x:1250,y:918}});addPlant(p);moveOut(p,'Staying with Slowmallow');__step(1);}")
+        await pg.evaluate("()=>{const p=freshPlant();Object.assign(p,{stage:6,species:5,name:'Pip Wobblebean',free:{x:1250,y:918}});addPlant(p);moveOut(p,'Staying with Sloth, PhD');__step(1);}")
         check(await pg.evaluate("()=>st.id===1&&plantCount()===1&&st.archive.length===2"), "moving out the plant being tended went wrong")
 
         # the save, across a reload

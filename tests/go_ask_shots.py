@@ -87,7 +87,7 @@ async def main():
 
         # who never asks, and when nobody asks
         cases = [("a kid", "s.stage=4;s.others=[];"), ("a teen", "s.stage=6;s.others=[];"), ("a brand-new adult", "s.adultDay=9;s.others=[];"),
-                 ("a note waiting", "s.others=[];delete s.giftSeed;s.bugJournal=1;"), ("a note on the sill", "s.others=[];delete s.giftSeed;s.bugNote='sill';"), ("a seed on its way", "s.others=[];delete s.giftSeed;s.bugSend=10;"),
+                 ("a note waiting", "s.others=[];delete s.giftSeed;s.slothJournal=1;"), ("a note on the sill", "s.others=[];delete s.giftSeed;s.slothNote='sill';"), ("a seed on its way", "s.others=[];delete s.giftSeed;s.slothSend=10;"),
                  ("asked in the last 3 days", "s.goNext=11;")]
         for label, extra in cases:
             await load(extra)

@@ -58,11 +58,13 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/journal_shots.py` opens the keepsake journal on an iPhone 13 held sideways (a kid's page; an adult with titles, charms and quirks; two friends; the cat at low and high trust), checks the book fits with nothing scrolling, and saves pictures to `tests/screenshots/journal/`. The smoke test also opens it with one plant, two plants and an old save, turns pages with the ribbons, and wears and takes off a charm.
 
-`python tests/bug_note_shots.py` plays Slowmallow's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/bug_note/`.
+`python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
-`python tests/ui_shots.py` checks the UI look (Fredoka text; captions, bubbles and buttons in the one text style, stepped, never round) and saves the start screen, a caption, Slowmallow's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
+`python3 tests/old_names_test.py` checks that the paper-airplane character is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
 
-`python3 tests/textstyle_shots.py` pictures every kind of text at iPhone landscape size, day and night (start menu, caption pill, a monster's and the cat's speech bubbles, a choice card, Slowmallow's note and letter, the Files drawer, a journal page, name tags, the FILES placard, a story page, the seed choice, the Good morning card, a quiz question), with contact sheets `sheet_day.png` and `sheet_night.png`, and checks the built-in accessibility: contrast (text 4.5:1, icons 3:1), no word under 14px on screen, nothing cut off, each monster's own look, names with their symbol, Yes/Not yet by icon and word, two lines at most, one message at a time, stepped pops and reduce-motion; saved to `tests/screenshots/textstyle/`.
+`python tests/ui_shots.py` checks the UI look (Fredoka text; captions, bubbles and buttons in the one text style, stepped, never round) and saves the start screen, a caption, Sloth's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
+
+`python3 tests/textstyle_shots.py` pictures every kind of text at iPhone landscape size, day and night (start menu, caption pill, a monster's and the cat's speech bubbles, a choice card, Sloth's note and letter, the Files drawer, a journal page, name tags, the FILES placard, a story page, the seed choice, the Good morning card, a quiz question), with contact sheets `sheet_day.png` and `sheet_night.png`, and checks the built-in accessibility: contrast (text 4.5:1, icons 3:1), no word under 14px on screen, nothing cut off, each monster's own look, names with their symbol, Yes/Not yet by icon and word, two lines at most, one message at a time, stepped pops and reduce-motion; saved to `tests/screenshots/textstyle/`.
 
 `python tests/light_map_shots.py` saves the Light map at morning, noon, golden hour and night, curtains open/closed, lamps on/off, to `tests/screenshots/lightmap/` (with a contact sheet).
 
@@ -94,9 +96,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid grows into a teen right on time, a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) grows at half speed, one age at most.
 
-`python3 tests/letter_shots.py` checks Slowmallow's letter asking for an adult: it lands by itself (more often for an evil lean), the letter view, Yes (moved out next morning), Not yet (waits in the journal, lands again in 3 days), who never gets one and what it waits for; saved to `tests/screenshots/letter/`.
+`python3 tests/letter_shots.py` checks Sloth's letter asking for an adult: it lands by itself (more often for an evil lean), the letter view, Yes (moved out next morning), Not yet (waits in the journal, lands again in 3 days), who never gets one and what it waits for; saved to `tests/screenshots/letter/`.
 
-`python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Slowmallow (airplane, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
+`python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Sloth, PhD (airplane, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
 
 `python3 tests/go_ask_shots.py` checks that a content adult asks to go by itself (Yes / Not yet), that Not yet costs nothing and asks again in 3 days, that Yes means moved out next morning, who never asks, and that the last monster leaving is not a dead end; saved to `tests/screenshots/go_ask/`.
 

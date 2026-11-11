@@ -1,9 +1,9 @@
-"""A letter from Slowmallow asking to have an adult come stay.
+"""A letter from Sloth, PhD asking to have an adult come stay.
 
 Run from the repository root:  python3 tests/letter_shots.py
 Checks: the note lands on the sill by itself, a little more often for an evil lean; never a kid or teen, never while something else
 is waiting; tapping it opens the letter (names the monster, stamp portrait, Yes / Not yet); Yes means gone the next morning to
-"Staying with Slowmallow"; Not yet puts it in the journal, where it can be accepted anytime, and it lands again in 3 days; no penalty;
+"Staying with Sloth, PhD"; Not yet puts it in the journal, where it can be accepted anytime, and it lands again in 3 days; no penalty;
 it survives a reload; other asks wait for it; iPhone fit; debug's button stays on the test copy.
 Pictures go to tests/screenshots/letter/. Exit code 1 if a check fails.
 """
@@ -40,7 +40,7 @@ async def main():
             await pg.evaluate("()=>{goTick=()=>{};breedTick=()=>{};__step(10);capClear();CAP.log.length=0;for(const q of allRaw())q.nap=0;}")
 
         async def tap_note():
-            c = await pg.evaluate("()=>{const n=bugNoteBox(),r=cv.getBoundingClientRect();return [r.left+(n.x+n.w/2)*S,r.top+(n.y+n.h/2)*S];}")
+            c = await pg.evaluate("()=>{const n=slothNoteBox(),r=cv.getBoundingClientRect();return [r.left+(n.x+n.w/2)*S,r.top+(n.y+n.h/2)*S];}")
             await pg.mouse.click(*c)
             await pg.evaluate("()=>__step(.2)")
 
@@ -55,7 +55,7 @@ async def main():
         # the letter
         await tap_note()
         r = await pg.evaluate("()=>({t:document.querySelector('.jltext').textContent,s:document.querySelector('.jlsign').textContent,c:document.querySelector('.jlstamp img,.jlstamp canvas').getBoundingClientRect().width,y:!!document.querySelector('.jletter [data-k=y]'),n:!!document.querySelector('.jletter [data-k=n]'),bug:document.querySelector('.jletter').textContent.includes('Doctor')})")
-        check(r["t"] == "Dear friend, I would love to have Zib come stay with me for a while. May Zib come?" and r["s"] == "Slowmallow" and r["c"] > 20 and r["y"] and r["n"] and not r["bug"], f"letter: {r}")
+        check(r["t"] == "Dear friend, I would love to have Zib come stay with me for a while. May Zib come?" and r["s"] == "Sloth, PhD" and r["c"] > 20 and r["y"] and r["n"] and not r["bug"], f"letter: {r}")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "2_letter.png"))
 
@@ -94,7 +94,7 @@ async def main():
         await pg.click(".jletter [data-k=y]")
         await pg.evaluate("()=>__step(.3)")
         r = await pg.evaluate("()=>({dest:st.goDest,j:letterWaiting(),note:!!document.querySelector('.jletternote'),log:CAP.log.map(l=>l.t)})")
-        check(r["dest"] == "Staying with Slowmallow" and not r["j"] and not r["note"] and "Zib will set off in the morning." in r["log"], f"yes from the journal: {r}")
+        check(r["dest"] == "Staying with Sloth, PhD" and not r["j"] and not r["note"] and "Zib will set off in the morning." in r["log"], f"yes from the journal: {r}")
         await pg.evaluate("()=>closeJournal()")
 
         # Yes from the sill, with a second monster so somebody stays
@@ -105,7 +105,7 @@ async def main():
         await pg.click(".jletter [data-k=y]")
         await pg.evaluate("()=>{st.night=true;wake();__step(8);}")
         r = await pg.evaluate("()=>({n:plantCount(),a:st.archive.map(e=>[e.name,e.dest]),left:allRaw().map(q=>q.name)})")
-        check(r["n"] == 1 and r["a"] == [["Mortie Gloomsnack", "Staying with Slowmallow"]] and r["left"] == ["Zib Wobblebean"], f"next morning: {r}")
+        check(r["n"] == 1 and r["a"] == [["Mortie Gloomsnack", "Staying with Sloth, PhD"]] and r["left"] == ["Zib Wobblebean"], f"next morning: {r}")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "4_gone_next_morning.png"))
 
@@ -117,20 +117,20 @@ async def main():
         check(await pg.evaluate(ROLL % ".15"), "an evil lean should get this roll")
 
         # who never gets one, and when none lands
-        for label, extra in [("a kid", "s.stage=4;"), ("a teen", "s.stage=6;"), ("a new adult", "s.adultDay=9;"), ("a recent ask", "s.goNext=11;"), ("a seedling note on the sill", "delete s.giftSeed;s.bugNote='sill';"),
-                             ("a seedling note in the journal", "delete s.giftSeed;s.bugJournal=1;"), ("a seed choice", "s.seedOffer={ids:[1,1],seed:{}};goTick=()=>{};"), ("someone leaving", "s.goDest='x';s.goDay=99;")]:
+        for label, extra in [("a kid", "s.stage=4;"), ("a teen", "s.stage=6;"), ("a new adult", "s.adultDay=9;"), ("a recent ask", "s.goNext=11;"), ("a seedling note on the sill", "delete s.giftSeed;s.slothNote='sill';"),
+                             ("a seedling note in the journal", "delete s.giftSeed;s.slothJournal=1;"), ("a seed choice", "s.seedOffer={ids:[1,1],seed:{}};goTick=()=>{};"), ("someone leaving", "s.goDest='x';s.goDay=99;")]:
             await load(extra)
             await pg.evaluate("()=>{offerTick=()=>{};}")
             check(not await pg.evaluate(ROLL % "0"), f"{label}: a letter landed anyway")
         # and the seedling note waits for a letter
         await load("delete s.giftSeed;s.letterJournal=1;s.letterFor=1;s.letterAgain=99;")
         await pg.evaluate("()=>{for(let i=0;i<40;i++)__step(.5,50);}")
-        check(await pg.evaluate("()=>st.bugNote!=='sill'"), "the seedling note landed over a waiting letter")
+        check(await pg.evaluate("()=>st.slothNote!=='sill'"), "the seedling note landed over a waiting letter")
 
         # debug, on the test copy
         await load()
         await pg.click("#dbgBtn")
-        await pg.evaluate("()=>{__step(.5);[...dbg.querySelectorAll('button')].find(b=>b.textContent==='Slowmallow letter now').click();__step(.5);}")
+        await pg.evaluate("()=>{__step(.5);[...dbg.querySelectorAll('button')].find(b=>b.textContent==='Sloth, PhD letter now').click();__step(.5);}")
         check(await pg.evaluate("()=>TESTING&&letterOnSill()"), "debug's letter")
         check(await pg.evaluate("()=>!JSON.parse(localStorage.getItem(KEY)).letterNote"), "debug's letter reached the real save")
         fails += errs

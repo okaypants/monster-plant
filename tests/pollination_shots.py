@@ -2,7 +2,7 @@
 
 Run from the repository root:  python3 tests/pollination_shots.py
 Checks: two content adults may make a seed even though they fill the room (never a third monster on the spot); the bubble names
-both with two choices; Send it to Slowmallow: an airplane flies off, both parents stay, the hook is called; Keep it here: caption,
+both with two choices; Send it to Sloth, PhD: an airplane flies off, both parents stay, the hook is called; Keep it here: caption,
 then next morning both move out ("Out living their own lives", each keepsake still knowing the other) and the seed is on the
 windowsill with its own name and the hello caption; tapping away decides nothing and the bubble comes back; the offer survives
 a reload; not with a kid or teen, or while something else is waiting; debug's Breed now follows the same flow on the test copy.
@@ -20,7 +20,7 @@ SAVE = ("()=>{const s=fresh();Object.assign(s,{started:true,stage:8,species:3,id
 FEED = "for(const q of allRaw()){q.needs.thirst=0;q.needs.attention=0;q.lightState='ok';q.lightBad=0;q.nap=0;}"
 # the go-ask is rolled off here so only breeding can raise a bubble
 BLOOM = "()=>{Math.random=()=>0;goAsk=()=>{};for(let i=0;i<220;i++){" + FEED + "__step(.5,50);if(bubble)break;}return bubble?bubble.textContent:'';}"
-WANT = "Zib and Mortie made a seed together!Send it to Slowmallowflies off right awayKeep it hereboth parents head off in the morning"  # with the line under each choice (Nov 10)
+WANT = "Zib and Mortie made a seed together!Send it to Sloth, PhDflies off right awayKeep it hereboth parents head off in the morning"  # with the line under each choice (Nov 10)
 
 
 async def main():
@@ -65,13 +65,13 @@ async def main():
         t = await pg.evaluate("()=>{Math.random=()=>0;for(let i=0;i<60;i++){__step(.5,50);if(bubble)break;}return bubble?bubble.textContent:'';}")
         check(t == WANT, f"the offer didn't survive a reload: {t!r}")
 
-        # Send it to Slowmallow
+        # Send it to Sloth, PhD
         await pg.evaluate("()=>{capClear();CAP.log.length=0;}")
         await pg.click(".bubble [data-k=s]")
         await pg.evaluate("()=>__step(1.2)")
         r = await pg.evaluate("()=>({fly:seedFly!=null,off:!!st.seedOffer,sent:st.seedsSent,n:plantCount(),arch:st.archive.length,dest:allRaw().filter(q=>q.goDest).length,log:CAP.log.map(l=>l.t)})")
         check(r["fly"] and not r["off"] and r["sent"] == 1 and r["n"] == 2 and r["arch"] == 0 and r["dest"] == 0, f"send: {r}")
-        check("Off it goes to Slowmallow on a paper airplane." in r["log"], f"send caption: {r['log']}")
+        check("Off it goes to Sloth, PhD on a paper airplane." in r["log"], f"send caption: {r['log']}")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "2_sent_flying.png"))
         await pg.evaluate("()=>{__step(2);}")

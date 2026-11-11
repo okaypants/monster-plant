@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The paper-airplane character is Sloth, PhD (Nov 10)
+
+- Jackie renamed the character who sends seedlings and letters by paper airplane (first Doctor Bug, then Slowmallow) to **Sloth, PhD**, everywhere: captions, the note on the sill, the journal's note, the letter and its signature, the seed choice ("Send it to Sloth, PhD"), the Files note, a keepsake's destination ("Staying with Sloth, PhD"), labels, comments, tests and the README. The possessive is "Sloth's" (e.g. "Sloth's paper airplane"), never "Sloth, PhD's". No genders, as always.
+- Code names that came from Doctor Bug now say sloth: `slothNote`, `slothJournal`, `slothSend` (saved), `slothAsk`, `slothYes`, `slothNotYet`, `slothCard`, `slothArrive`, `slothReady`, `SLOTH_ASK`, `SLOTH_CHOICES` (`CHOICES.sloth`), `slothLetter`, the `.jslothnote` / `.jslothask` styles, and the smoke case `sloth_seed_next_morning`. `tests/bug_note_shots.py` is now `tests/sloth_note_shots.py`. The real-art slot is **`sloth_portrait.png`** (still off until the art exists: `LETTER_ART.ready` in js/plants.js).
+- **Old saves keep working** (`migrateSave` in js/saving.js): `bugNote`, `bugJournal` and `bugSend` move to the new keys, so a note waiting on the sill or in the journal, or a seedling on its way, is still there; a keepsake's or a leaving monster's "Staying with Slowmallow" reads "Staying with Sloth, PhD". Debug presets saved earlier load the same way.
+- The old decision entries below keep the old names; they're the history.
+- `python3 tests/old_names_test.py` fails if an old name appears in any game file (except that one migration line) or in anything a player can read in play, and checks an old save loads with everything still waiting.
+
 ### The cat's patience: a real cat, separate from trust (Nov 10)
 
 - Jackie asked for the cat to behave like a real cat, with a hidden short-term **patience** apart from trust. It lives only on the in-memory cat (js/cat.js, `PAT`): never saved, never shown in play, never changes trust. Full each morning and after every nap; it comes back slowly when the cat is left alone (about 2.5 minutes from empty, faster while it naps).

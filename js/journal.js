@@ -14,7 +14,7 @@ const QUIRK_SHORT={moon:'Moon bouncer',bonk:'Bonks things',wander:'Wanders',tidy
 const NAP_SPOTS=['bed','rug','chair','sill','crate','books','byplant'];
 const RIB_COLORS=[C.coral,C.lav,C.blue,C.g2];
 let jPage=null,jEl=null,jSub=0; // jSub: which spread of that animal (0 = its main pages, then one per relationship)
-// pages that only show up once they have something in them (later: freed plants, postcards, Slowmallow's notes)
+// pages that only show up once they have something in them (later: freed plants, postcards, Sloth's notes)
 function worldItems(){return [];}
 
 /* ---------- tiny pixel icons (drawn in code, room palette, dark outline like the comic marks) ---------- */
@@ -37,7 +37,7 @@ const ICONS={
  byplant:['..g..g.','.ggg.gg','..ggg..','...g...','.ppppp.','..ppp..'],
  left:['...k','..kk','.kkk','kkkk','.kkk','..kk','...k'],right:['k...','kk..','kkk.','kkkk','kkk.','kk..','k...'],
  sloth:['bbbbbbbbbbbbbbbb','...b........b...','...b........b...','...bb......bb...','....bbbbbbbb....','...bbbbbbbbbb...','..bbbbbbbbbbbb..','..bb...bb...bb..','..bb...bb...bb..','..bbbbbbbbbbbb..','...bbbb..bbbb...','....bbbbbbbb....','.....bbbbbb.....'], // a sloth hanging from a branch, stamp-style
- plane:BUG_PLANE.map(r=>r.replace(/1/g,'i').replace(/2/g,'s').replace(/0/g,'.'))};
+ plane:SLOTH_PLANE.map(r=>r.replace(/1/g,'i').replace(/2/g,'s').replace(/0/g,'.'))};
 function pix(name,px=4,flip=false){const m=ICONS[name],h=m.length,w=m[0].length,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;c.className='jpix';
  const x=c.getContext('2d'),cell=(i,j)=>{const ch=m[j]&&m[j][i];return ch&&ch!=='.';},at=i=>flip?w-1-i:i;
  x.fillStyle=C.out;for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(cell(i,j))x.fillRect(at(i)*px,j*px,px*3,px*3); // outline: one pixel all round
@@ -107,9 +107,9 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  // inside the back cover: which hand carries the carafe (tap to flip)
  const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
  hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
- // Slowmallow's note, tucked in until you say yes
- if(st.bugJournal&&bugReady()){const n=document.createElement('button');n.type='button';n.className='jbugnote';n.setAttribute('aria-label','A note from Slowmallow');n.appendChild(pix('plane',3));
-  n.addEventListener('click',e=>{e.stopPropagation();bugCard();});R.appendChild(n);}
+ // Sloth's note, tucked in until you say yes
+ if(st.slothJournal&&slothReady()){const n=document.createElement('button');n.type='button';n.className='jslothnote';n.setAttribute('aria-label','A note from Sloth, PhD');n.appendChild(pix('plane',3));
+  n.addEventListener('click',e=>{e.stopPropagation();slothCard();});R.appendChild(n);}
  if(letterInJournal())letterJournalNote(R);}
 /* ON A PHONE (Jackie, Nov 10): the print never shrinks below 14px, so a full page (an adult with titles, charms and every quirk) can be
    too tall. Whatever doesn't fit on the right page moves, whole, to a next spread behind the page arrow, under the same name. */
@@ -119,10 +119,10 @@ function withMore(subs,key){return jEl&&jEl.more&&jEl.more[key]>0?[subs[0],{k:'m
 function morePages(L,R,build,key){const tL=document.createElement('div'),tR=document.createElement('div');build(tL,tR);const n=jEl.more[key]||0;
  const items=[...tR.children].filter(c=>c.classList.contains('jgroup')||c.classList.contains('jrow')).slice(-n);if(tL.firstChild)L.appendChild(tL.firstChild); // the name on top
  for(const it of items)L.appendChild(it);while(L.scrollHeight>L.clientHeight+1&&L.children.length>2)R.prepend(L.lastChild);}
-function letterJournalNote(R){const n=document.createElement('button');n.type='button';n.className='jbugnote jletternote';n.setAttribute('aria-label','A letter from Slowmallow');n.appendChild(pix('plane',3));n.addEventListener('click',e=>{e.stopPropagation();openLetter(true);});R.appendChild(n);}
-function bugCard(){const old=jEl.querySelector('.jbugask');if(old){old.remove();return;}sfx('page');
- const c=jdiv('jbugask tsb tsmint',[],null);c.innerHTML='<div>“'+BUG_ASK+'”</div>'+tsChoices(BUG_CHOICES);tsPop(c); // Slowmallow's mint paper
- c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();bugYes();renderJournal();c.remove();});
+function letterJournalNote(R){const n=document.createElement('button');n.type='button';n.className='jslothnote jletternote';n.setAttribute('aria-label','A letter from Sloth, PhD');n.appendChild(pix('plane',3));n.addEventListener('click',e=>{e.stopPropagation();openLetter(true);});R.appendChild(n);}
+function slothCard(){const old=jEl.querySelector('.jslothask');if(old){old.remove();return;}sfx('page');
+ const c=jdiv('jslothask tsb tsmint',[],null);c.innerHTML='<div>“'+SLOTH_ASK+'”</div>'+tsChoices(SLOTH_CHOICES);tsPop(c); // Sloth's mint paper
+ c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();slothYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
 
 /* ---------- THE FILES (Jackie, Nov 8; called the Archive in code): the desk drawers hold the journals of monsters who have moved out ----------
@@ -134,8 +134,8 @@ const ARCHIVE_NOTE=[
  "This drawer is for the journals of monsters who have grown up and moved out. It's empty for now.",
  "A grown monster might ask to go somewhere special. You can say yes, or ask the monster to stay a while longer.",
  "If two grown monsters make a seed together, they head off to live their own lives and leave the little one in your care.",
- "Sometimes Slowmallow sends a paper airplane asking to have one back. That's up to you too.",
- "Wherever they go, their journals rest here. Now and then a postcard finds its way home, and Slowmallow sends word of anyone staying over."];
+ "Sometimes Sloth, PhD sends a paper airplane asking to have one back. That's up to you too.",
+ "Wherever they go, their journals rest here. Now and then a postcard finds its way home, and Sloth, PhD sends word of anyone staying over."];
 const moveOutCaption=n=>n+(n.endsWith('s')?"'":"'s")+' journal is tucked safely in the desk.';
 const ARCH_COVERS=[C.wine,C.vio,C.g1,C.navy],ARCH_PER_PAGE=6; // two rows of three a page; more than a spread gets arrows, never a scrollbar
 const ARCH_CALM={nap:0,listen:0,over:0,overType:'',grump:0,float:null,walk:null,mv:null,bonkT:0,tidyT:0,spookT:0,nodT:0,dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,parch:0,glare:0,lightState:'ok',lightBad:0,needs:{thirst:0,hunger:0,attention:0}}; // a keepsake portrait is a happy one
