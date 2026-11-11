@@ -32,7 +32,7 @@ SECOND = "s.others=[Object.assign(" + OTHER + ",{id:2,species:2,stage:%d,name:'P
 CALM = ("()=>{__step(12);capClear();CAP.log.length=0;const c=CAT_SPOTS.bed;Object.assign(cat,{spot:'bed',x:c.x,y:c.y,sc:c.sc,state:'sleep',pose:'curl',nap:9999,path:null,pat:1,huff:0});"
         "eachPlant(()=>{st.needs.thirst=0;st.needs.attention=0;});}")
 READY = "()=>{eachPlant(()=>{if(GROW_FOR[st.stage]&&st.stage>=1)st.timer=GROW_FOR[st.stage];});}"
-STAMP = re.compile(r"^Grew up on a (Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day (morning|afternoon|evening) in (spring|summer|autumn|winter)\.$")
+STAMP = re.compile(r"^Grew up on a (Sun|Mon|Tues|Wednes|Thurs|Fri|Satur)day (morning|afternoon|evening|night) in (spring|summer|autumn|winter)\.$")
 # play the moment frame by frame: what the monster looks like at each frame
 TRACE = """(id)=>{const out=[];let n=0;while(n++<400){__step(.05);if(!grow&&out.length)break;if(!grow)continue;
   withPlant(id,()=>{const b=plantBox(),r=plantBoxRaw();out.push({t:+grow.t.toFixed(2),stage:st.stage,did:grow.did,paid:grow.paid,off:growOff(),dip:growDip(),k:+growK().toFixed(4),

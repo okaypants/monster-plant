@@ -15,7 +15,7 @@ function leaveTest(keep){if(!TESTING)return;testEpoch++;
   if(realSnap.byplant)CAT_SPOTS.byplant=realSnap.byplant;else delete CAT_SPOTS.byplant;CAT_SPOTS.rug.x=realSnap.rugX;}
  SEASON_OVERRIDE=null;FX_OFF.clear();PAUSED=false;lightMap=false;depthLines=false;dbgFx=null;if(keep){cat.force=null;cat.hold=false;} // back: the cat is exactly as he was
  held.tool=null;drag.on=false;parts.length=0;zzNow=null;nudgeKey=null;ACT=st.id;pickChair();cap.style.transition='none';capClear();_setTimeout(()=>{cap.style.transition='';},50);closeBubble();for(const sc of document.querySelectorAll('.screen'))if(!realSnap.screens.includes(sc))sc.remove(); // no test captions, bubbles or screens left on the real game
- TESTING=false;if(keep)save();realSnap=null;document.body.classList.remove('testing');try{localStorage.removeItem(TEST_KEY);}catch(e){}}
+ TESTING=false;if(keep){st.mode='visit';save();}/* the real game always follows the real clock */realSnap=null;document.body.classList.remove('testing');try{localStorage.removeItem(TEST_KEY);}catch(e){}}
 
 /* ---------- the drawer ---------- */
 const dbg=document.getElementById('dbg'),dbgTab=document.getElementById('dbgTab');
@@ -48,7 +48,13 @@ let rebuildT=null;function buildDbgSoon(){clearTimeout(rebuildT);rebuildT=_setTi
 const pRaw=()=>allRaw().find(q=>q.id===dbgPid)||st;
 const onP=f=>{withPlant(pRaw().id,f);};
 const AGE_OPTS=[[0,'seed'],[1,'sprout'],[4,'kid'],[6,'teen'],[8,'adult']];
-function statusLine(){const p=pRaw();return `<b>Day ${st.day}</b> · ${phase(st.dayT)}${PAUSED?' (paused)':''} · ${seasonNow()}${SEASON_OVERRIDE?' (set)':''} · plants ${plantCount()}<br>`+
+// time of day and every monster's age with what's slowing its growing (Nov 10)
+function clockText(){const d=nowDate();return d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+(clockLive()?' (phone clock)':' (held)');}
+function growText(q){return withPlantRet(q.id,()=>{if(st.stage>=8)return 'grown';const left=GROW_FOR[st.stage]-(st.timer||0),hd=growHolds();
+ return `${Math.round((st.timer||0)/GROW_FOR[st.stage]*100)}% · ${left>=3600?(left/3600).toFixed(1)+' h':Math.ceil(left/60)+' min'} left · `+(hd.length?'half speed: '+hd.join(', '):'full speed')+(st.night?' (asleep)':'');});}
+function withPlantRet(id,f){let r;withPlant(id,()=>{r=f();});return r;}
+function statusLine(){const p=pRaw();return `<b>Day ${st.day}</b> · ${clockText()} · ${phase(st.dayT)}${st.night?' (asleep)':''}${PAUSED?' (paused)':''} · ${seasonNow()}${SEASON_OVERRIDE?' (set)':''} · plants ${plantCount()}<br>`+
+ allRaw().filter(q=>q.stage>=0).map(q=>`${esc(nameOf(q,true))}: ${ageName(q.stage)} · ${growText(q)}`).join('<br>')+'<br>'+
  (p.stage>=0?`${esc(NAMES[p.species])}, ${ageName(p.stage)} · light ${(p.light||0).toFixed(2)} ${p.lightState} · gray ${(p.dryLv||0).toFixed(2)}/4 withered ${p.witherLv||0} burned ${p.burnLv||0} puddle ${p.puddleLv||0}`:'no plant yet')+
  `<br>cat: ${cat.state}${cat.force?' (holding '+cat.force+')':''} at ${cat.spot} · trust ${trustName(catTrust())} · patience ${patWord()}`;}
 function trustName(t){return t>=TRUST_BFF?'BFF':t>=TRUST_FOND?'fond':t>=TRUST_SHY?'warming up':'shy';}
@@ -62,13 +68,14 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
  const body=el('div','dbody');dbg.appendChild(body);body.appendChild(keep);
 
  group(body,'World',true,b=>{
-  slider(b,'Time of day',0,.999,.001,()=>st.dayT,v=>{st.dayT=v;st.night=false;},v=>phase(v)+' '+v.toFixed(2));
-  btns(b,[['Morning',()=>{st.dayT=.1;st.night=false;}],['Midday',()=>{st.dayT=.37;st.night=false;}],['Golden hour',()=>{st.dayT=.6;st.night=false;}],['Dusk',()=>{st.dayT=.77;st.night=false;}],['Night',()=>{st.dayT=.92;st.night=false;}]]);
+  slider(b,'Time of day',0,.999,.001,()=>st.dayT,v=>{st.dayT=v;st.night=false;st.mode='actions';},v=>phase(v)+' '+v.toFixed(2));
+  const hold=t=>()=>{st.dayT=t;st.night=false;st.mode='actions';}; // setting the time holds the clock there (test copy only)
+  btns(b,[['Morning',hold(.1)],['Midday',hold(.37)],['Golden hour',hold(.6)],['Dusk',hold(.77)],['Night',hold(.92)]]);
   seg(b,'Season',[[null,'auto'],['spring','spring'],['summer','summer'],['autumn','autumn'],['winter','winter']],()=>SEASON_OVERRIDE,v=>{SEASON_OVERRIDE=v;});
   slider(b,'Day',1,60,1,()=>st.day,v=>{st.day=v;},v=>String(v));
   const SPEEDS=[1,2,5,10,20,60];slider(b,'Speed',0,SPEEDS.length-1,1,()=>Math.max(0,SPEEDS.indexOf(st.speed)),v=>{st.speed=SPEEDS[v];},v=>SPEEDS[v]+'x'+(SPEEDS[v]===2?' (normal)':''));
   toggle(b,'Pause time',()=>PAUSED,v=>{PAUSED=v;});
-  seg(b,'Clock',[['visit','visit'],['ambient','ambient'],['actions','only on actions']],()=>st.mode,v=>{st.mode=v;});
+  seg(b,'Clock',[['visit','phone clock'],['actions','held']],()=>clockLive()?'visit':'actions',v=>{st.mode=v;});
   seg(b,'Curtains',[['open','open'],['closed','closed']],()=>st.curtain,v=>{st.curtain=v;});
   for(const L of LAMPS)toggle(b,L.name[0].toUpperCase()+L.name.slice(1),()=>lampOn(L),v=>{st[L.key]=v;}); // every lamp in LAMPS gets a switch
   toggle(b,'Light map',()=>lightMap,v=>{lightMap=v;});
@@ -257,5 +264,5 @@ function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
   const n=dx||dy?[v[0]+dx,v[1]+dy]:[0,0];if(n[0]||n[1])t[nudgeKey.key]=n;else delete t[nudgeKey.key];
   try{localStorage.setItem('mp-nudges',JSON.stringify(NUDGE));}catch(e){}show();});
  q('#nDone').onclick=()=>{if(nudgeKey&&nudgeKey.kind==='plant'&&st.nap>1e5)st.nap=0;cat.hold=false;if(cat.nap>1e5)cat.nap=rnd(30,70);nudgeKey=null;show();};
- q('#nCopy').onclick=()=>{const t='const NUDGE='+JSON.stringify(NUDGE)+';',o=q('#nOut');o.style.display='block';o.value=t;o.select();if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});say('Nudge table copied. Paste it over the NUDGE line in js/nudges.js (or send it to Claude).',6,true);}; // if the browser won't copy, the selected text box is there to copy by hand
+ q('#nCopy').onclick=()=>{const t='const NUDGE='+JSON.stringify(NUDGE)+';',o=q('#nOut');o.style.display='block';o.value=t;o.select();if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});say('Nudge table copied. Paste it over the NUDGE line in js/nudges.js.',6,true);}; // if the browser won't copy, the selected text box is there to copy by hand
  show();}

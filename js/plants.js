@@ -38,7 +38,7 @@ function quirkMotion(dt){if(st.bonkT>0)st.bonkT-=dt;if(st.nodT>0)st.nodT-=dt;if(
   f.vh=rnd(250,330);sfx('boing');}
  st.free=st.free||{x:SPOT.rugC.x,y:SPOT.rugC.y};st.free.x+=f.vx*dt;
  if(st.free.x<FLOOR_X0+60){st.free.x=FLOOR_X0+60;f.vx=Math.abs(f.vx);}if(st.free.x>FLOOR_X1-60){st.free.x=FLOOR_X1-60;f.vx=-Math.abs(f.vx);}}
-// NEW teen/adult art per species (Jackie via ChatGPT), shown at target heights: teen 45%, adult 60% of the room
+// NEW teen/adult art per species (from Jackie), shown at target heights: teen 45%, adult 60% of the room
 const NEWART={1:{teen:img('teen_01.png'),adult:img('adult_01.png'),face:{teen:[0.494, 0.398],adult:[0.491, 0.511]}},2:{teen:img('teen_02.png'),adult:img('adult_02.png'),face:{teen:[0.499, 0.363],adult:[0.493, 0.375]}},3:{teen:img('teen_03.png'),adult:img('adult_03.png'),face:{teen:[0.493, 0.477],adult:[0.498, 0.532]}},4:{teen:img('teen_04.png'),adult:img('adult_04.png'),face:{teen:[0.5, 0.503],adult:[0.486, 0.523]}},5:{teen:img('teen_05.png'),adult:img('adult_05.png'),face:{teen:[0.494, 0.414],adult:[0.503, 0.497]}},6:{teen:img('teen_06.png'),adult:img('adult_06.png'),face:{teen:[0.492, 0.401],adult:[0.507, 0.364]}},7:{teen:img('teen_07.png'),adult:img('adult_07.png'),face:{teen:[0.501, 0.445],adult:[0.5, 0.491]}},8:{teen:img('teen_08.png'),adult:img('adult_08.png'),face:{teen:[0.497, 0.352],adult:[0.499, 0.414]}},9:{teen:img('teen_09.png'),adult:img('adult_09.png'),face:{teen:[0.495, 0.42],adult:[0.509, 0.465]}},10:{teen:img('teen_10.png'),adult:img('adult_10.png'),face:{teen:[0.542, 0.48],adult:[0.491, 0.532]}},11:{teen:img('teen_11.png'),adult:img('adult_11.png'),face:{teen:[0.491, 0.53],adult:[0.469, 0.528]}},12:{teen:img('teen_12.png'),adult:img('adult_12.png'),face:{teen:[0.503, 0.431],adult:[0.495, 0.385]}},13:{teen:img('teen_13.png'),adult:img('adult_13.png'),face:{teen:[0.499, 0.242],adult:[0.505, 0.267]}},14:{teen:img('teen_14.png'),adult:img('adult_14.png'),face:{teen:[0.499, 0.289],adult:[0.503, 0.318]}},15:{teen:img('teen_15.png'),adult:img('adult_15.png'),face:{teen:[0.499, 0.368],adult:[0.499, 0.419]}},16:{teen:img('teen_16.png'),adult:img('adult_16.png'),face:{teen:[0.5, 0.419],adult:[0.498, 0.422]}}};
 // AGE SIZES at the front of the rug (100%); depthK shrinks them farther back. A teen is 1.45x a kid, an adult 1.9x (adult = 60% of the room, as Jackie set).
 // Every kid is the same height (they only ever sit around 2/3 depth, so none is drawn bigger than its PNG). A teen or adult drawing
@@ -229,7 +229,10 @@ function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toast
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*b.seedK),w,h-Math.round(cut*b.seedK));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*b.seedK));}
  g.restore();}
 /* ---------- growing up (Tamagotchi time, see GROW_FOR in core.js) ---------- */
-function growHappy(){return !want('thirst')&&!want('attention')&&(st.night||st.stage<1||st.lightState==='ok');}
+function growHappy(){return !growHolds().length;}
+// what is slowing its growing right now (none = full speed); the debug drawer shows these. Light only counts in the bright hours.
+function growHolds(){const h=[];if(st.stage<0||st.stage>=8)return h;if(want('thirst'))h.push('thirst');if(want('attention'))h.push('lonely');
+ if(!st.night&&st.stage>=1&&brightHours()&&st.lightState!=='ok')h.push(st.lightState==='hi'?'too bright':'too dim');return h;}
 // a seed sprouts the moment its time is up. Every later age waits, ready, for its grow-up moment (js/growup.js): it never just happens.
 function growTick(dt){if(st.stage<0||st.stage>=8||growReady())return;st.timer=Math.min(GROW_FOR[st.stage],(st.timer||0)+dt*gameSpeed()/2*(growHappy()?1:GROW_SLOW));
  if(st.stage<1&&st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
@@ -260,7 +263,7 @@ function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  if(st.stage>=4){st.parch=st.needs.thirst>=.95?clamp((st.parch||0)+k*.35,0,1):st.needs.thirst<.5?clamp((st.parch||0)-dt*.08,0,1):(st.parch||0);} // petrifying cracks (Jackie): slow to form, heal after watering
  if(st.stage>=4){st.full=clamp((st.full||0)-k*.25,0,1);st.needs.hunger=0;st.needs.attention=clamp(st.needs.attention+k*.26,0,1);}
  const li=spotInfo(spotKey());st.light=li.L;
- const ls=st.stage<1?'ok':lightFeel(li,st.pref);
+ let ls=st.stage<1?'ok':lightFeel(li,st.pref);if(ls==='lo'&&!brightHours())ls='ok'; // evening and night are dim for everyone: nobody withers for it
  if(ls!=='ok')st.lightBad+=dt*sp;else{if(st.lightState!=='ok'){met('light');sfx('boing');}st.lightBad=0;} // moving it out fixes it right away
  // the right light counts for the day once it has spent a little while in it (LIGHT_OK_FOR game s, ~15 s at normal speed), not only when you fix bad light
  if(ls==='ok'&&st.stage>=1&&!st.night&&!st.met.light){st.lightGood=(st.lightGood||0)+dt*sp;if(st.lightGood>=LIGHT_OK_FOR)met('light');}

@@ -11,17 +11,48 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Spot hops:** if the new age can't stay where it is, it hops there first (8 whole-pixel steps: up a little, then over), then grows. A sprout hops to the nearest free milk crate or book stack (sill to crate, desk to book stack). A teen on the crate or book stack hops down to the floor. A monster on the floor whose bigger body would overlap its neighbor hops to the nearest clear floor.
 - **Payoff:** one burst of the sparkle and heart effects, its signature move, and the caption: "<Name> opens its eyes!", "<Name> is a teen now!", "<Name> is an adult now!". Nothing loops afterward. These replace "is a teen now, with big ideas and a bigger pot." and "is all grown up and ready to eat everything!".
 - **The cat** sits up and turns toward the monster for 3 s, then goes back to its nap. A cat that is fond of you or adores you walks over and sits near it, then dozes there. Existing frames only (the sit frame, mirrored so its tail is away from the monster).
-- **Journal:** the silhouette for the new age fills in, and a stamp under the growth row says it in words: "Grew up on a Tuesday evening in autumn." No numbers. Each age's stamp is saved; the page shows the latest one.
+- **Journal:** the silhouette for the new age is filled in fully, and a stamp under the growth line says it in words: "Grew up on a Tuesday evening in autumn." No numbers. Each age's stamp is saved; the page shows the latest one.
 - **Reduce motion** (the phone's setting): no hop, crouch, steps, burst or move; it is simply the new size in its new spot, with the caption and the journal stamp. It still waits for you the same way.
 - **Debug** (test mode only): **Grow up now**. `python3 tests/grow_up_shots.py` checks all of it and pictures every stage.
-- Choices Claude made where the request left room (Jackie can change any of them):
+- Choices made where the request left room (Jackie can change any of them):
   - It also waits while the monster is asleep (night or a nap), floating in moon gravity, reading, or a sill sprout is behind closed curtains. Why: a sleeping or hidden monster can't be seen crouching.
-  - The stamp's weekday is the real one, the season is the one in the window, and the time of day is the room's (morning, afternoon, evening), so the words match what was on screen.
+  - The stamp uses the same day words as the journal's top corner (the device's weekday and time of day, the real season).
   - A monster that has outgrown its furniture lands at the front edge of the rug straight below, not at the back. Why: grown monsters stand at the front so the carafe, books, snacks and curtains stay reachable (Nov 4).
   - It never hops into the armchair by itself.
   - Picking the monster up, or night falling, mid-moment: it is simply grown at once, with its caption and stamp.
   - "an adult now" for the adult caption, so the grammar works.
-  - The journal portrait is a little shorter once there is a stamp, so the page still fits a phone.
+  - While a monster is ready and waiting, the journal's growth line says "any time now".
+
+### The journal shows growing and today, in words (Nov 10)
+
+- Jackie asked for time and upcoming growth in the journal, with **no numbers anywhere**.
+- **Growth row:** past ages and this one filled, later ones pale, and the next age's silhouette fills in from the bottom, one whole pixel row at a time, as the monster really grows (`silhouette` in js/journal.js). No bar, no percentage.
+- **The line under it**, by first name: "<Name> will be a <next age> any time now" (within a quarter of an hour), "in a while" (later today), "tomorrow", or "in a few days", by when it will really grow at full speed. Adults: "<Name> is all grown up." While something is slowing its growing, a kind line says what instead: "could use a drink", "would love a little company", "is waiting for the right light", "would like a little shade", the same reasons the debug drawer shows (`growHolds`).
+- **Top corner of every journal page:** today in words from the device's clock and the real season, e.g. "Tuesday morning · autumn" (morning from 5, afternoon from 12, evening from 17, night from 21). Not on the Files' keepsakes.
+- All the words are in one place to reword: `GROW_WORDS` and `DAY_WORDS` at the bottom of js/names.js.
+- To make room, the portrait on a monster's page is a little smaller and gives way when the page is full (a long name), so it never covers the name. The day line sits in the page's top margin, clear of the close button, so nothing else moves to the next page.
+- `tests/journal_growth_test.py` checks the phrase getting closer, each reason, the day line, no numbers, nothing overlapping, and pictures a kid's page at a few growth points.
+
+### The files never name the tools used to make them (Nov 10)
+
+- Jackie: the files on GitHub say what was made and why, never which assistant or picture tool helped. The session instructions file is now [WORKING.md](WORKING.md) (same six rules, new name), and the few tool names in this file, the README and two code comments were reworded. New commits carry no tool credit line; the old commits stay as they are, since rewriting them would change the whole history.
+### The time of day is the real clock; evenings never slow growing (Nov 10)
+
+- Jackie: on the phone it was always golden hour and nobody seemed to grow. Why: the game kept its own day clock, which crept forward while the game was open and **stopped at the end of golden hour** (`Math.min(.7, …)`) until you said Goodnight, and that frozen time was saved. Golden hour that never ends is dim, so a sun-lover anywhere but the sun patch or a lamp counted as "wrong light" all day and grew at half speed. Nothing else pinned it (no debug override, no time-zone mix-up; no service worker either).
+- **Now the time of day is the device's own local time**, read every frame (`clockTick` in js/room.js), never a saved game clock. Sunrise and sunset follow the month (`SUN_TIMES`, a cozy northern town, daylight saving included): golden hour is the last hour and a half before sunset, dusk the hour after it, night until sunrise. November: golden hour about 3:10-4:40 pm, dusk until about 5:40, night until about 7 am. The season was already the real calendar.
+- **Morning comes by itself** at a real sunrise: one new day (Good morning), whether everyone is asleep or not, and only one however long you were away (Grace). Goodnight still works any time (everyone sleeps and the room goes dark), and Good morning can still be tapped early.
+- **Growing** keeps the Nov 8 rules: real time, full speed while cared for, half speed while thirsty, lonely or in the wrong light, and coming back catches up at half speed, one age at most.
+- **Light only counts in the bright hours** (morning and midday). Golden hour, dusk and night are dim for everyone, so nobody withers or grows slower for the evening; too bright right under a lamp still shows, but doesn't slow growing then.
+- **Debug (test mode only):** the status line shows the clock (phone clock or held), the time of day, the season, and every monster's age, how far along it is, the time left and what's slowing it. Setting the time with the slider or buttons holds the clock there on the test copy (Clock: phone clock / held); Keep these changes always goes back to the phone clock.
+- **Old copy on a phone:** there's no service worker; a Home Screen app can stay open in the background for days on the copy it loaded. To get the newest version, swipe it away in the app switcher and open it again.
+- Tests run on a fixed local time (a Tuesday at 10 am in autumn) so every run looks the same; `tests/clock_test.py` checks the changeovers at real clock times, the sunrise morning, golden hour and night never slowing growth, the catch-up and the debug readout.
+### A loading screen until the room is complete (Nov 10)
+
+- Jackie: when the game loads, sometimes the background isn't there for a moment, so the game looks broken. Now a loading screen covers everything until every picture has arrived, and only then does the game start (the title screen, the room, the clock, saving), so the room is always complete the moment it shows.
+- **How it looks:** the same cocoa background as the turn-your-phone note, with one cream card in the shared text style: "Monster Plant" and "Getting the room ready" with three dots that step on one at a time (a frame swap, no fades; still dots with reduce-motion). No bar or percentage (no meters). The words are placeholders for Jackie to rewrite.
+- **How it works:** `img()` in js/core.js counts every picture asked for while the code loads; `whenLoaded` in js/main.js starts the game when the count reaches zero and takes `#loading` (index.html) away. A picture that fails to load still counts as arrived, so the screen can never stay up forever (the game says which picture is missing, as before).
+- **Why wait for everything, not only the background:** the pictures are all asked for at once, so any of them (a lamp, the curtains, the cat) could be the one that's late.
+- `python3 tests/loading_shots.py` holds the room's background back on purpose and checks the loading screen is up and nothing has started, then that the room is drawn once it arrives, on a desktop and an iPhone; pictures in `tests/screenshots/loading/`.
 
 ### Trays sit higher, away from the bottom edge (Nov 10)
 
@@ -40,8 +71,8 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 ### Night windows for spring, summer and autumn (Nov 10)
 
 - At night the window now shows the real-calendar season: spring (blossoms and a crescent moon), summer (a full green tree and a round moon) and autumn (orange leaves and a round moon) use the new pieces; winter keeps its snow. Golden hour and daytime are unchanged, and closed curtains cover the window as before.
-- Made from three ChatGPT edits of the night window. Each was lined up with the current night window (best scale and offset against the frame, curtains and armchair), and only the glass was taken: the four rows of panes minus the curtains and the armchair. Everything outside the glass (bars, frame, curtains, chair) is the existing night_window_winter.png pixel for pixel. Files: night_window_spring.png, night_window_summer.png, night_window_autumn.png (254x434, drawn at 318,88 like the others).
-- **The pictures needed resizing:** ChatGPT returned window-only crops at about 3.78x (959x1639), so they were brought down to the window's size with nearest-neighbor sampling only (about 0.264x; exact per image: autumn 0.2656 x 0.2637, spring 0.2646 x 0.2623, summer 0.2647 x 0.2647). No recoloring.
+- Made from three edited pictures of the night window. Each was lined up with the current night window (best scale and offset against the frame, curtains and armchair), and only the glass was taken: the four rows of panes minus the curtains and the armchair. Everything outside the glass (bars, frame, curtains, chair) is the existing night_window_winter.png pixel for pixel. Files: night_window_spring.png, night_window_summer.png, night_window_autumn.png (254x434, drawn at 318,88 like the others).
+- **The pictures needed resizing:** they came as window-only crops at about 3.78x (959x1639), so they were brought down to the window's size with nearest-neighbor sampling only (about 0.264x; exact per image: autumn 0.2656 x 0.2637, spring 0.2646 x 0.2623, summer 0.2647 x 0.2647). No recoloring.
 - **Which was which:** the files arrived labelled 1 = spring, 2 = summer, 3 = autumn, but picture 1 shows autumn leaves, 2 spring blossoms and 3 a green summer tree, so each was used for the season it shows.
 - `python3 tests/night_window_shots.py` pictures the night room in all four seasons with the curtains open and closed and checks that only the glass differs.
 
@@ -295,9 +326,9 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Bubbles are the same cream with 18px corners. Buttons are soft peach/cream pills with no black outline and lift 1px on hover. The debug and full-screen buttons and the debug drawer are rounded to match.
 - `python tests/ui_shots.py` checks the look and saves pictures to tests/screenshots/ui/.
 
-### CLAUDE.md: how every session works (Nov 4)
+### WORKING.md: how every session works (Nov 4)
 
-- CLAUDE.md in the repo root, which Claude Code reads at the start of every session, says: read README.md, RULES.md and DECISIONS.md first; change one thing per request; run tests/smoke_test.py before and after every change and fix what it breaks; show Jackie screenshots; log her decisions here with the reason; commit and push to main only when tests pass. Why: so every session follows the same habits without Jackie repeating them.
+- WORKING.md in the repo root, read at the start of every session, says: read README.md, RULES.md and DECISIONS.md first; change one thing per request; run tests/smoke_test.py before and after every change and fix what it breaks; show Jackie screenshots; log her decisions here with the reason; commit and push to main only when tests pass. Why: so every session follows the same habits without Jackie repeating them.
 - The decisions moved out of README.md into this file so they're easy to find and add to.
 
 ### Captions in Jackie's words (Nov 4)
@@ -490,7 +521,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 **Treats and charms (Nov 2–3)**
 - Food is optional; needs are water, light and company. Treats pop out of the SNACKS cabinet into your hand; tap the plant: it eats, then **pops** (boing + hearts). Too full = it refuses; a burp and a one-minute nap.
 - 5 servings of one treat earns its **charm**, pinned at the side of the head. Give it at least every 3 days or it drifts away overnight; it comes back after 3 servings.
-- Rejected art: cotton-candy hat ("brains"), gardener straw hat ("mobile gaming"), ChatGPT plants-with-accessories sheet.
+- Rejected art: cotton-candy hat ("brains"), gardener straw hat ("mobile gaming"), a plants-with-accessories sheet.
 
 **Pots (Nov 3): PAUSED**
 - Every plant keeps its cream-and-blue-check starter pot (`POTS_ON=false`). Compositing plants into other pots failed (floating, sinking, lost outlines). Future plan: Jackie draws each plant in each pot.

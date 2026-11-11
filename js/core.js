@@ -6,7 +6,12 @@ const wrap=document.getElementById('wrap'),ui=document.getElementById('ui');
 let S=1,FIT_RIGHT=0; // FIT_RIGHT: screen width the debug drawer takes on the right; the room fits beside it instead of under it
 function fit(){const vw=(document.documentElement.clientWidth||innerWidth)-FIT_RIGHT,vh=document.documentElement.clientHeight||innerHeight;S=Math.min(vw/W,vh/H);wrap.style.setProperty('--S',S);wrap.style.setProperty('--u',Math.max(3,Math.round(5*S))+'px');/* --u: one outline 'pixel' of the caption bubble */cv.style.width=W*S+'px';cv.style.height=H*S+'px';wrap.style.width=W*S+'px';wrap.style.height=H*S+'px';wrap.style.left=vw/2+'px';}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));addEventListener('load',fit);setInterval(fit,1000);fit(); // keep the whole room on screen on iPad/phones
-function img(src){const i=new Image();i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
+// LOADING SCREEN (Jackie, Nov 10): every picture asked for while the game's code loads is counted; the loading screen (#loading in index.html)
+// covers the room until each one has arrived (or failed, so it can never wait forever), then main.js starts the game.
+let LOAD_LEFT=0,LOAD_GO=null,LOADED=false;
+function loadDone(){if(LOADED||!LOAD_GO||LOAD_LEFT>0)return;LOADED=true;const go=LOAD_GO;LOAD_GO=null;go();const l=document.getElementById('loading');if(l)l.remove();}
+function whenLoaded(go){LOAD_GO=go;loadDone();}
+function img(src){const i=new Image();if(!LOADED){LOAD_LEFT++;const d=()=>{LOAD_LEFT--;loadDone();};i.addEventListener('load',d,{once:true});i.addEventListener('error',d,{once:true});}i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
 const ok=i=>i&&i.complete&&i.naturalWidth>0;
 // REAL BOTTOM (Nov 3): empty rows under a picture's lowest solid pixel (the pot's bottom, the cat's paws), measured once per picture.
 // Plants and the cat are placed so that pixel sits exactly on the spot's surface line, not the picture's edge.

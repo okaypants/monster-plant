@@ -21,6 +21,12 @@ html,body{margin:0;height:100%;background:#19101b;overflow:hidden;font-family:'F
 canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#19101b;color:#fdebc9;align-items:center;justify-content:center;text-align:center;font-size:22px;padding:30px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
+/* LOADING SCREEN (Jackie, Nov 10): covers everything until the room's pictures are all in. The dots are a frame swap (no fades). */
+#loading{position:fixed;inset:0;z-index:98;background:#3A241A;display:flex;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}
+#loading h1{font-size:25px;font-weight:600;margin:0}#loading p{margin:0;font-size:18px}
+#loading .ldots i{font-style:normal;animation:ld1 1.2s step-end infinite}#loading .ldots i:nth-child(2){animation-name:ld2}#loading .ldots i:nth-child(3){animation-name:ld3}
+@keyframes ld1{0%{visibility:hidden}25%{visibility:visible}}@keyframes ld2{0%{visibility:hidden}50%{visibility:visible}}@keyframes ld3{0%{visibility:hidden}75%{visibility:visible}}
+@media (prefers-reduced-motion:reduce){#loading .ldots i{animation:none}}
 #ui{position:absolute;inset:0;pointer-events:none}
 /* UI LOOK: Fredoka text; the colors and shapes of every word are in css/textstyle.css (Jackie, Nov 10). This block is layout. */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(25,16,27,.84);pointer-events:auto;text-align:center;gap:16px;padding:20px;box-sizing:border-box}
@@ -142,6 +148,8 @@ body.testing #testBadge{display:block}
 </head>
 <body>
 <div id="rot"><div class="tsb tsscreen">Turn your phone sideways to play 🌱</div></div>
+<!-- LOADING SCREEN: covers the room until every picture has arrived (js/core.js takes it away); under the turn-your-phone note -->
+<div id="loading" role="status"><div class="tsb tsscreen"><h1>Monster Plant</h1><p>Getting the room ready<span class="ldots"><i>.</i><i>.</i><i>.</i></span></p></div></div>
 <div id="wrap">
 <canvas id="c" width="1670" height="942" aria-label="Monster plant room"></canvas>
 <div id="ui">

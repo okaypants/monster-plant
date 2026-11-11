@@ -2,7 +2,7 @@
 
 Run from the repository root:  python tests/curtain_shots.py
 Day, golden hour and night with the curtains closed (both lamps on, so the curtain pieces are drawn) and a sun-loving
-adult too far from any light. Checks that the plant shows it (too dark, withering) and that the curtains stay perfectly
+adult too far from any light. Checks that the plant shows it in the daytime (too dark, withering; golden hour and night never wither anyone) and that the curtains stay perfectly
 still (no wiggle): the curtain area must be pixel-identical over two seconds. Pictures go to tests/screenshots/curtains/.
 Exit code 1 if a check fails.
 """
@@ -40,8 +40,10 @@ async def main():
             for _ in range(8):  # sample the curtain area every quarter second
                 await pg.evaluate("()=>__step(.25)")
                 frames.append(await pg.evaluate(CURTAIN_AREA))
-            if state["light"] != "lo" or state["wither"] < 1:
+            if name == "day" and (state["light"] != "lo" or state["wither"] < 1):
                 fails.append(f"{name}: plant should be too dark and withering, got {state}")
+            if name != "day" and (state["light"] != "ok" or state["wither"] != 0):  # golden hour and night are dim for everyone: nobody withers
+                fails.append(f"{name}: evening light should never wither anyone, got {state}")
             if state["time"] != name:
                 fails.append(f"{name}: room shows {state['time']}")
             if len(set(frames)) != 1:

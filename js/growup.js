@@ -68,9 +68,8 @@ function growPayoff(){const G=grow;G.paid=true;G.k=1;
  st.grew=st.grew||{};st.grew[G.to]=growWords();
  tell(G.txt,{kind:'important',who:st.id});catSeesGrow();save();}
 function growFinish(){if(!grow)return;grow.still=true;if(!grow.did)growChange();if(!grow.paid)growPayoff();grow=null;}
-// the journal's stamp, in words: the real weekday, the room's time of day, the season in the window. No numbers.
-function growWords(){const d=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()],
- p=st.night?'night':({morning:'morning',midday:'afternoon'})[phase(st.dayT)]||'evening';return 'Grew up on a '+d+' '+p+' in '+seasonNow()+'.';}
+// the journal's stamp, in words: the same day words as the journal's top corner (DAY_WORDS in js/names.js). No numbers.
+function growWords(d=nowDate()){const h=d.getHours(),part=DAY_WORDS.parts.filter(p=>h>=p[0]).pop()[1];return 'Grew up on a '+DAY_WORDS.weekdays[d.getDay()]+' '+part+' in '+seasonNow()+'.';}
 function grewLine(q=st){const G=q.grew||{};for(const s of[8,6,4])if(q.stage>=s&&G[s])return G[s];return '';} // its latest grow-up
 /* THE CAT: it turns toward the monster (sits up and looks, then goes back to its nap). A cat that's fond of you or adores you walks
    over and sits near it. A cat that has had enough of being touched, or is being petted, only looks. Existing frames only. */
