@@ -82,6 +82,7 @@
 .jlab .tslabicon{width:auto;height:.85em;image-rendering:pixelated}
 .jstamp{height:auto;min-height:26px;font-size:var(--f14);line-height:1.2;border-color:var(--ts-rust);color:var(--ts-rust);border-radius:0}
 .jquirks .jstamp{width:auto;min-width:0;padding:3px 6px;font-size:var(--f14)}
+.jgrew{white-space:normal;width:auto;max-width:100%;padding:3px 8px;align-self:center;flex:none}
 .jstamp.jfaint{border:2px dashed var(--ts-toffee);color:var(--ts-ink);font-weight:400}
 .jmiles .jstamp{width:auto;font-size:var(--f14)}
 .jtitle{border-color:var(--ts-ink);color:var(--ts-ink)}

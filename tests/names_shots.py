@@ -26,7 +26,7 @@ async def main():
         await pg.evaluate("()=>{const s=fresh();Object.assign(s,{started:true,stage:1,timer:0,species:0,id:1,day:2,dayT:.3,mode:'actions',curtain:'open',giftSeed:1,nge:.5,nlc:0,ge:.4,catTrust:.1});localStorage.setItem(KEY,JSON.stringify(s));}")
         await pg.reload(wait_until="load")
         await pg.click(".screen button")
-        await pg.evaluate("()=>{__step(1);capClear();CAP.seen.clear();st.timer=GROW_FOR[1]-.5;__step(1.5);}")  # past the welcome back; then its sprout hour runs out: eyes open
+        await pg.evaluate("()=>{__step(1);capClear();CAP.seen.clear();st.timer=GROW_FOR[1]-.5;__step(8.5);}")  # past the welcome back; then its sprout hour runs out: a few calm seconds, its grow-up moment, eyes open
         name = await pg.evaluate("()=>st.name")
         txt = await pg.evaluate("()=>CAP.cur?CAP.cur.t:''")
         if not name or txt != f"Hello, {name}! Its eyes are open.":

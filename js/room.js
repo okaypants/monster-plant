@@ -133,7 +133,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  }
  if(typeof dbgFxDraw==='function')dbgFxDraw(); // debug: effect previews
  fidgetDrawTop();
- for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
+ for(const q of parts){if(q.k==='heart')fx('hearts',q.x,q.y,3,0,.5);else if(q.k==='spark')fx('sparkles',q.x,q.y,3,0,SPARKLE_SC);else if(q.k==='drop'){}else{g.fillStyle=q.c;g.fillRect(q.x|0,q.y|0,6,6);}}
  if(lightMap&&st.started)drawLightTags(); // debug only: labels and legend on top
  if(typeof depthLines!=='undefined'&&depthLines&&st.started)drawDepthLines(); // debug only: each spot's depth and size
  const ph=phase(st.dayT);

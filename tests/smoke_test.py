@@ -58,9 +58,10 @@ CASES = [
     # name, save (None = brand-new game), js after the start screen, minutes, check (js returning true or a reason)
     ("new_game", None, "", 1,
      "(st.started&&st.stage===1&&st.nge!=null&&!!st.name&&__open[4]===st.name&&__open[0]===.3&&__open[1]===false&&__open[2]===false&&__open[3]==='open'&&__open[5].startsWith('Hello, '+st.name+'! Your little seed')&&CAP.log.some(l=>l.t==='A sprout!'))||'new game: stage '+st.stage+', name '+st.name+', opening '+JSON.stringify(__open)"),
-    # Tamagotchi time (Jackie, Nov 8): a cared-for kid near the end of its day grows into a teen on the clock, no Good morning needed
-    ("grows_on_the_clock", "s.stage=4;s.species=6;s.timer=GROW_FOR[4]-60;s.free={x:1250,y:918};s.giftSeed=1;s.needs={thirst:0,hunger:0,attention:0};", "", 0.2,
-     "(st.stage===6&&!st.night&&CAP.log.some(l=>l.t===firstName()+' is a teen now, with big ideas and a bigger pot.'))||'clock growth: stage '+st.stage+', timer '+st.timer+', log '+CAP.log.map(l=>l.t).join(' | ')"),
+    # Tamagotchi time (Jackie, Nov 8): a cared-for kid near the end of its day grows into a teen on the clock, no Good morning needed.
+    # Growing up is a moment (Nov 10): once its time is up it waits for a calm room, then grows (tests/grow_up_shots.py has the details)
+    ("grows_on_the_clock", "s.stage=4;s.species=6;s.timer=GROW_FOR[4]-60;s.free={x:1250,y:918};s.giftSeed=1;s.needs={thirst:0,hunger:0,attention:0};", "", 0.75,
+     "(st.stage===6&&!st.night&&!grow&&CAP.log.some(l=>l.t===firstName()+' is a teen now!'))||'clock growth: stage '+st.stage+', timer '+st.timer+', log '+CAP.log.map(l=>l.t).join(' | ')"),
     # the archive (Jackie, Nov 8): moving out saves a frozen journal in the desk; an old save opens an empty drawer with its note
     ("archive_moves_out", "s.stage=8;s.species=3;s.giftSeed=1;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';delete s.archive;",
      "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);window.__empty=(openArchive(),__step(.3),document.querySelectorAll('.jarchnote').length);closeJournal();moveOut(p.id,'Off to see the ocean');openArchive();", 0.2,
@@ -117,7 +118,7 @@ CASES = [
      "openJournal();", 0.2,
      "(()=>{const R=[...document.querySelectorAll('.jrib')];if(R.length!==2)return 'ribbons: '+R.length;R[1].click();__step(.5);return jPage==='cat'||'cat page';})()"),
     # names (Jackie, Nov 4): a name when its eyes open, with one hello; old saves get named; two plants never share a first name; rename in the journal
-    ("names_eyes_open", "s.stage=1;s.species=2;s.timer=GROW_FOR[1]-1;s.nge=.5;s.nlc=0;s.giftSeed=1;", "", 0.2,
+    ("names_eyes_open", "s.stage=1;s.species=2;s.timer=GROW_FOR[1]-1;s.nge=.5;s.nlc=0;s.giftSeed=1;", "", 0.75,
      "(st.stage===4&&!!st.name&&NAME_FIRST.good.includes(firstName())&&CAP.log.filter(l=>l.t==='Hello, '+st.name+'! Its eyes are open.').length===1)||'name '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
     ("names_old_save", "s.stage=8;s.species=3;s.free={x:300,y:918};s.giftSeed=1;delete s.name;",
      "const p=freshPlant();p.species=6;p.stage=8;p.free={x:1250,y:918};addPlant(p);", 0.2,
@@ -138,7 +139,7 @@ CASES = [
      "const bare=L.filter(t=>/^(It|Its|It's) /.test(t));return !bare.length||'bare it: '+bare.join(' | ');})()"),
     # a seed can be renamed in the journal right away; when its eyes open it keeps that name (and says so)
     ("names_seed_named_early", "s.stage=1;s.species=2;s.timer=0;s.giftSeed=1;delete s.name;",
-     "openJournal();const b=document.querySelector('.jrename');b.click();const i=document.querySelector('.jnameinput');i.value='Sprinkles';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));closeJournal();st.timer=GROW_FOR[1]-1;", 0.2,
+     "openJournal();const b=document.querySelector('.jrename');b.click();const i=document.querySelector('.jnameinput');i.value='Sprinkles';i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));closeJournal();st.timer=GROW_FOR[1]-1;", 0.75,
      "(st.stage===4&&st.name==='Sprinkles'&&CAP.log.some(l=>l.t==='Sprinkles opens its eyes!'))||'seed name: '+st.name+', stage '+st.stage+', log '+CAP.log.map(l=>l.t).join(' | ')"),
     # the cat has a name too: on his journal page (tap to rename) and in his captions
     ("cat_name", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.catTrust=.1;delete s.catName;",
