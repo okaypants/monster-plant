@@ -1,7 +1,7 @@
 """Sloth's note: the opt-in second plant.
 
 Run from the repository root:  python tests/sloth_note_shots.py
-A late teen alone in the room: the paper-airplane note lands on the windowsill; tapping it asks "I have a seedling in need
+A late teen alone in the room: Sloth's paw sets an envelope on the windowsill; tapping it asks "I have a seedling in need
 of a home. May I send it over?"; "Not yet" puts the note in the journal (where "Yes, please" works); the seed arrives the
 next morning with Sloth's caption. Pictures go to tests/screenshots/sloth_note/. Exit code 1 if a check fails.
 """
@@ -32,10 +32,12 @@ async def main():
         await pg.click(".screen button")
         await pg.evaluate("()=>{__step(14);capClear();__step(3);}")
         check(await pg.evaluate("()=>slothOnSill()"), "the note didn't land for a late teen")
+        await pg.evaluate("()=>{for(let i=0;i<60&&(paw||st.pawWait);i++)__step(.5,50);}")
+        check(await pg.evaluate("()=>st.sillItem==='envelope'"), "the paw didn't leave the envelope on the sill")
         await pg.wait_for_timeout(300)
         await pg.screenshot(path=os.path.join(OUT, "1_note_on_sill.png"))
         # tap the note like a player
-        box = await pg.evaluate("()=>{const n=slothNoteBox(),r=cv.getBoundingClientRect();return {x:r.left+(n.x+n.w/2)*S,y:r.top+(n.y+n.h/2)*S};}")
+        box = await pg.evaluate("()=>{const n=sillBox(),r=cv.getBoundingClientRect();return {x:r.left+(n.x+n.w/2)*S,y:r.top+(n.y+n.h/2)*S};}")
         await pg.mouse.click(box["x"], box["y"])
         await pg.wait_for_timeout(300)
         txt = await pg.evaluate("()=>bubble?bubble.textContent:''")
@@ -45,16 +47,18 @@ async def main():
         check(await pg.evaluate("()=>!slothOnSill()&&st.slothJournal===1&&st.giftAskDay===st.day+3"), "not yet: the note should move to the journal and ask again in 3 days")
         await pg.evaluate("()=>openJournal()")
         await pg.wait_for_timeout(300)
-        await pg.click(".jslothnote")  # the paper airplane tucked in the journal
+        await pg.click(".jslothnote")  # the envelope tucked in the journal
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "3_journal_note.png"))
         await pg.click(".jslothask [data-k=y]")
         check(await pg.evaluate("()=>st.slothSend===st.day+1&&plantCount()===1"), "yes in the journal: the seed should come next morning, not now")
-        await pg.evaluate("()=>{closeJournal();capClear();st.night=true;wake();__step(1);}")
-        check(await pg.evaluate("()=>plantCount()===2&&st.stage===0"), "the seed didn't arrive in the morning")
+        await pg.evaluate("()=>{closeJournal();capClear();st.night=true;wake();__step(1);for(let i=0;i<60&&(paw||st.pawWait);i++)__step(.5,50);}")  # the paw brings a seed packet (Nov 10)
+        check(await pg.evaluate("()=>st.sillItem==='seed'&&plantCount()===1"), "the paw should leave a seed packet in the morning")
         await pg.evaluate("()=>{__step(4.5);}")  # the morning line, then Sloth's
+        check(await pg.evaluate("()=>CAP.log.concat(CAP.q).some(l=>l.t==='A seed packet from Sloth, PhD is on the windowsill.')"), "no Sloth, PhD caption")
+        await pg.evaluate("()=>{sillTap();__step(1);}")
+        check(await pg.evaluate("()=>plantCount()===2&&st.stage===0"), "tapping the packet should plant the seed")
         await pg.wait_for_timeout(700)
-        check(await pg.evaluate("()=>CAP.log.some(l=>l.t==='Something taps the window and a seed drifts in on a paper airplane note from Sloth, PhD.')"), "no Sloth, PhD caption")
         await pg.screenshot(path=os.path.join(OUT, "4_seed_next_morning.png"))
         fails += errs
         await b.close()

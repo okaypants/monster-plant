@@ -68,6 +68,6 @@ function tsChoices(list){list=list.map(([k,l,...r])=>[k,l.split(SLOTH_NAME).join
 
 /* words appear in 2-3 stepped pops (never a fade, never a typewriter); with the phone's reduce-motion setting they just appear */
 const tsCalm=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
-// Sloth's postage stamp: a code-drawn silhouette (real art later: sloth_portrait.png, see LETTER_ART in js/plants.js)
-function tsStampHTML(px=2){return '<span class="jlstamp"><img class="jpix" alt="" aria-hidden="true" src="'+tsGlyphURL('sloth',TS.mintInk,px)+'"></span>';}
+// Sloth's postage stamp: a paw print (Jackie, Nov 10)
+function tsStampHTML(px=4){return '<span class="jlstamp"><img class="jpix" alt="" aria-hidden="true" src="'+tsGlyphURL('paw',TS.mintInk,px)+'"></span>';}
 function tsPop(el){if(!el)return;el.classList.remove('tspop');void el.offsetWidth;el.classList.add('tspop');}
