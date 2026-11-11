@@ -60,6 +60,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
+`python3 tests/loading_shots.py` checks the loading screen: it stays up while a picture is still on its way (the game hasn't started behind it), and goes away with the room fully drawn once everything has arrived, or if a picture fails to load; saved to `tests/screenshots/loading/`.
+
 `python3 tests/paw_shots.py` checks Sloth's paw: the envelope paw bringing a letter (whole-pixel, slow, settles one step, leaves the envelope on the sill), waiting while the curtains are closed, at night and while dragging, the seed paw bringing a seed packet you tap to plant, the empty paw taking a seed you send, the first-time caption, old saves and the debug button; pictures of each paw mid-reach and the items on the sill at day and golden hour in `tests/screenshots/paw/`.
 
 `python3 tests/old_names_test.py` checks that the character who delivers by paw is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
