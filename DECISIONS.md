@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Night windows for spring, summer and autumn (Nov 10)
+
+- At night the window now shows the real-calendar season: spring (blossoms and a crescent moon), summer (a full green tree and a round moon) and autumn (orange leaves and a round moon) use the new pieces; winter keeps its snow. Golden hour and daytime are unchanged, and closed curtains cover the window as before.
+- Made from three ChatGPT edits of the night window. Each was lined up with the current night window (best scale and offset against the frame, curtains and armchair), and only the glass was taken: the four rows of panes minus the curtains and the armchair. Everything outside the glass (bars, frame, curtains, chair) is the existing night_window_winter.png pixel for pixel. Files: night_window_spring.png, night_window_summer.png, night_window_autumn.png (254x434, drawn at 318,88 like the others).
+- **The pictures needed resizing:** ChatGPT returned window-only crops at about 3.78x (959x1639), so they were brought down to the window's size with nearest-neighbor sampling only (about 0.264x; exact per image: autumn 0.2656 x 0.2637, spring 0.2646 x 0.2623, summer 0.2647 x 0.2647). No recoloring.
+- **Which was which:** the files arrived labelled 1 = spring, 2 = summer, 3 = autumn, but picture 1 shows autumn leaves, 2 spring blossoms and 3 a green summer tree, so each was used for the season it shows.
+- `python3 tests/night_window_shots.py` pictures the night room in all four seasons with the curtains open and closed and checks that only the glass differs.
+
 ### "Sloth, PhD" never splits across two lines (Nov 10)
 
 - Jackie: on a phone, "Send it to Sloth, PhD" wrapped between "Sloth," and "PhD". The name now always stays on one line, in buttons, captions, cards, the letter's signature and the Files note (a no-wrap span, `tsKeepName` in js/textstyle.js); the words themselves are unchanged. `tests/textstyle_shots.py` checks the seed button.
