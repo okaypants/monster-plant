@@ -83,8 +83,10 @@ function openSnacks(){sfx('tick');if(!trayEl){trayEl=document.createElement('div
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabTreat(s,e);});trayEl.appendChild(b);}
   trayEl.addEventListener('pointerdown',e=>e.stopPropagation());trayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(trayEl);}
  placeTray();trayKeep();}
+// trays sit well clear of the bottom edge: on a phone, a drag that starts near the bottom can swipe the whole app away (Jackie, Nov 10)
+function trayTop(h){return H*S-h-Math.max(48,H*S*.14);}
 function placeTray(){if(!trayEl)return;const w=trayEl.offsetWidth,h=trayEl.offsetHeight; // along the bottom, ending under the cabinet: over the rug and pots, never a face
- trayEl.style.left=Math.round(clamp((JAR.x+JAR.w)*S-w,4,W*S-w-4))+'px';trayEl.style.top=Math.round(H*S-h-6)+'px';}
+ trayEl.style.left=Math.round(clamp((JAR.x+JAR.w)*S-w,4,W*S-w-4))+'px';trayEl.style.top=Math.round(trayTop(h))+'px';}
 function trayKeep(){feed.trayT=performance.now();}
 function closeTray(){if(trayEl){trayEl.remove();trayEl=null;}}
 cv.addEventListener('pointerdown',()=>{if(!feed.item)closeTray();}); // tap away
@@ -141,7 +143,7 @@ function openBooks(){sfx('page');if(!btrayEl){btrayEl=document.createElement('di
   btrayEl.addEventListener('pointerdown',e=>e.stopPropagation());btrayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(btrayEl);}
  placeBookTray();bookDrag.trayT=performance.now();}
 function placeBookTray(){if(!btrayEl)return;const w=btrayEl.offsetWidth,h=btrayEl.offsetHeight; // along the bottom of the room, like the treat tray
- btrayEl.style.left=Math.round(clamp(W*S/2-w/2,4,W*S-w-4))+'px';btrayEl.style.top=Math.round(H*S-h-6)+'px';}
+ btrayEl.style.left=Math.round(clamp(W*S/2-w/2,4,W*S-w-4))+'px';btrayEl.style.top=Math.round(trayTop(h))+'px';}
 function closeBookTray(){if(btrayEl){btrayEl.remove();btrayEl=null;}}
 cv.addEventListener('pointerdown',()=>{if(!bookDrag.item)closeBookTray();});
 addEventListener('resize',()=>setTimeout(placeBookTray,50));
