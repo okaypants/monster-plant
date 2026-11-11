@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A loading screen until the room is complete (Nov 10)
+
+- Jackie: when the game loads, sometimes the background isn't there for a moment, so the game looks broken. Now a loading screen covers everything until every picture has arrived, and only then does the game start (the title screen, the room, the clock, saving), so the room is always complete the moment it shows.
+- **How it looks:** the same cocoa background as the turn-your-phone note, with one cream card in the shared text style: "Monster Plant" and "Getting the room ready" with three dots that step on one at a time (a frame swap, no fades; still dots with reduce-motion). No bar or percentage (no meters). The words are placeholders for Jackie to rewrite.
+- **How it works:** `img()` in js/core.js counts every picture asked for while the code loads; `whenLoaded` in js/main.js starts the game when the count reaches zero and takes `#loading` (index.html) away. A picture that fails to load still counts as arrived, so the screen can never stay up forever (the game says which picture is missing, as before).
+- **Why wait for everything, not only the background:** the pictures are all asked for at once, so any of them (a lamp, the curtains, the cat) could be the one that's late.
+- `python3 tests/loading_shots.py` holds the room's background back on purpose and checks the loading screen is up and nothing has started, then that the room is drawn once it arrives, on a desktop and an iPhone; pictures in `tests/screenshots/loading/`.
+
 ### Trays sit higher, away from the bottom edge (Nov 10)
 
 - The treat tray (and the book tray, which sat the same way) were 6 px from the bottom, so on a phone a drag that started there could swipe the whole app away. Both now sit 14% of the screen height above the bottom (at least 48 px).
