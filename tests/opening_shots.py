@@ -32,7 +32,7 @@ async def main():
             await pg.click(".screen button >> nth=%d" % (i % 2))
         await pg.evaluate("()=>__step(1.2)")
         r = await pg.evaluate("()=>({dayT:st.dayT,night:st.night,lamp:st.lamp,desk:st.desk,curtain:st.curtain,name:st.name,cap:CAP.cur?CAP.cur.t:'',tags:[...document.querySelectorAll('#nameTags button')].map(b=>b.textContent)})")
-        if not (r["dayT"] >= .3 and r["dayT"] < .35 and not r["night"] and r["lamp"] is False and r["desk"] is False and r["curtain"] == "open"):
+        if not (r["dayT"] < .5 and not r["night"] and r["lamp"] is False and r["desk"] is False and r["curtain"] == "open"):
             fails.append(f"opening room: {r}")
         if not r["name"] or not r["cap"].startswith(f"Hello, {r['name']}! Your little seed"):
             fails.append(f"hello caption: {r['cap']!r} (name {r['name']!r})")

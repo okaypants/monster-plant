@@ -42,7 +42,7 @@ def serve():
 
 # runs before the game's code: fixed randomness, and a clock + timers + animation frames that only move on __step(seconds)
 VIRTUAL_TIME = """(()=>{let s=12345;Math.random=()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
- let vt=0;const BASE=Date.now();performance.now=()=>vt;Date.now=()=>BASE+vt;
+ let vt=0;const BASE=new Date(2026,10,10,10,0).getTime(); /* a fixed local time: a Tuesday at 10 am in autumn, so the real clock gives the same morning every run */performance.now=()=>vt;Date.now=()=>BASE+vt;
  let q=[],id=1,raf=[];
  window.setTimeout=(f,d=0)=>{q.push({id,at:vt+(+d||0),f});return id++;};
  window.setInterval=(f,d=0)=>{const me=id++,r=()=>{f();q.push({id:me,at:vt+(+d||1),f:r});};q.push({id:me,at:vt+(+d||1),f:r});return me;};

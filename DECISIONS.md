@@ -5,6 +5,23 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 ### The files never name the tools used to make them (Nov 10)
 
 - Jackie: the files on GitHub say what was made and why, never which assistant or picture tool helped. The session instructions file is now [WORKING.md](WORKING.md) (same six rules, new name), and the few tool names in this file, the README and two code comments were reworded. New commits carry no tool credit line; the old commits stay as they are, since rewriting them would change the whole history.
+### The time of day is the real clock; evenings never slow growing (Nov 10)
+
+- Jackie: on the phone it was always golden hour and nobody seemed to grow. Why: the game kept its own day clock, which crept forward while the game was open and **stopped at the end of golden hour** (`Math.min(.7, …)`) until you said Goodnight, and that frozen time was saved. Golden hour that never ends is dim, so a sun-lover anywhere but the sun patch or a lamp counted as "wrong light" all day and grew at half speed. Nothing else pinned it (no debug override, no time-zone mix-up; no service worker either).
+- **Now the time of day is the device's own local time**, read every frame (`clockTick` in js/room.js), never a saved game clock. Sunrise and sunset follow the month (`SUN_TIMES`, a cozy northern town, daylight saving included): golden hour is the last hour and a half before sunset, dusk the hour after it, night until sunrise. November: golden hour about 3:10-4:40 pm, dusk until about 5:40, night until about 7 am. The season was already the real calendar.
+- **Morning comes by itself** at a real sunrise: one new day (Good morning), whether everyone is asleep or not, and only one however long you were away (Grace). Goodnight still works any time (everyone sleeps and the room goes dark), and Good morning can still be tapped early.
+- **Growing** keeps the Nov 8 rules: real time, full speed while cared for, half speed while thirsty, lonely or in the wrong light, and coming back catches up at half speed, one age at most.
+- **Light only counts in the bright hours** (morning and midday). Golden hour, dusk and night are dim for everyone, so nobody withers or grows slower for the evening; too bright right under a lamp still shows, but doesn't slow growing then.
+- **Debug (test mode only):** the status line shows the clock (phone clock or held), the time of day, the season, and every monster's age, how far along it is, the time left and what's slowing it. Setting the time with the slider or buttons holds the clock there on the test copy (Clock: phone clock / held); Keep these changes always goes back to the phone clock.
+- **Old copy on a phone:** there's no service worker; a Home Screen app can stay open in the background for days on the copy it loaded. To get the newest version, swipe it away in the app switcher and open it again.
+- Tests run on a fixed local time (a Tuesday at 10 am in autumn) so every run looks the same; `tests/clock_test.py` checks the changeovers at real clock times, the sunrise morning, golden hour and night never slowing growth, the catch-up and the debug readout.
+### A loading screen until the room is complete (Nov 10)
+
+- Jackie: when the game loads, sometimes the background isn't there for a moment, so the game looks broken. Now a loading screen covers everything until every picture has arrived, and only then does the game start (the title screen, the room, the clock, saving), so the room is always complete the moment it shows.
+- **How it looks:** the same cocoa background as the turn-your-phone note, with one cream card in the shared text style: "Monster Plant" and "Getting the room ready" with three dots that step on one at a time (a frame swap, no fades; still dots with reduce-motion). No bar or percentage (no meters). The words are placeholders for Jackie to rewrite.
+- **How it works:** `img()` in js/core.js counts every picture asked for while the code loads; `whenLoaded` in js/main.js starts the game when the count reaches zero and takes `#loading` (index.html) away. A picture that fails to load still counts as arrived, so the screen can never stay up forever (the game says which picture is missing, as before).
+- **Why wait for everything, not only the background:** the pictures are all asked for at once, so any of them (a lamp, the curtains, the cat) could be the one that's late.
+- `python3 tests/loading_shots.py` holds the room's background back on purpose and checks the loading screen is up and nothing has started, then that the room is drawn once it arrives, on a desktop and an iPhone; pictures in `tests/screenshots/loading/`.
 
 ### Trays sit higher, away from the bottom edge (Nov 10)
 
