@@ -9,7 +9,8 @@ const QUIZ=[
 
 /* ---------- day cycle ---------- */
 function tuckIn(){if(st.stage>=4)setTimeout(()=>earnPot('moon'),2600);closeBubble();held.tool=null;sfx('sigh');const start=st.dayT,t0=performance.now();
- const step=()=>{const k=Math.min(1,(performance.now()-t0)/2500);st.dayT=start+(.9-start)*k;if(k<1)requestAnimationFrame(step);else{st.night=true;tell('Goodnight, sleep tight, the bed bugs are nice here. Tap anywhere to sleep.',{kind:'important'});}};step();}
+ const step=()=>{const k=Math.min(1,(performance.now()-t0)/2500);if(!clockLive())st.dayT=start+(.9-start)*k; // on the real clock the room goes dark when everyone's asleep
+ if(k<1)requestAnimationFrame(step);else{st.night=true;tell('Goodnight, sleep tight, the bed bugs are nice here. Tap anywhere to sleep.',{kind:'important'});}};step();}
 function wake(){eachPlant(()=>{if(st.stage>=0)wakePlant();});wakeRoom();goMorning();}
 function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n]).length/3;
  st.lc=clamp(st.lc+(Object.keys(st.met).length>=2?.05:-.05),-1,1);const ng=st.nge||0,nl=st.nlc||0;st.ge=ng+(st.ge-ng)*.9;st.lc=nl+(st.lc-nl)*.9; // drifts back toward its NATURE, not toward bland
@@ -20,7 +21,7 @@ function wakePlant(){const q=['thirst','attention','light'].filter(n=>st.met[n])
  for(const t of SNACKS){if((st.traits||[]).includes(t.trait)&&st.day-(st.tLast[t.id]||st.day)>KEEP){st.traits=st.traits.filter(x=>x!==t.trait);st.dormant=(st.dormant||[]).concat(t.trait);st.treats[t.id]=0;if(st.wear===t.trait)st.wear=null;faded.push(t);}}
  if(faded.length){const fw=who();setTimeout(()=>tell(fw+', no longer a '+faded.map(t=>FADE_WORD[t.id]).join(' or ')+'-monster? Try a new snack for a new accessory and trait.',{kind:'info'}),5500);}
 }
-function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');patFull(); // the cat's patience is full each morning
+function wakeRoom(){st.day++;st.dayT=clockLive()?clockDayT():0;st.night=false;st.lastMorning=morningOf();sfx('chime');patFull(); // the cat's patience is full each morning
  const d=new Date(),season=seasonNow();
  const slept=allRaw().filter(q=>q.stage>=4&&q.lastNight),all=allRaw().filter(q=>q.stage>=4); // who slept well, by name
  const well=!slept.length?'':slept.length>1&&slept.length===all.length?' Both slept well and their dreams were pleasant and relaxing.':' '+slept.map(q=>nameOf(q,true)).join(' and ')+(slept.length>1?' slept well and their dreams were':' slept well and its dreams were')+' pleasant and relaxing.';
