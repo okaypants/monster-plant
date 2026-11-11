@@ -193,8 +193,10 @@ function plantPages(L,R){
  const id=st.id,steps=ageSprites(),at=ageStep();
  L.appendChild(nameTag(id)); // its name on top (tap to name it, even as a seed); the species small underneath
  if(st.name)L.appendChild(jdiv('jspecies',[],NAMES[st.species]));
- L.appendChild(jdiv('jportrait',[plantPortrait(id,240,196)]));
+ const gw=grewLine(); // its latest grow-up, in words (js/growup.js); the portrait is a little shorter to make room for the stamp
+ L.appendChild(jdiv('jportrait',[plantPortrait(id,240,gw?140:196)]));
  L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at))));
+ if(gw)L.appendChild(jdiv('jstamp jgrew',[],gw));
  L.appendChild(jdiv('jborn',[],bornLine()));
  // likes: its light, and the last treat it loved (blank until then)
  const fav=st.fav&&TREAT_IMG[st.fav];

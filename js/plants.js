@@ -21,7 +21,7 @@ const NEXT={0:1,1:4,4:6,6:8},AGES=[0,1,4,6,8];
 const ELDER_SCALE={6:.62,7:.62,8:.82}; // shown smaller so elder pixels match the room's (Jackie OK'd); swap to 1 when finer-pixel redraws arrive
 const FACE=[[0.531, 0.511], [0.505, 0.403], [0.487, 0.493], [0.509, 0.409], [0.525, 0.47], [0.508, 0.377], [0.536, 0.435], [0.503, 0.364], [0.51, 0.461], [0.417, 0.516], [0.5, 0.488], [0.497, 0.375], [0.505, 0.376], [0.5, 0.413], [0.506, 0.406], [0.494, 0.456]]; // per-elder face point (fraction of sprite), from blank body area
 function plantBox(){const pb=plantBoxRaw();if(drag.on&&mx>-50&&st.id===drag.id){ /* only the plant you grabbed follows your finger */const dx=mx-(pb.x+pb.w/2),dy=my-(pb.y+pb.h*.85);return {...pb,x:pb.x+dx,y:pb.y+dy};}
- const q=quirkOff();return q[0]||q[1]?{...pb,x:pb.x+q[0],y:pb.y+q[1]}:pb;}
+ const q=quirkOff(),go=growOff();q[0]+=go[0];q[1]+=go[1];return q[0]||q[1]?{...pb,x:pb.x+q[0],y:pb.y+q[1]}:pb;} // growOff: the hop before it grows up (js/growup.js)
 /* SEEING ITS NATURE (Jackie, Nov 7): the quirks happen on screen, not just in a caption. All moves are whole steps of 5 (one art pixel).
    moon  : a really chaotic monster (lawful-chaotic at -0.6 or wilder) sometimes floats up and bounces slowly around the room in
            moon gravity, and keeps at it until you drag it back down to earth.
@@ -51,7 +51,7 @@ function plantBoxRaw(){const sp=SPOT[spotKey()];
   return {img:null,seed:f,seedK:k,x:Math.round(sp.x-w/2)+nx,y:Math.round(sp.y-h+bottomPad(f)*k)+ny,w,h};} // the pot's real bottom on the spot's surface line
  let im,sc=1;const aa=ageArt(),age=st.stage<=5?'kid':st.stage>=8?'adult':'teen';if(st.stage<=5){im=BABY[st.species];sc=AGE_H.kid/(im.naturalHeight||AGE_REF.kid);}else if(aa){im=aa.im;sc=AGE_H[age]/Math.max(im.naturalHeight,AGE_REF[age]);} /* squat drawings aren't blown up */else{im=ELDER[st.species];sc=AGE_H[age]/(im.naturalHeight||601);} /* stand-in */
  const wl=st.witherLv||0;let w=im.naturalWidth*sc*(1-.05*wl),h=im.naturalHeight*sc*(1-.07*wl); // withering: hunches and curls in, one clear step per level
- const dk=depthK(plantDepth()),at=onChair()?CHAIR_SEAT:sp;w*=dk;h*=dk;sc*=dk; // the armchair is just another spot: its depth, like any other
+ const dk=depthK(plantDepth())*growK()/* mid grow-up: part of the way to its new size, face and all */,at=onChair()?CHAIR_SEAT:sp;w*=dk;h*=dk;sc*=dk; // the armchair is just another spot: its depth, like any other
  const [nx,ny]=plantNudge();return {img:im,x:at.x-w/2+nx,y:at.y-h+padPx(im,h)+ny,w,h,scale:sc,dk};} // pot bottom on the surface line
 function ageName(s=st.stage){return s<1?'seed':s<4?'sprout':s<6?'kid':s<8?'teen':'adult';}
 function plantSpotName(){if(onChair())return 'chair';const k=spotKey();return k==='free'?'rug':k;}
@@ -94,7 +94,7 @@ function needLook(im,k,burn){if(k<=0&&burn<=0)return im;const key=im.src+'|'+k.t
  x.putImageData(d,0,0);if(lookCache.size>24)lookCache.clear();lookCache.set(key,c);return c;}
 function needHex(hex,k,burn){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const L=.3*r+.59*g+.11*b,t=toastK(burn);r+=(L-r)*k;g+=(L-g)*k;b+=(L-b)*k;
  r+=(TOASTY[0]-r)*t;g+=(TOASTY[1]-g)*t;b+=(TOASTY[2]-b)*t;return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;} // the same steps for the code-drawn sprouts
-function droopOff(){const n=Math.max(st.witherLv||0,Math.min(2,st.puddleLv||0));return n?Math.round(plantBoxRaw().h*.04*n):0;} // whole pixels: withering or soggy, the top sags
+function droopOff(){const n=Math.max(st.witherLv||0,Math.min(2,st.puddleLv||0));return (n?Math.round(plantBoxRaw().h*.04*n):0)+growDip();} // whole pixels: withering or soggy, the top sags; growDip: the crouch before it grows up
 // petrifying: stony grey creeps in and cracks spread across the body (not the pot). seeded per species so cracks stay put
 function drawCracks(b){const p=st.parch,W2=tintCv.width,H2=tintCv.height,body=H2*.72;
  tg.save();tg.globalCompositeOperation='source-atop';tg.beginPath();tg.rect(0,0,W2,body);tg.clip();
@@ -221,26 +221,30 @@ function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/moo
  else g.drawImage(eo,Math.round(cx-ew/2),Math.round(ey),Math.round(ew),Math.round(eh));
  const mw=m.naturalWidth*sc,mh=m.naturalHeight*sc;g.drawImage(m,Math.round(cx-mw/2),Math.round(ey+eh+8*sc),Math.round(mw),Math.round(mh));}
 function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toasts them like any plant (needLook), and a leaning sprout shifts its top while the pot stays
- const im=needLook(b.seed,needK(),st.burnLv||0),X=Math.round(b.x),Y=Math.round(b.y),w=Math.round(b.w),h=Math.round(b.h),lean=st.stage>=1?Math.round(leanOff()/2):0;g.save();g.imageSmoothingEnabled=false;
- if(!lean)g.drawImage(im,X,Y,w,h);
+ const im=needLook(b.seed,needK(),st.burnLv||0),X=Math.round(b.x),Y=Math.round(b.y),w=Math.round(b.w),h=Math.round(b.h),lean=st.stage>=1?Math.round(leanOff()/2):0,dip=growDip();g.save();g.imageSmoothingEnabled=false;
+ if(!lean&&!dip)g.drawImage(im,X,Y,w,h);
+ else if(dip){const nh=b.seed.naturalHeight,cut=nh-172,ch=Math.round(cut*b.seedK); // crouching before it grows up: the sprout sinks a few pixels into the pot, the pot stays
+  g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y+dip,w,ch);g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+ch,w,h-ch);}
  else{const nh=b.seed.naturalHeight,cut=nh-172; // the sprout above the pot's rim moves (the pot is the frame's bottom 172 rows), the pot doesn't
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*b.seedK),w,h-Math.round(cut*b.seedK));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*b.seedK));}
  g.restore();}
 /* ---------- growing up (Tamagotchi time, see GROW_FOR in core.js) ---------- */
 function growHappy(){return !want('thirst')&&!want('attention')&&(st.night||st.stage<1||st.lightState==='ok');}
-function growTick(dt){if(st.stage<0||st.stage>=8)return;st.timer=(st.timer||0)+dt*gameSpeed()/2*(growHappy()?1:GROW_SLOW);
- if(st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
+// a seed sprouts the moment its time is up. Every later age waits, ready, for its grow-up moment (js/growup.js): it never just happens.
+function growTick(dt){if(st.stage<0||st.stage>=8||growReady())return;st.timer=Math.min(GROW_FOR[st.stage],(st.timer||0)+dt*gameSpeed()/2*(growHappy()?1:GROW_SLOW));
+ if(st.stage<1&&st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
 // one age up, right now; returns what to say. The sound and the bigger body are the proof.
 function stageUp(){st.stage=NEXT[st.stage]??8;st.timer=0;st.walk=null;const W=()=>who();
  if(st.stage===1){sfx('soil');return 'A sprout!';}
  sfx('chime');sfx('boing');
  if(st.stage===4){const had=!!st.name;if(!had)st.name=makeName(st);return had?W()+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.';}
- if(st.stage===6){earnPot('drip');return W()+' is a teen now, with big ideas and a bigger pot.';}
- earnPot('speckle');st.adultDay=st.day;return W()+' is all grown up and ready to eat everything!';}
-// away: half rate, at most one age per absence (the rest of the time away is let go); returns what happened, by name
+ if(st.stage===6){earnPot('drip');return W()+' is a teen now!';}
+ earnPot('speckle');st.adultDay=st.day;return W()+' is an adult now!';}
+// away: half rate, at most one age per absence (the rest of the time away is let go); returns what happened, by name.
+// Only a seed sprouts while you're away. A sprout, kid or teen whose time came is ready and waits for you: its moment comes once you're back.
 function catchUp(sec){const said=[];eachPlant(()=>{if(st.stage<0||st.stage>=8)return;const need=GROW_FOR[st.stage]-(st.timer||0),gain=sec*GROW_SLOW;
-  if(gain<need){st.timer=(st.timer||0)+gain;return;}const n=nameOf(st,true),to=NEXT[st.stage]??8;stageUp();
-  said.push(to===1?n+'\'s seed sprouted!':to===4?n+' opened its eyes!':to===6?n+' grew into a teen!':n+' is all grown up!');});return said;}
+  if(gain<need){st.timer=(st.timer||0)+gain;return;}if(st.stage>=1){st.timer=GROW_FOR[st.stage];return;}const n=nameOf(st,true);stageUp();
+  said.push(n+'\'s seed sprouted!');});return said;}
 function want(n){if(st.stage<0)return false;if(st.stage<4)return n==='thirst'&&st.needs.thirst>.6;return st.needs[n]>.6;}
 function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  st.listen=Math.max(0,st.listen-dt);st.over=Math.max(0,st.over-dt);st.nap=Math.max(0,st.nap-dt);
@@ -248,7 +252,7 @@ function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  needTick(dt); // real seconds, so looks come back over a couple of seconds at any speed
  growTick(dt); // growing goes on while it sleeps
  if(st.night)return;
- scootTick(dt);quirkTick(dt);if(Math.random()<dt*.2)titleCheck();
+ if(!(grow&&grow.id===st.id)){scootTick(dt);quirkTick(dt);} /* mid grow-up it stays put */if(Math.random()<dt*.2)titleCheck();
  if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast

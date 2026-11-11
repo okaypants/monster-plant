@@ -42,7 +42,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  const on=held.tool==='can'?(faceAt(x),pourOver(x,y,holdK(x,y))):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
- if(on){pet();return;}
+ if(on){if(growTap())return; /* ready to grow up: it grows now (js/growup.js) */pet();return;}
  if(inR(x,y,CAN)){held.tool='can';carryFace.dir=0;return;}
  // treats only come from the SNACKS box (Jackie)
  if(inR(x,y,JAR)){openSnacks(x,y);return;}

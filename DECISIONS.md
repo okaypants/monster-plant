@@ -2,6 +2,27 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Growing up is a moment (Nov 10)
+
+- Jackie: every age change (sprout to kid, kid to teen, teen to adult) gets a grow-up moment, with no new art. Why: growing up was a silent swap that could happen while she wasn't looking, or while the game was closed. A seed sprouting stays as it was (it just sprouts).
+- **It waits for the player.** When a monster's time is up it is "ready" and stays as it is: while the game is closed or in a background tab, while dragging, carrying the carafe, feeding, reading a story, in the journal or a menu, while a choice card is open or Sloth's paw is reaching in, and while a caption is up. It grows when you tap it, or by itself 3 seconds after the room is calm. One monster at a time (lowest first; the next waits its own 3 seconds). Welcome back no longer says "grew into a teen": you see it happen. Time away still counts at half speed and at most one age.
+- **Build-up:** it crouches 4, 8, 10 px (the body sinks, the pot stays; a sprout sinks into its pot), holds still for 0.7 s, rises back the same way.
+- **The change:** the new age's sprite at 1/3, 2/3 and all of the way from the old size to the new, 0.16 s each, nearest-neighbor, feet on the same line. No fades, rotation or smooth scaling.
+- **Spot hops:** if the new age can't stay where it is, it hops there first (8 whole-pixel steps: up a little, then over), then grows. A sprout hops to the nearest free milk crate or book stack (sill to crate, desk to book stack). A teen on the crate or book stack hops down to the floor. A monster on the floor whose bigger body would overlap its neighbor hops to the nearest clear floor.
+- **Payoff:** one burst of the sparkle and heart effects, its signature move, and the caption: "<Name> opens its eyes!", "<Name> is a teen now!", "<Name> is an adult now!". Nothing loops afterward. These replace "is a teen now, with big ideas and a bigger pot." and "is all grown up and ready to eat everything!".
+- **The cat** sits up and turns toward the monster for 3 s, then goes back to its nap. A cat that is fond of you or adores you walks over and sits near it, then dozes there. Existing frames only (the sit frame, mirrored so its tail is away from the monster).
+- **Journal:** the silhouette for the new age fills in, and a stamp under the growth row says it in words: "Grew up on a Tuesday evening in autumn." No numbers. Each age's stamp is saved; the page shows the latest one.
+- **Reduce motion** (the phone's setting): no hop, crouch, steps, burst or move; it is simply the new size in its new spot, with the caption and the journal stamp. It still waits for you the same way.
+- **Debug** (test mode only): **Grow up now**. `python3 tests/grow_up_shots.py` checks all of it and pictures every stage.
+- Choices Claude made where the request left room (Jackie can change any of them):
+  - It also waits while the monster is asleep (night or a nap), floating in moon gravity, reading, or a sill sprout is behind closed curtains. Why: a sleeping or hidden monster can't be seen crouching.
+  - The stamp's weekday is the real one, the season is the one in the window, and the time of day is the room's (morning, afternoon, evening), so the words match what was on screen.
+  - A monster that has outgrown its furniture lands at the front edge of the rug straight below, not at the back. Why: grown monsters stand at the front so the carafe, books, snacks and curtains stay reachable (Nov 4).
+  - It never hops into the armchair by itself.
+  - Picking the monster up, or night falling, mid-moment: it is simply grown at once, with its caption and stamp.
+  - "an adult now" for the adult caption, so the grammar works.
+  - The journal portrait is a little shorter once there is a stamp, so the page still fits a phone.
+
 ### Trays sit higher, away from the bottom edge (Nov 10)
 
 - The treat tray (and the book tray, which sat the same way) were 6 px from the bottom, so on a phone a drag that started there could swipe the whole app away. Both now sit 14% of the screen height above the bottom (at least 48 px).

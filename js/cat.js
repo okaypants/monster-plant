@@ -65,13 +65,14 @@ function catPick(avoid){const ps=plantSideSpot();if(ps&&cat.spot!=='byplant'&&ca
  if(k==='rug'){const r=CAT_SPOTS.rug,x=floorX({...r,x:RUG_X}); r.x=x??RUG_X;} // the rug: wherever along it he's in view
  return k;}
 const RUG_X=760;
-function catGo(k){const s=CAT_SPOTS[k],FLOOR_Y=925;cat.to=k;cat.huff=0;cat.path=[{x:cat.x,y:FLOOR_Y,hop:cat.y<FLOOR_Y-20},{x:s.x,y:FLOOR_Y},{x:s.x,y:s.y,hop:s.y<FLOOR_Y-20}];cat.state='walk';cat.t=0;}
+function catGo(k){const s=CAT_SPOTS[k],FLOOR_Y=925;cat.to=k;cat.faceX=null;cat.huff=0;cat.path=[{x:cat.x,y:FLOOR_Y,hop:cat.y<FLOOR_Y-20},{x:s.x,y:FLOOR_Y},{x:s.x,y:s.y,hop:s.y<FLOOR_Y-20}];cat.state='walk';cat.t=0;}
 function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  cat.t+=dt;patTick(dt);if(cat.shyT>0)cat.shyT-=dt;
  if(['sleep','settle','loafwake','pet'].includes(cat.state)&&((cat.spot==='sill'&&st.curtain==='closed')||(cat.spot==='chair'&&(chairId!=null||allRaw().some(q=>q.stage>=4&&q.perch==='chair'))))){if(cat.state==='sleep'&&cat.spot!=='chair'){cat.state='wake';cat.t=1.2;}else huffWalk();} // a monster in the armchair (napping or awake): he gets up and goes // curtains closed: hop off the ledge
  if(['sleep','settle','loafwake'].includes(cat.state)&&!drag.on){cat.coverChk=(cat.coverChk||0)-dt;if(cat.coverChk<=0){cat.coverChk=.5;const f=catFrame();cat.hidden=catCover(cat.x,cat.y,cat.sc,f)>COVER_MAX?(cat.hidden||0)+.5:0;}
   if((cat.hidden||0)>=1.5){cat.hidden=0;if(cat.state==='sleep'){cat.state='wake';cat.t=0;}else huffWalk();}} // a plant moved, scooted, wandered or grew in front of him: after a moment he gets up and walks somewhere he can be seen
  if(cat.state==='sleep'){cat.nap-=dt;if(cat.nap<=0){cat.state='wake';cat.t=0;patFull();trustGain(.015);}} // a nap left undisturbed builds trust, and patience is full again
+ else if(cat.state==='look'){if(cat.t>CAT_LOOK_T){if(cat.lookNap>0){cat.state='sleep';cat.t=0;cat.nap=cat.lookNap;}else{cat.state='wake';cat.t=1.2;}}} // it looked at a monster growing up (js/growup.js); back to its nap
  else if(cat.state==='sniff'){if(cat.t>1.6){cat.state='wake';cat.t=1.2;}}
  else if(cat.state==='wake'){if(cat.t>2.6){const bk=cat.back&&cat.pat>=1?backSpot():null;catGo(bk||catPick());}} // after a walk-off, once patience is full: a fond cat may come back over
  else if(cat.state==='annoyed'){if(cat.t>.5)huffWalk();} // it gets up and goes
@@ -95,7 +96,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
 function catFrame(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
  if(cat.state==='sleep')return CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[cat.pose]]; // asleep: ONE frame per pose (Jackie, calm-down); the breathing is done in code (catBreath)
  if(cat.state==='wake')return cat.t<1.2?CATF.yawn:CATF[T%2.4<.18?'sit2':'sit1']; // sit2 = a slow blink now and then
- if(cat.state==='sniff')return CATF.sit1;
+ if(cat.state==='sniff')return CATF.sit1;if(cat.state==='look')return CATF[T%3.4<.3?'sit2':'sit1'];
  if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return CATF[cat.state==='present'&&T%3.4<.3?'sit2':'sit1']; // only the existing frames: sit, never an expression
  if(cat.state==='settle')return CATF[cat.huffF==='sit2'?'sit2':'sit1'];
  if(cat.state==='loafwake')return CATF.loaf1;
@@ -110,7 +111,7 @@ const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.
 function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
 function catPose(){if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return 'sit';if(cat.state==='settle')return 'sit';if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
-function catImg(f,x,y,w,h){if((f.old&&cat.state==='walk'&&cat.dir<0)||((cat.state==='settle'||cat.state==='loafwake')&&cat.away)){g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring its walk; winding down, it sits facing a little away (mirrored so its back end is toward you)
+function catImg(f,x,y,w,h){if((f.old&&cat.state==='walk'&&cat.dir<0)||((cat.state==='settle'||cat.state==='loafwake')&&cat.away)||((cat.state==='look'||cat.state==='present')&&cat.faceX!=null&&cat.faceX>cat.x)){ /* turned toward a monster that just grew up: its tail away from it */g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring its walk; winding down, it sits facing a little away (mirrored so its back end is toward you)
 // one part of the frame moved by whole pixels (the rest drawn as is): the region is drawn from the picture shifted by dx,dy, so no gap opens
 function catShifted(b,rx,ry,rw,rh,dx,dy){g.save();g.beginPath();g.rect(b.x-4,b.y-4,b.w+8,b.h+8);g.rect(rx,ry,rw,rh);g.clip('evenodd');catImg(b.f,b.x,b.y,b.w,b.h);g.restore();
  g.save();g.beginPath();g.rect(rx,ry,rw,rh);g.clip();catImg(b.f,b.x+dx,b.y+dy,b.w,b.h);g.restore();}
