@@ -58,8 +58,19 @@ function plantPortrait(id,bw,bh){let out=null;withPlant(id,()=>{if(st.stage<0)re
 // growth row: seed, sprout, kid, teen, adult, from this plant's own sprites; filled in up to its age
 function ageSprites(){const n=NEWART[st.species+1],pick=k=>n&&ok(n[k])?n[k]:ELDER[st.species];return [SEEDLING.soil[0],SEEDLING.bigsprout[0],BABY[st.species],pick('teen'),pick('adult')];}
 function ageStep(s=st.stage){return s<1?0:s<4?1:s<6?2:s<8?3:4;}
-function silhouette(im,size,filled){if(!ok(im))return document.createElement('canvas');const c=fitCanvas(im,0,0,im.naturalWidth,im.naturalHeight,size,size),x=c.getContext('2d');
- x.globalCompositeOperation='source-in';x.fillStyle=filled?C.plum:'#ead8c0';x.fillRect(0,0,c.width,c.height);return c;}
+// fill = 1 (this age and past ones), 0 (later ones), or the next age's growing so far: it fills in from the bottom, one whole pixel row at a time
+function silhouette(im,size,fill){if(!ok(im))return document.createElement('canvas');const c=fitCanvas(im,0,0,im.naturalWidth,im.naturalHeight,size,size),x=c.getContext('2d');
+ x.globalCompositeOperation='source-in';x.fillStyle=fill>=1?C.plum:'#ead8c0';x.fillRect(0,0,c.width,c.height);
+ const t=fill>0&&fill<1&&trimBox(c);if(t){const rows=Math.floor(fill*t.h);c.dataset.rows=rows;c.dataset.of=t.h;if(rows){x.globalCompositeOperation='source-atop';x.fillStyle=C.plum;x.fillRect(0,t.y+t.h-rows,c.width,rows);}}
+ return c;}
+// the line under the silhouettes (words in GROW_WORDS, js/names.js): when it will be its next age, or what it's waiting for, never a number
+function growLine(){const n=nameOf(st,true);if(st.stage>=8||NEXT[st.stage]==null)return GROW_WORDS.grown.replace('{name}',n);
+ const hd=jKeep?[]:growHolds(),to=ageName(NEXT[st.stage]),age=(/^[aeiou]/.test(to)?'an ':'a ')+to;
+ return GROW_WORDS[hd.length?hd[0]:growWhen()].replace('{name}',n).replace('{age}',age);}
+function growWhen(){const left=Math.max(0,GROW_FOR[st.stage]-(st.timer||0)),now=nowDate(),at=new Date(now.getTime()+left*1000),day=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),dd=Math.round((day(at)-day(now))/864e5);
+ return left<=15*60?'soon':dd<=0?'today':dd===1?'tomorrow':'days';}
+function dayWords(d=nowDate()){const h=d.getHours(),part=DAY_WORDS.parts.filter(p=>h>=p[0]).pop()[1];
+ return DAY_WORDS.line.replace('{weekday}',DAY_WORDS.weekdays[d.getDay()]).replace('{part}',part).replace('{season}',seasonNow());}
 function imgPic(im,bw,bh){return ok(im)?fitCanvas(im,0,0,im.naturalWidth,im.naturalHeight,bw,bh):document.createElement('canvas');}
 // which charm it's wearing: st.wear, 'none' = taken off, nothing chosen = the newest one (as drawTopper does)
 function wornCharm(){const tr=st.traits||[];if(st.wear==='none')return null;return st.wear&&tr.includes(st.wear)?st.wear:tr.slice(-1)[0]||null;}
@@ -93,7 +104,8 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
   const q=p[0]==='p'?allRaw().find(o=>o.id===+p.slice(1)):null,lk=p==='cat'?CAT_LOOK:q?lookOf(q):null; // each ribbon: the monster's ribbon color and symbol (the cat: a paw)
   r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':(q&&q.name)||'Plant');r.appendChild(tsGlyph(lk?lk.sym:'plane',lk?lk.name:TS.ink,'tssym',3));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
- const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';
+ const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';R.appendChild(jdiv('jday',[],dayWords())); // today in words, top corner of every page (not the Files: those are keepsakes)
+ 
  const main=(l,r)=>{if(jPage==='cat')catPages(l,r);else if(jPage==='world')worldPages(l,r);else withPlant(+jPage.slice(1),()=>plantPages(l,r));};
  const subs=withMore(relSpreads(jPage),jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
  if(sp.k==='main'){main(L,R);if(spill(R,jPage)){renderJournal();return;}}
@@ -193,10 +205,11 @@ function plantPages(L,R){
  const id=st.id,steps=ageSprites(),at=ageStep();
  L.appendChild(nameTag(id)); // its name on top (tap to name it, even as a seed); the species small underneath
  if(st.name)L.appendChild(jdiv('jspecies',[],NAMES[st.species]));
- const gw=grewLine(); // its latest grow-up, in words (js/growup.js); the portrait is a little shorter to make room for the stamp
- L.appendChild(jdiv('jportrait',[plantPortrait(id,240,gw?140:196)]));
- L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at))));
- if(gw)L.appendChild(jdiv('jstamp jgrew',[],gw));
+ L.appendChild(jdiv('jportrait',[plantPortrait(id,240,176)])); // a touch smaller (was 196) to make room for the growth line
+ const p=GROW_FOR[st.stage]?clamp((st.timer||0)/GROW_FOR[st.stage],0,1):0;
+ L.appendChild(jdiv('jgrowth',steps.map((im,i)=>silhouette(im,34,i<=at?1:i===at+1?p:0))));
+ L.appendChild(jdiv('jgrowline',[],growLine()));
+ const gw=grewLine();if(gw)L.appendChild(jdiv('jstamp jgrew',[],gw)); // its latest grow-up, in words (js/growup.js)
  L.appendChild(jdiv('jborn',[],bornLine()));
  // likes: its light, and the last treat it loved (blank until then)
  const fav=st.fav&&TREAT_IMG[st.fav];

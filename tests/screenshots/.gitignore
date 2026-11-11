@@ -32,3 +32,6 @@
 # and where each age can go (tests/placement_test.py)
 !placement/
 !placement/*.png
+# and the journal growth row and words (tests/journal_growth_test.py)
+!journal_growth/
+!journal_growth/*.png

@@ -11,8 +11,10 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - **On the web:** open `index.html` from the hosted site (GitHub Pages).
 - **On iPhone, full screen:** open the site in Safari → Share → **Add to Home Screen**. It gets its own icon and opens without browser bars. Hold the phone sideways.
 - **On Android:** open in Chrome → menu → **Install app** (or Add to Home screen).
+- **Time of day** is your device's own local time: morning, midday, golden hour before sunset, dusk, then night, with sunrise and sunset following the month. A real sunrise brings the next morning by itself.
+- **Newest version:** a Home Screen app can keep running the copy it opened days ago. Swipe it away in the app switcher and open it again.
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
-- **Debug drawer** (top right, "debug"): opening it switches to **TEST MODE**, a copy of your real save at that moment. Everything you change happens on the copy, and a red TEST MODE label shows. **Back to my game** brings your real game back exactly as it was. **Keep these changes in my real game** saves them for real, only after a second tap. It slides in on the right, and the room shrinks to fit beside it; **Hide** tucks it away so you can look at the room with your settings (the ◂ debug tab brings it back). Live controls, in collapsible groups: **World** (time of day slider and buttons, season auto/override, day, speed, pause time, clock, curtains, every lamp, light map); **Plants** (a tab per plant; species, age, eyes, light preference, good/evil and lawful/chaotic now and born-with, thirst, lonely, fullness, nap, spot or rug x/y, charms, titles, reset quirks, grow one age, grow up now (plays the grow-up moment), add/remove, make two adults, breed now, end day; changing species or age keeps it the same plant); **Cat** (trust with its level name, state, send to any spot, hold any pose); **Effects and reactions** (on/off and replay for each effect, plus the plant moves, boing, idle wiggle, cat purr); **Presets** (built-in setups, save/load your own on this device, reset to your real save, brand-new game in test mode); **Nudge** (the 1 px positions tool; that table is saved on this device for every game, not in your save).
+- **Debug drawer** (top right, "debug"): opening it switches to **TEST MODE**, a copy of your real save at that moment. Everything you change happens on the copy, and a red TEST MODE label shows. **Back to my game** brings your real game back exactly as it was. **Keep these changes in my real game** saves them for real, only after a second tap. It slides in on the right, and the room shrinks to fit beside it; **Hide** tucks it away so you can look at the room with your settings (the ◂ debug tab brings it back). The status line on top shows the day, the clock, the time of day, the season, and every monster's age with how far along it is and what's slowing its growing. Live controls, in collapsible groups: **World** (time of day slider and buttons, which hold the clock there; season auto/override, day, speed, pause time, clock: phone clock or held; curtains, every lamp, light map); **Plants** (a tab per plant; species, age, eyes, light preference, good/evil and lawful/chaotic now and born-with, thirst, lonely, fullness, nap, spot or rug x/y, charms, titles, reset quirks, grow one age, grow up now (plays the grow-up moment), add/remove, make two adults, breed now, end day; changing species or age keeps it the same plant); **Cat** (trust with its level name, state, send to any spot, hold any pose); **Effects and reactions** (on/off and replay for each effect, plus the plant moves, boing, idle wiggle, cat purr); **Presets** (built-in setups, save/load your own on this device, reset to your real save, brand-new game in test mode); **Nudge** (the 1 px positions tool; that table is saved on this device for every game, not in your save).
 
 ## Put it online (GitHub Pages)
 
@@ -60,6 +62,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
+`python3 tests/loading_shots.py` checks the loading screen: it stays up while a picture is still on its way (the game hasn't started behind it), and goes away with the room fully drawn once everything has arrived, or if a picture fails to load; saved to `tests/screenshots/loading/`.
+
 `python3 tests/paw_shots.py` checks Sloth's paw: the envelope paw bringing a letter (whole-pixel, slow, settles one step, leaves the envelope on the sill), waiting while the curtains are closed, at night and while dragging, the seed paw bringing a seed packet you tap to plant, the empty paw taking a seed you send, the first-time caption, old saves and the debug button; pictures of each paw mid-reach and the items on the sill at day and golden hour in `tests/screenshots/paw/`.
 
 `python3 tests/old_names_test.py` checks that the character who delivers by paw is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
@@ -102,6 +106,10 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/grow_up_shots.py` checks the grow-up moment (sprout to kid, kid to teen, teen to adult): it waits while you're away or busy (dragging, a story, the journal, night, a nap) and comes a few seconds after the room is calm, or right away on a tap; two ready monsters grow one at a time; a monster that can't stay where it is hops to the nearest spot that fits first; the crouch, the 3 size steps, the one burst, the caption; the cat looking (a fond cat walks over and sits); the journal stamp; reduce motion; the debug button. Pictures of every stage in `tests/screenshots/grow_up/`.
 
+`python3 tests/journal_growth_test.py` checks the journal's growth row and words on a phone held sideways: the next age's silhouette filling row by row, the line getting closer (in a few days, tomorrow, in a while, any time now; all grown up), the kind reason lines (a drink, company, the right light, a little shade), today in words in the top corner, no numbers and nothing overlapping; pictures and `sheet.png` in `tests/screenshots/journal_growth/`.
+
+`python3 tests/clock_test.py` checks the real clock: morning, midday, golden hour, dusk and night at real clock times (November and June) and the room pictures for each, the clock moving while the game is open, a real sunrise bringing one new day (even after three days away), golden hour and night never slowing growing, six hours away catching up gently, and the debug status line; saved to `tests/screenshots/clock/`. All the tests run on a fixed local time (a Tuesday at 10 am in autumn).
+
 `python3 tests/letter_shots.py` checks Sloth's letter asking for an adult: it lands by itself (more often for an evil lean), the letter view, Yes (moved out next morning), Not yet (waits in the journal, lands again in 3 days), who never gets one and what it waits for; saved to `tests/screenshots/letter/`.
 
 `python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Sloth, PhD (the paw takes the packet, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
@@ -138,7 +146,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `stories.js` | What's inside the four special books (six short pages each; edit freely) |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
-  | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon |
+  | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |
   | `input.js` | Taps, drags, and what each spot in the room does |
   | `start.js` | Title screen, seed quiz, welcome back, goodnight and morning |
   | `debug.js` | The debug drawer and TEST MODE (a copy of the save; the real one is never touched), the Light map, the Nudge tool |
@@ -188,6 +196,6 @@ Every decision, newest first and with the reason, lives in [DECISIONS.md](DECISI
 
 ## Open / next
 
-See the build checklist doc (Claude Docs): lighting and season windows, plants beyond 3, smoother grabbing, kid on the book stack, seedling pot + windowsill placement, cat interactions, pots per plant, charm spots per adult, more fun feeding, then the hand-drawn pixel-accurate art pass.
+See the build checklist doc: lighting and season windows, plants beyond 3, smoother grabbing, kid on the book stack, seedling pot + windowsill placement, cat interactions, pots per plant, charm spots per adult, more fun feeding, then the hand-drawn pixel-accurate art pass.
 
 **Not now:** App Store version (Capacitor), Garry's sounds and music, color/pattern genes, snow globe memories, radio stations, the four books' special effects, a second room.

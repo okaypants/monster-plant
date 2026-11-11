@@ -10,7 +10,7 @@ const STOOL_EMPTY=img('stool_empty.png');
 const MIX={golden_onoff:img('room_golden_floorOn_deskOff.png'),golden_offon:img('room_golden_floorOff_deskOn.png'),golden_offoff:img('room_golden_floorOff_deskOff.png'),day_c_onoff:img('room_day_closed_floorOn_deskOff.png'),day_c_offon:img('room_day_closed_floorOff_deskOn.png'),day_offoff:img('room_day_floorOff_deskOff.png'),golden_c_offoff:img('room_golden_closed_floorOff_deskOff.png')}; // _c_ = curtains closed
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
 let SEASON_OVERRIDE=null; // debug: force a season (window and seasonal items); null = from the calendar
-function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=new Date().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
+function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=nowDate().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
 const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtains cut from Jackie's closed-curtain edit (fabric pixels only)
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
@@ -27,6 +27,28 @@ SPOT.chair={x:628,y:SURFACE.chair,name:'in the armchair'};
 const PERCH={kid:['crate','books','chair'],teen:['crate','books','chair'],adult:['chair']}; // Nov 7: kids may sit in the armchair too
 /* ---------- light & time ---------- */
 function phase(t){return t<.25?'morning':t<.5?'midday':t<.7?'golden hour':t<.85?'dusk':'night';}
+/* THE REAL CLOCK (Jackie, Nov 10): the time of day is the device's own local time, read every frame, never saved as a game clock.
+   Sunrise and sunset follow the month (a cozy northern town, daylight saving included). Golden hour = the last hour and a half
+   before sunset, dusk = the hour after it, night until sunrise. Debug (test mode) and the tests can hold the clock: st.mode 'actions'. */
+const SUN_TIMES=[[7.9,16.9],[7.3,17.6],[7.2,19.2],[6.4,19.9],[5.6,20.6],[5.2,21.1],[5.4,21],[6.1,20.3],[6.8,19.3],[7.5,18.3],[7.1,16.7],[7.8,16.3]]; // [sunrise, sunset] in clock hours, January to December
+const GOLDEN_H=1.5,DUSK_H=1;
+const nowDate=()=>new Date(Date.now());
+function clockLive(){return st.mode!=='actions';}
+function sunOf(d){const[r,s]=SUN_TIMES[d.getMonth()];return {rise:r,set:s,gold:s-GOLDEN_H,dusk:s+DUSK_H,mid:r+(s-GOLDEN_H-r)*.3};}
+function clockDayT(d=nowDate()){const h=d.getHours()+d.getMinutes()/60+d.getSeconds()/3600,u=sunOf(d),nightLen=u.rise+24-u.dusk;
+ if(h<u.rise)return .85+.15*(h+24-u.dusk)/nightLen;if(h<u.mid)return .25*(h-u.rise)/(u.mid-u.rise);if(h<u.gold)return .25+.25*(h-u.mid)/(u.gold-u.mid);
+ if(h<u.set)return .5+.2*(h-u.gold)/GOLDEN_H;if(h<u.dusk)return .7+.15*(h-u.set)/DUSK_H;return Math.min(.999,.85+.15*(h-u.dusk)/nightLen);}
+function riseAt(d,add=0){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+add),r=sunOf(x).rise;x.setHours(Math.floor(r),Math.round(r%1*60));return x.getTime();}
+// the latest sunrise that has already happened
+function lastRise(ms=Date.now()){const d=new Date(ms),t=riseAt(d);return t<=ms?t:riseAt(d,-1);}
+// the sunrise a morning at this moment belongs to: today's in the daytime, the coming one in the evening or the night
+function morningOf(ms=Date.now()){const d=new Date(ms),h=d.getHours()+d.getMinutes()/60,u=sunOf(d);return h>=u.dusk?riseAt(d,1):riseAt(d);}
+// bright hours = morning and midday; golden hour, dusk and night are dim for everyone, so nobody withers or slows down for the evening
+function brightHours(t=st.dayT){const p=phase(t);return p==='morning'||p==='midday';}
+// each frame: the clock sets the time of day, and once a real sunrise passes, the morning comes by itself (one new day, however long you were away)
+function clockTick(){if(!clockLive()||PAUSED)return; // debug's Pause time stops it too (test mode only)
+ st.dayT=clockDayT();if(st.lastMorning==null){st.lastMorning=lastRise();return;}
+ if(lastRise()>st.lastMorning&&!bubble&&!document.querySelector('.screen'))wake();}
 function daylight(t){if(t<.25)return .55+t*1.6;if(t<.5)return .95;if(t<.7)return .95-(t-.5)*1.5;if(t<.85)return .65-(t-.7)*3.4;return .06;}
 const SPARKLE_SC=.35; // half the old size
 const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
@@ -63,11 +85,11 @@ function spotKey(){const gp=stageGroup();st.place=st.place||{};
  const def={seed:hid('sill')&&!hid('desk')?'desk':'sill',baby:'books'}[gp],taken=otherPos().filter(q=>q.g===gp).map(q=>q.k),pick=taken.includes(def)?(GROUPS[gp].find(x=>!taken.includes(x))||def):def;st.place[gp]=pick;return pick;}
 function kidDefault(){const k=st.place.baby;if(GROUPS.baby.includes(k)&&!perchTaken(k))return k;return GROUPS.baby.find(x=>!perchTaken(x))||null;} // the book stack or crate, whichever is free (else the floor)
 function spotLight(){return spotInfo(spotKey()).L;} // light zones live in light.js
-function nudgeSun(){if(st.night||st.mode==='ambient')return;st.dayT=Math.min(.7,st.dayT+.055);}
+function nudgeSun(){if(st.night||clockLive())return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
 const CAN={x:772,y:494,w:118,h:110},JAR={x:1478,y:568,w:150,h:170},GUMMY={x:-99,y:-99,w:1,h:1},PEAT={x:-99,y:-99,w:1,h:1},LAMP={x:1272,y:390,w:150,h:140},FLOOR={x:145,y:255,w:155,h:570},SHELF={x:1474,y:318,w:170,h:84},CHAIR={x:445,y:455,w:300,h:300},WIN={x:300,y:80,w:290,h:450};
-function drawCarafe(x,y){ // carried glass carafe (code stand-in until ChatGPT draws the carried version)
+function drawCarafe(x,y){ // carried glass carafe (code stand-in until the carried version is drawn)
  g.save();g.translate(x,y);g.rotate(-.5);g.scale(1.6,1.6);const o=C.out;
  g.fillStyle=o;g.fillRect(-16,-46,32,10);g.fillRect(-26,-36,52,62);g.fillRect(-10,-58,20,14);
  g.fillStyle='#e6f1f4';g.fillRect(-22,-32,44,54);g.fillRect(-6,-54,12,10);g.fillRect(-12,-44,24,10);
