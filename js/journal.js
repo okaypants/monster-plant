@@ -170,7 +170,7 @@ function jFlip(side,to){const a=document.createElement('button');a.type='button'
  a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});jEl.querySelector(side==='jprev'?'.jl':'.jr').appendChild(a);}
 function jClearPages(){const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';jEl.querySelector('.jribs').innerHTML='';return [L,R];}
 function renderArchive(){const [L,R]=jClearPages(),past=st.archive||[],n=ARCH_PER_PAGE;L.appendChild(jdiv('jname',[],'Files'));
- if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(jdiv('jarchnote',[],t)));R.firstChild.classList.add('jarchtop');
+ if(!past.length){ARCHIVE_NOTE.forEach((t,i)=>(i<2?L:R).appendChild(tsKeepName(jdiv('jarchnote',[],t))));R.firstChild.classList.add('jarchtop');
   while(R.scrollHeight>R.clientHeight+1&&R.children.length>1&&L.scrollHeight<=L.clientHeight){const m=R.firstChild;m.classList.remove('jarchtop');L.appendChild(m);R.firstChild.classList.add('jarchtop');if(L.scrollHeight>L.clientHeight+1){R.prepend(m);break;}} // the bigger phone print can need the room: never cut a word off
   return;}
  const last=Math.ceil(past.length/(2*n))-1;if(jSub>last)jSub=last;const shown=past.slice(jSub*2*n,(jSub+1)*2*n);

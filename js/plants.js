@@ -476,7 +476,7 @@ function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jlette
 addEventListener('resize',()=>setTimeout(fitLetter,50));
 function letterStamp(){const f=jdiv('jlstamp',[tsGlyph('sloth',TS.mintInk,'jpix',4)]);if(LETTER_ART.ready){const im=new Image();im.onload=()=>{f.innerHTML='';f.appendChild(imgPic(im,64,72));};im.src=LETTER_ART.file;}return f;} // real art later: same slot, same size
 function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('page');letterFrom=!!fromJournal;
- const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slothLetter(N))));p.appendChild(jdiv('jlsign',[],'Sloth, PhD')); // mint paper (js/textstyle.js)
+ const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slothLetter(N))));p.appendChild(tsKeepName(jdiv('jlsign',[],'Sloth, PhD'))); // mint paper (js/textstyle.js)
  const row=jdiv('jlbtns');row.innerHTML=tsChoices(CHOICES.letter);const act={y:letterYes,n:letterNotYet};row.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();act[b.dataset.k]();}));
  p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();tsPop(p);}
 function letterYes(){const q=letterQ();closeLetter();if(!q)return;const id=q.id;letterClear();goYes(id,LETTER_DEST);if(jEl)renderJournal();}

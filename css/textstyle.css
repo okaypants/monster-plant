@@ -112,3 +112,4 @@
 
 /* the treat and book trays: same paper and shape */
 .ttray{padding:6px 12px}
+.tsnowrap{white-space:nowrap} /* "Sloth, PhD" stays on one line */

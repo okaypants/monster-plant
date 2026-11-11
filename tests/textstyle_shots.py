@@ -170,6 +170,7 @@ async def main():
                 await pg.evaluate("()=>{st.seedOffer={ids:[1,2],seed:freshPlant()};offerAt=0;offerTick();__step(.2);}")
                 check(await pg.evaluate("()=>!!bubble&&bubble.querySelectorAll('.tsbtn').length===2"), "the seed choice card didn't open")
                 check(await pg.evaluate("()=>[...bubble.querySelectorAll('.tsbtn')].every(x=>x.scrollWidth<=x.clientWidth+1)"), "a choice button's words don't fit")
+                check(await pg.evaluate("()=>{const n=bubble.querySelector('.tsbtn .tsnowrap');if(!n)return false;const r=n.getClientRects();return r.length===1;}"), "Sloth, PhD should stay on one line in the seed button")
                 check(await pg.evaluate("()=>{const R=[...bubble.querySelectorAll('.tsbtn')].map(x=>x.getBoundingClientRect());return Math.abs(R[0].width-R[1].width)<=1&&Math.abs(R[0].height-R[1].height)<=1;}"), "the seed choices should be the same size")
                 await audit(pg, ".bubble", "seed choice")
                 await shot("13_seed_choice")

@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### "Sloth, PhD" never splits across two lines (Nov 10)
+
+- Jackie: on a phone, "Send it to Sloth, PhD" wrapped between "Sloth," and "PhD". The name now always stays on one line, in buttons, captions, cards, the letter's signature and the Files note (a no-wrap span, `tsKeepName` in js/textstyle.js); the words themselves are unchanged. `tests/textstyle_shots.py` checks the seed button.
+
 ### The paper-airplane character is Sloth, PhD (Nov 10)
 
 - Jackie renamed the character who sends seedlings and letters by paper airplane (first Doctor Bug, then Slowmallow) to **Sloth, PhD**, everywhere: captions, the note on the sill, the journal's note, the letter and its signature, the seed choice ("Send it to Sloth, PhD"), the Files note, a keepsake's destination ("Staying with Sloth, PhD"), labels, comments, tests and the README. The possessive is "Sloth's" (e.g. "Sloth's paper airplane"), never "Sloth, PhD's". No genders, as always.
