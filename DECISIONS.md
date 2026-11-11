@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The files never name the tools used to make them (Nov 10)
+
+- Jackie: the files on GitHub say what was made and why, never which assistant or picture tool helped. The session instructions file is now [WORKING.md](WORKING.md) (same six rules, new name), and the few tool names in this file, the README and two code comments were reworded. New commits carry no tool credit line; the old commits stay as they are, since rewriting them would change the whole history.
+
 ### Trays sit higher, away from the bottom edge (Nov 10)
 
 - The treat tray (and the book tray, which sat the same way) were 6 px from the bottom, so on a phone a drag that started there could swipe the whole app away. Both now sit 14% of the screen height above the bottom (at least 48 px).
@@ -19,8 +23,8 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 ### Night windows for spring, summer and autumn (Nov 10)
 
 - At night the window now shows the real-calendar season: spring (blossoms and a crescent moon), summer (a full green tree and a round moon) and autumn (orange leaves and a round moon) use the new pieces; winter keeps its snow. Golden hour and daytime are unchanged, and closed curtains cover the window as before.
-- Made from three ChatGPT edits of the night window. Each was lined up with the current night window (best scale and offset against the frame, curtains and armchair), and only the glass was taken: the four rows of panes minus the curtains and the armchair. Everything outside the glass (bars, frame, curtains, chair) is the existing night_window_winter.png pixel for pixel. Files: night_window_spring.png, night_window_summer.png, night_window_autumn.png (254x434, drawn at 318,88 like the others).
-- **The pictures needed resizing:** ChatGPT returned window-only crops at about 3.78x (959x1639), so they were brought down to the window's size with nearest-neighbor sampling only (about 0.264x; exact per image: autumn 0.2656 x 0.2637, spring 0.2646 x 0.2623, summer 0.2647 x 0.2647). No recoloring.
+- Made from three edited pictures of the night window. Each was lined up with the current night window (best scale and offset against the frame, curtains and armchair), and only the glass was taken: the four rows of panes minus the curtains and the armchair. Everything outside the glass (bars, frame, curtains, chair) is the existing night_window_winter.png pixel for pixel. Files: night_window_spring.png, night_window_summer.png, night_window_autumn.png (254x434, drawn at 318,88 like the others).
+- **The pictures needed resizing:** they came as window-only crops at about 3.78x (959x1639), so they were brought down to the window's size with nearest-neighbor sampling only (about 0.264x; exact per image: autumn 0.2656 x 0.2637, spring 0.2646 x 0.2623, summer 0.2647 x 0.2647). No recoloring.
 - **Which was which:** the files arrived labelled 1 = spring, 2 = summer, 3 = autumn, but picture 1 shows autumn leaves, 2 spring blossoms and 3 a green summer tree, so each was used for the season it shows.
 - `python3 tests/night_window_shots.py` pictures the night room in all four seasons with the curtains open and closed and checks that only the glass differs.
 
@@ -274,9 +278,9 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Bubbles are the same cream with 18px corners. Buttons are soft peach/cream pills with no black outline and lift 1px on hover. The debug and full-screen buttons and the debug drawer are rounded to match.
 - `python tests/ui_shots.py` checks the look and saves pictures to tests/screenshots/ui/.
 
-### CLAUDE.md: how every session works (Nov 4)
+### WORKING.md: how every session works (Nov 4)
 
-- CLAUDE.md in the repo root, which Claude Code reads at the start of every session, says: read README.md, RULES.md and DECISIONS.md first; change one thing per request; run tests/smoke_test.py before and after every change and fix what it breaks; show Jackie screenshots; log her decisions here with the reason; commit and push to main only when tests pass. Why: so every session follows the same habits without Jackie repeating them.
+- WORKING.md in the repo root, read at the start of every session, says: read README.md, RULES.md and DECISIONS.md first; change one thing per request; run tests/smoke_test.py before and after every change and fix what it breaks; show Jackie screenshots; log her decisions here with the reason; commit and push to main only when tests pass. Why: so every session follows the same habits without Jackie repeating them.
 - The decisions moved out of README.md into this file so they're easy to find and add to.
 
 ### Captions in Jackie's words (Nov 4)
@@ -469,7 +473,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 **Treats and charms (Nov 2–3)**
 - Food is optional; needs are water, light and company. Treats pop out of the SNACKS cabinet into your hand; tap the plant: it eats, then **pops** (boing + hearts). Too full = it refuses; a burp and a one-minute nap.
 - 5 servings of one treat earns its **charm**, pinned at the side of the head. Give it at least every 3 days or it drifts away overnight; it comes back after 3 servings.
-- Rejected art: cotton-candy hat ("brains"), gardener straw hat ("mobile gaming"), ChatGPT plants-with-accessories sheet.
+- Rejected art: cotton-candy hat ("brains"), gardener straw hat ("mobile gaming"), a plants-with-accessories sheet.
 
 **Pots (Nov 3): PAUSED**
 - Every plant keeps its cream-and-blue-check starter pot (`POTS_ON=false`). Compositing plants into other pots failed (floating, sinking, lost outlines). Future plan: Jackie draws each plant in each pot.

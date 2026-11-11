@@ -67,7 +67,7 @@ function nudgeSun(){if(st.night||st.mode==='ambient')return;st.dayT=Math.min(.7,
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
 const CAN={x:772,y:494,w:118,h:110},JAR={x:1478,y:568,w:150,h:170},GUMMY={x:-99,y:-99,w:1,h:1},PEAT={x:-99,y:-99,w:1,h:1},LAMP={x:1272,y:390,w:150,h:140},FLOOR={x:145,y:255,w:155,h:570},SHELF={x:1474,y:318,w:170,h:84},CHAIR={x:445,y:455,w:300,h:300},WIN={x:300,y:80,w:290,h:450};
-function drawCarafe(x,y){ // carried glass carafe (code stand-in until ChatGPT draws the carried version)
+function drawCarafe(x,y){ // carried glass carafe (code stand-in until the carried version is drawn)
  g.save();g.translate(x,y);g.rotate(-.5);g.scale(1.6,1.6);const o=C.out;
  g.fillStyle=o;g.fillRect(-16,-46,32,10);g.fillRect(-26,-36,52,62);g.fillRect(-10,-58,20,14);
  g.fillStyle='#e6f1f4';g.fillRect(-22,-32,44,54);g.fillRect(-6,-54,12,10);g.fillRect(-12,-44,24,10);
