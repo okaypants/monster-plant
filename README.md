@@ -60,7 +60,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
-`python3 tests/old_names_test.py` checks that the paper-airplane character is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
+`python3 tests/paw_shots.py` checks Sloth's paw: the envelope paw bringing a letter (whole-pixel, slow, settles one step, leaves the envelope on the sill), waiting while the curtains are closed, at night and while dragging, the seed paw bringing a seed packet you tap to plant, the empty paw taking a seed you send, the first-time caption, old saves and the debug button; pictures of each paw mid-reach and the items on the sill at day and golden hour in `tests/screenshots/paw/`.
+
+`python3 tests/old_names_test.py` checks that the character who delivers by paw is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
 
 `python3 tests/night_window_shots.py` pictures the night room in every season with the curtains open and closed (`tests/screenshots/night_window/sheet.png`) and checks the night window pieces differ from winter's only behind the glass.
 
@@ -100,7 +102,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/letter_shots.py` checks Sloth's letter asking for an adult: it lands by itself (more often for an evil lean), the letter view, Yes (moved out next morning), Not yet (waits in the journal, lands again in 3 days), who never gets one and what it waits for; saved to `tests/screenshots/letter/`.
 
-`python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Sloth, PhD (airplane, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
+`python3 tests/pollination_shots.py` checks that two content adults can make a seed, the bubble with both names, Send it to Sloth, PhD (the paw takes the packet, both stay), Keep it here (both move out next morning, the seed on the sill), that tapping away decides nothing, and that Breed now follows the same flow; saved to `tests/screenshots/pollination/`.
 
 `python3 tests/go_ask_shots.py` checks that a content adult asks to go by itself (Yes / Not yet), that Not yet costs nothing and asks again in 3 days, that Yes means moved out next morning, who never asks, and that the last monster leaving is not a dead end; saved to `tests/screenshots/go_ask/`.
 
@@ -167,6 +169,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `treat_*.png`, `carafe_up/tilt/pour.png` | Things you carry |
 | `fx_*.png` | Effects (2 frames each): hearts, Zzz, sparkles, drops, puddle, flames, sweat... |
 | `pot_*.png`, `topper_*.png` | Paused (kept for later) |
+| `sloth_paw_envelope.png`, `sloth_paw_seed.png`, `sloth_paw_empty.png`, `envelope.png`, `seed_packet.png` | Sloth's paw and what it brings (cut from `sloth_paw_sheet.png`, drawn at 1/3 nearest-neighbor; js/paw.js) |
 | `books_special.png`, `stool_empty.png`, `curtains_closed_layer.png`, `lampoff_*.png` | Room pieces |
 | `icon-*.png`, `apple-touch-icon.png`, `manifest.webmanifest` | Home-screen app files |
 

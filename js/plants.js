@@ -382,7 +382,7 @@ function titleCheck(){const out=[];if(st.ge>.85)out.push('good');if(st.ge<-.85)o
 /* ---------- a second seed, and breeding ---------- */
 function addPlant(p){st.others=st.others||[];st.others.push(p);swapIn(st.others.length-1);ACT=st.id;} // the new one becomes the one you're tending
 /* A SEED FROM TWO ADULTS (Jackie, Nov 8): nothing appears out of nowhere. The bubble names both parents and asks where the seed goes:
-     Send it to Sloth, PhD: it flies off on a paper airplane and both parents stay.
+     Send it to Sloth, PhD: the seed packet goes on the windowsill, the paw comes for it (js/paw.js), and both parents stay.
      Keep it here: both parents head off the next morning (moveOut) and the seed is planted on the windowsill.
    Tapping away doesn't decide anything: the bubble comes back a little later. Waiting offers live in the save (st.seedOffer). */
 const SEED_REASK=15;let offerAt=0; // seconds before a dismissed bubble comes back
@@ -392,49 +392,35 @@ function offerTick(){const o=st.seedOffer;if(!o||bubble||T<offerAt||capBusy()||s
   {s:()=>{closeBubble();seedSend();},k:()=>{closeBubble();seedKeep();}});}
 // PAYMENT ISN'T DECIDED (Jackie): whatever Sloth, PhD gives for a seed goes here
 function seedSentHook(seed){st.seedsSent=(st.seedsSent||0)+1;}
-let seedFly=null; // when the airplane took off this visit
-function seedSend(){const o=st.seedOffer;st.seedOffer=null;seedFly=T;sfx('page');seedSentHook(o.seed);tell('Off it goes to Sloth, PhD on a paper airplane.',{kind:'important'});save();}
+function seedSend(){const o=st.seedOffer;st.seedOffer=null;st.sendSeed=o.seed;st.sillItem='send';st.pawWait='take';sfx('page');save();} // the packet waits on the sill for the paw; seedSentHook when it's taken
 const KEEP_DEST='Out living their own lives';
 function seedKeep(){const o=st.seedOffer;st.seedOffer=null;st.seedKeep=o.seed;const P=o.ids.map(id=>allRaw().find(q=>q.id===id));for(const q of P){q.goDest=KEEP_DEST;q.goDay=st.day+1;delete q.goAgain;}
  sfx('chime');tell(nameOf(P[0],true)+' and '+nameOf(P[1],true)+' will head off in the morning to live their own lives.',{kind:'important'});save();}
 // the morning after "Keep it here": the seed takes over the windowsill, with its own name and the usual hello
 function seedKeptArrives(){const c=st.seedKeep;st.seedKeep=null;if(plantCount()===0)Object.assign(st,c);else addPlant(c);ACT=st.id;pickChair();st.curtain='open';sfx('soil');tell(seedHello(st.name),{kind:'important',who:st.id});}
-/* SLOTH'S NOTE (Jackie, Nov 4; renamed Nov 7): Sloth, PhD is a cute sloth who only talks by paper airplane and
+/* SLOTH'S NOTE (Jackie, Nov 4; renamed Nov 7): Sloth, PhD is a cute sloth who only reaches in by paw (js/paw.js) and
    helps monsters become good members of society (named Sloth, PhD on Nov 10; the old names are in DECISIONS.md).  the second plant is opt-in. When your only plant is a late teen (at least one night as a teen,
-   or already grown), a paper-airplane note from Sloth, PhD glides onto the windowsill once and sits there (nothing loops or blinks).
+   or already grown), the paw sets an envelope from Sloth, PhD on the windowsill once and it sits there (nothing loops or blinks).
    Tap it: "I have a seedling in need of a home. May I send it over?"
-     Yes, please -> the seed arrives the next morning in the little pot (wakeRoom in start.js).
+     Yes, please -> the next morning the paw brings a seed packet; tap it to plant it in the little pot (wakeRoom in start.js, js/paw.js).
      Not yet     -> the note goes into the journal (accept it there anytime); Sloth, PhD asks again in a few days.
    Never with two plants. This is the only way a second plant comes (Jackie, Nov 7: no "Plant another seed" on the start screen). */
-const SLOTH_NOTE={x:452,y:SURFACE.sill},SLOTH_ASK='I have a seedling in need of a home. May I send it over?';
-const SLOTH_PLANE=['1000000000','1110000000','0111110000','0011111111','0122222000','1222000000','2200000000']; // a little paper airplane, nose to the right; 1 = paper, 2 = the folded underside
-let slothLand=null; // when it landed this visit (for the glide in); null = already there
-function slothReady(){if(plantCount()!==1||st.giftSeed||st.slothSend||allRaw().some(q=>q.goDest))return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.timer||0)>=GROW_FOR[6]/2));}
-function slothNoteBox(){const p=P,w=SLOTH_PLANE[0].length*p,h=SLOTH_PLANE.length*p;return {x:SLOTH_NOTE.x-w/2,y:SLOTH_NOTE.y-h,w,h};}
+const SLOTH_ASK='I have a seedling in need of a home. May I send it over?';
+function slothReady(){if(plantCount()!==1||st.giftSeed||st.slothSend||st.sillItem==='seed'||st.sillItem==='send'||st.pawWait==='seed'||st.pawWait==='take'||allRaw().some(q=>q.goDest))return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.timer||0)>=GROW_FOR[6]/2));}
 function slothOnSill(){return st.slothNote==='sill'&&slothReady();}
-function slothNoteHit(x,y){if(!slothOnSill()&&!letterOnSill())return false;const b=slothNoteBox();return x>=b.x-24&&x<=b.x+b.w+24&&y>=b.y-24&&y<=b.y+b.h+16;}
-function drawPlane(x0,y0){const p=P,X=Math.round(x0/p)*p,Y=Math.round(y0/p)*p; // on whole pixels
- g.fillStyle=C.out;SLOTH_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='0')g.fillRect(X+i*p-2,Y+j*p-2,p+4,p+4);}));
- SLOTH_PLANE.forEach((r,j)=>[...r].forEach((v,i)=>{if(v==='0')return;g.fillStyle=v==='1'?C.ivory:C.cream;g.fillRect(X+i*p,Y+j*p,p,p);}));return [X,Y];}
-function drawSlothNote(){if(!slothOnSill()&&!letterOnSill())return;const b=slothNoteBox(),u=slothLand==null?1:clamp((T-slothLand)/1.6,0,1);drawPlane(b.x-(1-u)*140,b.y-(1-u)*170);} // glides down from the window once
-// the seed leaving for Sloth's: the airplane lifts off the sill and flies up out of the room, a little seed riding on it
-function drawSeedFly(){if(seedFly==null)return;const u=(T-seedFly)/2.4;if(u>=1){seedFly=null;return;}const b=slothNoteBox(),[X,Y]=drawPlane(b.x+u*760,b.y-u*640),p=P;
- g.fillStyle=C.out;g.fillRect(X+3*p-2,Y-p-2,2*p+4,2*p+4);g.fillStyle=C.brick;g.fillRect(X+3*p,Y-p,2*p,2*p);}
-function slothAsk(){sfx('page');const b=slothNoteBox();
+function slothAsk(){sfx('page');const b=sillBox('envelope')||{x:SILL_ITEM.x,y:SILL_ITEM.y-50};
  openBubble(b.x-140,b.y-230,'<div class="tsfrom">'+tsStampHTML()+'<b>From Sloth, PhD</b></div>'+SLOTH_ASK+tsChoices(SLOTH_CHOICES),{y:()=>{closeBubble();slothYes();},n:()=>{closeBubble();slothNotYet();}},'tsmint');}
 function slothYes(){st.slothSend=st.day+1;st.slothNote=null;st.slothJournal=0;sfx('chime');tell('Sloth, PhD will send the seedling over in the morning.',{kind:'info'});save();}
 function slothNotYet(){st.slothNote=null;st.slothJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
-function slothArrive(){ // the next morning
- if(!st.slothSend||st.day<st.slothSend)return;st.slothSend=0;if(plantCount()>=MAX_PLANTS)return;
- st.giftSeed=1;const p=freshPlant();p.species=Math.floor(Math.random()*16);addPlant(p);sfx('soil');
- tell('Something taps the window and a seed drifts in on a paper airplane note from Sloth, PhD.',{kind:'important'});save();}
+function slothArrive(){ // the next morning: the paw brings the seed packet (js/paw.js); tapping it plants the seed (plantGift)
+ if(!st.slothSend||st.day<st.slothSend)return;st.slothSend=0;if(plantCount()>=MAX_PLANTS)return;st.pawWait='seed';save();}
 /* ASKING TO GO (Jackie, Nov 8): a content adult may ask, now and then, to go somewhere that fits its nature (GO_REASONS in names.js).
    At most one roll a day, after things have been calm for a little while; never while another ask, note or seed is waiting; never a kid or teen.
    Yes: it sets off the next morning (moveOut). Not yet, or tapping away: no penalty of any kind, it asks again in 3 days. */
 const GO_CHANCE=.2,GO_CALM=20,GO_AGAIN=3,GO_SETTLED=3;let goCalm=0; // chance per day; seconds of calm first; days until it asks again; days an adult settles in before it can ask
 function goContent(){return st.stage>=8&&st.nap<=0&&!want('thirst')&&!want('attention')&&st.lightState==='ok'&&!st.float&&!(st.grump>0)&&!READ.has(st.id)&&(st.adultDay==null||st.day>=st.adultDay+GO_SETTLED)&&(st.goAgain||0)<=st.day;}
 function goWaiting(){return goBusy()||letterWaiting();}
-function goBusy(){return !!bubble||slothOnSill()||!!(st.slothJournal&&slothReady())||!!st.slothSend||!!st.seedOffer||!!st.seedKeep||allRaw().some(q=>q.goDest);}
+function goBusy(){return !!bubble||!!st.pawWait||!!st.sillItem||slothOnSill()||!!(st.slothJournal&&slothReady())||!!st.slothSend||!!st.seedOffer||!!st.seedKeep||allRaw().some(q=>q.goDest);}
 function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  if(st.night||T<8||goWaiting()||(st.goNext||0)>st.day||st.goRolled===st.day||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){goCalm=0;return;}
  const ids=[];eachPlant(()=>{if(goContent())ids.push(st.id);});if(!ids.length){goCalm=0;return;}goCalm+=dt;if(goCalm<GO_CALM)return;goCalm=0;st.goRolled=st.day;
@@ -451,18 +437,18 @@ function goMorning(){const L=allRaw().filter(q=>q.goDest&&st.day>=q.goDay),go=L.
  if(st.seedKeep)seedKeptArrives();
  if(plantCount()===0)setTimeout(()=>{if(plantCount()===0&&!document.querySelector('.screen'))startFlow();},GO_EMPTY_MS);}
 const GO_EMPTY_MS=10000;
-/* A LETTER FROM SLOTH, PhD (Jackie, Nov 8): now and then Sloth's paper airplane lands on the windowsill asking to have an adult come stay.
+/* A LETTER FROM SLOTH, PhD (Jackie, Nov 8): now and then Sloth's paw sets an envelope on the windowsill asking to have an adult come stay.
    A little more often for one with an evil lean. One roll a day, after things have been calm; never while another note, ask or seed choice is waiting.
    Tap it for the letter (the words are in names.js). Yes: it sets off the next morning (moveOut). Not yet: the letter waits in the journal,
    where you can accept it anytime, and lands again in 3 days, exactly like the seedling note. No penalty. Tapping away leaves it on the sill.
-   Portrait: a code-drawn stamp for now. When the real art exists: add sloth_portrait.png to the game folder and set LETTER_ART.ready to true. */
-const LETTER_CHANCE=.08,LETTER_EVIL=.2,LETTER_CALM=20,LETTER_DEST='Staying with Sloth, PhD',LETTER_ART={file:'sloth_portrait.png',ready:false};let letterCalm=0,letterEl=null,letterFrom=false;
+   In the corner: a paw-print stamp (Jackie, Nov 10). Signed "— Sloth, PhD". */
+const LETTER_CHANCE=.08,LETTER_EVIL=.2,LETTER_CALM=20,LETTER_DEST='Staying with Sloth, PhD';let letterCalm=0,letterEl=null,letterFrom=false;
 function letterQ(){const q=allRaw().find(x=>x.id===st.letterFor);return q&&q.stage>=8&&!q.goDest?q:null;}
 function letterOnSill(){return st.letterNote==='sill'&&!!letterQ();}
 function letterInJournal(){return !!st.letterJournal&&!!letterQ();}
 function letterWaiting(){return letterOnSill()||letterInJournal();}
 function letterClear(){st.letterNote=null;st.letterFor=null;st.letterJournal=0;st.letterAgain=0;}
-function letterLand(id){st.letterNote='sill';st.letterFor=id;slothLand=T;st.goNext=st.day+GO_AGAIN;sfx('page');save();}
+function letterLand(id){st.letterNote='sill';st.letterFor=id;st.pawWait='envelope';st.goNext=st.day+GO_AGAIN;sfx('page');save();}
 function letterTick(dt){if((st.letterNote||st.letterJournal)&&!letterQ()){letterClear();return;}if(letterOnSill()||!quiet())return;
  if(st.night||T<8||goBusy()||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){letterCalm=0;return;}
  if(st.letterJournal){if(st.day>=(st.letterAgain||0))letterLand(st.letterFor);return;} // you said not yet: it lands again in 3 days
@@ -474,18 +460,18 @@ function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jlette
  for(let i=0;i<3;i++){p.style.setProperty('--lk',k);k=Math.min(r.width*.9/p.offsetWidth,r.height*.9/p.offsetHeight,1.5);} // --lk keeps the words at least their size on screen
  p.style.setProperty('--lk',k);p.style.transform=`translate(-50%,-50%) scale(${k})`;}
 addEventListener('resize',()=>setTimeout(fitLetter,50));
-function letterStamp(){const f=jdiv('jlstamp',[tsGlyph('sloth',TS.mintInk,'jpix',4)]);if(LETTER_ART.ready){const im=new Image();im.onload=()=>{f.innerHTML='';f.appendChild(imgPic(im,64,72));};im.src=LETTER_ART.file;}return f;} // real art later: same slot, same size
+function letterStamp(){return jdiv('jlstamp',[tsGlyph('paw',TS.mintInk,'jpix',6)]);} // a paw-print stamp
 function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('page');letterFrom=!!fromJournal;
- const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slothLetter(N))));p.appendChild(tsKeepName(jdiv('jlsign',[],'Sloth, PhD'))); // mint paper (js/textstyle.js)
+ const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slothLetter(N))));p.appendChild(tsKeepName(jdiv('jlsign',[],'— Sloth, PhD'))); // mint paper (js/textstyle.js)
  const row=jdiv('jlbtns');row.innerHTML=tsChoices(CHOICES.letter);const act={y:letterYes,n:letterNotYet};row.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();act[b.dataset.k]();}));
  p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();tsPop(p);}
 function letterYes(){const q=letterQ();closeLetter();if(!q)return;const id=q.id;letterClear();goYes(id,LETTER_DEST);if(jEl)renderJournal();}
 function letterNotYet(){closeLetter();if(letterFrom)return;st.letterNote=null;st.letterJournal=1;st.letterAgain=st.day+GO_AGAIN;st.goNext=Math.max(st.goNext||0,st.day+GO_AGAIN);sfx('page');save();} // from the journal it simply stays there
 function seedTick(dt){
  offerTick();
- if(st.slothNote==='sill'||letterWaiting()||st.night||T<8||!quiet()||!slothReady())return; // not in the first moments after you arrive: the welcome comes first
+ if(st.slothNote==='sill'||st.pawWait||st.sillItem||letterWaiting()||st.night||T<8||!quiet()||!slothReady())return; // not in the first moments after you arrive: the welcome comes first
  if((st.giftAskDay||0)>st.day)return; // you said not yet: ask again in a few days
- st.slothNote='sill';slothLand=T;sfx('page');save();}
+ st.slothNote='sill';st.pawWait='envelope';save();} // the paw brings it (js/paw.js)
 const BREED_CHANCE=.25,BREED_FRIENDS=.4; // two content adults may make a seed: rolled once a day at most, and never in the 3 days after any ask
 function breedTick(dt){ // MAX_PLANTS is 2, so the room being full of two adults is the one case that's allowed (Jackie, Nov 8)
  if(st.night||st.breedDay===st.day||goWaiting()||(st.goNext||0)>st.day||st.seedKeep){st.bloomT=0;return;}const A=allRaw().filter(q=>q.stage>=8&&q.nap<=0&&q.needs.thirst<.5&&q.needs.attention<.5&&q.lightState==='ok'&&(q.adultDay==null||st.day>=q.adultDay+GO_SETTLED));

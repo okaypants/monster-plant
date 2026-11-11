@@ -40,7 +40,7 @@ async def main():
             await pg.evaluate("()=>{goTick=()=>{};breedTick=()=>{};__step(10);capClear();CAP.log.length=0;for(const q of allRaw())q.nap=0;}")
 
         async def tap_note():
-            c = await pg.evaluate("()=>{const n=slothNoteBox(),r=cv.getBoundingClientRect();return [r.left+(n.x+n.w/2)*S,r.top+(n.y+n.h/2)*S];}")
+            c = await pg.evaluate("()=>{for(let i=0;i<60&&(paw||st.pawWait);i++)__step(.5,50);const n=sillBox(),r=cv.getBoundingClientRect();return [r.left+(n.x+n.w/2)*S,r.top+(n.y+n.h/2)*S];}")
             await pg.mouse.click(*c)
             await pg.evaluate("()=>__step(.2)")
 
@@ -48,14 +48,14 @@ async def main():
         await load()
         check(await pg.evaluate(ROLL % "0"), "the note didn't land")
         check(await pg.evaluate("()=>st.letterFor===1&&st.goNext===12"), "the letter should be for Zib and count as an ask")
-        await pg.evaluate("()=>__step(2)")
+        await pg.evaluate("()=>{__step(2);for(let i=0;i<60&&(paw||st.pawWait);i++)__step(.5,50);}")  # Sloth's paw brings the envelope (Nov 10)
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "1_note_on_sill.png"))
 
         # the letter
         await tap_note()
         r = await pg.evaluate("()=>({t:document.querySelector('.jltext').textContent,s:document.querySelector('.jlsign').textContent,c:document.querySelector('.jlstamp img,.jlstamp canvas').getBoundingClientRect().width,y:!!document.querySelector('.jletter [data-k=y]'),n:!!document.querySelector('.jletter [data-k=n]'),bug:document.querySelector('.jletter').textContent.includes('Doctor')})")
-        check(r["t"] == "Dear friend, I would love to have Zib come stay with me for a while. May Zib come?" and r["s"] == "Sloth, PhD" and r["c"] > 20 and r["y"] and r["n"] and not r["bug"], f"letter: {r}")
+        check(r["t"] == "Dear friend, I would love to have Zib come stay with me for a while. May Zib come?" and r["s"] == "— Sloth, PhD" and r["c"] > 20 and r["y"] and r["n"] and not r["bug"], f"letter: {r}")
         await pg.wait_for_timeout(200)
         await pg.screenshot(path=os.path.join(OUT, "2_letter.png"))
 

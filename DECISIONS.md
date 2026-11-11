@@ -6,6 +6,16 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 - The treat tray (and the book tray, which sat the same way) were 6 px from the bottom, so on a phone a drag that started there could swipe the whole app away. Both now sit 14% of the screen height above the bottom (at least 48 px).
 
+### Sloth, PhD delivers by paw, not paper airplane (Nov 10)
+
+- Jackie's art: the sheet "Pixel Sloths with Taped Envelopes" (kept as `sloth_paw_sheet.png`) is cut into `sloth_paw_envelope.png`, `sloth_paw_seed.png`, `sloth_paw_empty.png`, `envelope.png` and `seed_packet.png`. Only the magenta was removed (a flood fill from the edges, then a 2 px peel of the dark-magenta fringe on the outer outline); nothing recolored, redrawn or stretched.
+- **Scale: 1/3, nearest-neighbor**, drawn on whole pixels: the envelope paw is 148x95, as tall as the window's lower row of panes; the envelope is 79x53 and the seed packet 59x63 on the sill.
+- **Which paw:** the envelope paw brings the seedling note and Sloth's letters; the seed paw brings the seedling (a seed packet the next morning, which you tap to plant in the little pot the usual way); the empty paw reaches in for a seed you send to Sloth, PhD (the packet goes on the sill first). When the paw lets go, the envelope or packet stays on the sill as its own piece.
+- **Movement** (js/paw.js): slides in from behind the right edge of the window and the armchair over 3 s, pauses, settles the item one step (4 px) onto the sill, pauses, slides out over 3 s. Whole pixels, no easing, no rotation, never loops. The item rests on the sill at x 425, clear of the armchair.
+- **Waits:** only through an open window, never at night, never while dragging, reading a story or in a menu; it comes about 2 s after things are calm. If the curtains close or night falls mid-reach, it finishes at once. Sill items hide behind closed curtains like the sill seedling. A letter or note waits while a packet is on the sill, and the cat doesn't nap on the sill while something from Sloth is there.
+- **Words** (Jackie will rewrite): the first time ever, "A very slow paw reaches in through the window…"; then only what it brought: "A seed packet from Sloth, PhD is on the windowsill.", "The seed from Sloth, PhD is planted in the little pot.", "Off it goes to Sloth, PhD." The seed choice's line now reads "the paw comes for it", and the Files note says Sloth, PhD "sends a letter" instead of "a paper airplane". Letters have a paw-print stamp (the portrait slot `sloth_portrait.png` is gone) and are signed "— Sloth, PhD". Journal notes show the envelope.
+- Old saves: a note that was on the sill shows as an envelope there. Debug (test mode): **Paw delivery now**.
+- Note: a seed sitting in the little pot on the sill (x 400) can overlap an item at x 425; it's rare (a note comes only when one monster is in the room).
 ### Night windows for spring, summer and autumn (Nov 10)
 
 - At night the window now shows the real-calendar season: spring (blossoms and a crescent moon), summer (a full green tree and a round moon) and autumn (orange leaves and a round moon) use the new pieces; winter keeps its snow. Golden hour and daytime are unchanged, and closed curtains cover the window as before.
