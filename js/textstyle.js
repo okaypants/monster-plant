@@ -50,18 +50,21 @@ function tsNamesKnown(){const out=[],add=(n,l)=>{if(n&&n.length>1)out.push([n,l]
   if(st.catName)add(st.catName,CAT_LOOK);}catch(e){}
  return out.sort((a,b)=>b[0].length-a[0].length);}
 function tsNameEl(text,look){const b=document.createElement('b');b.className='tsname';b.style.color=look.name;b.appendChild(tsGlyph(look.sym,look.name));b.appendChild(document.createTextNode(text));return b;}
-function tsNamify(el){const known=tsNamesKnown();if(!known.length)return el;
+function tsNamify(el){const known=tsNamesKnown();if(!known.length)return tsKeepName(el);
  const re=new RegExp('\\b('+known.map(([n])=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\b','g'),look=new Map(known);
  const walk=n=>{for(const c of [...n.childNodes]){if(c.nodeType===3){const t=c.nodeValue;re.lastIndex=0;if(!re.test(t))continue;re.lastIndex=0;const f=document.createDocumentFragment();let at=0,m;
    while((m=re.exec(t))){if(m.index>at)f.appendChild(document.createTextNode(t.slice(at,m.index)));f.appendChild(tsNameEl(m[0],look.get(m[0])));at=m.index+m[0].length;}
    if(at<t.length)f.appendChild(document.createTextNode(t.slice(at)));c.replaceWith(f);}
   else if(c.nodeType===1&&!c.classList.contains('tsname')&&c.tagName!=='BUTTON'&&c.tagName!=='INPUT')walk(c);}};
- walk(el);return el;}
+ walk(el);return tsKeepName(el);}
+// "Sloth, PhD" never breaks across two lines (Jackie, Nov 10): wrapped in a no-wrap span, the words themselves unchanged
+const SLOTH_NAME='Sloth, PhD';
+function tsKeepName(el){const w=n=>{for(const c of [...n.childNodes]){if(c.nodeType===3&&c.nodeValue.includes(SLOTH_NAME)&&!(c.parentElement&&c.parentElement.classList.contains('tsnowrap'))){const f=document.createDocumentFragment();c.nodeValue.split(SLOTH_NAME).forEach((t,i)=>{if(i){const sp=document.createElement('span');sp.className='tsnowrap';sp.textContent=SLOTH_NAME;f.appendChild(sp);}if(t)f.appendChild(document.createTextNode(t));});c.replaceWith(f);}else if(c.nodeType===1)w(c);}};w(el);return el;}
 
 /* choice buttons: the same size side by side, a pixel icon and a word each (never color alone), one short line under each saying
    what happens. kind 'yes' = sage with a check; 'wait' = cream with an hourglass. Returns HTML for a bubble or card. */
-function tsChoices(list){return '<div class="tschoices">'+list.map(([k,label,sub,kind,icon])=>'<div class="tschoice"><button type="button" data-k="'+k+'" class="tsb tsbtn ts'+kind+'"><img class="tsicon" alt="" aria-hidden="true" src="'+
-  tsGlyphURL(icon||(kind==='yes'?'check':'hourglass'),TS.ink)+'">'+label+'</button>'+(sub?'<div class="tssub">'+sub+'</div>':'')+'</div>').join('')+'</div>';}
+function tsChoices(list){list=list.map(([k,l,...r])=>[k,l.split(SLOTH_NAME).join('<span class="tsnowrap">'+SLOTH_NAME+'</span>'),...r]);return '<div class="tschoices">'+list.map(([k,label,sub,kind,icon])=>'<div class="tschoice"><button type="button" data-k="'+k+'" class="tsb tsbtn ts'+kind+'"><img class="tsicon" alt="" aria-hidden="true" src="'+
+  tsGlyphURL(icon||(kind==='yes'?'check':'hourglass'),TS.ink)+'"><span>'+label+'</span></button>'+(sub?'<div class="tssub">'+sub+'</div>':'')+'</div>').join('')+'</div>';}
 
 /* words appear in 2-3 stepped pops (never a fade, never a typewriter); with the phone's reduce-motion setting they just appear */
 const tsCalm=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
