@@ -13,7 +13,7 @@ from smoke_test import PORT, SHOTS, VIRTUAL_TIME, serve
 
 OUT = os.path.join(SHOTS, "needs")
 BASE = "s.mode='actions';s.giftSeed=1;s.others=[];s.stage=8;s.species=3;s.pref='shade';"
-DARK = BASE + "s.dayT=.8;s.curtain='closed';s.lamp=false;s.desk=false;s.free={x:1250,y:918};"  # dusk, curtains closed, lamps off
+DARK = BASE + "s.pref='sun';s.dayT=.3;s.curtain='closed';s.lamp=false;s.desk=false;s.free={x:1250,y:918};"  # a sun-lover in the daytime, curtains closed, lamps off (evenings are dim for everyone and never wither anyone)
 SUN = BASE + "s.dayT=.37;s.curtain='open';s.free={x:470,y:852};"  # midday in the window's sun patch
 FINE = BASE + "s.dayT=.3;s.curtain='open';s.free={x:1250,y:860};"
 LIGHT_WORDS = ("light", "bright", "dark", "sun", "shad", "lamp", "flame", "curtain", "scoot")
@@ -70,7 +70,7 @@ async def states(b, fails, rows, heads):
         if got != lv: fails.append(f"withered at {at}s: level {got}, expected {lv}")
         row.append(await shot(pg, f"withered_{lv}"))
     heads.append(await shot(pg, "state_withered", full=True))
-    await heals(pg, "witherLv", "st.curtain='open';st.dayT=.3;", 3, fails, "withered")
+    await heals(pg, "witherLv", "st.curtain='open';st.free={x:470,y:852};", 3, fails, "withered")
     await no_light_text(pg, fails, "withered"); rows.append(("withered (too dark)", row)); fails += errs; await ctx.close()
 
     # burned: too much light for a while, 3 steps

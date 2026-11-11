@@ -227,7 +227,10 @@ function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toast
   g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+Math.round(cut*b.seedK),w,h-Math.round(cut*b.seedK));g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y,w,Math.round(cut*b.seedK));}
  g.restore();}
 /* ---------- growing up (Tamagotchi time, see GROW_FOR in core.js) ---------- */
-function growHappy(){return !want('thirst')&&!want('attention')&&(st.night||st.stage<1||st.lightState==='ok');}
+function growHappy(){return !growHolds().length;}
+// what is slowing its growing right now (none = full speed); the debug drawer shows these. Light only counts in the bright hours.
+function growHolds(){const h=[];if(st.stage<0||st.stage>=8)return h;if(want('thirst'))h.push('thirst');if(want('attention'))h.push('lonely');
+ if(!st.night&&st.stage>=1&&brightHours()&&st.lightState!=='ok')h.push(st.lightState==='hi'?'too bright':'too dim');return h;}
 function growTick(dt){if(st.stage<0||st.stage>=8)return;st.timer=(st.timer||0)+dt*gameSpeed()/2*(growHappy()?1:GROW_SLOW);
  if(st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
 // one age up, right now; returns what to say. The sound and the bigger body are the proof.
@@ -256,7 +259,7 @@ function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  if(st.stage>=4){st.parch=st.needs.thirst>=.95?clamp((st.parch||0)+k*.35,0,1):st.needs.thirst<.5?clamp((st.parch||0)-dt*.08,0,1):(st.parch||0);} // petrifying cracks (Jackie): slow to form, heal after watering
  if(st.stage>=4){st.full=clamp((st.full||0)-k*.25,0,1);st.needs.hunger=0;st.needs.attention=clamp(st.needs.attention+k*.26,0,1);}
  const li=spotInfo(spotKey());st.light=li.L;
- const ls=st.stage<1?'ok':lightFeel(li,st.pref);
+ let ls=st.stage<1?'ok':lightFeel(li,st.pref);if(ls==='lo'&&!brightHours())ls='ok'; // evening and night are dim for everyone: nobody withers for it
  if(ls!=='ok')st.lightBad+=dt*sp;else{if(st.lightState!=='ok'){met('light');sfx('boing');}st.lightBad=0;} // moving it out fixes it right away
  // the right light counts for the day once it has spent a little while in it (LIGHT_OK_FOR game s, ~15 s at normal speed), not only when you fix bad light
  if(ls==='ok'&&st.stage>=1&&!st.night&&!st.met.light){st.lightGood=(st.lightGood||0)+dt*sp;if(st.lightGood>=LIGHT_OK_FOR)met('light');}

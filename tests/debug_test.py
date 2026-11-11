@@ -88,7 +88,7 @@ async def main():
         t0 = await pg.evaluate("()=>st.dayT"); await pg.evaluate("()=>{st.mode='visit';__step(5);}")
         check(await pg.evaluate("()=>st.dayT") == t0, "time moved while paused")
         await row_btn("Pause time", "off")
-        await row_btn("Clock", "only on actions")
+        await row_btn("Clock", "held")
         check(await pg.evaluate("()=>st.mode") == "actions", "clock mode")
 
         # Plants: species/age keep it the same plant
