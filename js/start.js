@@ -24,7 +24,7 @@ function wakeRoom(){st.day++;st.dayT=0;st.night=false;sfx('chime');patFull(); //
  const d=new Date(),season=seasonNow();
  const slept=allRaw().filter(q=>q.stage>=4&&q.lastNight),all=allRaw().filter(q=>q.stage>=4); // who slept well, by name
  const well=!slept.length?'':slept.length>1&&slept.length===all.length?' Both slept well and their dreams were pleasant and relaxing.':' '+slept.map(q=>nameOf(q,true)).join(' and ')+(slept.length>1?' slept well and their dreams were':' slept well and its dreams were')+' pleasant and relaxing.';
- tell(`Morning! Day ${st.day}.`+well,{kind:'important'});bugArrive();save();}
+ tell(`Morning! Day ${st.day}.`+well,{kind:'important'});slothArrive();save();}
 /* ---------- start + quiz ---------- */
 /* WELCOME BACK (Jackie, Nov 7): it tells you what happened while you were away, in fun ways that fit each monster's nature, mood
    and friendships, and EVERYTHING it says is really there in the room: the game makes it happen first, then says it.
@@ -82,7 +82,7 @@ function quiz(){openingRoom();const picks=QUIZ.map(pool=>pool[Math.floor(Math.ra
  const ask=()=>{const q=picks[i];sfx('pop');
   screen(`<p class="tssmall">Question ${i+1} of 4</p><h1>${q[0]}</h1><div class="opts"><button data-k="a">${q[1]}</button><button data-k="b">${q[2]}</button></div>`,{a:d=>{d.remove();next(0);},b:d=>{d.remove();next(1);}});};
  const next=v=>{bits=bits*2+v;i++;if(i<4)ask();else plantSeed(bits);};ask();}
-// a second plant only ever comes from Slowmallow's note (plants.js), never from the start screen (Jackie, Nov 7)
+// a second plant only ever comes from Sloth's note (plants.js), never from the start screen (Jackie, Nov 7)
 function plantSeed(sp){
  giveNature(st);st.species=sp;
  nameStep(st,()=>{st.started=true;st.stage=0;st.timer=0;openingRoom();sfx('soil');

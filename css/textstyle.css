@@ -1,5 +1,5 @@
 /* TEXT STYLE (Jackie, Nov 10): one look for every word in the game; the colors are also in js/textstyle.js (TS, LOOKS).
-   Cream paper, cocoa ink (never pure black or white), rust headings and small icons, sage Yes, mint paper for Slowmallow,
+   Cream paper, cocoa ink (never pure black or white), rust headings and small icons, sage Yes, mint paper for Sloth, PhD,
    a toffee shadow, brass for the FILES placard. Shape: 3px cocoa outline, stepped pixel corners (clip-path steps, never round),
    a solid offset shadow with no blur. Text left-aligned. Sizes on screen: headings 23-25, bubbles and captions 18,
    notes and the journal 16, small print 14, never smaller (bigger screens scale up from there). */
@@ -15,7 +15,7 @@
  linear-gradient(to top,var(--ts-toffee) 3px,var(--ts-ink) 3px)}
 .tsb::after{inset:3px;background:var(--bg)}
 .tsmint{--bg:var(--ts-mint);color:var(--ts-mintink)}
-.bubble.tsb,.jclose.tsb,.jletter.tsb,.jbugask.tsb,.ttray.tsb{position:absolute} /* these sit where their own layout puts them */
+.bubble.tsb,.jclose.tsb,.jletter.tsb,.jslothask.tsb,.ttray.tsb{position:absolute} /* these sit where their own layout puts them */
 
 /* appear in three stepped pops; reduce-motion: just appear */
 @keyframes tspop{0%{scale:.88}34%{scale:1.04}67%{scale:1}100%{scale:1}}
@@ -93,12 +93,12 @@
 .jarchbook{color:var(--ts-ink)}
 .jwent{color:var(--ts-rust)}
 .jrib .tssym{height:auto;width:21px;margin:0}
-.jbugask{width:440px;font-size:var(--f16);text-align:left;padding:18px 20px 20px}
-.jbugask .tschoices .tsbtn{font-size:var(--f18)}.jbugask .tssub{font-size:var(--f14)}
+.jslothask{width:440px;font-size:var(--f16);text-align:left;padding:18px 20px 20px}
+.jslothask .tschoices .tsbtn{font-size:var(--f18)}.jslothask .tssub{font-size:var(--f14)}
 .jname .tssym{height:.7em}
 .jname{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}.jname .tsname,.jarchname .tsname{white-space:normal} /* a long name wraps rather than spill off the page */
 
-/* Slowmallow's letter: mint paper, a postage stamp in the corner */
+/* Sloth's letter: mint paper, a postage stamp in the corner */
 .jletter{--lf:max(16px,calc(16px / var(--lk,1)));font-size:max(18px,calc(18px / var(--lk,1)));padding:24px 28px 26px;text-align:left}
 .jlstamp{border:3px dashed var(--ts-mintink);background:var(--ts-paper)}
 .jlsign{color:var(--ts-mintink)}

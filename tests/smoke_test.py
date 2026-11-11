@@ -69,31 +69,31 @@ CASES = [
     ("go_ask_yes_then_gone", "s.stage=8;s.species=3;s.giftSeed=1;s.day=9;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';s.ge=s.nge=0;s.lc=s.nlc=-.6;",
      "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);capClear();goAsk(1);window.__ask=bubble.textContent;document.querySelector('.bubble [data-k=y]').click();window.__said=st.goDest;st.night=true;wake();", 0.2,
      "(/Tuffet .+\\. May Tuffet go\\?/.test(__ask)&&plantCount()===1&&st.archive.length===1&&st.archive[0].name==='Tuffet Mossmuffin'&&st.archive[0].dest===__said&&!!__said&&CAP.log.some(l=>l.t==='Tuffet will set off in the morning.'))||'go: ask '+__ask+', plants '+plantCount()+', archive '+JSON.stringify(st.archive)"),
-    # Slowmallow's letter (Jackie, Nov 8): it lands on the sill, the letter names the monster, yes means staying with Slowmallow the next morning
+    # Sloth's letter (Jackie, Nov 8): it lands on the sill, the letter names the monster, yes means staying with Sloth, PhD the next morning
     ("letter_yes_then_gone", "s.stage=8;s.species=3;s.giftSeed=1;s.day=9;s.free={x:300,y:918};s.name='Tuffet Mossmuffin';",
      "const p=freshPlant();p.species=7;p.stage=8;p.name='Mortie Gloomsnack';p.free={x:1250,y:918};addPlant(p);swapIn(0);letterLand(1);window.__sill=letterOnSill();openLetter();window.__l=document.querySelector('.jletter').textContent;document.querySelector('.jletter [data-k=y]').click();st.night=true;wake();", 0.2,
-     "(__sill&&/Dear friend, .*Tuffet.*May Tuffet come\\?/.test(__l)&&plantCount()===1&&st.archive[0].name==='Tuffet Mossmuffin'&&st.archive[0].dest==='Staying with Slowmallow'&&!letterWaiting())||'letter: '+__l+', plants '+plantCount()+', archive '+JSON.stringify(st.archive)"),
-    # the second plant is opt-in (Jackie, Nov 4): Slowmallow's note lands on the sill when the only plant is a late teen; tap it to be asked
+     "(__sill&&/Dear friend, .*Tuffet.*May Tuffet come\\?/.test(__l)&&plantCount()===1&&st.archive[0].name==='Tuffet Mossmuffin'&&st.archive[0].dest==='Staying with Sloth, PhD'&&!letterWaiting())||'letter: '+__l+', plants '+plantCount()+', archive '+JSON.stringify(st.archive)"),
+    # the second plant is opt-in (Jackie, Nov 4): Sloth's note lands on the sill when the only plant is a late teen; tap it to be asked
     ("old_save_gift_seed", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.place={grown:'rugC'};delete s.others;delete s.id;",
-     "window.__yes=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes
-     "(st.nge!=null&&plantCount()===1&&st.bugSend===st.day+1&&!bugOnSill())||'old save: nature '+st.nge+', plants '+plantCount()+', send day '+st.bugSend"),
-    ("doctor_bug_seed_next_morning", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.bugSend=5;",
+     "window.__yes=setInterval(()=>{if(slothOnSill()&&!bubble)slothAsk();const y=document.querySelector('.bubble [data-k=y]');if(y)y.click();},200);", 1,  # taps the note, says yes
+     "(st.nge!=null&&plantCount()===1&&st.slothSend===st.day+1&&!slothOnSill())||'old save: nature '+st.nge+', plants '+plantCount()+', send day '+st.slothSend"),
+    ("sloth_seed_next_morning", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.slothSend=5;",
      "st.night=true;wake();", 1,
-     "(plantCount()===2&&st.giftSeed===1&&!st.bugSend&&CAP.log.some(l=>/paper airplane note from Slowmallow/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.bugSend"),
+     "(plantCount()===2&&st.giftSeed===1&&!st.slothSend&&CAP.log.some(l=>/paper airplane note from Sloth, PhD/.test(l.t)))||'morning seed: plants '+plantCount()+', send '+st.slothSend"),
     ("gift_seed_asks_first", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};", "", 1,
-     "(plantCount()===1&&bugOnSill()&&!bubble)||'note: plants '+plantCount()+', on sill '+bugOnSill()+', bubble '+(bubble&&bubble.textContent)"),
+     "(plantCount()===1&&slothOnSill()&&!bubble)||'note: plants '+plantCount()+', on sill '+slothOnSill()+', bubble '+(bubble&&bubble.textContent)"),
     ("gift_seed_not_now", "s.stage=8;s.species=3;s.day=4;s.dayT=.3;s.free={x:1250,y:918};",
-     "window.__no=setInterval(()=>{if(bugOnSill()&&!bubble)bugAsk();const n=document.querySelector('.bubble [data-k=n]');if(n)n.click();},200);", 1,
-     "(plantCount()===1&&st.bugJournal===1&&st.giftAskDay===st.day+3&&!st.bugNote&&!st.giftSeed)||'not yet: plants '+plantCount()+', journal '+st.bugJournal+', ask again day '+st.giftAskDay+' (today '+st.day+')'"),
+     "window.__no=setInterval(()=>{if(slothOnSill()&&!bubble)slothAsk();const n=document.querySelector('.bubble [data-k=n]');if(n)n.click();},200);", 1,
+     "(plantCount()===1&&st.slothJournal===1&&st.giftAskDay===st.day+3&&!st.slothNote&&!st.giftSeed)||'not yet: plants '+plantCount()+', journal '+st.slothJournal+', ask again day '+st.giftAskDay+' (today '+st.day+')'"),
     ("early_teen_no_note", "s.stage=6;s.species=4;s.credit=0;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;", "", 1,
-     "(!bugOnSill()&&!st.bugNote)||'a brand-new teen already got the note'"),
+     "(!slothOnSill()&&!st.slothNote)||'a brand-new teen already got the note'"),
     ("late_teen_note", "s.stage=6;s.species=4;s.credit=.4;s.day=4;s.dayT=.3;s.free={x:1250,y:918};s.nge=s.nlc=s.ge=s.lc=0;", "", 1,
-     "bugOnSill()||'no note for a late teen'"),
+     "slothOnSill()||'no note for a late teen'"),
     # never more than two plants (Jackie, Nov 4): two adults making a seed never adds a third on the spot; a bubble asks where it goes (Nov 8), and the window gift doesn't ask when the room is full
     ("no_third_plant", "s.stage=8;s.species=3;s.free={x:300,y:918};s.breedDay=0;s.day=4;delete s.giftSeed;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);eachPlant(()=>{st.needs={thirst:0,hunger:0,attention:0};});"
      "setTimeout(()=>{const A=allRaw().filter(q=>q.stage>=8);crossPollinate(A[0],A[1]);},1000);", 1,
-     "(plantCount()===2&&!!bubble&&/made a seed together!/.test(bubble.textContent)&&!bugOnSill())||'room full: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
+     "(plantCount()===2&&!!bubble&&/made a seed together!/.test(bubble.textContent)&&!slothOnSill())||'room full: plants '+plantCount()+', bubble '+(bubble&&bubble.textContent)"),
     # two plants on the floor, one in the wrong light for a long while, so it walks toward better light (this once crashed: "bd is not defined")
     ("floor_light_seek", "s.stage=8;s.species=3;s.pref='night';s.free={x:400,y:918};s.giftSeed=1;",
      "const q=freshPlant();q.species=6;q.stage=8;q.free={x:1250,y:918};addPlant(q);swapIn(0);st.lightBad=500;st.lightState='hi';", 1,

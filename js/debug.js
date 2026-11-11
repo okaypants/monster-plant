@@ -100,7 +100,7 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   chips(b,'Titles',Object.entries(TITLES),t=>(pRaw().titles||[]).includes(t),t=>onP(()=>{st.titles=st.titles||[];st.titles=st.titles.includes(t)?st.titles.filter(x=>x!==t):st.titles.concat(t);}));
   b.appendChild(el('div','status',(()=>{const q=pRaw(),T=q.treats||{};return 'Treats: '+SNACKS.map(s=>esc(s.name)+' '+(T[s.id]||0)+'/'+TRAIT_AT).join(' · ')+'<br>Lately: '+esc((q.log||[]).join(', ')||'nothing yet')+'<br>Pots: '+esc((st.pots||[]).join(', ')||'none')+(q.potOn?' (on: '+esc(q.potOn)+')':'')+'<br>Today: water '+(q.met&&q.met.thirst?'✓':'·')+' light '+(q.met&&q.met.light?'✓':'·')+' company '+(q.met&&q.met.attention?'✓':'·');})())); // what the old journal showed
   btns(b,[['Reset quirks',()=>onP(()=>{st.quirks={};st.quirkT=null;})],['Grow one age',()=>onP(()=>{if(NEXT[st.stage]!=null){st.stage=NEXT[st.stage];st.timer=0;}})]]);
-  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Slowmallow letter now',dbgLetter],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
+  btns(b,[['Add plant',dbgAddPlant],['Remove this plant',dbgRemovePlant],['Move out',dbgMoveOut],['Ask to go now',dbgAskGo],['Sloth, PhD letter now',dbgLetter],['Make two adults',dbgTwoAdults],['Breed now',dbgBreed],['End day',()=>{st.night=true;wake();}]]);});
 
  group(body,'Cat',true,b=>{
   slider(b,'Trust',0,1,.01,()=>catTrust(),v=>{st.catTrust=v;},v=>trustName(v)+' '+(+v).toFixed(2));
@@ -138,7 +138,7 @@ function dbgAddPlant(){if(plantCount()>=MAX_PLANTS){say('Room for '+MAX_PLANTS+'
 function dbgRemovePlant(){const id=pRaw().id;if(plantCount()<=1){say('Keep at least one plant (or use Brand-new game).',3,true);return;}
  if(st.id===id)swapIn(0);st.others=st.others.filter(q=>q.id!==id);dbgPid=st.id;ACT=st.id;pickChair();}
 // test mode only (Jackie, Nov 8): sends the plant being tended off to the files in the desk, on the copy; Back to my game undoes it
-const DBG_PLACES=['Off to see the ocean','Staying with Slowmallow','Gone to live in the mountains'];let dbgPlace=0;
+const DBG_PLACES=['Off to see the ocean','Staying with Sloth, PhD','Gone to live in the mountains'];let dbgPlace=0;
 function dbgMoveOut(){if(!TESTING)return;moveOut(pRaw().id,DBG_PLACES[dbgPlace++%DBG_PLACES.length]);dbgPid=st.id;}
 function dbgAskGo(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Only adults ask to go.',3,true);return;}goAsk(q.id);}
 function dbgLetter(){if(!TESTING)return;const q=pRaw();if(q.stage<8){say('Letters only ask for adults.',3,true);return;}letterClear();letterLand(q.id);}
@@ -167,7 +167,7 @@ const PRESET_KEY='mp-presets';
 function dbgPresets(){try{return JSON.parse(localStorage.getItem(PRESET_KEY))||{};}catch(e){return {};}}
 function setPresets(P){try{localStorage.setItem(PRESET_KEY,JSON.stringify(P));}catch(e){}}
 function snapPreset(){return {st:JSON.stringify(st),cat:plainCat(),season:SEASON_OVERRIDE,paused:PAUSED};}
-function loadPreset(p){if(typeof p==='function'){p();return;}st=Object.assign(fresh(),JSON.parse(p.st));for(const k of Object.keys(cat))delete cat[k];Object.assign(cat,JSON.parse(p.cat));
+function loadPreset(p){if(typeof p==='function'){p();return;}st=Object.assign(fresh(),migrateSave(JSON.parse(p.st)));for(const k of Object.keys(cat))delete cat[k];Object.assign(cat,JSON.parse(p.cat));
  SEASON_OVERRIDE=p.season||null;PAUSED=!!p.paused;dbgPid=st.id;ACT=st.id;pickChair();}
 const BUILT_IN={
  'Two adults at golden hour in winter':()=>{dbgTwoAdults();eachPlant(()=>{st.lightState='ok';st.lightBad=0;});st.dayT=.6;st.night=false;st.curtain='open';SEASON_OVERRIDE='winter';},

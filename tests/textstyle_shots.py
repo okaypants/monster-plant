@@ -2,7 +2,7 @@
 
 Run from the repository root:  python3 tests/textstyle_shots.py
 On an iPhone 13 held sideways, day and night: the start menu, a caption pill, a monster's and the cat's speech bubbles, a choice
-card (a monster asking to go), Slowmallow's note and letter (mint), the empty FILES drawer, a journal page, the name tags and the
+card (a monster asking to go), Sloth's note and letter (mint), the empty FILES drawer, a journal page, the name tags and the
 FILES placard, a story page, the seed choice, the Good morning card and a quiz question. Checks:
   - every text color is at least 4.5:1 against its paper, every symbol and section icon at least 3:1;
   - no word on screen is smaller than 14px (the journal and letter are scaled to fit, so this is measured on screen);
@@ -134,16 +134,16 @@ async def main():
             check(await pg.evaluate("()=>cap.classList.contains('show')&&CAP.cur.t==='A caption that should wait.'"), "the waiting caption didn't come back after the card closed")
             await pg.evaluate("()=>{capClear();st.goAgain=null;allRaw().forEach(q=>delete q.goAgain);}")
 
-            # Slowmallow's note (mint, with the stamp) and letter
-            await pg.evaluate("()=>{bugAsk();__step(.2);}")
+            # Sloth's note (mint, with the stamp) and letter
+            await pg.evaluate("()=>{slothAsk();__step(.2);}")
             r = await pg.evaluate("()=>({mint:document.querySelector('.bubble').classList.contains('tsmint'),stamp:!!document.querySelector('.bubble .jlstamp img'),bg:getComputedStyle(document.querySelector('.bubble')).getPropertyValue('--bg').trim()})")
-            check(r["mint"] and r["stamp"] and r["bg"].upper() == "#E4F4EA", f"Slowmallow's note should be mint with a stamp: {r}")
-            await audit(pg, ".bubble", "Slowmallow's note")
-            await shot("06_slowmallow_note")
+            check(r["mint"] and r["stamp"] and r["bg"].upper() == "#E4F4EA", f"Sloth's note should be mint with a stamp: {r}")
+            await audit(pg, ".bubble", "Sloth's note")
+            await shot("06_sloth_note")
             await pg.evaluate("()=>{closeBubble();st.letterNote='sill';st.letterFor=1;openLetter();__step(.2);}")
             check(await pg.evaluate("()=>getComputedStyle(document.querySelector('.jletter')).getPropertyValue('--bg').trim().toUpperCase()==='#E4F4EA'"), "the letter isn't mint")
             await audit(pg, ".jletter", "letter")
-            await shot("07_slowmallow_letter")
+            await shot("07_sloth_letter")
             await pg.evaluate("()=>{closeLetter();letterClear();__step(.2);capClear();}")
 
             # the empty FILES drawer, a journal page
