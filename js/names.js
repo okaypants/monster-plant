@@ -53,3 +53,19 @@ const CHOICES={
  night:[['y','Goodnight','sleep until morning','yes'],['n','Not yet','stay up a while','wait']],
  wake:[['y','Good morning','start a new day','yes'],['n','Let it sleep','stay in the night','wait','moon']]};
 const SLOTH_CHOICES=CHOICES.sloth;
+/* THE JOURNAL'S GROWTH LINE AND DAY (Jackie, Nov 10): edit freely; never a number. {name} = the monster's first name, {age} = its next age with "a"/"an".
+   The time words go by when it will really grow (at full speed): soon = within a quarter of an hour, today = later today, tomorrow = tomorrow, days = after that.
+   A reason line shows instead while something is slowing its growing (the same reasons the debug drawer shows). */
+const GROW_WORDS={
+ soon:'{name} will be {age} any time now.',
+ today:'{name} will be {age} in a while.',
+ tomorrow:'{name} will be {age} tomorrow.',
+ days:'{name} will be {age} in a few days.',
+ grown:'{name} is all grown up.',
+ thirst:'{name} could use a drink.',
+ lonely:'{name} would love a little company.',
+ 'too dim':'{name} is waiting for the right light.',
+ 'too bright':'{name} would like a little shade.'};
+// the top corner of every journal page: today in words, e.g. "Tuesday evening · autumn" (the device's own clock and the real season)
+const DAY_WORDS={line:'{weekday} {part} · {season}',parts:[[0,'night'],[5,'morning'],[12,'afternoon'],[17,'evening'],[21,'night']],
+ weekdays:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
