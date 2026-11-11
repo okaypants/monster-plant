@@ -257,5 +257,5 @@ function buildNudge(c){const q=s=>c.querySelector(s),kind=()=>q('#nKind').value;
   const n=dx||dy?[v[0]+dx,v[1]+dy]:[0,0];if(n[0]||n[1])t[nudgeKey.key]=n;else delete t[nudgeKey.key];
   try{localStorage.setItem('mp-nudges',JSON.stringify(NUDGE));}catch(e){}show();});
  q('#nDone').onclick=()=>{if(nudgeKey&&nudgeKey.kind==='plant'&&st.nap>1e5)st.nap=0;cat.hold=false;if(cat.nap>1e5)cat.nap=rnd(30,70);nudgeKey=null;show();};
- q('#nCopy').onclick=()=>{const t='const NUDGE='+JSON.stringify(NUDGE)+';',o=q('#nOut');o.style.display='block';o.value=t;o.select();if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});say('Nudge table copied. Paste it over the NUDGE line in js/nudges.js (or send it to Claude).',6,true);}; // if the browser won't copy, the selected text box is there to copy by hand
+ q('#nCopy').onclick=()=>{const t='const NUDGE='+JSON.stringify(NUDGE)+';',o=q('#nOut');o.style.display='block';o.value=t;o.select();if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});say('Nudge table copied. Paste it over the NUDGE line in js/nudges.js.',6,true);}; // if the browser won't copy, the selected text box is there to copy by hand
  show();}

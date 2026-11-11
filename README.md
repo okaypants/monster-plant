@@ -185,6 +185,6 @@ Every decision, newest first and with the reason, lives in [DECISIONS.md](DECISI
 
 ## Open / next
 
-See the build checklist doc (Claude Docs): lighting and season windows, plants beyond 3, smoother grabbing, kid on the book stack, seedling pot + windowsill placement, cat interactions, pots per plant, charm spots per adult, more fun feeding, then the hand-drawn pixel-accurate art pass.
+See the build checklist doc: lighting and season windows, plants beyond 3, smoother grabbing, kid on the book stack, seedling pot + windowsill placement, cat interactions, pots per plant, charm spots per adult, more fun feeding, then the hand-drawn pixel-accurate art pass.
 
 **Not now:** App Store version (Capacitor), Garry's sounds and music, color/pattern genes, snow globe memories, radio stations, the four books' special effects, a second room.
