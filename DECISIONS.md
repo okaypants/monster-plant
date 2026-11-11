@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The journal shows growing and today, in words (Nov 10)
+
+- Jackie asked for time and upcoming growth in the journal, with **no numbers anywhere**.
+- **Growth row:** past ages and this one filled, later ones pale, and the next age's silhouette fills in from the bottom, one whole pixel row at a time, as the monster really grows (`silhouette` in js/journal.js). No bar, no percentage.
+- **The line under it**, by first name: "<Name> will be a <next age> any time now" (within a quarter of an hour), "in a while" (later today), "tomorrow", or "in a few days", by when it will really grow at full speed. Adults: "<Name> is all grown up." While something is slowing its growing, a kind line says what instead: "could use a drink", "would love a little company", "is waiting for the right light", "would like a little shade", the same reasons the debug drawer shows (`growHolds`).
+- **Top corner of every journal page:** today in words from the device's clock and the real season, e.g. "Tuesday morning · autumn" (morning from 5, afternoon from 12, evening from 17, night from 21). Not on the Files' keepsakes.
+- All the words are in one place to reword: `GROW_WORDS` and `DAY_WORDS` at the bottom of js/names.js.
+- To make room, the portrait on a monster's page is a little smaller and gives way when the page is full (a long name), so it never covers the name. The day line sits in the page's top margin, clear of the close button, so nothing else moves to the next page.
+- `tests/journal_growth_test.py` checks the phrase getting closer, each reason, the day line, no numbers, nothing overlapping, and pictures a kid's page at a few growth points.
+
 ### The files never name the tools used to make them (Nov 10)
 
 - Jackie: the files on GitHub say what was made and why, never which assistant or picture tool helped. The session instructions file is now [WORKING.md](WORKING.md) (same six rules, new name), and the few tool names in this file, the README and two code comments were reworded. New commits carry no tool credit line; the old commits stay as they are, since rewriting them would change the whole history.

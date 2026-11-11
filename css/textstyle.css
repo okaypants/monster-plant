@@ -78,6 +78,9 @@
 .jnameinput{color:var(--ts-ink);background:var(--ts-shade);border-bottom-color:var(--ts-rust)}
 .jspecies{font-size:var(--f14);color:var(--ts-rust)}
 .jborn,.jdetail{font-size:var(--f16)}
+.jgrowline{font-size:var(--f14);text-align:center;margin-top:-4px}
+.jday{position:absolute;top:2px;right:56px;line-height:1;font-size:var(--f14);color:var(--ts-rust);white-space:nowrap} /* top corner, clear of the close button; takes no room from the page */
+.jportrait canvas{max-height:100%;max-width:100%;object-fit:contain} /* the portrait gives way when the page is full (a long name, the growth line), never covering the name */
 .jlab{font-size:var(--f14);color:var(--ts-rust);display:flex;align-items:center;gap:6px}
 .jlab .tslabicon{width:auto;height:.85em;image-rendering:pixelated}
 .jstamp{height:auto;min-height:26px;font-size:var(--f14);line-height:1.2;border-color:var(--ts-rust);color:var(--ts-rust);border-radius:0}

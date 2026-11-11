@@ -104,6 +104,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid grows into a teen right on time, a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) grows at half speed, one age at most.
 
+`python3 tests/journal_growth_test.py` checks the journal's growth row and words on a phone held sideways: the next age's silhouette filling row by row, the line getting closer (in a few days, tomorrow, in a while, any time now; all grown up), the kind reason lines (a drink, company, the right light, a little shade), today in words in the top corner, no numbers and nothing overlapping; pictures and `sheet.png` in `tests/screenshots/journal_growth/`.
+
 `python3 tests/clock_test.py` checks the real clock: morning, midday, golden hour, dusk and night at real clock times (November and June) and the room pictures for each, the clock moving while the game is open, a real sunrise bringing one new day (even after three days away), golden hour and night never slowing growing, six hours away catching up gently, and the debug status line; saved to `tests/screenshots/clock/`. All the tests run on a fixed local time (a Tuesday at 10 am in autumn).
 
 `python3 tests/letter_shots.py` checks Sloth's letter asking for an adult: it lands by itself (more often for an evil lean), the letter view, Yes (moved out next morning), Not yet (waits in the journal, lands again in 3 days), who never gets one and what it waits for; saved to `tests/screenshots/letter/`.
@@ -141,7 +143,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `stories.js` | What's inside the four special books (six short pages each; edit freely) |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
-  | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon |
+  | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |
   | `input.js` | Taps, drags, and what each spot in the room does |
   | `start.js` | Title screen, seed quiz, welcome back, goodnight and morning |
   | `debug.js` | The debug drawer and TEST MODE (a copy of the save; the real one is never touched), the Light map, the Nudge tool |
