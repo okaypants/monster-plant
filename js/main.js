@@ -9,7 +9,7 @@ function update(dt){const sp=gameSpeed();T+=dt;catUpdate(PAUSED?0:dt);
  if(!st.night&&st.mode!=='actions')st.dayT=Math.min(.7,st.dayT+dt*sp*(st.mode==='ambient'?.004:.0012));
  ACT=st.id;pickChair();
  eachPlant(()=>{if(st.stage<0)return;plantUpdate(dt);const k=spotKey();st._pos={id:st.id,g:stageGroup(),k,x:SPOT[k].x,y:SPOT[k].y,box:plantBoxRaw()};}); // box: so nobody is dropped or walks on top of it
- namesTick();seedTick(dt);goTick(dt);letterTick(dt);breedTick(dt);socialTick(dt);}
+ namesTick();pawTick(dt);seedTick(dt);goTick(dt);letterTick(dt);breedTick(dt);socialTick(dt);}
 // a tab left in the background stops the loop: when it comes back after a while, that time counts like being away
 let lastWall=Date.now();
 function awayInTab(){const w=Date.now(),gap=(w-lastWall)/1000;lastWall=w;if(gap<60||!st.started||plantCount()===0)return;

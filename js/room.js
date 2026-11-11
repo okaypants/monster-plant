@@ -101,11 +101,11 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
  if(drag.on){const gp=stageGroup();for(const k of gp==='seed'?GROUPS.seed:PERCH[ageName()].filter(k=>!perchTaken(k))){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,k==='chair'?110:gp==='seed'?44:70,12,0,0,Math.PI*2);g.fill();}}
- if(st.started)drawSlothNote(); // Sloth's note on the sill, behind plants and the cat
+ drawSill(); // what Sloth's paw brought, and the paw itself, behind plants and the cat (js/paw.js)
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}
-  if(!catDone)drawCat();drawSeedFly();}
+  if(!catDone)drawCat();}
  function drawOnePlant(){let b;const pb=plantBox();
   const sill=st.stage<4&&spotKey()==='sill'&&!(drag.on&&drag.id===st.id);if(sill&&st.curtain==='closed'&&curK>.98)return; // shut curtains: the seedling is behind them
 
