@@ -111,6 +111,7 @@ function curtainOver(b){if(curK<.01)return;g.save();g.beginPath();g.rect(b.x-4,b
 let dtDraw=.016,lastDraw=performance.now();
 function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/1000);lastDraw=nowD;g.clearRect(0,0,W,H);const tk=timeKey(),fOn=st.lamp!==false,dOn=st.desk!==false,lk=(fOn?'on':'off')+(dOn?'on':'off'),mxc=st.curtain==='closed'&&curK>.98?MIX[tk+'_c_'+lk]:null,exactC=!!(mxc&&ok(mxc)),mx2=exactC?mxc:MIX[tk+'_'+lk],exact=!!(mx2&&ok(mx2)),rm=exact?mx2:ROOMS[tk];if(ok(rm))g.drawImage(rm,0,0);else if(ok(room))g.drawImage(room,0,0);
  if(!exactC){const ws=(WIN_SEASON[tk]||{})[seasonNow()];if(ws&&ok(ws))g.drawImage(ws,318,88);}
+ if(st.started&&typeof drawSash==='function')drawSash(tk+lk+(exactC?'c':'')); // the lower sash slides up for Sloth's paw (js/paw.js)
  if(!exact&&st.lamp===false&&ok(LOFF[tk].floor))g.drawImage(LOFF[tk].floor,0,0);
  if(!exact&&st.desk===false&&ok(LOFF[tk].desk))g.drawImage(LOFF[tk].desk,831,0);
  if(held.tool==='can'&&ok(STOOL_EMPTY))g.drawImage(STOOL_EMPTY,765,488);

@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The window opens for Sloth's paw (Nov 14)
+
+- Jackie: the paw looked like it was reaching through a closed window, since it was drawn over the bars and glass. Jackie chose: **the lower sash slides up** first.
+- **Now:** when a delivery comes, the bottom row of panes slides up one row (100 px) in front of the row above over 1 s, in whole pixels on a straight line. The paw reaches in through the open gap, and once it has slid back out the sash slides down over 1 s. Each trip is 2 s longer.
+- **No new art:** the sash is the window's own bars moved up, and its glass stays see-through. The open gap shows the bottom row's own view, with the bars and edges filled by mirroring the view beside them. It's taken from what's already on screen, so it matches day, golden hour, every season and the lamps. Nothing changes behind the armchair.
+- Curtains closing or night falling mid-reach still finishes the delivery at once, and the window is simply closed again.
+- `tests/paw_shots.py` checks that the paw only comes in once the window is open, that the sash moves in whole pixels, and that the window looks exactly as before afterwards. New picture: `0_window_opening.png`.
+
 ### Growing up is a moment (Nov 10)
 
 - Jackie: every age change (sprout to kid, kid to teen, teen to adult) gets a grow-up moment, with no new art. Why: growing up was a silent swap that could happen while she wasn't looking, or while the game was closed. A seed sprouting stays as it was (it just sprouts).

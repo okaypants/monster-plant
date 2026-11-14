@@ -10,7 +10,9 @@ Checks:
   - sending a seed: the packet goes on the sill and the empty paw comes, picks it up and takes it away;
   - "A very slow paw reaches in through the window…" only the first time ever;
   - old saves with a note on the sill show an envelope there; the debug drawer has "Paw delivery now".
-Pictures go to tests/screenshots/paw/: each paw mid-reach, and the envelope and the seed packet on the sill at day and golden hour.
+  - the window opens for it: the lower sash slides up one row (whole pixels) before the paw comes and back down after it goes,
+    and the window looks just as before afterwards.
+Pictures go to tests/screenshots/paw/: the window opening, each paw mid-reach, and the envelope and the seed packet on the sill at day and golden hour.
 Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -52,19 +54,34 @@ async def main():
 
         # 1. a letter for the adult: the envelope paw
         await load()
-        r = await pg.evaluate("""()=>{letterLand(1);const out=[];let t=0;while(t<12){__step(.1,50);t+=.1;if(paw){const q=pawPose();out.push({t:+paw.t.toFixed(2),R:q.R,y:q.y,pic:q.c.width});}}
+        r = await pg.evaluate("""()=>{letterLand(1);const out=[];let t=0;while(t<12){__step(.1,50);t+=.1;if(paw){const q=pawPose();out.push(q?{t:+paw.t.toFixed(2),R:q.R,y:q.y,pic:q.c.width,up:sashUp()}:{t:+paw.t.toFixed(2),up:sashUp(),none:1});}}
           return {out,item:st.sillItem,wait:st.pawWait,log:CAP.log.concat(CAP.q).map(l=>l.t)};}""")
-        steps = r["out"]
+        allsteps = r["out"]
+        steps = [s for s in allsteps if not s.get("none")]
+        # the window opens first: the lower sash slides up in whole pixels, the paw only once it's open; it closes after the paw has gone
+        ups = [s["up"] for s in allsteps]
+        opening = [s for s in allsteps if s["t"] < 1]
+        check(opening and all(s.get("none") for s in opening), "the paw should wait until the window is open")
+        check(all(isinstance(u, int) for u in ups) and max(ups) == 100, f"the sash should rise one row (100 px) in whole pixels: {ups[:12]}")
+        check(all(s["up"] == 100 for s in steps if 1 <= s["t"] <= 7), "the sash should stay up while the paw is in")
+        check(ups[:10] == sorted(ups[:10]) and ups[-8:] == sorted(ups[-8:], reverse=True), f"the sash should slide up, then down: {ups[:10]} … {ups[-8:]}")
+        check(all(s["R"] - s["pic"] < 572 for s in steps if s["up"] == 100 and s["R"] - s["pic"] < 572) and all(s["up"] == 100 for s in steps if s["R"] - s["pic"] < 572),
+              "the paw should only be in the room while the window is open")
         check(steps and all(isinstance(s["R"], int) and float(s["y"]).is_integer() for s in steps), "the paw should only move in whole pixels")
-        ins = [s for s in steps if s["t"] < 3]
+        ins = [s for s in steps if 1 <= s["t"] < 4]
         check(ins and ins[0]["R"] > 700 and all(a["R"] >= b2["R"] for a, b2 in zip(ins, ins[1:])), f"it should slide in from the right, slowly: {ins[:3]}")
         check(r["item"] == "envelope" and not r["wait"], f"the envelope should be left on the sill: {r['item']}, waiting {r['wait']}")
         check(r["log"].count("A very slow paw reaches in through the window…") == 1, f"the first-time caption: {r['log']}")
-        await pg.evaluate("()=>{capClear();letterClear();st.sillItem=null;letterLand(1);__step(4.6,50);}")  # second time: mid-reach
+        before = await pg.evaluate("()=>Array.from(g.getImageData(318,300,254,222).data).join(',')")
+        await pg.evaluate("()=>{capClear();letterClear();st.sillItem=null;letterLand(1);__step(2.5,50);}")  # second time: the window half open
+        await shot("0_window_opening")
+        await pg.evaluate("()=>__step(2.1,50)")  # mid-reach
         check(await pg.evaluate("()=>!!paw&&!CAP.q.concat(CAP.cur?[CAP.cur]:[]).some(i=>/slow paw/.test(i.t))"), "the paw caption came back a second time")
         await shot("1_envelope_paw_mid_reach")
         await pg.evaluate("()=>{__step(9,50);}")
         await shot("2_envelope_on_sill_day")
+        after = await pg.evaluate("()=>{const b=sillBox();g.save();g.clearRect(0,0,1,1);g.restore();return Array.from(g.getImageData(318,300,254,b.y-300).data).join(',');}")
+        check(before[:len(after)] == after, "the window should look just as it did once the sash is back down")
         await pg.evaluate("()=>{st.dayT=.6;__step(.5);}")
         await shot("3_envelope_on_sill_golden")
         r = await pg.evaluate("()=>{st.dayT=.3;__step(.2);const b=sillBox();const c=cv.getBoundingClientRect();return [c.left+(b.x+b.w/2)*S,c.top+(b.y+b.h/2)*S];}")
@@ -112,10 +129,10 @@ async def main():
         await pg.evaluate("()=>{st.seedOffer={ids:[1,2],seed:freshPlant()};seedSend();__step(4.6,50);}")
         check(await pg.evaluate("()=>!!paw&&paw.kind==='take'&&st.sillItem==='send'"), "sending: the packet waits on the sill and the empty paw comes for it")
         await shot("8_empty_paw_reaching_for_packet")
-        await pg.evaluate("()=>__step(2.6,50)")
+        await pg.evaluate("()=>__step(3.6,50)")
         check(await pg.evaluate("()=>!!paw&&st.sillItem===null"), "the paw should have picked the packet up")
         await shot("9_paw_taking_packet")
-        r = await pg.evaluate("()=>{const n=st.seedsSent||0;__step(6,50);return {paw:!!paw,sent:(st.seedsSent||0)-n,log:CAP.log.concat(CAP.q).map(l=>l.t)};}")
+        r = await pg.evaluate("()=>{const n=st.seedsSent||0;__step(5,50);return {paw:!!paw,sent:(st.seedsSent||0)-n,log:CAP.log.concat(CAP.q).map(l=>l.t)};}")
         check(not r["paw"] and r["sent"] == 1 and "Off it goes to Sloth, PhD." in r["log"], f"after it leaves, the seed is sent: {r}")
 
         # 6. an old save with a note on the sill, and debug
