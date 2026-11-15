@@ -1,7 +1,7 @@
 'use strict';
 /* TEXT STYLE (Jackie, Nov 10): one look for every word in the game. The colors and shapes are here and in css/textstyle.css;
    everything else (captions, speech bubbles, notes, Sloth's letters, the FILES drawer, journal pages, name tags, buttons,
-   the FILES placard) uses them. Cream paper, cocoa ink, 3px cocoa outline, stepped pixel corners, a solid toffee shadow.
+   the FILES placard) uses them. Cream paper, cocoa ink, 3px cocoa outline, big round corners, a hard cocoa shadow (rounded Nov 15).
    Every text color is at least 4.5:1 on its paper and every icon at least 3:1 (tests/textstyle_shots.py checks). */
 const TS={paper:'#FFF4E0',ink:'#5B3A2E',rust:'#A84B26',sage:'#CFE3C2',mint:'#E4F4EA',mintInk:'#2F6B57',toffee:'#B98C66',brass:'#E2B04A',brassInk:'#3A2406'};
 

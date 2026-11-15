@@ -92,7 +92,7 @@ function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.s
   for(const c of[W/2,W*.36,W*.64,W*.25,W*.75]){const x0=c-bw/2,x1=c+bw/2;if(x0<8||x1>R)continue;if(!F.some(f=>f.x1>x0&&f.x0<x1&&f.y0<top+bh+20)){best=c;break;}}cap.dataset.cx=best;}
  const cx=+cap.dataset.cx||W/2;cap.style.left=Math.round((cx-bw/2)*S)+'px';cap.style.top=Math.round(top*S)+'px';
  if(CAP.cur&&CAP.cur.who!=null){const sx=capSpeakerX(CAP.cur.who);if(sx==null){capTail.style.display='none';return;}capTail.style.display='';
-  capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-10,9,bw*S-30))+'px';}} // the tail is 21px wide; it stays clear of the stepped corners
+  capTail.style.left=Math.round(clamp((sx-(cx-bw/2))*S-10,16,bw*S-37))+'px';}} // the tail is 21px wide; it stays clear of the round corners
 let bubble=null;
 function closeBubble(){if(bubble){bubble.remove();bubble=null;}}
 function openBubble(x,y,html,binds,cls=''){closeBubble();const b=document.createElement('div');b.className='bubble tsb '+cls;b.innerHTML=html;tsNamify(b);b.style.left=(x*S)+'px';b.style.top=(y*S)+'px';ui.appendChild(b);bubble=b;b.style.left=clamp(x*S,4,Math.max(4,W*S-b.offsetWidth-4))+'px';b.style.top=clamp(y*S,4,Math.max(4,H*S-b.offsetHeight-4))+'px'; /* kept inside the room */

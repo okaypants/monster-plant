@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Cute, rounded, chunky text style (Nov 15)
+
+- Jackie asked for a more cute, rounded, neo-brutalist type and UI style, for **everything with words**, with **round chunky corners** replacing the stepped pixel ones. This replaces the shape part of the Nov 10 text style ("stepped pixel corners, never round"); the colors, sizes, tints, symbols and contrast rules from Nov 10 all stay.
+- **Shape:** big round corners (16 px), the same 3 px cocoa outline, and a hard cocoa shadow set 3 px right and 4 px down with no blur (it was a toffee shadow straight below). A pressed button sinks onto its shadow. Speech-bubble tails are plain triangles.
+- **Where:** captions, speech bubbles, choice cards and buttons, name tags, notes, Sloth's letters, menus, the trays, and the journal, Files and story books (round page and cover corners; stamps and charm slots rounded too).
+- **Lettering:** still Fredoka, now heavier (700) for names, titles, headings, buttons and name tags. Reading text stays 500.
+- **Unchanged:** the room and everything drawn in it stay pixel art, including the FILES placard; words still appear in stepped pops with no fades.
+- `tests/ui_shots.py` now checks for the round corners and the hard shadow.
+
 ### The books hold many real reads (Nov 15)
 
 - Jackie: the four books should cycle between lots of reads in each genre, and the reads should be real, not made-up nonsense: an old poem that's free to use, or true facts told the way Blathers tells them in Animal Crossing.
