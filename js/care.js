@@ -33,7 +33,7 @@ const SNACKS=[ // Jackie's treats, good -> evil. Treats are optional; regular se
  {id:'fossil',name:'Dinosaur fossils',ge:-.08,s:'crunch',trait:'Dino-skull clip'},
  {id:'blood',name:'Blood',ge:-.14,s:'slurp',trait:'Heart-charm bow'}];
 const TRAIT_AT=5; // servings to grow a trait
-const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'The Almanac of Rules',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02}];
+const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02}];
 function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('basket');if(st.stage<4){sfx('purr');burst('heart',b.x+b.w*.1,b.y-20,1);return;}
  st.pets=(st.pets||[]).filter(t=>T-t<1.3);st.pets.push(T);
  if(st.pets.length>=3){sfx('giggle');st.lc=clamp(st.lc-.04,-1,1);st.pets=[];logEv('tickles');tell('Tickle attack!',{kind:'teach',key:'tickle'});burst('heart',b.x+b.w*.15,b.y-20,2);}
@@ -68,7 +68,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
   save();held.tool=null;return;}
  if(held.tool==='book'){const bk=held.item;sfx('page');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
   st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=5)earnPot({fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'}[bk.id]);
-  tell(who()+' '+({fairy:'listens to the fairy tale, very still.',almanac:'nods along to the rules.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
+  tell(who()+' '+({fairy:'listens to the fairy tale, very still.',almanac:'nods along to Sloth’s Almanac.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
 /* FEEDING (Jackie, Nov 4): simple and satisfying with a finger or a mouse.
    Tap the SNACKS cabinet: a small cream tray beside it holds the seven treats in a row (thumb-sized, no words).
    Press a treat and drag: it follows the finger, drawn a little above and to the side so the thumb doesn't hide it.
@@ -170,7 +170,7 @@ let storyEl=null;
 function startReading(id,bk,from){closeStory(true);
  withPlant(id,()=>{held.tool='book';held.item=bk;useTool();let from=null;
   if(spotKey()!=='chair'&&!perchTaken('chair')&&spaceFree('chair')){from={perch:st.perch,free:st.free&&{...st.free}};st.perch='chair';st.walk=null;pickChair();sfx('pop');}
-  READ.set(id,{bk,from,page:0});st.listen=2;});
+  READ.set(id,{bk,from,page:0,s:nextRead(bk.id)});st.listen=2;});
  storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
  storyEl.innerHTML='<div class="scover jstep"><div class="spage jstep sl"></div><div class="spage jstep sr"></div></div>';
  storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();turnStory();});
@@ -183,10 +183,13 @@ function placeStory(){if(!storyEl)return;const X=900,Y=470,w=640,h=320; // the r
  const pw=Math.max(Math.round(w*S),430),ph=Math.max(Math.round(h*S),190); // on a phone it's never smaller than 16px words need (css/textstyle.css)
  Object.assign(storyEl.style,{left:Math.min(Math.round(X*S),Math.round(W*S)-pw-6)+'px',top:Math.min(Math.round(Y*S),Math.round(H*S)-ph-6)+'px',width:pw+'px',height:ph+'px'});}
 addEventListener('resize',()=>setTimeout(placeStory,50));
-function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=STORIES[r.bk.id]||[];
- storyEl.querySelector('.sl').textContent=P[r.page]||'';storyEl.querySelector('.sr').textContent=P[r.page+1]||'';}
+function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=readPages(r.s);
+ storyPage(storyEl.querySelector('.sl'),P[r.page]);storyPage(storyEl.querySelector('.sr'),P[r.page+1]);}
+// one page: words (poems keep their lines), or the title page: the title with who wrote it, or where it's told, underneath
+function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));if(!pg)return;if(!pg.t){el.textContent=pg;return;}
+ const t=document.createElement('b');t.textContent=pg.t;el.appendChild(t);if(pg.by){const by=document.createElement('span');by.className='sby';by.textContent=pg.by;el.appendChild(by);}}
 function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
- if(r.page+2>=(STORIES[r.bk.id]||[]).length)return closeStory();sfx('page');if(tsCalm()){r.page+=2;showStory();return;} // reduce motion: the next pages just appearstoryEl.dataset.turning=1;
+ if(r.page+2>=readPages(r.s).length)return closeStory();sfx('page');if(tsCalm()){r.page+=2;showStory();return;} // reduce motion: the next pages just appearstoryEl.dataset.turning=1;
  const f=document.createElement('div');f.className='sturn sturn1 jstep';storyEl.querySelector('.scover').appendChild(f); // the right page lifts
  setTimeout(()=>{f.className='sturn sturn2 jstep';},90); // and lands on the left
  setTimeout(()=>{f.remove();r.page+=2;delete storyEl.dataset.turning;showStory();},180);}

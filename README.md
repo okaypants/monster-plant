@@ -48,7 +48,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/nature_shots.py` shows the quirks you can see on a phone held sideways: a very chaotic monster bouncing in moon gravity (and still up 20 s later), a spooky face at the cat, a bonk hop; saved to `tests/screenshots/nature/`.
 
-`python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen; it hops into the armchair and the story opens facing us; it turns the pages to the end, the book hops home and the monster goes back; then a kid reads the grimoire in the armchair; saved to `tests/screenshots/reading/`.
+`python tests/reading_shots.py` taps a book, drags the fairy tales from the tray to an adult with a real mouse on a phone-sized screen; it hops into the armchair and the story opens facing us; it turns the pages to the end, the book hops home and the monster goes back; then a kid reads the grimoire in the armchair. It also checks the many reads per book: each comes round once before any repeats, each has a title, a by line and (facts and folklore) a source, and every page fits on a phone; pictures of every read (`read_*.png`) are saved to `tests/screenshots/reading/`.
 
 `python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
 
@@ -144,7 +144,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
-  | `stories.js` | What's inside the four special books (six short pages each; edit freely) |
+  | `stories.js` | What's inside the four special books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
   | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |
   | `input.js` | Taps, drags, and what each spot in the room does |

@@ -111,7 +111,9 @@
 /* a story in the room: book pages, left-aligned */
 .story{color:var(--ts-ink);font-size:max(16px,calc(var(--S)*27px))}
 .story .scover{outline-color:var(--ts-ink)}
-.story .spage{background:var(--ts-paper);text-align:left}
+.story .spage{background:var(--ts-paper);text-align:left;white-space:pre-line} /* poems keep their lines */
+.story .stitle{flex-direction:column;align-items:flex-start;justify-content:center;gap:.5em}.story .stitle b{font-weight:600;color:var(--ts-rust);font-size:1.15em;line-height:1.2}
+.story .sby{font-size:max(14px,.8em);line-height:1.25}
 .story .sturn{background:var(--ts-paper);outline-color:var(--ts-ink)}
 
 /* the treat and book trays: same paper and shape */

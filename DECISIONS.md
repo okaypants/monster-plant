@@ -2,6 +2,24 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The books hold many real reads (Nov 15)
+
+- Jackie: the four books should cycle between lots of reads in each genre, and the reads should be real, not made-up nonsense: an old poem that's free to use, or true facts told the way Blathers tells them in Animal Crossing.
+- **What Jackie decided:**
+  - Real pronouns are fine inside quoted real works (the no-genders rule still covers everything written for the game).
+  - The four made-up stories are retired.
+  - The almanac is **Sloth's Almanac**: true facts in Sloth, PhD's voice.
+  - The grimoire is real folklore, connected to the game and able to shape its lore later. Nothing in it changes how the game works yet.
+  - Poems and old texts are word for word.
+  - Not all Western: reads come from anywhere, whatever fits each book best.
+- **How it works:** each book goes through all of its reads in a shuffled order before any repeats, and never the same one twice running (`nextRead` in js/stories.js; the order to come is saved). The first page is the title with the author and year, or where the tale is told.
+- **Free to use:** every quoted text was published before 1931. A translation has to be that old too, so each one is checked before it goes in.
+- **Facts and folklore** are written for the game, with the place named on the title page and a source beside each read in the file (`src`, never shown) so Jackie can check them.
+- **Long pieces** appear as a complete part, titled "from …". Whole poems run to about 15 pages at most.
+- **First reads** (three per book; more to come from the list Jackie approved): Who Has Seen the Wind? (Rossetti), Paper Boats (Tagore), from The Fairies (Allingham); The Owl and the Pussy-Cat and two limericks (Lear), The Purple Cow (Burgess); On Sloths, On Leaves with Holes, On the Flytrap That Counts; The Rabbit in the Moon, The Mandrake, from Macbeth.
+- The reading caption for the almanac is now "nods along to Sloth's Almanac."
+- `tests/reading_shots.py` checks the cycling, that every read has a title, a by line and (for facts and folklore) a source, and that every page fits its paper on a phone; it pictures every read.
+
 ### The window opens for Sloth's paw (Nov 14)
 
 - Jackie: the paw looked like it was reaching through a closed window, since it was drawn over the bars and glass. Jackie chose: **the lower sash slides up** first.

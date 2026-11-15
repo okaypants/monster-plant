@@ -166,8 +166,8 @@ CASES = [
      "document.querySelector('.tbook[data-id=fairy]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));if(bookDrag.over!==st.id)return 'book over the monster does not count';"
      "dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));__step(.2);if(!READ.has(st.id))return 'not reading';if(st.needs.attention>.3)return 'reading did not keep it company: '+st.needs.attention+' log '+logs().join('|');"
      "if(!CAP.log.concat(CAP.q).concat(CAP.cur||[]).some(l=>l.t==='Pip listens to the fairy tale, very still.'))return 'no reading caption';"
-     "if(spotKey()!=='chair')return 'did not hop into the armchair: '+spotKey();const sb=document.querySelector('.story');if(!sb||sb.querySelector('.sl').textContent!==STORIES.fairy[0])return 'no story book with page one';"
-     "for(let i=0;i<3;i++){sb.click();__step(.3);}if(document.querySelector('.story'))return 'story still open after the last page';if(READ.has(st.id))return 'still reading';if(spotKey()!=='free'||Math.abs(st.free.x-1250)>1)return 'did not go back to its spot: '+spotKey()+' '+JSON.stringify(st.free);"
+     "if(spotKey()!=='chair')return 'did not hop into the armchair: '+spotKey();const sb=document.querySelector('.story');if(!sb||!STORIES.fairy.includes(READ.get(st.id).s)||sb.querySelector('.sl b').textContent!==READ.get(st.id).s.t||sb.querySelector('.sr').textContent!==READ.get(st.id).s.p[0])return 'no story book with its title page and page one';"
+     "for(let i=0,n=Math.ceil((READ.get(st.id).s.p.length+1)/2);i<n;i++){if(!document.querySelector('.story'))return 'the story closed before its last page';sb.click();__step(.3);}if(document.querySelector('.story'))return 'story still open after the last page';if(READ.has(st.id))return 'still reading';if(spotKey()!=='free'||Math.abs(st.free.x-1250)>1)return 'did not go back to its spot: '+spotKey()+' '+JSON.stringify(st.free);"
      "cv.dispatchEvent(new MouseEvent('click',cl(100,190)));document.querySelector('.tbook[data-id=almanac]').dispatchEvent(new PointerEvent('pointerdown',cl(300,700)));dispatchEvent(new PointerEvent('pointermove',cl(300,880)));"
      "dispatchEvent(new PointerEvent('pointerup',cl(300,880)));__step(.3);if(READ.size)return 'a book dropped on the floor got read';return !bookDrag.item||'still holding';})()"),
     # a kid offered big monster food says why it can't (Jackie, Nov 7)
@@ -196,7 +196,7 @@ CASES = [
      "(()=>{st.nap=0;st.night=false;const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});cv.dispatchEvent(new MouseEvent('click',cl(100,190)));"
      "const b=document.querySelector('.tbook[data-id=nonsense]'),br=b.getBoundingClientRect(),c={clientX:br.left+br.width/2,clientY:br.top+br.height/2,bubbles:true,pointerId:1,isPrimary:true};"
      "b.dispatchEvent(new PointerEvent('pointerdown',c));dispatchEvent(new PointerEvent('pointerup',c));const sb=document.querySelector('.story');if(!sb)return 'tapping a book did not open the story';"
-     "if(!/scale/.test(sb.style.transform))return 'no zoom';__step(.3);if(sb.style.transform)return 'zoom did not finish';if(sb.querySelector('.sl').textContent!==STORIES.nonsense[0])return 'wrong story';"
+     "if(!/scale/.test(sb.style.transform))return 'no zoom';__step(.3);if(sb.style.transform)return 'zoom did not finish';if(!STORIES.nonsense.includes(READ.get(st.id).s)||sb.querySelector('.sl b').textContent!==READ.get(st.id).s.t)return 'wrong story';"
      "return (spotKey()==='chair'&&READ.has(st.id))||'the tended monster is not listening in the armchair';})()"),
     # each relationship has its own spread in the journal, reached with the little arrows (Jackie, Nov 7)
     ("journal_relationships", "s.stage=8;s.species=3;s.name='Pip Wobblebean';s.free={x:300,y:918};s.giftSeed=1;s.catName='Tofu';",

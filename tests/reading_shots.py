@@ -57,7 +57,9 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "4_page_turning.png"))
         await pg.evaluate("()=>__step(.2)")
         await pg.screenshot(path=os.path.join(OUT, "5_next_pages.png"))
-        for _ in range(2):
+        for _ in range(12):
+            if not await pg.evaluate("()=>!!document.querySelector('.story')"):
+                break
             await pg.mouse.click(sb["x"] + sb["width"] * .7, sb["y"] + sb["height"] / 2)
             await pg.evaluate("()=>__step(.3)")
         await pg.evaluate("()=>__step(.25)")
@@ -68,6 +70,34 @@ async def main():
         await pg.evaluate("()=>{st.stage=4;st.perch='books';st.nge=-.5;__step(1);capClear();startReading(st.id,BOOKS[3]);__step(.4);}")
         await pg.wait_for_timeout(300)
         await pg.screenshot(path=os.path.join(OUT, "7_kid_reading_grimoire.png"))
+        await pg.evaluate("()=>{closeStory(true);st.stage=8;st.perch=null;__step(1);capClear();}")
+        # many reads per book (Jackie, Nov 15): every read comes round once before any repeats, never the same one twice running; saved
+        r = await pg.evaluate("""()=>{st.shelf={};st.shelfLast={};const out={};for(const bk of BOOKS){const n=STORIES[bk.id].length,seen=[];for(let i=0;i<n*3;i++)seen.push(STORIES[bk.id].indexOf(nextRead(bk.id)));
+          out[bk.id]={n,seen};}save();const saved=JSON.parse(localStorage.getItem(KEY));out.saved=!!(saved.shelf&&saved.shelfLast);return out;}""")
+        check = lambda ok, msg: None if ok else fails.append(msg)
+        for bk in ("fairy", "almanac", "nonsense", "grimoire"):
+            n, seen = r[bk]["n"], r[bk]["seen"]
+            check(n >= 3, f"{bk}: only {n} reads")
+            check(all(sorted(seen[i:i + n]) == list(range(n)) for i in range(0, len(seen), n)), f"{bk}: every read should come once before any repeats: {seen}")
+            check(all(x != y for x, y in zip(seen, seen[1:])), f"{bk}: the same read twice running: {seen}")
+        check(r["saved"], "the order to come should be saved")
+        # every read: a title and who it's by, real pages, and every page fits its paper at the smallest words (an iPhone held sideways)
+        bad = await pg.evaluate("""()=>{const bad=[];for(const bk of BOOKS)for(const s of STORIES[bk.id]){if(!s.t||!s.by||!s.p||!s.p.length)bad.push(bk.id+': '+(s.t||'?')+' needs a title, a by line and pages');
+          if(/sloth.s almanac/i.test(s.by)!==(bk.id==='almanac'))bad.push(bk.id+': '+s.t+' by line');if((bk.id==='almanac'||/^told/.test(s.by))&&!s.src)bad.push(bk.id+': '+s.t+' needs a source to check');
+          closeStory(true);startReading(st.id,bk);__step(.4);const r=READ.get(st.id);r.s=s;const P=readPages(s);
+          for(let i=0;i<P.length;i+=2){r.page=i;showStory();for(const el of storyEl.querySelectorAll('.spage')){if(el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1)bad.push(bk.id+': '+s.t+': page '+(i+(el.classList.contains('sr')?1:0))+' does not fit');
+            for(const n of el.querySelectorAll('*'))if(parseFloat(getComputedStyle(n).fontSize)<14)bad.push(s.t+': words under 14px');if(parseFloat(getComputedStyle(el).fontSize)<16)bad.push(s.t+': page words under 16px');}}}
+          closeStory(true);return bad;}""")
+        fails += bad
+        # pictures: each book's first read, its title page and the pages after
+        for k, bk in enumerate(("fairy", "almanac", "nonsense", "grimoire")):
+            for j in range(await pg.evaluate("(b)=>STORIES[b].length", bk)):
+                await pg.evaluate("([k,j])=>{closeStory(true);capClear();startReading(st.id,BOOKS[k]);__step(.4);READ.get(st.id).s=STORIES[BOOKS[k].id][j];showStory();capClear();__step(.1);}", [k, j])
+                await pg.wait_for_timeout(250)
+                await pg.locator(".story").screenshot(path=os.path.join(OUT, f"read_{bk}_{j + 1}_title.png"))
+                await pg.evaluate("()=>{READ.get(st.id).page=2;showStory();}")
+                await pg.locator(".story").screenshot(path=os.path.join(OUT, f"read_{bk}_{j + 1}_pages.png"))
+        await pg.evaluate("()=>closeStory(true)")
         fails += errs
         await b.close()
     for f in fails:
