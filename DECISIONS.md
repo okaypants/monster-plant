@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Flipping back in the books (Nov 15)
+
+- Jackie: you should be able to flip backwards in books and pages.
+- **Pages:** tap the left page of the open book to go back two pages; tap the right page to go on, as before. Same 2-frame flip, the other way (it just appears with reduce motion).
+- **Books:** on a title page, tapping the left page goes back to the read before this one in the same book, opened at its title. Each book remembers its last 30 reads (saved). At the very first read there's nothing before, so nothing happens.
+- Finishing any read still closes the book, and the next time the book opens it brings a new read.
+- The journal already had Back and Next arrows, so that didn't change.
+- `tests/reading_shots.py` checks both with a real mouse.
+
 ### Cute, rounded, chunky text style (Nov 15)
 
 - Jackie asked for a more cute, rounded, neo-brutalist type and UI style, for **everything with words**, with **round chunky corners** replacing the stepped pixel ones. This replaces the shape part of the Nov 10 text style ("stepped pixel corners, never round"); the colors, sizes, tints, symbols and contrast rules from Nov 10 all stay.

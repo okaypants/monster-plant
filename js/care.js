@@ -173,7 +173,7 @@ function startReading(id,bk,from){closeStory(true);
   READ.set(id,{bk,from,page:0,s:nextRead(bk.id)});st.listen=2;});
  storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
  storyEl.innerHTML='<div class="scover jstep"><div class="spage jstep sl"></div><div class="spage jstep sr"></div></div>';
- storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();turnStory();});
+ storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();const b=storyEl.getBoundingClientRect();if((e.clientX||e.clientY)&&e.clientX<b.left+b.width/2)backStory();else turnStory();}); // the left page flips back, the right page on
  ui.appendChild(storyEl);placeStory();showStory();if(from)zoomStory(from);}
 // it zooms open from the book you tapped: three quick steps (small, bigger, full), no smooth scaling
 function zoomStory(r){if(tsCalm())return;const el=storyEl,b=el.getBoundingClientRect(),dx=r.left+r.width/2-(b.left+b.width/2),dy=r.top+r.height/2-(b.top+b.height/2);
@@ -193,6 +193,15 @@ function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+story
  const f=document.createElement('div');f.className='sturn sturn1 jstep';storyEl.querySelector('.scover').appendChild(f); // the right page lifts
  setTimeout(()=>{f.className='sturn sturn2 jstep';},90); // and lands on the left
  setTimeout(()=>{f.remove();r.page+=2;delete storyEl.dataset.turning;showStory();},180);}
+/* Flipping back (Jackie, Nov 15): tap the left page. It turns back two pages (the same 2-frame flip, the other way); from the title
+   page it goes back to the read before this one in the same book, opened at its title. At the very first read there's nothing
+   before, so nothing happens. */
+function backStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
+ let to=null;if(r.page>=2)to={page:r.page-2};else{const s=prevRead(r.bk.id,r.s);if(s)to={page:0,s};}
+ if(!to){sfx('tick');return;}const go=()=>{Object.assign(r,to);showStory();};sfx('page');if(tsCalm()){go();return;}storyEl.dataset.turning=1;
+ const f=document.createElement('div');f.className='sturn sturn2 jstep';storyEl.querySelector('.scover').appendChild(f); // the left page lifts
+ setTimeout(()=>{f.className='sturn sturn1 jstep';},90); // and lands on the right
+ setTimeout(()=>{f.remove();delete storyEl.dataset.turning;go();},180);}
 function closeStory(quiet){if(!storyEl)return;const id=+storyEl.dataset.id,r=READ.get(id);storyEl.remove();storyEl=null;if(!r)return;READ.delete(id);
  if(!quiet)sfx('page');bookHops.push({id:r.bk.id,x:1220,y:630,t0:performance.now()}); // the closed book hops home
  if(r.from)withPlant(id,()=>{st.perch=r.from.perch;if(r.from.free)st.free=r.from.free;st.walk=null;pickChair();});save();}

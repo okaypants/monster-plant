@@ -119,4 +119,7 @@ function nextRead(book){const all=STORIES[book]||[];if(!all.length)return null;s
  let q=(st.shelf[book]||[]).filter(i=>i>=0&&i<all.length);
  if(!q.length){q=all.map((_,i)=>i);for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}
   if(q.length>1&&q[0]===st.shelfLast[book])q.push(q.shift());}
- const i=q.shift();st.shelf[book]=q;st.shelfLast[book]=i;return all[i];}
+ const i=q.shift();st.shelf[book]=q;st.shelfLast[book]=i;
+ st.shelfHist=st.shelfHist||{};const h=st.shelfHist[book]=(st.shelfHist[book]||[]).concat(i).slice(-30);return all[i];} // the last 30, for flipping back
+// the read that came before this one in its book (flipping back from a title page), or null at the very first
+function prevRead(book,s){const all=STORIES[book]||[],h=((st.shelfHist||{})[book]||[]).filter(i=>i>=0&&i<all.length),at=h.lastIndexOf(all.indexOf(s));return at>0?all[h[at-1]]:null;}

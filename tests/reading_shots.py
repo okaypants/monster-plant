@@ -89,6 +89,32 @@ async def main():
             for(const n of el.querySelectorAll('*'))if(parseFloat(getComputedStyle(n).fontSize)<14)bad.push(s.t+': words under 14px');if(parseFloat(getComputedStyle(el).fontSize)<16)bad.push(s.t+': page words under 16px');}}}
           closeStory(true);return bad;}""")
         fails += bad
+        # flipping back (Jackie, Nov 15): tap the left page to go back two pages; from the title page, back to the read before
+        await pg.evaluate("()=>{closeStory(true);capClear();st.shelf={};st.shelfLast={};st.shelfHist={};startReading(st.id,BOOKS[0]);__step(.4);}")
+        sb = await pg.locator(".story").bounding_box()
+        left, right, my = sb["x"] + sb["width"] * .25, sb["x"] + sb["width"] * .75, sb["y"] + sb["height"] / 2
+        state = "()=>{const r=READ.get(st.id);return r?{read:STORIES.fairy.indexOf(r.s),page:r.page,left:document.querySelector('.story .sl').textContent}:null;}"
+        first = await pg.evaluate(state)
+        await pg.mouse.click(left, my)
+        await pg.evaluate("()=>__step(.3)")
+        check(await pg.evaluate(state) == first, "the very first read's title page: tapping the left page should do nothing")
+        await pg.mouse.click(right, my)
+        await pg.evaluate("()=>__step(.3)")
+        on = await pg.evaluate(state)
+        check(on and on["page"] == 2, f"tapping the right page should turn on: {on}")
+        await pg.mouse.click(left, my)
+        await pg.evaluate("()=>__step(.1)")
+        await pg.screenshot(path=os.path.join(OUT, "8_flipping_back.png"))
+        await pg.evaluate("()=>__step(.3)")
+        check(await pg.evaluate(state) == first, f"tapping the left page should flip back to the title: {await pg.evaluate(state)}")
+        await pg.evaluate("()=>{closeStory(true);startReading(st.id,BOOKS[0]);__step(.4);}")  # the next read in the book
+        second = await pg.evaluate(state)
+        check(second["read"] != first["read"] and second["page"] == 0, f"the next read should be a different one: {second}")
+        await pg.mouse.click(left, my)
+        await pg.evaluate("()=>__step(.3)")
+        back = await pg.evaluate(state)
+        check(back == first, f"from a title page, the left page should go back to the read before, at its title: {back}")
+        await pg.evaluate("()=>closeStory(true)")
         # pictures: each book's first read, its title page and the pages after
         for k, bk in enumerate(("fairy", "almanac", "nonsense", "grimoire")):
             for j in range(await pg.evaluate("(b)=>STORIES[b].length", bk)):
