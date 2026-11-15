@@ -91,7 +91,7 @@ function openJournal(page){sfx('page');closeJournal();
  jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
  ui.appendChild(jEl);fitBook();renderJournal();}
 addEventListener('resize',()=>setTimeout(fitBook,50));
-// once Fredoka has loaded, lay the open book out again: what fits on a page depends on the real letters
+// once Nunito has loaded, lay the open book out again: what fits on a page depends on the real letters
 if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{if(jEl&&!jEl.querySelector('input')){jEl.more={};renderJournal();}});
 function jTurn(to,sub=0){if((to===jPage&&sub===jSub)||!jEl)return;sfx('page');const bk=jEl.querySelector('.jcover');
  if(tsCalm()){jPage=to;jSub=sub;renderJournal();return;} // reduce motion: the new page just appears

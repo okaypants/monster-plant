@@ -70,7 +70,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/night_window_shots.py` pictures the night room in every season with the curtains open and closed (`tests/screenshots/night_window/sheet.png`) and checks the night window pieces differ from winter's only behind the glass.
 
-`python tests/ui_shots.py` checks the UI look (Fredoka text; captions, bubbles and buttons in the one text style: round corners, a hard shadow) and saves the start screen, a caption, Sloth's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
+`python tests/ui_shots.py` checks the UI look (Nunito text; captions, bubbles and buttons in the one text style: round corners, a hard shadow) and saves the start screen, a caption, Sloth's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
 
 `python3 tests/textstyle_shots.py` pictures every kind of text at iPhone landscape size, day and night (start menu, caption pill, a monster's and the cat's speech bubbles, a choice card, Sloth's note and letter, the Files drawer, a journal page, name tags, the FILES placard, a story page, the seed choice, the Good morning card, a quiz question), with contact sheets `sheet_day.png` and `sheet_night.png`, and checks the built-in accessibility: contrast (text 4.5:1, icons 3:1), no word under 14px on screen, nothing cut off, each monster's own look, names with their symbol, Yes/Not yet by icon and word, two lines at most, one message at a time, stepped pops and reduce-motion; saved to `tests/screenshots/textstyle/`.
 

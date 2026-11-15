@@ -1,7 +1,7 @@
 /* TEXT STYLE (Jackie, Nov 10; rounded Nov 15): one look for every word in the game; the colors are also in js/textstyle.js (TS, LOOKS).
    Cream paper, cocoa ink (never pure black or white), rust headings and small icons, sage Yes, mint paper for Sloth, PhD,
    brass for the FILES placard. Shape (cute, rounded, chunky): big round corners, a 3px cocoa outline, and a hard cocoa shadow
-   set down and to the right with no blur. Lettering: Fredoka, heavy for names, titles and buttons. Reading pages are left-aligned.
+   set down and to the right with no blur. Lettering: Nunito (clean and round; Jackie, Nov 15), reading text 600, names, titles and buttons 800. Reading pages are left-aligned.
    Sizes on screen: headings 23-25, bubbles and captions 18, notes and the journal 16, small print 14, never smaller. */
 :root{--ts-paper:#FFF4E0;--ts-ink:#5B3A2E;--ts-rust:#A84B26;--ts-sage:#CFE3C2;--ts-mint:#E4F4EA;--ts-mintink:#2F6B57;--ts-toffee:#B98C66;--ts-brass:#E2B04A;--ts-brassink:#3A2406;--ts-shade:#F3E2C6;
  --ts-r:16px;--ts-sx:3px;--ts-sy:4px}
@@ -22,13 +22,13 @@
 @media (prefers-reduced-motion:reduce){.tspop{animation:none}}
 
 /* names: bold, name color, symbol first */
-.tsname{font-weight:700;white-space:nowrap}
+.tsname{font-weight:800;white-space:nowrap}
 .tssym{height:.72em;width:auto;margin:0 .22em -.04em 0;image-rendering:pixelated;vertical-align:baseline}
 
 /* caption pill (top centre, cream) and speech bubble (the speaker's tint, stepped tail toward them) */
 #caption{position:absolute;left:0;top:0;display:none;pointer-events:none;z-index:40}
 #caption.show{display:block}
-#caption .ci{padding:.4em .85em .45em;font-size:max(18px,calc(var(--S)*31px));font-weight:500;line-height:1.3;text-align:left}
+#caption .ci{padding:.4em .85em .45em;font-size:max(18px,calc(var(--S)*31px));font-weight:600;line-height:1.3;text-align:left}
 #caption.talk .ci{--bg:var(--tint,var(--ts-paper))}
 #caption .tail{display:none;position:absolute;top:calc(100% - 3px);width:21px;height:12px;z-index:1}
 #caption .tail::before,#caption .tail::after{content:'';position:absolute;inset:0}
@@ -37,18 +37,18 @@
 #caption.talk .tail{display:block}
 
 /* paper card: notes and choices in the room */
-.bubble{position:absolute;pointer-events:auto;padding:14px 18px 16px;font-size:max(18px,calc(var(--S)*31px));font-weight:500;line-height:1.3;max-width:min(400px,70vw);text-align:left}
-.tsfrom{display:flex;align-items:center;gap:10px;font-weight:600;margin-bottom:4px}
+.bubble{position:absolute;pointer-events:auto;padding:14px 18px 16px;font-size:max(18px,calc(var(--S)*31px));font-weight:600;line-height:1.3;max-width:min(400px,70vw);text-align:left}
+.tsfrom{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:4px}
 .tsfrom .jlstamp{float:none;width:48px;height:52px;margin:0}
 
 /* choice buttons: same size, side by side; icon + word; one short line under each */
 .tschoices{display:grid;grid-template-rows:auto auto;grid-auto-flow:column;grid-auto-columns:1fr;gap:5px 12px;margin-top:12px} /* buttons share a row, so they're the same size even when a word wraps */
 .tschoice{display:contents}
-.tsbtn{font:inherit;font-size:18px;font-weight:700;line-height:1.2;padding:9px 14px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;min-width:0}
+.tsbtn{font:inherit;font-size:18px;font-weight:800;line-height:1.2;padding:9px 14px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;min-width:0}
 .tsbtn.tsyes{--bg:var(--ts-sage)}.tsbtn.tswait{--bg:var(--ts-paper)}
 .tsmint .tsbtn.tswait{--bg:var(--ts-paper)}.tsmint .tsbtn{color:var(--ts-ink)}
 .tsicon{width:14px;height:auto;image-rendering:pixelated}
-.tssub{font-size:14px;font-weight:500;line-height:1.25;text-align:left;color:inherit}
+.tssub{font-size:14px;font-weight:600;line-height:1.25;text-align:left;color:inherit}
 .bubble .tsbtn{font-size:max(18px,calc(var(--S)*27px))}.bubble .tssub{font-size:max(14px,calc(var(--S)*21px))} /* in the room they grow with the screen, like the captions */
 .tsb:focus-visible{outline:3px solid var(--ts-rust);outline-offset:3px}
 .tsbtn:active{top:2px;left:1px}.tsbtn:active::before{box-shadow:1px 2px 0 var(--ts-ink)} /* pressed: it sinks onto its shadow */
@@ -56,16 +56,16 @@
 /* menus (start, quiz) on a paper card */
 .screen:not(.journal){background:rgba(58,36,26,.78)}
 .tsscreen{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 30px 26px;max-width:min(640px,88vw);box-sizing:border-box}
-.screen .tsscreen h1{font-size:25px!important;font-weight:700;margin:0;color:var(--ts-ink);text-align:center}
+.screen .tsscreen h1{font-size:25px!important;font-weight:800;margin:0;color:var(--ts-ink);text-align:center}
 .screen .tsscreen p{margin:0;font-size:16px;max-width:560px;text-align:left}
-.screen .tsscreen .tssmall{font-size:14px;color:var(--ts-rust);font-weight:600}
+.screen .tsscreen .tssmall{font-size:14px;color:var(--ts-rust);font-weight:700}
 .tsscreen .opts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.screen:not(.journal) .tsscreen button{font:inherit;font-size:18px;font-weight:700;padding:9px 22px 10px;min-width:150px;cursor:pointer;transition:none;transform:none}
+.screen:not(.journal) .tsscreen button{font:inherit;font-size:18px;font-weight:800;padding:9px 22px 10px;min-width:150px;cursor:pointer;transition:none;transform:none}
 #rot{background:#3A241A!important}#rot .tsscreen{font-size:18px}
 
 /* name tags: the monster's tint, name color and symbol */
 #nameTags{gap:9px}
-#nameTags button{--bg:var(--tint);color:var(--nm);font:inherit;font-weight:700;font-size:max(14px,calc(var(--S)*20px));padding:max(4px,calc(var(--S)*6px)) max(9px,calc(var(--S)*14px)) max(5px,calc(var(--S)*7px));cursor:pointer;pointer-events:auto;line-height:1.15}
+#nameTags button{--bg:var(--tint);color:var(--nm);font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*20px));padding:max(4px,calc(var(--S)*6px)) max(9px,calc(var(--S)*14px)) max(5px,calc(var(--S)*7px));cursor:pointer;pointer-events:auto;line-height:1.15}
 
 /* book page: the journal, keepsakes and the FILES drawer. --jk is the book's scale on screen, so small print never drops under 14px */
 .jbook{--f24:max(24px,calc(24px / var(--jk,1)));--f16:max(16px,calc(16px / var(--jk,1)));--f14:max(14px,calc(14px / var(--jk,1)));--f18:max(18px,calc(18px / var(--jk,1)));color:var(--ts-ink)}
@@ -83,15 +83,15 @@
 .jlab{font-size:var(--f14);color:var(--ts-rust);display:flex;align-items:center;gap:6px}
 .jlab .tslabicon{width:auto;height:.85em;image-rendering:pixelated}
 .jstamp{height:auto;min-height:26px;font-size:var(--f14);line-height:1.2;border-color:var(--ts-rust);color:var(--ts-rust);border-radius:9px}
-.jquirks .jstamp{width:auto;min-width:0;padding:3px 6px;font-size:var(--f14)}
+.jquirks .jstamp{width:auto;min-width:0;padding:2px 4px;min-height:24px;line-height:1.1;font-size:var(--f14);letter-spacing:-.02em} /* Nunito is wider: a touch tighter so the same stamps fit the page */
 .jgrew{white-space:normal;width:auto;max-width:100%;padding:3px 8px;align-self:center;flex:none}
-.jstamp.jfaint{border:2px dashed var(--ts-toffee);color:var(--ts-ink);font-weight:400}
+.jstamp.jfaint{border:2px dashed var(--ts-toffee);color:var(--ts-ink);font-weight:500}
 .jmiles .jstamp{width:auto;font-size:var(--f14)}
 .jtitle{border-color:var(--ts-ink);color:var(--ts-ink)}
 .jblank{border-color:var(--ts-toffee);border-radius:10px}
 .jcharm{background:var(--ts-shade);border-radius:12px}.jcharm.worn{background:var(--ts-sage);box-shadow:0 0 0 3px var(--ts-ink)}
 .jclose{color:var(--ts-ink);font-size:24px}
-.jarchnote{font-size:var(--f16);line-height:1.25;text-align:left}
+.jarchnote{font-size:var(--f16);line-height:1.2;text-align:left;letter-spacing:-.01em} /* Nunito runs a little wider: a touch tighter so the Files note fits a phone */
 .jarchname{font-size:var(--f14)}.jarchlabel{background:var(--ts-paper)}
 .jarchbook{color:var(--ts-ink)}
 .jwent{color:var(--ts-rust)}
@@ -111,7 +111,7 @@
 .story{color:var(--ts-ink);font-size:max(16px,calc(var(--S)*27px))}
 .story .scover{outline-color:var(--ts-ink)}
 .story .spage{background:var(--ts-paper);text-align:left;white-space:pre-line;padding-left:max(14px,calc(var(--S)*40px));padding-right:max(14px,calc(var(--S)*40px))} /* poems keep their lines */
-.story .stitle{flex-direction:column;align-items:center;justify-content:center;gap:.5em;text-align:center} /* the title page is centered (Jackie, Nov 15); the reading pages stay left-aligned */.story .stitle b{font-weight:700;color:var(--ts-rust);font-size:1.15em;line-height:1.2}
+.story .stitle{flex-direction:column;align-items:center;justify-content:center;gap:.5em;text-align:center} /* the title page is centered (Jackie, Nov 15); the reading pages stay left-aligned */.story .stitle b{font-weight:800;color:var(--ts-rust);font-size:1.15em;line-height:1.2}
 .story .sby{font-size:max(14px,.8em);line-height:1.25}
 .story .sturn{background:var(--ts-paper);outline-color:var(--ts-ink)}
 

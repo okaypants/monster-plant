@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Nunito lettering (Nov 15)
+
+- Jackie wanted the lettering swapped for something cleaner, rounder and cuter (the old one, Fredoka, read as Comic Sans style). From a sample sheet of six, Jackie picked **Nunito**.
+- Every word in the game is now Nunito. Each weight went up one step so it reads as sturdy as before: reading text 600, names, titles, headings and buttons 800.
+- Nunito runs a little wider, so the Files note and the journal's quirk stamps are set a touch tighter to still fit their pages. The game also asks for every weight of the lettering as it starts, so pages are laid out with the real letters. Sizes, colors and the rounded shapes are unchanged.
+- The room's own pixel lettering (the FILES placard, SNACKS) is art and stays.
+
 ### Flipping back in the books (Nov 15)
 
 - Jackie: you should be able to flip backwards in books and pages.
@@ -16,7 +23,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Jackie asked for a more cute, rounded, neo-brutalist type and UI style, for **everything with words**, with **round chunky corners** replacing the stepped pixel ones. This replaces the shape part of the Nov 10 text style ("stepped pixel corners, never round"); the colors, sizes, tints, symbols and contrast rules from Nov 10 all stay.
 - **Shape:** big round corners (16 px), the same 3 px cocoa outline, and a hard cocoa shadow set 3 px right and 4 px down with no blur (it was a toffee shadow straight below). A pressed button sinks onto its shadow. Speech-bubble tails are plain triangles.
 - **Where:** captions, speech bubbles, choice cards and buttons, name tags, notes, Sloth's letters, menus, the trays, and the journal, Files and story books (round page and cover corners; stamps and charm slots rounded too).
-- **Lettering:** still Fredoka, now heavier (700) for names, titles, headings, buttons and name tags. Reading text stays 500.
+- **Lettering:** heavier for names, titles, headings, buttons and name tags (the font itself changed to Nunito the same day, see above).
 - **Unchanged:** the room and everything drawn in it stay pixel art, including the FILES placard; words still appear in stepped pops with no fades.
 - `tests/ui_shots.py` now checks for the round corners and the hard shadow.
 

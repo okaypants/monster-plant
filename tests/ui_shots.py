@@ -1,9 +1,9 @@
-"""UI look: Fredoka text in the one text style (Jackie, Nov 10; replaces the Nov 4 cream pills): cream paper, cocoa ink,
+"""UI look: Nunito text in the one text style (Jackie, Nov 10; replaces the Nov 4 cream pills): cream paper, cocoa ink,
 a 3px cocoa outline with big round corners and a hard shadow (the room stays pixel art).
 
 Run from the repository root:  python tests/ui_shots.py
 On a laptop-sized screen and an iPhone 13 held sideways: the start screen, a caption, a bubble with buttons (the treat
-jar) and the journal. Checks that the text uses Fredoka and that captions, bubbles and buttons have the rounded shape with a hard shadow.
+jar) and the journal. Checks that the text uses Nunito and that captions, bubbles and buttons have the rounded shape with a hard shadow.
 tests/textstyle_shots.py checks the rest of the style. Pictures go to tests/screenshots/ui/. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -34,14 +34,14 @@ async def main():
             await pg.evaluate("()=>document.fonts.ready")
             await pg.wait_for_timeout(400)
             await pg.screenshot(path=os.path.join(OUT, f"{name}_1_start.png"))
-            r = await pg.evaluate("()=>{const b=document.querySelector('.screen button'),cs=getComputedStyle(b);return {font:getComputedStyle(document.body).fontFamily,loaded:document.fonts.check('600 18px Fredoka'),radius:parseFloat(cs.borderTopLeftRadius),border:cs.borderTopStyle,steps:getComputedStyle(b,'::before').boxShadow,inner:parseFloat(getComputedStyle(b,'::before').borderTopLeftRadius)};}")
-            check("Fredoka" in r["font"] and r["loaded"], f"{name}: Fredoka isn't the font ({r})")
+            r = await pg.evaluate("()=>{const b=document.querySelector('.screen button'),cs=getComputedStyle(b);return {font:getComputedStyle(document.body).fontFamily,loaded:document.fonts.check('800 18px Nunito'),radius:parseFloat(cs.borderTopLeftRadius),border:cs.borderTopStyle,steps:getComputedStyle(b,'::before').boxShadow,inner:parseFloat(getComputedStyle(b,'::before').borderTopLeftRadius)};}")
+            check("Nunito" in r["font"] and r["loaded"], f"{name}: Nunito isn't the font ({r})")
             check(r["radius"] == 16 and r["inner"] == 16 and r["border"] == "none" and "3px 4px 0px" in r["steps"] and "blur" not in r["steps"], f"{name}: screen buttons should be rounded with a hard shadow ({r})")
             await pg.click(".screen button")
             await pg.evaluate("()=>{__step(12);capClear();CAP.seen.clear();tell('Get out your cameras, it\\'s golden hour.',{kind:'important'});__step(.6);}")
             await pg.wait_for_timeout(700)
             r = await pg.evaluate("()=>{const e=cap.querySelector('.ci'),c=getComputedStyle(e);return {bg:c.getPropertyValue('--bg').trim(),radius:parseFloat(c.borderTopLeftRadius),weight:c.fontWeight,steps:getComputedStyle(e,'::after').borderTopLeftRadius};}")
-            check(r["bg"].upper() == "#FFF4E0" and r["radius"] == 16 and r["weight"] == "500" and r["steps"] == "13px", f"{name}: caption isn't the cream rounded pill ({r})")
+            check(r["bg"].upper() == "#FFF4E0" and r["radius"] == 16 and r["weight"] == "600" and r["steps"] == "13px", f"{name}: caption isn't the cream rounded pill ({r})")
             await pg.screenshot(path=os.path.join(OUT, f"{name}_2_caption.png"))
             await pg.evaluate("()=>{capClear();slothAsk();}")  # a bubble with buttons (Sloth's question)
             await pg.wait_for_timeout(300)

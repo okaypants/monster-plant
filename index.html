@@ -14,29 +14,29 @@
 <meta name="theme-color" content="#19101b">
 <title>Monster Plant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-html,body{margin:0;height:100%;background:#19101b;overflow:hidden;font-family:'Fredoka','Nunito','Varela Round',system-ui,sans-serif;color:#fdebc9}
+html,body{margin:0;height:100%;background:#19101b;overflow:hidden;font-family:'Nunito','Varela Round',system-ui,sans-serif;color:#fdebc9}
 #wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#19101b;color:#fdebc9;align-items:center;justify-content:center;text-align:center;font-size:22px;padding:30px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
 /* LOADING SCREEN (Jackie, Nov 10): covers everything until the room's pictures are all in. The dots are a frame swap (no fades). */
 #loading{position:fixed;inset:0;z-index:98;background:#3A241A;display:flex;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}
-#loading h1{font-size:25px;font-weight:600;margin:0}#loading p{margin:0;font-size:18px}
+#loading h1{font-size:25px;font-weight:700;margin:0}#loading p{margin:0;font-size:18px}
 #loading .ldots i{font-style:normal;animation:ld1 1.2s step-end infinite}#loading .ldots i:nth-child(2){animation-name:ld2}#loading .ldots i:nth-child(3){animation-name:ld3}
 @keyframes ld1{0%{visibility:hidden}25%{visibility:visible}}@keyframes ld2{0%{visibility:hidden}50%{visibility:visible}}@keyframes ld3{0%{visibility:hidden}75%{visibility:visible}}
 @media (prefers-reduced-motion:reduce){#loading .ldots i{animation:none}}
 #ui{position:absolute;inset:0;pointer-events:none}
-/* UI LOOK: Fredoka text; the colors and shapes of every word are in css/textstyle.css (Jackie, Nov 10). This block is layout. */
+/* UI LOOK: Nunito text (Jackie, Nov 15; one step heavier than the old Fredoka weights); the colors and shapes of every word are in css/textstyle.css (Jackie, Nov 10). This block is layout. */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(25,16,27,.84);pointer-events:auto;text-align:center;gap:16px;padding:20px;box-sizing:border-box}
-.screen:not(.journal) h1{font-weight:600;font-size:52px;margin:0;color:#c8d145}
+.screen:not(.journal) h1{font-weight:700;font-size:52px;margin:0;color:#c8d145}
 .screen:not(.journal) p{margin:0;font-size:22px;max-width:600px}
 .screen:not(.journal) .opts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 /* NAME TAGS (Jackie, Nov 4): each monster's name in a small cream pill at the bottom left (both, when there are two). Tap one to open its journal page. */
 #nameTags{position:absolute;left:1.2%;bottom:2%;display:flex;gap:6px;z-index:30;pointer-events:none}
 /* THE STORY (Jackie, Nov 7): a small open book facing us, two cream pages with a dark stepped outline, the book's color as its cover edge */
-.story{position:absolute;z-index:44;pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;font-size:max(11px,calc(var(--S)*27px));font-weight:500;line-height:1.3;color:#4a2a4f}
+.story{position:absolute;z-index:44;pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;font-size:max(11px,calc(var(--S)*27px));font-weight:600;line-height:1.3;color:#4a2a4f}
 .story .scover{position:absolute;inset:0;background:var(--bc);outline:max(2px,calc(var(--S)*5px)) solid #341839;padding:max(3px,calc(var(--S)*8px));box-sizing:border-box;display:flex;gap:max(2px,calc(var(--S)*6px));box-shadow:inset 0 0 0 max(2px,calc(var(--S)*6px)) var(--bc)}
 .story .spage{flex:1;background:#fff4e2;padding:max(5px,calc(var(--S)*16px)) max(6px,calc(var(--S)*18px));box-sizing:border-box;display:flex;align-items:center;text-align:center;overflow:hidden}
 .story .sl{box-shadow:inset -6px 0 0 #f3e2c8}.story .sr{box-shadow:inset 6px 0 0 #f3e2c8}
@@ -44,22 +44,22 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .story .sturn1{left:50%;width:32%}.story .sturn2{left:18%;width:32%}
 /* JOURNAL (Jackie, Nov 4): a keepsake book. Cream pages, dark stepped pixel outline; design size 760x446, scaled to fit (fitBook in journal.js). */
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
-.jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:500}
+.jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:600}
 .jstep{clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px))}
 .jcover{position:absolute;left:0;top:46px;width:760px;height:400px;background:#341839;box-sizing:border-box}
 .jpage{position:absolute;top:6px;width:371px;height:388px;background:#fff4e2;box-sizing:border-box;padding:16px 18px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 .jl{left:6px;align-items:center;box-shadow:inset -8px 0 0 #f3e2c8}.jr{right:6px;box-shadow:inset 8px 0 0 #f3e2c8} /* a hard-edged shade by the spine */
 .jpix{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
-.jname{font-size:22px;font-weight:600;text-align:center}
-.jrename{border:none;background:none;color:inherit;font:inherit;font-size:22px;font-weight:600;padding:0 6px;cursor:pointer}
-.jnameinput{font:inherit;font-size:22px;font-weight:600;color:#4a2a4f;background:#fbecd2;border:none;border-bottom:2px dashed #833343;width:240px;padding:0 4px;outline:none}
+.jname{font-size:22px;font-weight:700;text-align:center}
+.jrename{border:none;background:none;color:inherit;font:inherit;font-size:22px;font-weight:700;padding:0 6px;cursor:pointer}
+.jnameinput{font:inherit;font-size:22px;font-weight:700;color:#4a2a4f;background:#fbecd2;border:none;border-bottom:2px dashed #833343;width:240px;padding:0 4px;outline:none}
 .jspecies{font-size:14px;color:#833343;margin-top:-10px}
 .jportrait{flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:0}
 .jgrowth{display:flex;gap:10px;align-items:flex-end}
 .jr .jgroup:first-child{padding-right:40px} /* clear of the close corner */
 .jborn{font-size:17px;text-align:center}
 .jpaws{display:flex;gap:14px;align-items:center;justify-content:center;min-height:50px}
-.jlab{font-size:15px;font-weight:600;color:#833343;margin-bottom:3px}
+.jlab{font-size:15px;font-weight:700;color:#833343;margin-bottom:3px}
 .jrow{display:flex;gap:28px}
 .jicons{display:flex;gap:10px;align-items:center;min-height:44px}
 .jfav,.jblank{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
@@ -69,7 +69,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .jstamp{box-sizing:border-box;min-width:62px;height:26px;padding:3px 8px;border:2px solid #833343;border-radius:6px;font-size:13px;line-height:16px;color:#833343;text-align:center;white-space:nowrap}
 .jquirks .jstamp{width:76px;min-width:0;padding:3px 1px;font-size:12px}
 .jstamp.jfaint{border:2px dashed #ead8c0}
-.jtitle{border-color:#6c61a4;color:#6c61a4;font-weight:600}
+.jtitle{border-color:#6c61a4;color:#6c61a4;font-weight:700}
 .jstickers{display:flex;flex-wrap:wrap;gap:8px}
 .jcharm{width:50px;height:50px;padding:0;border:none;background:#fbecd2;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .jcharm.worn{background:#ffd9b8;box-shadow:0 0 0 3px #e8a07a}
@@ -91,10 +91,10 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .jshelf{display:grid;grid-template-columns:repeat(3,100px);gap:10px 12px;justify-content:center}
 .jarchbook{width:100px;height:140px;padding:8px 6px 8px 14px;border:none;cursor:pointer;box-shadow:inset 7px 0 0 rgba(52,24,57,.45);box-sizing:border-box;font:inherit;color:#4a2a4f}
 .jarchlabel{height:100%;background:#fff4e2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:3px;box-sizing:border-box}
-.jarchpic{height:62px;display:flex;align-items:center;justify-content:center}.jarchname{font-size:12px;line-height:1.1;font-weight:600;text-align:center;overflow-wrap:anywhere}
-.jwent{font-weight:600;color:#833343}.jpostcard{width:150px;height:96px}.jcharm:disabled{cursor:default}
-.jletter{position:absolute;left:50%;top:50%;width:520px;box-sizing:border-box;line-height:1.35;font-weight:500}
-.jlstamp{float:right;width:82px;height:90px;margin:0 0 8px 14px;box-sizing:border-box;border:3px dashed #833343;background:#fbecd2;display:flex;align-items:center;justify-content:center}.jlsign{clear:none;margin-top:12px;font-weight:600;color:#833343}
+.jarchpic{height:62px;display:flex;align-items:center;justify-content:center}.jarchname{font-size:12px;line-height:1.1;font-weight:700;text-align:center;overflow-wrap:anywhere}
+.jwent{font-weight:700;color:#833343}.jpostcard{width:150px;height:96px}.jcharm:disabled{cursor:default}
+.jletter{position:absolute;left:50%;top:50%;width:520px;box-sizing:border-box;line-height:1.35;font-weight:600}
+.jlstamp{float:right;width:82px;height:90px;margin:0 0 8px 14px;box-sizing:border-box;border:3px dashed #833343;background:#fbecd2;display:flex;align-items:center;justify-content:center}.jlsign{clear:none;margin-top:12px;font-weight:700;color:#833343}
 .jlbtns{clear:both}
 .jmiles{gap:8px 8px}.jmiles .jstamp{min-width:0;width:158px;font-size:14px}
 .jdetails{display:flex;gap:22px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding-bottom:30px}.jdetails .jpaws{min-height:0}
@@ -113,21 +113,21 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 #dbg{position:fixed;top:0;right:0;bottom:0;z-index:60;display:none;box-sizing:border-box;background:#19101b;border-left:2px solid #6c61a4;border-radius:16px 0 0 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;
  padding:0 calc(8px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) 8px;font-size:14px;line-height:1.35;color:#fdebc9;overscroll-behavior:contain}
 #dbg.open{display:block}
-#dbg b{color:#c8d145;font-weight:600}
+#dbg b{color:#c8d145;font-weight:700}
 #dbg button,#dbg select,#dbg input[type=text]{font:inherit;font-size:14px;min-height:40px;background:#341839;color:#fdebc9;border:1px solid #6c61a4;border-radius:12px;padding:4px 10px;margin:2px 4px 2px 0;touch-action:manipulation}
 #dbg button.on{background:#c8d145;color:#341839;border-color:#c8d145}
 #dbg select{width:100%}
 #dbg input[type=text]{width:100%;box-sizing:border-box}
 #dbg .dhead{position:sticky;top:0;z-index:2;background:#19101b;padding:6px 0 4px;border-bottom:1px solid #6c61a4}
-#dbg .dhead .big{background:#c8d145;color:#341839;font-weight:600}
+#dbg .dhead .big{background:#c8d145;color:#341839;font-weight:700}
 #dbg .hrow{display:flex;align-items:center}
 #dbg .hrow button{min-height:36px;margin:0 0 0 6px}
 #dbg .hrow .big{flex:1}
 #dbg .keep{width:100%;font-size:13px;min-height:36px;background:#2a1a2e;margin:8px 0 2px}
-#dbg .tm{background:#d33d3b;color:#fff;font-weight:600;font-size:12px;padding:2px 6px;border-radius:4px;letter-spacing:1px;white-space:nowrap}
+#dbg .tm{background:#d33d3b;color:#fff;font-weight:700;font-size:12px;padding:2px 6px;border-radius:4px;letter-spacing:1px;white-space:nowrap}
 #dbg .status{font-size:11px;line-height:1.3;color:#d8c8b0;margin-top:4px}
 #dbg details.grp{border-bottom:1px solid #3d2a44}
-#dbg summary{font-size:17px;font-weight:600;color:#c8d145;min-height:44px;line-height:44px;cursor:pointer;list-style-position:inside}
+#dbg summary{font-size:17px;font-weight:700;color:#c8d145;min-height:44px;line-height:44px;cursor:pointer;list-style-position:inside}
 #dbg .gbody{padding:0 0 10px}
 #dbg .row{margin:8px 0}
 #dbg .row>label{display:block;font-size:13px;color:#d8c8b0;margin-bottom:2px}
@@ -140,7 +140,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 #dbg .nudge{font-size:13px}
 #dbg .nudge select{width:auto}
 #dbgTab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:60;display:none;font:inherit;font-size:15px;min-height:56px;padding:6px 8px;background:#341839;color:#fdebc9;border:2px solid #6c61a4;border-right:none;border-radius:8px 0 0 8px;cursor:pointer}
-#testBadge{position:fixed;left:calc(8px + env(safe-area-inset-left));top:8px;z-index:61;display:none;background:#d33d3b;color:#fff;font-weight:600;font-size:13px;padding:3px 8px;border-radius:4px;letter-spacing:1px;pointer-events:none}
+#testBadge{position:fixed;left:calc(8px + env(safe-area-inset-left));top:8px;z-index:61;display:none;background:#d33d3b;color:#fff;font-weight:700;font-size:13px;padding:3px 8px;border-radius:4px;letter-spacing:1px;pointer-events:none}
 body.testing #testBadge{display:block}
 @media (max-height:520px){.screen:not(.journal){padding:8px;overflow:auto}.tsscreen{gap:8px;padding:14px 22px 18px}#dbgBtn{font-size:13px;padding:3px 8px}}
 </style>

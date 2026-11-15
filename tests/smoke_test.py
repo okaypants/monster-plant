@@ -255,6 +255,7 @@ async def play(b, name, save, after, minutes, check, device=None):
         await pg.evaluate("()=>{const s=fresh();s.started=true;s.species=0;" + save + "localStorage.setItem(KEY,JSON.stringify(s));}")
         await pg.reload(wait_until="load")
     await pg.click(".screen button")  # Begin / Continue
+    await pg.evaluate("()=>Promise.all([500,600,700,800].map(w=>document.fonts.load(w+' 16px Nunito')))")  # the real letters, so every run lays pages out the same
     if save is None:
         for i in range(4):  # answer the 4 quiz questions
             await pg.click(".screen button >> nth=%d" % (i % 2))
