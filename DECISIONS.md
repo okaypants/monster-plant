@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### WORLD band: 24 stations from Asia (Nov 16)
+
+- Jackie: "more out of Japan Korea Philippines and Asia more generally they have a lot of cool stuff and du cultures and interest in lots of genres." The dial grew from 54 to 78.
+- **Japan:** Japan City Pop, Jazz Sakura, Moon Mission Recordings (Tokyo deep house), LISTEN.moe (J-pop and anime, fan-run), Gensokyo Radio (fan music for the Touhou games), Miku Radio (Vocaloid). **Korea:** yojosuknam Radio (gugak, jazz and lo-fi), LISTEN.moe K-pop. **Philippines:** Budots FM (Davao's homemade dance remixes), 90s Pinoy Alternative, OPM Radio, Pinoy Rap Radio.
+- **Elsewhere:** Hà Nội Community Radio, Bangkok Community Radio, BKK.FM, Looktung Eingdoi (luk thung), Pop Radio 21 (Khmer pop and folk), Mettaswara Koplo (dangdut koplo) and Radio Campursari (Indonesia), FM Belowground (Hong Kong), Taipei Classical Radio, Bollywood Gaane Purane (old Bollywood), Elgen Nutag (Mongolian folk), Qazaq radiosy (Kazakh folk).
+- All checked playing in a browser; a Casiopea-only station, Tamil 80's Radio and Radio Lantau didn't, so they were left out. Seoul Community Radio, Hong Kong Community Radio and boxout.fm (Delhi) would be great but don't publish a stream a web page can play.
+- The dial's ticks are thinner so 78 fit.
+
 ### WORLD band: 24 more stations, underground and weirdo (Nov 16)
 
 - Jackie: "the more underground but amazing the better", and asked for "alien or weirdo radio things too think art bell but 2026." Then: **"Keep it all. Just skip if it disappears."** The dial grew from 30 to 54; nothing was taken off.

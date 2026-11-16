@@ -3,8 +3,8 @@
    CRATES: old records that are free for everyone (the same library as the sampler: digitized 78s published 101 or more
      years ago), and now and then one of the songs you finished in the sampler and sent to the radio. Your song gets a
      caption, and the monsters bop along. The songs come from js/cratesdb.js.
-   WORLD: 54 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, plus
-     jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, San Francisco to
+   WORLD: 78 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
+     from Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, San Francisco to
      New Caledonia, then the ones that live only online. Drag the dial or
      tap the arrows; between stations you hear a real recording of a radio being tuned (sounds/tune.m4a). Live radio is
      only for listening: it never goes into the sampler or the crates.
@@ -120,12 +120,36 @@ const WORLD=[
  {n:'XRaydio',k:'A kaleidoscope of sound',p:'Bulgaria',u:'https://xraydio.ddns.net/live',x:25.0},
  {n:'Radio alHara',k:'Arty, from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra',x:35.2},
  {n:'Mutant Radio',k:'Underground',p:'Tbilisi, Georgia',u:'https://listen.radioking.com/radio/282820/stream/328621',x:44.8},
+ {n:'Qazaq radiosy',k:'Kazakh folk and steppe songs',p:'Kazakhstan',u:'https://radio-streams.kaztrk.kz/qazradio/qazradio/icecast.audio',x:71.4},
+ {n:'Bollywood Gaane Purane',k:'Old Bollywood songs',p:'India',u:'https://stream.zeno.fm/6n6ewddtad0uv',x:77.2},
+ {n:'Looktung Eingdoi',k:'Luk thung, Thai country music',p:'Northern Thailand',u:'https://inter.lannaradio.com/radio/8000/radio.mp3',x:98.98},
+ {n:'BKK.FM',k:'Alternative and electronic',p:'Bangkok, Thailand',u:'https://rsas.bkk.fm/radio',x:100.5},
+ {n:'Bangkok Community Radio',k:'Underground DJs',p:'Bangkok, Thailand',u:'https://bcr.radiocult.fm/stream',x:100.51},
+ {n:'Pop Radio 21',k:'Khmer pop and folk',p:'Phnom Penh, Cambodia',u:'https://listen.radioking.com/radio/318317/stream/365846',x:104.9},
+ {n:'Hà Nội Community Radio',k:'Underground DJs and live music',p:'Hanoi, Vietnam',u:'https://ha-noi-community-radio.radiocult.fm/stream',x:105.85},
+ {n:'Elgen Nutag',k:'Mongolian folk, stories and talk',p:'Mongolia',u:'https://a6.asurahosting.com:7210/radio.mp3',x:106.9},
+ {n:'Mettaswara Koplo',k:'Dangdut koplo: wild Javanese dance music',p:'Java, Indonesia',u:'https://mettaswara.com:8700//koplo',x:110.0},
+ {n:'Radio Campursari',k:'Campursari: gamelan meets keyboards',p:'Yogyakarta, Indonesia',u:'https://a8.siar.us/listen/campursari/stream',x:110.37},
+ {n:'FM Belowground',k:'Electronic',p:'Hong Kong',u:'https://listen.belowground.fm/radio/8000/radio.mp3',x:114.17},
+ {n:'90s Pinoy Alternative',k:'Filipino alt-rock from the 90s',p:'Philippines',u:'https://cast3.my-control-panel.com/proxy/ronald/stream',x:120.97},
+ {n:'OPM Radio',k:'OPM: Original Pilipino Music',p:'Philippines',u:'https://listen.streamaudio.co/proxy/kaibiganradio/opm',x:120.98},
+ {n:'Pinoy Rap Radio',k:'Filipino hip-hop',p:'Philippines',u:'https://stream.zeno.fm/0cdp55nqam0uv',x:120.99},
+ {n:'Taipei Classical Radio',k:'Classical',p:'Taipei, Taiwan',u:'https://stream.zeno.fm/w66d3dp6ynhvv',x:121.5},
+ {n:'Budots FM',k:'Budots: Davao\'s homemade dance remixes',p:'Philippines',u:'https://stream.zeno.fm/2uhuu5hvzqzuv',x:125.6},
+ {n:'yojosuknam Radio',k:'Gugak, jazz and lo-fi',p:'Korea',u:'https://stream.yojosuknam.com/live.mp3',x:127.0},
  {n:'Ashiya Radio',k:'Bossa nova and mellow tunes',p:'Ashiya, Japan',u:'https://s3.radio.co/sc8d895604/listen',x:135.3},
+ {n:'Japan City Pop',k:'Japanese city pop',p:'Japan',u:'https://play.streamafrica.net/japancitypop',x:139.0},
+ {n:'Jazz Sakura',k:'Japanese jazz',p:'Japan',u:'https://kathy.torontocast.com:3330/;',x:139.1},
+ {n:'Moon Mission Recordings',k:'Deep house from a Tokyo label',p:'Tokyo, Japan',u:'https://uk5.internet-radio.com/proxy/mmr?mp=/stream;',x:139.7},
  {n:'NIA Radio Lo-Fi',k:'Lo-fi beats',p:'New Caledonia',u:'https://radio.nia.nc/radio/8020/lofi-hq-stream.aac',x:166.45},
  {n:'Nightride FM Spacesynth',k:'Space-age synths',p:'Somewhere online',u:'https://stream.nightride.fm/spacesynth.mp3',x:999},
  {n:'Nightwave Plaza',k:'Vaporwave',p:'Somewhere online',u:'https://radio.plaza.one/mp3',x:999.1},
  {n:'Radio Brennpunkt',k:'Sound art and odd music',p:'Somewhere online',u:'https://radio-brennpunkt.radiocult.fm/stream',x:999.2},
- {n:'Dark Matter Sessions',k:'Strange signals',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3}];
+ {n:'Dark Matter Sessions',k:'Strange signals',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3},
+ {n:'LISTEN.moe K-pop',k:'K-pop, fan-run',p:'Somewhere online',u:'https://listen.moe/kpop/fallback',x:999.4},
+ {n:'LISTEN.moe',k:'J-pop and anime songs, fan-run',p:'Somewhere online',u:'https://listen.moe/fallback',x:999.5},
+ {n:'Gensokyo Radio',k:'Fan music for the Touhou games',p:'Gensokyo, in spirit',u:'https://stream.gensokyoradio.net/3',x:999.6},
+ {n:'Miku Radio',k:'Vocaloid: Hatsune Miku and friends',p:'Somewhere online',u:'https://miku.fm/listen/miku/mp3-128',x:999.7}];
 const HISS_VOL=.22; // the tuning sound between stations: quiet
 let HISS_BUF=null,hissLoading=false;
 function hissLoad(){if(HISS_BUF||hissLoading||!AC)return;hissLoading=true;fetch('sounds/tune.m4a').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>AC.decodeAudioData(b,ok,no))).then(b=>{HISS_BUF=b}).catch(()=>{hissLoading=false})}
