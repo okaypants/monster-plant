@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon box: a real tarot reading (Nov 16)
+
+- Jackie wanted the moon box on the right bookcase to be an oracle that feels "super good and useful and involved and super simple and cool", "the best toy ever that you like from 10-50"; no wheel (it would echo the orrery above the desk); then **"an actual tarot deck… based on an actual real deck we can do an actual reading with"**, and **"stick with tarot. I think u can pick a spread."**
+- **The deck:** the Rider–Waite–Smith tarot, all 78 cards: Pamela Colman Smith's pictures from the 1909 printing (public domain; scans from Wikimedia Commons, not the later recolored editions, which are still under copyright), made into the room's pixel style (72×124). The card back is our own: midnight blue, a brass border, a moon and stars. A few of Smith's cards have classical nudity (the Star, the Lovers, the World, the Devil), as drawn in 1909.
+- **The meanings:** A. E. Waite's own, from *The Pictorial Key to the Tarot* (1910, public domain). Each card has a short plain-words meaning written for the game from Waite's (his 1910 wording is old-fashioned and often grim), upright and reversed, and Waite's own words one tap away. Waite gives no reversed meaning for the Two of Cups, and the game says so.
+- **The spread (picked for Jackie):** the classic three cards, **the past, the present, the future**. Think of a question, tap the deck to shuffle, cut it into three piles and pick one, then turn the three cards over one by one. About one card in three comes up **reversed** (upside down), as in Waite's book. Tap a card to read it; once all three are up, a line reads the spread the traditional way (how many Major Arcana, which suit leads, whether several are reversed). New reading starts again.
+- The pictures load only when the box opens and when a card is dealt, so the game starts no slower. Nothing is saved.
+
 ### The pumpkin's eyes are closed (Nov 16)
 
 - Jackie didn't like how the pumpkin looked with its eyes open, so it now has sleepy closed eyes. In the three day frames each eye arc is turned upside down in place, using its own pixels. In the lit night frame, the glowing open eyes are now glowing sleepy slits the same shape, in that frame's own glow and carving colours. Only the eyes changed, with Jackie's OK. The mouth, rock frames and sizes are the same as before (`tools/pumpkin_eyes.py`).
