@@ -9,9 +9,9 @@
 <style>
 /* The shelf sampler's own app (opened from the room by js/sampler.js). Colours: see the palette below.
    RULES.md rule 1 holds here too: flat colours, whole-pixel moves and 2-frame swaps only. */
-/* Palette (Jackie, Nov 16: Teenage Engineering, but subtler: tech, calming, timeless). Bone and stone greys, a warm
-   charcoal screen, graphite lines, one soft terracotta, and sage for whatever is sounding. Nothing pure, nothing loud. */
-:root{--wall:#d9d6cf;--body:#eceae4;--deep:#e1dfd8;--k:#3d3b37;--btn:#f6f5f1;--pad:#cdcac2;--padtx:#3d3b37;--full:#d98a63;--fulltx:#2e2c29;--lit:#b3c4b6;--lcd:#34332f;--ink:#e8e5db;--lcdbar:#48463f;--barf:#d98a63;--acc:#d98a63;--acctx:#2e2c29;--dim:#a39f94;--bw:.45vh}
+/* Palette (Jackie, Nov 16): white, greys and black, one orange, and one somewhat bright but tempered blue. Nothing else.
+   Orange = holds a sample, or the thing to press. Blue = sounding right now. */
+:root{--wall:#d2d2d0;--body:#ececea;--deep:#e0e0de;--k:#1e1e1e;--btn:#fafaf9;--pad:#d0d0ce;--padtx:#1e1e1e;--full:#f26a2c;--fulltx:#1e1e1e;--lit:#5a97e6;--lcd:#1b1b1b;--ink:#f3f3f1;--lcdbar:#333332;--barf:#f26a2c;--acc:#f26a2c;--acctx:#1e1e1e;--dim:#9b9b99;--bw:.45vh}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--wall);font-family:Nunito,ui-rounded,'Arial Rounded MT Bold',system-ui,sans-serif;font-weight:700;color:var(--k);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 button,input{font:inherit;color:inherit}
@@ -65,9 +65,9 @@ body.erase .p.full{--edge:var(--k)}
 #tr .b{flex:1;min-width:0}
 #tr .w{flex:1.6}
 /* the keys under the pads are shades of grey only (Jackie): no colour down here, darker = more important, darkest = on */
-#tr .b{background:#c6c3bb}
-#tr #play{background:#8d8a82;color:var(--ink)}
-#tr #erase{background:#dcd9d2}
+#tr .b{background:#c6c6c4}
+#tr #play{background:#8a8a88;color:var(--ink)}
+#tr #erase{background:#dcdcda}
 #tr .b.on,#tr #play.on,#tr #erase.on{background:var(--k);color:var(--ink)}
 </style>
 </head>
