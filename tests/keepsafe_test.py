@@ -142,7 +142,7 @@ async def main():
 
         # ---- the Home Screen how-to: one line on the start screen (and the loading screen), for each kind of device ----
         ANDROID_UA = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
-        for name, ua, want in [("iphone", IPHONE_UA, "tap Share, then Add to Home Screen"), ("android", ANDROID_UA, "Add to Home screen")]:
+        for name, ua, want in [("iphone", IPHONE_UA, "Playing in a browser? Tap Share, then Add to Home Screen"), ("android", ANDROID_UA, "Playing in a browser?")]:
             ctx = await b.new_context(viewport={"width": 844, "height": 390}, device_scale_factor=2, has_touch=True, user_agent=ua)
             await ctx.route(lambda u: not u.startswith(f"http://localhost:{PORT}"), lambda r: r.abort())
             pg = await ctx.new_page()
