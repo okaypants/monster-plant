@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Page and tap sounds off for now (Nov 16)
+
+- Jackie: still awful when picking a book or turning a page, even after the softening. Those are the synthesized paper sound (books, page turns, the journal, the curtains) and the tick on every tap, both made from noise, which doesn't sound like paper. Both are **off** until Garry's real sounds arrive (`SFX_OFF` in `js/audio.js`).
+- **Debug drawer, Sounds:** a button per sound plays it (switched-off ones struck through), so Jackie can say which others to switch off or keep.
+
 ### Words in their original script in the books (Nov 16)
 
 - Jackie wanted to see the original script of anything in the books that isn't English (Hangul for Korean, the Japanese text, and so on), **only where it really exists, never assumed**. Each original was checked against a real source; the notes are kept outside the repo.

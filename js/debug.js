@@ -119,6 +119,8 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   btns(b,['bed','rug','chair','sill','crate','books','byplant'].map(k=>[{bed:'Cat bed',rug:'Rug',chair:'Armchair',sill:'Windowsill',crate:'Milk crate',books:'Book stack',byplant:'By the plant'}[k],()=>dbgCatTo(k)]));
   pick(b,'Pose (holds it)',[['','(none: the cat does its own thing)']].concat(Object.keys(CATF).filter(n=>!n.startsWith('scratcher')).map(n=>[n,n])),()=>cat.force||'',v=>{cat.force=v||null;cat.hold=!!v;});});
 
+ group(body,'Sounds',false,b=>{b.appendChild(el('div','note','Tap one to hear it. Struck through = switched off in the game (SFX_OFF in js/audio.js).'));
+  const r=el('div','btns');for(const n of SFX_ALL){const k=el('button','',esc(n));k.type='button';if(SFX_OFF.has(n))k.style.textDecoration='line-through';k.onclick=()=>{if(!AC)audioInit();sfx(n,true);};r.appendChild(k);}b.appendChild(r);});
  group(body,'Effects and reactions',false,b=>{
   for(const[n,t]of[['hearts','Hearts'],['sparkles','Sparkles (listening)'],['sweat','Sweat'],['zzz','Zzz'],['flames','Little flame'],['puddle','Puddle'],['drops','Water drops']]){
    const r=row(b,t),w=el('div','seg');r.appendChild(w);

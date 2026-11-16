@@ -11,7 +11,11 @@ function audioInit(){try{AC=new (window.AudioContext||window.webkitAudioContext)
 function env(gn,t0,a,peak,dur){a=Math.max(a,.008);gn.gain.setValueAtTime(0.0001,t0);gn.gain.exponentialRampToValueAtTime(peak,t0+a);gn.gain.exponentialRampToValueAtTime(0.0001,t0+Math.max(dur,a+.02));}
 function noise(t0,dur,type,f,q,peak,a=0.02){const s=AC.createBufferSource();s.buffer=NB;s.loop=true;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;const gn=AC.createGain();env(gn,t0,a,peak,dur);s.connect(fl).connect(gn).connect(BUS);s.start(t0,Math.random());s.stop(t0+dur+.05);return {s,fl,gn};}
 function tone(t0,dur,type,f0,f1,peak,a=0.02){const o=AC.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t0);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t0+dur);const gn=AC.createGain();env(gn,t0,a,peak,dur);const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2000;o.connect(lp).connect(gn).connect(BUS);o.start(t0);o.stop(t0+dur+.05);return o;}
-function sfx(n){if(!AC||!BUS)return;const t=AC.currentTime+.01;switch(n){
+// Off (Jackie, Nov 16: picking a book and turning a page sounded awful): synthesized paper and the tap tick are silent
+// until Garry's real sounds arrive. The debug drawer's Sounds group plays every sound, so more can be switched off here.
+const SFX_OFF=new Set(['page','tick']);
+const SFX_ALL=['tick','page','pop','chime','boing','purr','giggle','hmm','hum','sigh','pour','blub','slurp','burp','crunch','crinkle','fsss','soil','rumble'];
+function sfx(n,force){if(!AC||!BUS)return;if(SFX_OFF.has(n)&&!force)return;const t=AC.currentTime+.01;switch(n){
 case'pour':{const x=noise(t,1.4,'bandpass',900,.9,.09,.2);const l=AC.createOscillator();l.frequency.value=7;const lg=AC.createGain();lg.gain.value=180;l.connect(lg).connect(x.fl.frequency);l.start(t);l.stop(t+1.5);break;}
 case'crinkle':for(let i=0;i<5;i++)noise(t+i*rnd(.04,.08),.05,'bandpass',1600,1.2,.025,.01);break;
 case'rumble':{const o=tone(t,.9,'sine',70,55,.22,.12);const l=AC.createOscillator();l.frequency.value=6;const lg=AC.createGain();lg.gain.value=8;l.connect(lg).connect(o.frequency);l.start(t);l.stop(t+1);break;}
