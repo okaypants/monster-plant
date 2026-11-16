@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>The Crates · Monster Plant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* The shelf sampler's own app (opened from the room by js/sampler.js). Colours are taken from the room art.
+   RULES.md rule 1 holds here too: flat colours, black outlines, whole-pixel moves and 2-frame swaps only. */
+:root{--k:#000;--body:#4b4a57;--deep:#2c2b36;--cream:#fbe9c6;--pad:#f79a3e;--lit:#ffd23f;--lcd:#c9dc3c;--ink:#1d2408;--wall:#fc7468;--wood:#f59a2c}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--wall);font-family:Nunito,ui-rounded,'Arial Rounded MT Bold',system-ui,sans-serif;font-weight:700;color:var(--k);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation;padding:0}
+[hidden]{display:none!important}
+#m{position:absolute;inset:1.5vh;display:flex;flex-direction:column;gap:2vh;background:var(--body);border:.9vh solid var(--k);border-radius:3vh;padding:2.5vh}
+#top{display:flex;gap:2vh;flex:0 0 19vh}
+#lcd{flex:1;min-width:0;background:var(--lcd);color:var(--ink);border:.7vh solid var(--k);border-radius:1.6vh;padding:1.2vh 2vh 0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+#l1{font-size:5.6vh;font-weight:800;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#l2{font-size:4vh;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar{height:3.4vh;margin:0 -2vh;border-top:.5vh solid var(--k);background:#aebf2c;touch-action:none;cursor:pointer}
+#barF{height:100%;width:0;background:var(--ink)}
+.b{background:var(--cream);border:.7vh solid var(--k);border-radius:1.6vh;font-size:4.2vh;font-weight:800;min-width:13vh;min-height:13vh}
+.b:active,.b.down{transform:translate(0,.6vh)}
+.b.on{background:var(--lit)}
+#x{flex:0 0 19vh;background:var(--wall)}
+#mid{flex:1;min-height:0;display:flex;gap:2.5vh}
+#dig{flex:0 0 43%;min-width:0;display:flex;flex-direction:column;gap:1.6vh;background:var(--deep);border:.7vh solid var(--k);border-radius:1.6vh;padding:1.6vh}
+#fs{display:flex;gap:1.4vh}
+#q{flex:1;min-width:0;height:11vh;border:.6vh solid var(--k);border-radius:1.4vh;background:var(--cream);padding:0 2vh;font-size:16px;outline:none;-webkit-user-select:text;user-select:text}
+#fs .b{min-height:11vh;min-width:15vh;background:var(--pad)}
+#tags{display:flex;gap:1.2vh;overflow-x:auto;flex:0 0 auto;padding-bottom:.4vh;scrollbar-width:none}
+#tags::-webkit-scrollbar{display:none}
+.t{flex:none;border:.5vh solid var(--k);border-radius:5vh;background:var(--cream);font-size:3.6vh;padding:.6vh 2.2vh;min-height:8vh}
+.t.on{background:var(--lit)}
+.t.s{background:var(--wood)}
+.t.s.on{background:var(--lcd)}
+#list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:1.2vh}
+.r{flex:none;display:flex;align-items:center;gap:1.5vh;text-align:left;border:.5vh solid var(--k);border-radius:1.4vh;background:var(--cream);padding:1.2vh 1.8vh;min-height:12vh}
+.r.on{background:var(--lit)}
+.r span{flex:1;min-width:0}
+.r b{display:block;font-size:4vh;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r small{display:block;font-size:3.1vh;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r i{font-style:normal;font-size:3.4vh}
+#note{color:var(--cream);font-size:3.6vh;line-height:1.35;padding:1vh;text-align:center}
+#more{flex:none;min-height:10vh;background:var(--wood)}
+#right{flex:1;min-width:0;display:flex;flex-direction:column;gap:2vh}
+#pads{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:2vh}
+.p{position:relative;background:var(--cream);border:.8vh solid var(--k);border-radius:2vh;font-size:3.4vh;font-weight:800;touch-action:none;overflow:hidden;padding:1vh}
+.p.full{background:var(--pad)}
+.p.hit{background:var(--lit);transform:translate(0,.6vh)}
+.p.rec{animation:rec .5s steps(2,jump-none) infinite}
+@keyframes rec{0%{background:var(--wall)}100%{background:var(--lit)}}
+.p u{position:absolute;left:1.2vh;top:.6vh;text-decoration:none;font-size:3.2vh}
+.p em{display:block;font-style:normal;line-height:1.15;max-height:100%;overflow:hidden;word-break:break-word}
+body.erase .p.full{background:var(--wall)}
+#tr{display:flex;gap:1.6vh;flex:0 0 14vh}
+#tr .b{flex:1;min-width:0}
+#tr .w{flex:1.6}
+</style>
+</head>
+<body>
+<div id="m">
+  <div id="top">
+    <div id="lcd"><div><div id="l1">THE CRATES</div><div id="l2">Pick a record on the left.</div></div><div id="bar"><div id="barF"></div></div></div>
+    <button class="b" id="x" aria-label="Back to the room">✕</button>
+  </div>
+  <div id="mid">
+    <div id="dig">
+      <form id="fs"><input id="q" type="search" enterkeyhint="search" placeholder="blues, banjo, a name…" autocomplete="off" autocapitalize="off"><button class="b" type="submit">DIG</button></form>
+      <div id="tags"></div>
+      <div id="list"><div id="note">Old records, free for everyone.<br>Dig one up, tap it to play, then hold a pad while the bit you like goes by.</div></div>
+    </div>
+    <div id="right">
+      <div id="pads"></div>
+      <div id="tr">
+        <button class="b" id="prev" aria-label="Previous record">⏮</button>
+        <button class="b" id="play" aria-label="Play or pause">▶</button>
+        <button class="b" id="next" aria-label="Next record">⏭</button>
+        <button class="b w" id="skim">SKIM</button>
+        <button class="b w" id="erase">ERASE</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+/* The Crates, Monster Plant edition: the sampler on the top shelf.
+   Dig up old public-domain records, play one, and hold a pad while it plays to keep that snippet on the pad.
+   Light on the phone on purpose: records are streamed, never downloaded whole; moving to another record forgets the
+   last one; pads live in memory and are gone when the sampler is closed; nothing is saved anywhere. */
+const $=id=>document.getElementById(id);
+const el=(t,c,tx)=>{const e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e};
+// US sound recordings enter the public domain 100 years after publication, on the following 1 January
+const CUT=new Date().getFullYear()-101;
+const TAGS=['blues','jazz','ragtime','piano','banjo','fiddle','orchestra','choir','hawaiian','tango','march','organ','whistling','yodel'];
+const NPAD=8,MAXCAP=8,KEEP=.6,SKIM_PLAY=6,SKIM_HOP=20; // pads; longest sample (s); audio kept just behind the playhead (s)
+const st={src:'ia78',q:'',page:1,more:false};
+let list=[],now=null,skim=false,erase=false,segT=0,fails=0,openTok=0,searchTok=0;
+const pads=Array(NPAD).fill(null),padEls=[];
+
+/* ---------- screen ---------- */
+let holdMsg=0;
+function lcd(a,b,ms){if(a!=null)$('l1').textContent=a;if(b!=null)$('l2').textContent=b;holdMsg=ms?performance.now()+ms:0}
+const tShort=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+function lcdNow(){if(!now||performance.now()<holdMsg)return;const d=player.duration;
+  lcd(now.title,(player.paused?'Paused · ':'')+tShort(player.currentTime)+(isFinite(d)?' / '+tShort(d):'')+(now.year?' · '+now.year:'')+(now.artist?' · '+now.artist:''))}
+
+/* ---------- search (the same two libraries as The Crates) ---------- */
+const clean=s=>String(s==null?'':Array.isArray(s)?s.join(', '):s);
+const seen=new Map(); // answers already fetched, so going back costs nothing
+async function getJSON(url,tries=3){
+  if(seen.has(url))return seen.get(url);
+  const r=await fetch(url);
+  if(r.status===429&&tries>1){await new Promise(ok=>setTimeout(ok,1800));return getJSON(url,tries-1)}
+  if(!r.ok)throw new Error(r.status===429?'The library is busy. Try again in a moment.':'The library had a hiccup ('+r.status+').');
+  const j=await r.json();if(seen.size>30)seen.delete(seen.keys().next().value);seen.set(url,j);return j}
+function iaURL(q,rows,page){
+  // only the library digitization projects (one disc side per record, with a catalogued date), minus records the Archive has locked
+  const p=['mediatype:audio','collection:(georgeblood OR edison-recordings OR 78rpm_bostonpubliclibrary)','year:[1880 TO '+CUT+']','NOT access-restricted-item:true'];
+  q=q.replace(/[^\p{L}\p{N}\s'-]/gu,' ').trim();if(q)p.push('('+q+')');
+  const u=new URLSearchParams({q:p.join(' AND '),rows,page,output:'json'});
+  ['identifier','title','creator','year'].forEach(f=>u.append('fl[]',f));u.append('sort[]','downloads desc');
+  return 'https://archive.org/advancedsearch.php?'+u}
+async function searchIA(q,page){
+  const d=(await getJSON(iaURL(q,24,page))).response;
+  return {more:d.start+d.docs.length<Math.min(d.numFound,9990),
+    items:d.docs.map(x=>({src:'ia78',key:'ia:'+x.identifier,id:x.identifier,title:clean(x.title)||x.identifier,artist:clean(x.creator),year:x.year||''}))}}
+const stripHTML=h=>{const d=new DOMParser().parseFromString(h||'','text/html');return (d.body.textContent||'').replace(/\s+/g,' ').trim()};
+async function searchCommons(q,page){
+  const lim=40,u=new URLSearchParams({action:'query',format:'json',origin:'*',generator:'search',gsrsearch:'filetype:audio -filemime:midi '+(q.trim()||'music'),
+    gsrnamespace:6,gsrlimit:lim,gsroffset:(page-1)*lim,prop:'imageinfo',iiprop:'url|extmetadata|mime',iiextmetadatafilter:'Artist|License|DateTimeOriginal'});
+  const d=await getJSON('https://commons.wikimedia.org/w/api.php?'+u),pages=Object.values((d.query&&d.query.pages)||{}).sort((a,b)=>a.index-b.index),items=[];
+  for(const p of pages){const ii=p.imageinfo&&p.imageinfo[0];if(!ii)continue;const m=ii.extmetadata||{},lic=((m.License||{}).value||'').toLowerCase();
+    if(!/^(pd|cc0)/.test(lic)||/mid/.test(ii.mime||''))continue; // public domain or CC0 only
+    items.push({src:'commons',key:'wm:'+p.pageid,title:p.title.replace(/^File:/,'').replace(/\.[a-z0-9]+$/i,''),artist:stripHTML((m.Artist||{}).value).slice(0,60),
+      year:(((m.DateTimeOriginal||{}).value||'').match(/\b(1[89]|20)\d\d\b/)||[''])[0],url:ii.url.split('?')[0],mime:ii.mime})}
+  return {more:!!(d.continue&&d.continue.gsroffset),items}}
+async function runSearch(more){
+  const tok=++searchTok,L=$('list');
+  if(!more){st.page=1;L.textContent='';list=[];L.appendChild(el('div','','Digging…')).id='note'}else st.page++;
+  const old=$('more');if(old)old.remove();
+  try{
+    const r=await(st.src==='ia78'?searchIA:searchCommons)(st.q,st.page);if(tok!==searchTok)return;
+    st.more=r.more;const n=$('note');if(n)n.remove();
+    r.items.forEach(it=>{it.card=card(it);list.push(it);L.appendChild(it.card)});
+    if(!list.length){if(r.more&&st.page<5)return runSearch(true);L.appendChild(el('div','','Nothing down here. Try another word.')).id='note'}
+    else if(r.more){const b=el('button','b','MORE');b.id='more';b.type='button';b.onclick=()=>runSearch(true);L.appendChild(b)}
+  }catch(e){if(tok!==searchTok)return;const n=$('note')||L.appendChild(el('div'));n.id='note';n.textContent=e instanceof TypeError?'The sampler needs the internet to dig. Check your connection.':e.message}}
+function card(it){
+  const c=el('button','r'),s=el('span');c.type='button';s.appendChild(el('b','',it.title));s.appendChild(el('small','',it.artist||'unknown performer'));
+  c.appendChild(s);c.appendChild(el('i','',it.year?String(it.year):''));if(now&&now.key===it.key)c.classList.add('on');
+  c.onclick=()=>openItem(it);return c}
+
+/* ---------- player: one record at a time, streamed ---------- */
+let AC=null,unlockEl=null,silentURL=null,graph=null,chunks=[],cap=null;
+const player=new Audio();player.crossOrigin='anonymous';player.preload='none';player.setAttribute('playsinline','');
+function silentWavURL(){if(silentURL)return silentURL;const sr=8000,n=sr/2,b=new ArrayBuffer(44+n*2),v=new DataView(b);
+  const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+  return silentURL=URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
+// iPhones: sound even with the silent switch on, by holding a looping silent <audio> in "playback" mode
+function unlock(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  try{if(!unlockEl){unlockEl=document.createElement('audio');unlockEl.src=silentWavURL();unlockEl.loop=true;unlockEl.setAttribute('playsinline','');unlockEl.volume=.01}
+    const pr=unlockEl.play();pr&&pr.catch(()=>{})}catch(e){}
+  try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;try{AC=new C({sampleRate:44100})}catch(e){AC=new C()}}if(AC.state!=='running')AC.resume()}catch(e){}}
+['pointerup','touchend','click'].forEach(ev=>document.addEventListener(ev,unlock,{passive:true}));
+const lat=()=>AC?(AC.outputLatency||AC.baseLatency||0):0; // what you hear is this far behind the clock
+const REC_SRC=`class R extends AudioWorkletProcessor{constructor(){super();this.n=2048;this.b=new Float32Array(this.n);this.i=0;this.f=0}
+process(inp){const c=inp[0],a=c&&c[0],b=c&&(c[1]||c[0]);if(this.i===0)this.f=currentFrame;
+for(let k=0;k<128;k++){this.b[this.i++]=a?(a[k]+b[k])*.5:0}
+if(this.i>=this.n){this.port.postMessage({b:this.b,n0:this.f});this.b=new Float32Array(this.n);this.i=0}return true}}
+registerProcessor('rec',R)`;
+function ensureGraph(){
+  if(graph)return graph;
+  return graph=(async()=>{
+    unlock();const src=AC.createMediaElementSource(player);src.connect(AC.destination);
+    try{
+      await AC.audioWorklet.addModule(URL.createObjectURL(new Blob([REC_SRC],{type:'application/javascript'})));
+      const n=new AudioWorkletNode(AC,'rec',{numberOfInputs:1,numberOfOutputs:0,channelCount:2,channelCountMode:'explicit'});
+      n.port.onmessage=ev=>onChunk(ev.data.b,ev.data.n0);src.connect(n)
+    }catch(e){ // older browsers
+      const n=AC.createScriptProcessor(2048,2,1),z=AC.createGain();z.gain.value=0;
+      n.onaudioprocess=ev=>{const i=ev.inputBuffer,a=i.getChannelData(0),b=i.getChannelData(1),o=new Float32Array(a.length);for(let k=0;k<o.length;k++)o[k]=(a[k]+b[k])*.5;onChunk(o,Math.round(ev.playbackTime*AC.sampleRate))};
+      src.connect(n);n.connect(z);z.connect(AC.destination)}
+  })().catch(()=>{})}
+// moving on forgets the last record: stop it, hand its buffered audio back to the browser, drop what was heard of it
+function release(){try{player.pause();player.removeAttribute('src');player.load()}catch(e){}chunks=[]}
+function setSrc(url){player.src=url;const p=player.play();p&&p.catch(()=>{})}
+async function openItem(it){
+  if(now&&now.key===it.key)return player.paused?player.play().catch(()=>{}):player.pause();
+  const tok=++openTok;endCap(true);release();segT=0;
+  list.forEach(x=>x.card.classList.toggle('on',x===it));
+  now={src:it.src,key:it.key,id:it.id,title:it.title,artist:it.artist,year:it.year,alt:null,triedAlt:false};
+  lcd(it.title,'Loading…');$('barF').style.width='0';
+  await ensureGraph();if(tok!==openTok)return;
+  try{
+    if(it.src==='commons'){
+      const direct=/mpeg|wav/.test(it.mime||''),nm=it.url.split('/').pop();
+      now.alt=direct?null:it.url; // a browser that cannot play the MP3 copy gets the original
+      return setSrc(direct?it.url:it.url.replace('/commons/','/commons/transcoded/')+'/'+nm+'.mp3')}
+    const d=await getJSON('https://archive.org/metadata/'+encodeURIComponent(it.id));if(tok!==openTok)return;
+    const files=(d.files||[]).filter(f=>!f.private&&f.name);
+    let au=files.filter(f=>/mp3/i.test(f.format||''));if(!au.length)au=files.filter(f=>/flac|wave|ogg|vorbis/i.test(f.format||''));
+    if(!au.length)throw new Error('This record has no sound on it.');
+    const f=au.find(f=>!f.name.includes('/'))||au[0]; // extra transfers of the same side sit in subfolders
+    setSrc('https://archive.org/download/'+encodeURIComponent(it.id)+'/'+f.name.split('/').map(encodeURIComponent).join('/'))
+  }catch(e){if(tok===openTok)lcd(null,e instanceof TypeError?'No internet? Check your connection.':e.message)}}
+async function step(dir){
+  if(!now)return;let i=list.findIndex(x=>x.key===now.key);
+  if(dir>0&&i>=list.length-1&&st.more){await runSearch(true);i=list.findIndex(x=>x.key===now.key)}
+  const it=list[i+dir];if(!it){if(dir>0)lcd(null,'That was the last one. Dig for more.');return}
+  openItem(it);try{it.card.scrollIntoView({block:'nearest'})}catch(e){}}
+player.addEventListener('error',()=>{if(!now)return;
+  if(now.alt&&!now.triedAlt){now.triedAlt=true;return setSrc(now.alt)}
+  lcd(null,'This one will not play. Trying the next…');sync();
+  if(++fails<4){const t=openTok;setTimeout(()=>{if(t===openTok)step(1)},1500)}else lcd(null,'These will not play right now. Check your connection.')});
+player.addEventListener('waiting',()=>{if(now&&!cap)lcd(null,'Loading…')});
+player.addEventListener('playing',()=>{fails=0});
+['play','pause','playing','ended'].forEach(ev=>player.addEventListener(ev,()=>{sync();lcdNow()}));
+['play','seeking'].forEach(ev=>player.addEventListener(ev,()=>{if(!cap)chunks=[]}));
+player.addEventListener('seeked',()=>{segT=player.currentTime});
+player.addEventListener('loadedmetadata',()=>{const d=player.duration;if(skim&&isFinite(d)&&d>40)player.currentTime=Math.min(12,d*.08)});
+player.addEventListener('ended',()=>step(1)); // records play one after another
+player.addEventListener('timeupdate',()=>{ // the player's own few-times-a-second clock; no per-frame loop
+  if(!now)return;const d=player.duration,t=player.currentTime;
+  if(isFinite(d)&&d>0)$('barF').style.width=(t/d*100).toFixed(1)+'%';
+  if(!cap&&player.readyState>2)lcdNow();
+  // SKIM: a few seconds here, hop ahead, then on to the next record
+  if(skim&&!cap&&!player.paused&&isFinite(d)&&t-segT>=SKIM_PLAY){const nx=segT+Math.max(SKIM_HOP,d/7);if(nx>=d-4)step(1);else{segT=nx;player.currentTime=nx}}});
+function seekTo(t){const d=player.duration;if(!now||!isFinite(d))return;endCap(true);player.currentTime=Math.max(0,Math.min(t,d-.2))}
+function sync(){
+  const off=player.paused||!!player.error||!now;$('play').textContent=off?'▶':'❚❚';$('play').classList.toggle('on',!off);
+  $('skim').classList.toggle('on',skim);$('erase').classList.toggle('on',erase);document.body.classList.toggle('erase',erase)}
+
+/* ---------- pads: hold an empty pad while a record plays to sample onto it; tap a full pad to play it ---------- */
+function onChunk(b,n0){
+  if(!now||(player.paused&&!cap))return;
+  const last=chunks[chunks.length-1];if(last&&n0!==last.n0+last.b.length&&!cap)chunks=[];
+  chunks.push({b,n0});const sr=AC.sampleRate,end=n0+b.length;
+  if(!cap){while(chunks.length>1&&end-chunks[1].n0>KEEP*sr)chunks.shift();return}
+  if(end-cap.n>MAXCAP*sr)endCap()}
+function padDown(i){
+  unlock();
+  if(erase){if(pads[i]){stopPad(i);pads[i]=null;drawPad(i);lcd(null,'Pad '+(i+1)+' is empty again.',1600)}return}
+  if(pads[i])return playPad(i);
+  if(cap)return;
+  if(!now||player.paused||player.readyState<3)return lcd(null,now?'Press ▶, then hold a pad while it plays.':'Play a record first, then hold a pad.',2200);
+  cap={i,n:Math.round((AC.currentTime-lat())*AC.sampleRate),t:performance.now()};
+  padEls[i].classList.add('rec');lcd(null,'Sampling onto pad '+(i+1)+'… let go to finish.',MAXCAP*1000)}
+function padUp(i){if(cap&&cap.i===i)endCap()}
+function endCap(drop){
+  if(!cap||cap.done)return;const c=cap;c.done=true;
+  const sr=AC.sampleRate,e=Math.round((AC.currentTime-lat())*sr);
+  const fin=()=>{ // a beat later, so the last of what was heard has arrived
+    cap=null;padEls[c.i].classList.remove('rec');if(drop)return;
+    const first=chunks.length?chunks[0].n0:0,total=chunks.reduce((a,k)=>a+k.b.length,0),s=Math.max(0,c.n-first),n=Math.min(total,e-first)-s;
+    if(n<sr*.08){lcd(null,'Hold the pad a little longer to sample.',2200);return}
+    const buf=AC.createBuffer(1,n,sr),out=buf.getChannelData(0);let o=0;
+    for(const k of chunks){const a=Math.max(0,s-o),z=Math.min(k.b.length,s+n-o);if(z>a)out.set(k.b.subarray(a,z),o+a-s);o+=k.b.length}
+    const f=Math.min(Math.round(sr*.003),n>>2);for(let j=0;j<f;j++){const g=j/f;out[j]*=g;out[n-1-j]*=g} // tiny fades: no clicks
+    pads[c.i]={buf,title:now?now.title:''};drawPad(c.i);chunks=chunks.slice(-Math.ceil(KEEP*sr/2048));
+    lcd(null,'Pad '+(c.i+1)+' holds '+(n/sr).toFixed(1)+' s. Tap it!',2500)};
+  drop?fin():setTimeout(fin,140)}
+const voices=Array(NPAD).fill(null);
+function stopPad(i){const v=voices[i];if(v){voices[i]=null;try{v.onended=null;v.stop()}catch(e){}}padEls[i].classList.remove('hit')}
+function playPad(i){
+  stopPad(i);const n=AC.createBufferSource();n.buffer=pads[i].buf;n.connect(AC.destination);n.start();
+  n.onended=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};voices[i]=n;padEls[i].classList.add('hit')}
+function drawPad(i){const p=padEls[i],d=pads[i];p.classList.toggle('full',!!d);p.querySelector('em').textContent=d?d.title:''}
+for(let i=0;i<NPAD;i++){const p=el('button','p');p.type='button';p.appendChild(el('u','',String(i+1)));p.appendChild(el('em'));
+  let id=null;
+  p.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{p.setPointerCapture(id)}catch(e){}ev.preventDefault();padDown(i)});
+  const up=ev=>{if(ev.pointerId===id){id=null;padUp(i)}};p.addEventListener('pointerup',up);p.addEventListener('pointercancel',up);
+  p.addEventListener('contextmenu',ev=>ev.preventDefault());
+  padEls.push(p);$('pads').appendChild(p)}
+
+/* ---------- controls ---------- */
+function chips(){const T=$('tags');T.textContent='';
+  [['ia78','78s'],['commons','WIKI']].forEach(([k,n])=>{const c=el('button','t s',n);c.type='button';c.classList.toggle('on',st.src===k);c.onclick=()=>{st.src=k;chips();if(list.length||st.q)runSearch()};T.appendChild(c)});
+  TAGS.forEach(t=>{const c=el('button','t',t);c.type='button';c.classList.toggle('on',st.q===t);c.onclick=()=>{st.q=t;$('q').value=t;chips();runSearch()};T.appendChild(c)})}
+$('fs').onsubmit=ev=>{ev.preventDefault();st.q=$('q').value.trim();$('q').blur();chips();runSearch()};
+$('play').onclick=()=>{if(!now)return lcd(null,'Pick a record on the left first.',2000);if(player.paused)player.play().catch(()=>{});else{endCap(true);player.pause()}};
+$('prev').onclick=()=>step(-1);$('next').onclick=()=>step(1);
+$('skim').onclick=()=>{skim=!skim;segT=player.currentTime;sync();if(skim)lcd(null,'Skimming: a taste of each, then onward.',2000);if(skim&&now&&player.paused)player.play().catch(()=>{})};
+$('erase').onclick=()=>{erase=!erase;sync();lcd(null,erase?'Tap a pad to empty it.':'',erase?4000:1)};
+(b=>{let id=null;const go=ev=>{const r=b.getBoundingClientRect();seekTo(Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*player.duration)};
+  b.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{b.setPointerCapture(id)}catch(e){}go(ev)});
+  b.addEventListener('pointermove',ev=>{if(ev.pointerId===id)go(ev)});
+  const up=ev=>{if(ev.pointerId===id)id=null};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up)})($('bar'));
+// back to the room: stop everything first; the room then throws this whole page away, pads and all
+function leave(){endCap(true);release();for(let i=0;i<NPAD;i++)stopPad(i);try{unlockEl&&unlockEl.pause()}catch(e){}
+  if(parent!==window)parent.postMessage('mp-sampler-close','*');else history.back()}
+$('x').onclick=leave;addEventListener('keydown',e=>{if(e.key==='Escape')leave()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)endCap(true)});
+chips();sync();
+</script>
+</body>
+</html>

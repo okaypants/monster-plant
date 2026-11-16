@@ -2,6 +2,20 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The shelf sampler opens its own app, The Crates (Nov 16)
+
+- Jackie asked for two versions of The Crates (the public-domain record finder and sampler built in the Phone-Game project): one for this game and its in-game sampler, and one for people to really use with an MPC. The MPC one stays its own app outside the game.
+- **Where:** the sampler is the machine on the top shelf on the wall, above the radio (Jackie). Tapping it opens the app; it used to be a bouncy fidget only.
+- **Its own app:** Jackie said the sampler needs its own app. It is a separate page, `sampler.html`, shown in a frame over the room. Why a frame: nothing of it loads until it is opened, none of its code mixes with the game's, and closing it throws the whole thing away.
+- **How sampling works:** like the machine in the picture. Tap a record to play it, hold an empty pad while the bit you like plays, let go, and it is on the pad. Eight pads, two rows of four. No trimming screen and no files.
+- **Listening and skimming** work the same as in The Crates: records play one after another, and SKIM tastes each one and moves on (Jackie: easy to listen to, skim, find and sample snippets).
+- **Careful with storage and work (Jackie):** records are streamed, never downloaded whole; moving on forgets the last record; pads live in memory only and are gone when the sampler closes; nothing is saved and the game's save is untouched. Jackie: "you only save things on purpose."
+- **Only free-to-use records:** library-digitized 78s published 101 or more years ago (US public domain), and Wikimedia Commons audio marked public domain or CC0. Records the Internet Archive has locked are left out.
+- **Rule 1 holds in the app:** flat colors taken from the room art, black outlines, whole-pixel presses, and a 2-frame blink while a pad records. No fades, gradients or glows.
+- **Idle wiggle:** the sampler now works, so it joined the idle wiggle list, per the Nov 4 rule.
+- The radio is not part of this and still does nothing.
+- **Follow-ups, not done:** what the pads could do in the room (monsters reacting, the cat's opinion), keeping pads between visits, and Garry's sounds.
+
 ### Every quote and fact in the books checked (Nov 15)
 
 - Jackie asked for every quote and idea in the books to be researched and verified. All 37 reads were checked against original printings and reliable sources; most were right. Fixed:

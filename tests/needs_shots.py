@@ -129,7 +129,7 @@ async def wiggles(b, fails):
     print(f"idle wiggles in 40 min untouched: {len(log)} ({', '.join(n for n, _ in log)}); gaps {gaps} s")
     if not 150 <= len(log) <= 241: fails.append(f"{len(log)} idle wiggles in 40 minutes (expected one every 10 s, a few skipped)")
     if gaps and min(gaps) < 10: fails.append(f"two idle wiggles only {min(gaps)} s apart")
-    if sorted(names) != sorted(["carafe", "SNACKS cabinet", "floor lamp", "desk lamp", "desk drawers (journal)", "readable books", "snow globe", "pumpkin", "tree"]): fails.append(f"idle wiggle list is {names}")
+    if sorted(names) != sorted(["carafe", "SNACKS cabinet", "floor lamp", "desk lamp", "desk drawers (journal)", "readable books", "sampler", "snow globe", "pumpkin", "tree"]): fails.append(f"idle wiggle list is {names}")
     if await pg.evaluate("()=>IDLE_FRAMES.some(v=>Math.abs(v)>1)||IDLE_FRAMES.length>4"): fails.append("idle wiggle is more than 1 px or a couple of frames")
     n0 = len(log)
     await pg.evaluate("()=>{pointerHeld=true;__step(20*60,250);}")  # 20 minutes touching

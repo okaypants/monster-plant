@@ -16,6 +16,16 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 - Saves live in each browser on each device (localStorage key `mp-proto-v2`). The Home Screen app and Safari keep separate saves.
 - **Debug drawer** (top right, "debug"): opening it switches to **TEST MODE**, a copy of your real save at that moment. Everything you change happens on the copy, and a red TEST MODE label shows. **Back to my game** brings your real game back exactly as it was. **Keep these changes in my real game** saves them for real, only after a second tap. It slides in on the right, and the room shrinks to fit beside it; **Hide** tucks it away so you can look at the room with your settings (the ◂ debug tab brings it back). The status line on top shows the day, the clock, the time of day, the season, and every monster's age with how far along it is and what's slowing its growing. Live controls, in collapsible groups: **World** (time of day slider and buttons, which hold the clock there; season auto/override, day, speed, pause time, clock: phone clock or held; curtains, every lamp, light map); **Plants** (a tab per plant; species, age, eyes, light preference, good/evil and lawful/chaotic now and born-with, thirst, lonely, fullness, nap, spot or rug x/y, charms, titles, reset quirks, grow one age, grow up now (plays the grow-up moment), add/remove, make two adults, breed now, end day; changing species or age keeps it the same plant); **Cat** (trust with its level name, state, send to any spot, hold any pose); **Effects and reactions** (on/off and replay for each effect, plus the plant moves, boing, idle wiggle, cat purr); **Presets** (built-in setups, save/load your own on this device, reset to your real save, brand-new game in test mode); **Nudge** (the 1 px positions tool; that table is saved on this device for every game, not in your save).
 
+## The sampler (The Crates)
+
+Tap the sampler on the top shelf, above the radio, and its own app opens over the room: `sampler.html`, a separate page that also works by itself.
+
+- **Dig:** type a word or tap one (blues, banjo, organ...) to find old records. They come from two libraries, and only what is free for everyone: 78rpm discs and cylinders that libraries digitized for the Internet Archive, published 101 or more years ago (public domain in the US; the year moves on by itself each January), and Wikimedia Commons audio marked public domain or CC0.
+- **Play:** tap a record and it plays; when it ends the next one starts. ⏮ ⏭ change record, the bar under the screen jumps around in it, and SKIM plays a taste of each record and moves on.
+- **Sample:** hold an empty pad while the bit you like goes by, and let go. That snippet (up to 8 seconds) is now on the pad. Tap a full pad to play it; pads play over the record and over each other. ERASE, then a pad, empties it.
+- **Light on the phone, on purpose:** records are streamed, never downloaded whole. Moving to another record forgets the last one. The eight pads live in memory, and closing the sampler throws everything away. Nothing is saved, and the game's save is not touched. It needs the internet; the rest of the game does not.
+- The app for real samplers (saving WAV files for an MPC) is a separate project and is not part of the game.
+
 ## Put it online (GitHub Pages)
 
 1. On GitHub, make a **public** repository called `monster-plant`. License: **None**.
@@ -53,6 +63,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 `python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
 
 `python tests/feed_shots.py` taps the SNACKS cabinet, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.
+
+`python tests/sampler_shots.py` taps the sampler on the top shelf on a phone held sideways and checks its app opens (screen, eight empty pads, the digging panel), that an empty pad asks for a record first, and that the X brings the room back with nothing left behind; it never touches the internet; saved to `tests/screenshots/sampler/`.
 
 `python tests/placard_shots.py` pictures the FILES sign on the desk drawers (SNACKS shape, brass, over the top knob) at day, golden hour and night (desk lamp on and off), checks it's lit like the wood around it, and that tapping it opens the empty Files with their note (not the journal); saved to `tests/screenshots/placard/`.
 
@@ -145,6 +157,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `growup.js` | The grow-up moment: waiting for you, the hop, crouch, size steps and payoff, the journal stamp, the cat's look |
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
+  | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the book stack |
   | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file |

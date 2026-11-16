@@ -99,10 +99,12 @@ function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3
    and seasonal items. Books: ONLY the four special readable books (not placed in the room yet), never any other books
    (the shelves, the book stack, the crate book). 'obj' = only the item's own pixels move; 'plain' = a part inside the item (the lamp shade, the chair's back cushion, the cabinet door, the drawers). */
 /* Jackie, Nov 4: for now ONLY these wiggle, one item every 10 s, one at a time, under half a second each (4 frames x 110 ms):
-   both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from). */
+   both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from).
+   Nov 16: the sampler on the top shelf joined them when its app was built. */
 const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
  {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
  {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
+ {n:'sampler',x:1252,y:152,w:182,h:72,k:'obj'},
  {n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'},
  {n:'pumpkin',k:'sprite',when:()=>seasonItem()==='pumpkin'},{n:'tree',k:'sprite',when:()=>seasonItem()==='tree'}]; // seasonal items (js/seasonal.js) nudge their own sprite, only while they're out
 const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.

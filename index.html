@@ -43,6 +43,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .story .sturn{position:absolute;top:8%;height:84%;background:#fff4e2;outline:3px solid #341839}
 .story .sturn1{left:50%;width:32%}.story .sturn2{left:18%;width:32%}
 /* JOURNAL (Jackie, Nov 4): a keepsake book. Cream pages, dark stepped pixel outline; design size 760x446, scaled to fit (fitBook in journal.js). */
+.screen.sampler{display:block;padding:0;background:#19101b;z-index:55}.screen.sampler iframe{display:block;width:100%;height:100%;border:0}
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
 .jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:600}
 .jstep{clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px))}
@@ -181,6 +182,7 @@ body.testing #testBadge{display:block}
 <script src="js/fidgets.js"></script>
 <script src="js/seasonal.js"></script>
 <script src="js/journal.js"></script>
+<script src="js/sampler.js"></script>
 <script src="js/input.js"></script>
 <script src="js/start.js"></script>
 <script src="js/debug.js"></script>
