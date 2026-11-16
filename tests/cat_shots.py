@@ -17,7 +17,7 @@ OUT = os.path.join(SHOTS, "cat")
 SPOTS = {"bed": "cat bed", "rug": "rug", "chair": "armchair", "sill": "windowsill", "crate": "milk crate", "books": "book stack"}
 
 SHOT_JS = """async(it)=>{
- Object.assign(st,{others:[],stage:it.plant?8:-1,species:it.sp||3,night:false,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null,listen:0});
+ Object.assign(st,{others:[],stage:it.plant?8:-1,species:it.sp||3,night:!!it.night,dayT:.3,curtain:'open',started:true,nap:0,lightState:'ok',dryLv:0,dryRaw:0,witherLv:0,burnLv:0,puddleLv:0,over:0,mv:null,listen:0});
  if(it.plant)st.free={x:it.plant[0],y:it.plant[1]};T=0;blink=0;parts.length=0;BOING.ox=BOING.oy=0;
  const s=it.spot==='byplant'?plantSideSpot():it.spot==='floor'?{x:it.x,y:925,sc:.6}:CAT_SPOTS[it.spot];
  const F={curl1:['sleep','curl',9,0],curl2:['sleep','curl',9,.9],loaf1:['loafwake','loaf',0,0],annoyed:['annoyed','loaf',0,0],back:['settle','loaf',0,0],groom1:['settle','loaf',0,0],groom2:['settle','loaf',0,0],loaf2:['sleep','loaf',9,0],side1:['sleep','side',9,0],side2:['sleep','side',9,.9],
@@ -79,6 +79,7 @@ async def main():
                 for sp in (2, 7):  # a narrow and a wide adult
                     plans.append((f"by plant, {where}, species {sp + 1}", [dict(spot="byplant", pose=f, plant=list(xy), sp=sp) for f in NAP_FRAMES]))
         plans.append(("walking", [dict(spot="floor", pose=f, x=x) for x in (400, 1200) for f in ("walk1", "walk2", "walkL1", "walkL2")]))
+        plans.append(("walking at night", [dict(spot="floor", pose=f, x=x, night=True) for x in (400, 1200) for f in ("walk1", "walk2", "walkL1", "walkL2")]))  # dim light: walking left must still be mirrored
         for name, items in plans:
             cells = []
             for it in items:
