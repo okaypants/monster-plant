@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Monsters, the cat and the rest are lit like the room (Nov 16)
+
+- Jackie asked how the monsters get dimmed when appropriate, then said yes to building it. Until now the monsters, the cat, Sloth's paw and what it brings, and the pumpkin or tree were drawn at full daylight all the time; only the room picture changed.
+- **How:** the same way the FILES sign was already shaded. Once the room is drawn (time of day, lamps, curtains), the game compares the room's colour just below each one's feet with the same spot in the daytime room, and lays that one flat tint over the sprite. They dim at golden hour and night, are warm near a lamp and blue in the dark, and always match the art.
+- **Instant, no fade:** the tint changes only when the light does (in small steps). This is the code lighting RULES 1 already allows to blend.
+- **Never too dark:** a floor (0.42) keeps faces, the good/evil tint and thirst grey readable at night, and the tint is a touch softer than the walls (0.85).
+- **Not tinted:** name tags, captions, effects (hearts, Zzz) and anything on paper.
+- Shut curtains only darken them where the room art itself gets darker; by the rug it hardly changes, so neither do they.
+- Switch: `SPRITE_LIGHT.on` in `js/light.js`. `python3 tests/sprite_light_shots.py` pictures noon, golden hour, shut curtains and night with lamps on and off, and checks it.
+
 ### Pads stop by themselves when their sound is over (Nov 16)
 
 - Jackie found pads didn't stop on their own after the sample was over. A pad relied on the browser saying its sound had ended, and iPhones don't always say so (for example after the audio is interrupted), so the pad stayed lit as if still playing.

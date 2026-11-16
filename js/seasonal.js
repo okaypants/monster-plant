@@ -41,7 +41,7 @@ function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now
 function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:TREE[0];if(!ok(f))return null;const sc=k==='pumpkin'?PUMPKIN_SC:TREE_SC,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
  return {k,sc,x:STACK_TOP.x-Math.round(w/2),y:STACK_TOP.y-h,w,h};}
 function drawSeasonItem(){const b=seasonBox();if(!b)return;const now=performance.now(),o=stackOff(),x0=b.x+o.x+seasonIdle(b.k),y0=b.y+o.y;
- const put=(im,x,y,sc)=>{if(ok(im))g.drawImage(im,Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
+ const L=lightAt(b.x+b.w/2,b.y+b.h),put=(im,x,y,sc)=>{if(ok(im))g.drawImage(litPic(im,L),Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
  if(b.k==='pumpkin'){const rock=now<sRock?1+Math.floor((sRock-now)/SWAP_MS)%2:0;put(PUMPKIN[rock?rock:timeKey()==='night'?3:0],x0,y0,b.sc);return;}
  put(TREE[now<sSway?Math.floor((sSway-now)/SWAP_MS)%2:0],x0,y0,b.sc);
  for(const o2 of ORNAMENTS){const f=o2.f[now<o2.swing?Math.floor((o2.swing-now)/SWAP_MS)%2:0];if(!ok(f))continue;

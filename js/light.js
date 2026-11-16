@@ -32,3 +32,37 @@ function lightFitText(i,pref){const who=pref+'-lover';
 function lightSources(t=st.dayT,open=st.curtain==='open'){const dl=daylight(t),p=WINDOW_LIGHT.patch;
  return [{kind:'patch',id:'window',x:p.x,y:p.y,rx:p.rx,ry:p.ry,strength:dl*(open?1:.35),harsh:open&&phase(t)==='midday'}]
   .concat(LAMPS.filter(lampOn).map(q=>({kind:'glow',id:q.key,name:q.name,x:q.x,y:q.y,r:q.r,core:q.r*LAMP_CORE,strength:.35})));}
+
+/* ---------- things in the room are lit like the room (Jackie, Nov 16) ----------
+   The monsters, the cat, Sloth's paw and what it brings, and the pumpkin or tree used to be drawn at full daylight
+   all the time. Now each is tinted by the room picture where it stands: the room's colour just below its feet right
+   now, against the daytime room. So they dim at golden hour and night, stay warm under a lamp, and darken a little with
+   the curtains shut, always matching the art. One flat tint per sprite, changing only when the light does (RULES 1:
+   light may blend). FLOOR keeps faces and colours readable at night; SOFT keeps them a touch brighter than the walls. */
+const SPRITE_LIGHT={on:true,floor:.42,soft:.85};
+const LM=10; // the light map samples the room every 10 pixels
+let lmKey='',lmCur=null,lmRef=null;
+function lmSample(src){const w=Math.ceil(W/LM),h=Math.ceil(H/LM),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.imageSmoothingEnabled=true;x.drawImage(src,0,0,w,h);return x.getImageData(0,0,w,h).data;}
+// called by draw() once the room (lamps, curtains) is on the canvas and before anything stands in it
+function lightMapUpdate(key){if(!SPRITE_LIGHT.on)return;if(!lmRef){if(!ok(ROOMS.day))return;lmRef=lmSample(ROOMS.day);}
+  if(key===lmKey&&lmCur)return;lmKey=key;try{lmCur=lmSample(cv);}catch(e){lmCur=null;}}
+const LIT_FULL={f:[1,1,1],key:'1,1,1',dim:false};
+// the tint for something whose feet are at x,y: the room just below and around its feet, now against daytime
+function lightAt(x,y){if(!SPRITE_LIGHT.on||!lmCur||!lmRef)return LIT_FULL;const w=Math.ceil(W/LM),h=Math.ceil(H/LM);
+  const x0=clamp(Math.floor((x-45)/LM),0,w-1),x1=clamp(Math.floor((x+45)/LM),0,w-1),y0=clamp(Math.floor((y-8)/LM),0,h-1),y1=clamp(Math.floor((y+30)/LM),0,h-1);
+  const c=[0,0,0],r=[0,0,0];for(let j=y0;j<=y1;j++)for(let i=x0;i<=x1;i++){const k=(j*w+i)*4;for(let q=0;q<3;q++){c[q]+=lmCur[k+q];r[q]+=lmRef[k+q];}}
+  const f=c.map((v,q)=>{const raw=clamp(v/Math.max(1,r[q]),0,1),soft=1-(1-raw)*SPRITE_LIGHT.soft;return Math.round(Math.max(SPRITE_LIGHT.floor,soft)*64)/64;}); // in 64 steps, so pictures are re-tinted only when the light really changes
+  const dim=f.some(v=>v<1);return {f,key:f.join(','),dim,css:`rgb(${f.map(v=>Math.round(v*255)).join(',')})`};}
+// a picture (image or canvas) tinted by L, kept until the light at it changes
+const litCache=new WeakMap();
+function litPic(im,L){if(!L||!L.dim||!im)return im;const wd=im.naturalWidth||im.width,ht=im.naturalHeight||im.height;if(!wd||!ht)return im;
+  let e=litCache.get(im);if(e&&e.key===L.key)return e.c;
+  const c=e?e.c:document.createElement('canvas');c.width=wd;c.height=ht;const x=c.getContext('2d');x.imageSmoothingEnabled=false;
+  x.drawImage(im,0,0);x.globalCompositeOperation='multiply';x.fillStyle=L.css;x.fillRect(0,0,wd,ht);
+  x.globalCompositeOperation='destination-in';x.drawImage(im,0,0);x.globalCompositeOperation='source-over'; // only the picture's own pixels
+  litCache.set(im,{key:L.key,c});return c;}
+// tint what is already drawn on a sprite's own canvas (the monster's, which is redrawn every frame), keeping its outline
+const litMask=document.createElement('canvas');
+function litOver(x,cw,ch,L){if(!L||!L.dim)return;const m=litMask;m.width=cw;m.height=ch;const mx=m.getContext('2d');mx.drawImage(x.canvas,0,0);
+  x.globalCompositeOperation='multiply';x.fillStyle=L.css;x.fillRect(0,0,cw,ch);x.globalCompositeOperation='destination-in';x.drawImage(m,0,0);x.globalCompositeOperation='source-over';}

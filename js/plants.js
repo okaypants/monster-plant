@@ -200,6 +200,7 @@ function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===
  tg.drawImage(needLook(src,nk,st.burnLv||0),0,0,b.w,cH);
  const evil=clamp(-st.ge,0,1),good=clamp(st.ge,0,1);
  if(evil>.05||good>.05){tg.globalCompositeOperation='source-atop';const fadeK=1-nk;tg.fillStyle=evil>good?`rgba(108,97,164,${evil*.38*fadeK})`:`rgba(245,171,107,${good*.18*fadeK})`;tg.fillRect(0,0,tintCv.width,tintCv.height);tg.globalCompositeOperation='source-over';} // a parched plant is fully gray, personality tint too
+ litOver(tg,tintCv.width,tintCv.height,lightAt(b.x+b.w/2,floorY)); // lit like the room where it stands (js/light.js)
  // petrifying cracks removed (Jackie: too scary); thirst = fading to gray only
  const lean=leanOff(),droop=droopOff();if(!lean&&!droop)g.drawImage(tintCv,Math.round(b.x),Math.round(drawY)+bob);
  else{const tw=tintCv.width,th=tintCv.height,cut=Math.round(th*.72),X=Math.round(b.x),Y=Math.round(drawY)+bob; // leaning or drooping: the pot stays, the body shifts in whole-pixel steps, most at the top

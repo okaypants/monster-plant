@@ -63,8 +63,8 @@ function pawPose(){const p=paw,t=p.t-PAW_OPEN,held=p.kind==='take'?'seed':p.kind
 function pawClip(){g.beginPath();for(let i=0;i<PAW_EDGE.length;i++){const [y0,e]=PAW_EDGE[i],y1=i+1<PAW_EDGE.length?PAW_EDGE[i+1][0]:H;g.rect(0,Math.max(y0,300),e,y1-Math.max(y0,300));}g.clip();}
 // drawn behind the plants and the cat, like the sill seedling
 function drawSill(){if(!st.started)return;const k=sillItemNow();
- if(k&&!sillHidden()){const b=sillBox(k);if(b){g.save();g.imageSmoothingEnabled=false;g.drawImage(b.c,b.x,b.y);g.restore();curtainOver(b);}}
- if(paw){const q=pawPose();if(q){g.save();pawClip();g.imageSmoothingEnabled=false;g.drawImage(q.c,q.R-q.c.width,Math.round(q.y));g.restore();}}}
+ if(k&&!sillHidden()){const b=sillBox(k);if(b){g.save();g.imageSmoothingEnabled=false;g.drawImage(litPic(b.c,lightAt(b.x+b.w/2,b.y+b.h)),b.x,b.y);g.restore();curtainOver(b);}}
+ if(paw){const q=pawPose();if(q){g.save();pawClip();g.imageSmoothingEnabled=false;g.drawImage(litPic(q.c,lightAt(SILL_ITEM.x,SILL_ITEM.y)),q.R-q.c.width,Math.round(q.y));g.restore();}}}
 function sillHit(x,y){const k=sillItemNow();if(!k||k==='send'||paw||sillHidden())return false;const b=sillBox(k);return !!b&&x>=b.x-16&&x<=b.x+b.w+16&&y>=b.y-16&&y<=b.y+b.h+12;}
 function sillTap(){const k=sillItemNow();if(k==='envelope'){if(letterOnSill())openLetter();else slothAsk();}else if(k==='seed')plantGift();}
 // the seed packet you tap: planted in the little pot, the usual way

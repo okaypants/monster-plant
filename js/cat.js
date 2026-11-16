@@ -111,13 +111,14 @@ const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.
 function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
 function catPose(){if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return 'sit';if(cat.state==='settle')return 'sit';if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
-function catImg(f,x,y,w,h){if((f.old&&cat.state==='walk'&&cat.dir<0)||((cat.state==='settle'||cat.state==='loafwake')&&cat.away)||((cat.state==='look'||cat.state==='present')&&cat.faceX!=null&&cat.faceX>cat.x)){ /* turned toward a monster that just grew up: its tail away from it */g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring its walk; winding down, it sits facing a little away (mirrored so its back end is toward you)
+let catLit=null; // the room's light where the cat is (js/light.js), set by drawCat
+function catImg(f,x,y,w,h){f=litPic(f,catLit);if((f.old&&cat.state==='walk'&&cat.dir<0)||((cat.state==='settle'||cat.state==='loafwake')&&cat.away)||((cat.state==='look'||cat.state==='present')&&cat.faceX!=null&&cat.faceX>cat.x)){ /* turned toward a monster that just grew up: its tail away from it */g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring its walk; winding down, it sits facing a little away (mirrored so its back end is toward you)
 // one part of the frame moved by whole pixels (the rest drawn as is): the region is drawn from the picture shifted by dx,dy, so no gap opens
 function catShifted(b,rx,ry,rw,rh,dx,dy){g.save();g.beginPath();g.rect(b.x-4,b.y-4,b.w+8,b.h+8);g.rect(rx,ry,rw,rh);g.clip('evenodd');catImg(b.f,b.x,b.y,b.w,b.h);g.restore();
  g.save();g.beginPath();g.rect(rx,ry,rw,rh);g.clip();catImg(b.f,b.x+dx,b.y+dy,b.w,b.h);g.restore();}
 const catTwitch=()=>cat.state==='fedup'&&((cat.t>.5&&cat.t<.7)||(cat.t>1&&cat.t<1.2)); // fed up: the back end twitches 1 px, twice
 const catBob=()=>cat.state==='settle'&&cat.t<11.2&&cat.t%2.8<.7; // grooming: a slow 1 px head bob, a few times
-function drawCat(){const b=catBox();if(!b)return;g.save();g.imageSmoothingEnabled=false; // crisp: no smoothing when scaled
+function drawCat(){const b=catBox();if(!b)return;catLit=lightAt(b.x+b.w/2,b.y+b.h);g.save();g.imageSmoothingEnabled=false; // crisp: no smoothing when scaled
  if(cat.state==='sleep'&&catBreath()){const sy=b.y+Math.round(b.h*.62); // breathing in: everything above this row is drawn 1 px higher, the row repeats, the paws stay put
   g.save();g.beginPath();g.rect(b.x-2,sy,b.w+4,b.h);g.clip();catImg(b.f,b.x,b.y,b.w,b.h);g.restore();
   g.save();g.beginPath();g.rect(b.x-2,b.y-4,b.w+4,sy-b.y+4);g.clip();catImg(b.f,b.x,b.y-1,b.w,b.h);g.restore();}
@@ -125,7 +126,7 @@ function drawCat(){const b=catBox();if(!b)return;g.save();g.imageSmoothingEnable
  else if(catBob())catShifted(b,b.x-4,b.y-4,b.w+8,Math.round(b.h*.45)+4,0,1);
  else catImg(b.f,b.x,b.y,b.w,b.h);
  if(cat.state==='pet'&&!OLD_CAT){const s=CATF['scratcher'+(catPetF()+1)];if(ok(s)){const k=cat.sc*catK(s),[ox,oy]=SCRATCH_AT[cat.belly?'belly':'pet'];  // offsets are in the cat frame's own pixels
-   g.drawImage(s,Math.round(b.x+ox*b.k),Math.round(b.y+oy*b.k),Math.round(s.naturalWidth*k),Math.round(s.naturalHeight*k));}}
+   g.drawImage(litPic(s,catLit),Math.round(b.x+ox*b.k),Math.round(b.y+oy*b.k),Math.round(s.naturalWidth*k),Math.round(s.naturalHeight*k));}}
  g.restore();
  if(cat.state==='sleep')sleepZ('cat',b.x+b.w*.15,b.y-6,.3);}
 function catHit(x,y){const b=catBox();return b&&x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h;}
