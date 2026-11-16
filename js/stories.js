@@ -10,6 +10,8 @@
      t    the title, shown on the first page          by   the author and year, or where it's told (shown under the title)
      p    the pages, in order: about 12 words each so they fit on a phone; \n starts a new line (poems keep their lines)
      src  for facts and folklore: where to check it (never shown in the game)
+   A page can also be {o, l, e} (Jackie, Nov 16): o = the words in their original script, l = the language, e = the English.
+   Only where a real source text exists, copied exactly; the comment by the read says where it is from.
    "from" in a title means it's a part of a longer piece. The open book shows two pages at a time; the title is the first page. */
 const STORIES={
  fairy:[
@@ -130,7 +132,11 @@ const STORIES={
    'Yes, there is a rumour that it has its dwelling where,',
    'in the fairy village among shadows of the forest dimly lit with glow-worms,',
    'there hang two shy buds of enchantment.',
-   'From there it comes to kiss baby’s eyes.']}],
+   'From there it comes to kiss baby’s eyes.',
+   {o:'খোকার চোখে যে ঘুম আসে\n    সকল তাপ-নাশা—',l:'bn',e:'Tagore first wrote it in Bengali, as “Khoka” (1903).'},
+   {o:'জান কি কেউ কোথা হ’তে যে\n    করে সে যাওয়া-আসা?',l:'bn'},
+   {o:'শুনেছি রূপকথার গাঁয়ে\nজোনাকি-জ্বলা বনের ছায়ে\nদুলিছে দুটি পারুল কুঁড়ি\n    তাহারি মাঝে বাসা;—',l:'bn'},
+   {o:'        সেখান হ’তে খোকার চোখে\n            করে সে যাওয়া-আসা',l:'bn'}]}], // Bengali: শিশু, as printed in কাব্যগ্রন্থ (অষ্টম খণ্ড), from Bengali Wikisource (proofread); The Source is the same English as Song Offerings 61, whose Bengali is this poem
  stars:[
   {t:'The Weaver and the Cowherd',by:'told in China, Japan and Korea',src:'Qixi (China), Tanabata (Japan), Chilseok (Korea), the 7th day of the 7th month; Vega (Zhinü, Orihime) and Altair (Niulang, Hikoboshi) on either side of the Milky Way; the magpie bridge (crows and magpies in Korea, Ojakgyo); the traditional date is lunar, and most of Japan now keeps July 7; wishes on paper strips (tanzaku) hung on bamboo',p:[
    'On summer nights, look for two bright stars, one on each side of the Milky Way.',
@@ -173,7 +179,10 @@ const STORIES={
    'But it was not one bit wiser for all the words it ate.',
    'What was it?',
    '…',
-   'A moth! A little bookworm, nibbling the pages.']},
+   'A moth! A little bookworm, nibbling the pages.',
+   {o:'Moððe word fræt. Me þæt þuhte\nwrætlicu wyrd, þa ic þæt wundor gefrægn,',l:'ang',e:'The riddle as it was written, in Old English, about 970.'},
+   {o:'þæt se wyrm forswealg wera gied sumes,\nþeof in þystro, þrymfæstne cwide',l:'ang'},
+   {o:'ond þæs strangan staþol. Stælgiest ne wæs\nwihte þy gleawra, þe he þam wordum swealg.',l:'ang'}]}, // Old English: Krapp and Dobbie, ASPR 3 (1936), p. 205, as on The Riddle Ages
   {t:'Humpty Dumpty',by:'Mother Goose, 1700s and 1800s',src:'Earliest known printing 1797 (Samuel Arnold, Juvenile Amusements, per the Opies) and 1810 (Gammer Gurton’s Garland), both with other endings; the king’s horses and men from the 1840s, this wording as in Yale Songs (1882); the Opies say it may have begun as a riddle, and W. C. Richards heard it as one with the answer “an egg” (1844)',p:[
    'People used to tell this old rhyme as a riddle. Can you guess?',
    'Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall;',
@@ -185,7 +194,7 @@ const STORIES={
    'In East Africa, a Swahili riddle starts with a call and an answer.',
    'The riddler calls out, “Kitendawili!” A riddle!',
    'Everyone answers, “Tega!” Set it!',
-   'My house has no door. What is it?',
+   {o:'Nyumba yangu haina mlango.',l:'sw',e:'My house has no door. What is it?'}, // Steere, Swahili Tales (1870), Vitendawili 1: “Nyumba yangu kubwa, haina mlango. — Yayi.”; this short modern form, Kamusi ya Vitendawili 836
    '…',
    'An egg! Yai.',
    'Humpty Dumpty, it turns out, has cousins all over the world.']}],
@@ -194,15 +203,15 @@ const STORIES={
    'Pole pole ndio mwendo.\nSlowly, slowly is the way to go.\n— Swahili',
    'Haba na haba hujaza kibaba.\nLittle by little fills the measure.\n— Swahili',
    'Poco a poco se va lejos.\nLittle by little, you go far.\n— Spanish',
-   'Boond boond se ghada bharta hai.\nDrop by drop, the pot fills.\n— Hindi']},
+   {o:'बूँद-बूँद से घड़ा भरता है',l:'hi',e:'Boond boond se ghada bharta hai.\nDrop by drop, the pot fills.\n— Hindi'}]}, // spellings बूँद, घड़ा: हिंदी शब्दसागर; the saying as an MP Board Class 8 chapter title (with ही)
   {t:'Falling Down',by:'sayings from Japan and Korea',src:'Japanese: "Nana korobi ya oki" (七転び八起き), "Saru mo ki kara ochiru" (猿も木から落ちる); Korean: "하늘이 무너져도 솟아날 구멍이 있다"',p:[
-   'Nana korobi ya oki.\nFall down seven times, get up eight.\n— Japanese',
-   'Saru mo ki kara ochiru.\nEven monkeys fall from trees.\n— Japanese',
-   'Even if the sky falls, there is a hole to climb out of.\n— Korean']},
+   {o:'七転び八起き',l:'ja',e:'Nana korobi ya oki.\nFall down seven times, get up eight.\n— Japanese'},
+   {o:'猿も木から落ちる',l:'ja',e:'Saru mo ki kara ochiru.\nEven monkeys fall from trees.\n— Japanese'}, // both: Kotobank (Digital Daijisen)
+   {o:'하늘이 무너져도 솟아날 구멍이 있다',l:'ko',e:'Even if the sky falls, there is a hole to climb out of.\n— Korean'}]}, // Standard Korean Language Dictionary (표준국어대사전), under 하늘
   {t:'Together, and Going Back',by:'sayings from Ireland, Ghana and China',src:'Irish: "Ar scáth a chéile a mhaireann na daoine"; Akan (Ghana): Sankofa, "Se wo were fi na wosankofa a yenkyi"; Chinese: Laozi, Tao Te Ching, chapter 64',p:[
    'Ar scáth a chéile a mhaireann na daoine.\nPeople live in each other’s shelter.\n— Irish',
-   'Sankofa.\nIt is not wrong to go back for what you forgot.\n— Akan, Ghana',
-   'A journey of a thousand miles begins beneath your feet.\n— after Laozi, China']}],
+   {o:'Sɛ wo werɛ firi na wosan kɔfa a, yɛnkyiri.',l:'ak',e:'Sankofa.\nIt is not wrong to go back for what you forgot.\n— Akan, Ghana'}, // Twi spelling: adinkrasymbols.org and Twi Wikipedia
+   {o:'千里之行，始於足下。',l:'zh-Hant',e:'A journey of a thousand miles begins beneath your feet.\n— after Laozi, China'}]}], // Daodejing 64, Wang Bi text, Chinese Wikisource
  letters:[
   {t:'How Peter Rabbit Began',by:'Beatrix Potter, 1902',src:'Potter’s picture letter to Noel Moore, 4 September 1893, written while Noel was ill (Morgan Library); The Tale of Peter Rabbit, Frederick Warne 1902 (privately printed 1901), quoted from Project Gutenberg #14838. The letter itself is not quoted: when it was first published, and so its copyright, is uncertain',p:[
    'In 1893, Beatrix Potter wrote a letter to Noel Moore, a child who was ill in bed.',
@@ -222,11 +231,12 @@ const STORIES={
   {t:'Lovely Things',by:'retold from The Pillow Book, Japan, about 1000',src:'Sei Shōnagon, Makura no Sōshi: section 1 ("In spring, the dawn"); "Adorable things" (a child’s face drawn on a melon, a sparrow hopping closer when you chirp at it, tiny lotus leaves from a pond, and "anything small is lovely")',p:[
    'About a thousand years ago, Sei Shōnagon filled a notebook called a pillow book.',
    'It was full of lists: lovely things, annoying things, things that make the heart beat faster.',
-   'In spring, the notebook says, the dawn is best.',
-   'In summer, the night. In autumn, the evening. In winter, the early morning.',
-   'Some lovely things: a sparrow hopping closer when you chirp at it.',
-   'A child’s face drawn on a melon. Tiny lotus leaves pulled from a pond.',
-   'Anything small, the notebook says, is lovely.']}],
+   {o:'春はあけぼの。',l:'ja',e:'In spring, the notebook says, the dawn is best.'},
+   {o:'夏は夜。秋は夕暮れ。冬はつとめて。',l:'ja',e:'In summer, the night. In autumn, the evening. In winter, the early morning.'},
+   {o:'雀の子の、ねずなきするにをどりくる。',l:'ja',e:'Some lovely things: a sparrow hopping closer when you chirp at it.'},
+   {o:'瓜にかきたるちごの顔。',l:'ja',e:'A child’s face drawn on a melon.'},
+   {o:'蓮の浮葉のいとちひさきを、池よりとりあげたる。',l:'ja',e:'Tiny lotus leaves pulled from a pond.'},
+   {o:'なにもなにも、ちひさきものはみなうつくし。',l:'ja',e:'Anything small, the notebook says, is lovely.'}]}], // Japanese: the 三巻本 text, in its old kana, as on manapedia.jp (うつくしきもの) and houkagonojisyushitsu.jp
  recipes:[
   {t:'Moon-Viewing Dumplings',by:'a recipe from Japan',src:'Tsukimi dango: shiratamako (sweet rice flour) and water, rolled, boiled until they float, cooled in water; stacked in a pyramid for the autumn full moon (jūgoya) with susuki pampas grass',p:[
    'In Japan, on the autumn full moon, people make tsukimi dango to share with the moon.',

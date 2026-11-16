@@ -2,6 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Words in their original script in the books (Nov 16)
+
+- Jackie wanted to see the original script of anything in the books that isn't English (Hangul for Korean, the Japanese text, and so on), **only where it really exists, never assumed**. Each original was checked against a real source; the notes are kept outside the repo.
+- **Shown now** (the original on top in rust, the English under it):
+  - Proverbs: 七転び八起き and 猿も木から落ちる (Kotobank), 하늘이 무너져도 솟아날 구멍이 있다 (Standard Korean Language Dictionary), बूँद-बूँद से घड़ा भरता है, the Sankofa saying in Twi spelling (Sɛ wo werɛ firi na wosan kɔfa a, yɛnkyiri), and Laozi's 千里之行，始於足下 (Wang Bi text).
+  - The Swahili riddle: Nyumba yangu haina mlango.
+  - The Pillow Book lines in the old kana of the standard text (春はあけぼの… うつくしきもの).
+  - Tagore's "The Source": its opening stanza in the Bengali he first wrote, খোকা (1903), from proofread Bengali Wikisource.
+  - The moth riddle in Old English, from the 1936 standard edition.
+- **Left out on purpose:** "Paper Boats" (no source says which Bengali poem it comes from, and its text could only be read off a scan); the Sphinx riddle (the old Greek words differ from the English we tell); the retold tales, recipes and the house child (written plainly for the game, so there's no original to show). Swahili, Spanish and Irish were already in their own words.
+- The Hindi and Twi spellings come from fewer sources than the rest (a dictionary for the words and a school textbook for the Hindi saying; adinkrasymbols.org and Twi Wikipedia for the Twi).
+- How to add one: a page can be `{o, l, e}` in `js/stories.js` (original, language, English); `tests/reading_shots.py` checks every page still fits.
+
 ### Softer sounds, and the stool lit at night (Nov 16)
 
 - **Sounds (Jackie: a lot of them were abrasive):** every sound now goes through one quiet bus (60%) with a gentle low-pass (nothing brighter than about 2.6 kHz). Only sine and triangle tones, no buzzy sawtooth or square (slurp, burp, giggle were); no high hiss (page turns, crinkle, fsss were high-passed noise); no attack faster than 8 ms, so no clicks; chimes an octave lower and quieter. The tick on every tap was a hiss; it's now a tiny soft knock. Each sound is a little quieter too. The radio and the sampler aren't on this bus.

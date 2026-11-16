@@ -204,7 +204,10 @@ addEventListener('resize',()=>setTimeout(placeStory,50));
 function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=readPages(r.s);
  storyPage(storyEl.querySelector('.sl'),P[r.page]);storyPage(storyEl.querySelector('.sr'),P[r.page+1]);}
 // one page: words (poems keep their lines), or the title page: the title with who wrote it, or where it's told, underneath
-function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));if(!pg)return;if(!pg.t){el.textContent=pg;return;}
+/* A page can carry the words in their original script (Jackie, Nov 16): {o: the original, l: its language code, e: the English}.
+   The original sits on top, in its own script, only where a real source text exists (js/stories.js says where it is from). */
+function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));if(!pg)return;if(typeof pg==='string'){el.textContent=pg;return;}
+ if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.textContent=pg.o;box.appendChild(o);}if(pg.e){const e=document.createElement('span');e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);return;}
  const t=document.createElement('b');t.textContent=pg.t;el.appendChild(t);if(pg.by){const by=document.createElement('span');by.className='sby';by.textContent=pg.by;el.appendChild(by);}}
 function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
  if(r.page+2>=readPages(r.s).length)return closeStory();sfx('page');if(tsCalm()){r.page+=2;showStory();return;} // reduce motion: the next pages just appearstoryEl.dataset.turning=1;
