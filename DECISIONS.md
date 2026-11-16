@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Softer sounds, and the stool lit at night (Nov 16)
+
+- **Sounds (Jackie: a lot of them were abrasive):** every sound now goes through one quiet bus (60%) with a gentle low-pass (nothing brighter than about 2.6 kHz). Only sine and triangle tones, no buzzy sawtooth or square (slurp, burp, giggle were); no high hiss (page turns, crinkle, fsss were high-passed noise); no attack faster than 8 ms, so no clicks; chimes an octave lower and quieter. The tick on every tap was a hiss; it's now a tiny soft knock. Each sound is a little quieter too. The radio and the sampler aren't on this bus.
+- **The stool under the watering can (Jackie):** picking up the can showed a light square at night and golden hour, because the empty stool was daytime art. Now it's lit like the room picture: every pixel the can never covered comes straight from the room as it is now, and the bits the can hid take the colour that colour has now elsewhere around the stool, a little brighter or darker with the light nearby. A few outline pixels may still show at golden hour.
+
 ### Monsters, the cat and the rest are lit like the room (Nov 16)
 
 - Jackie asked how the monsters get dimmed when appropriate, then said yes to building it. Until now the monsters, the cat, Sloth's paw and what it brings, and the pumpkin or tree were drawn at full daylight all the time; only the room picture changed.

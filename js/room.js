@@ -6,6 +6,26 @@ const TIMES=['day','golden','night'],ROOMS={},LOFF={},CURTS={};
 for(const t of TIMES){ROOMS[t]=img('room_'+t+'.png');LOFF[t]={floor:img(t+'_floorlamp_off.png'),desk:img(t+'_desklamp_off.png')};CURTS[t]=img(t+'_curtains_closed.png');}
 const WIN_SEASON={day:{summer:img('day_window_summer.png'),spring:img('day_window_spring.png'),autumn:img('day_window_autumn.png'),winter:img('day_window_winter.png')},night:{spring:img('night_window_spring.png'),summer:img('night_window_summer.png'),autumn:img('night_window_autumn.png'),winter:img('night_window_winter.png')}}; // night windows for every season (Jackie, Nov 10): only the glass differs from the winter one
 const STOOL_EMPTY=img('stool_empty.png');
+/* The stool without the can is daytime art (Jackie, Nov 16: it showed as a light square at night and golden hour).
+   Lit like the room picture under it: every pixel the can never covered is taken straight from the room picture now;
+   the bits of stool the can hid get the room's tint there (its colour now against daytime). Made once per lighting. */
+let stoolKey='',stoolCv=null;
+function stoolEmpty(rm,key){if(!ok(STOOL_EMPTY))return null;if(!ok(rm)||!ok(ROOMS.day)||rm===ROOMS.day)return STOOL_EMPTY;if(key===stoolKey&&stoolCv)return stoolCv;
+ const w=STOOL_EMPTY.naturalWidth,h=STOOL_EMPTY.naturalHeight,grab=src=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(src,765,488,w,h,0,0,w,h);return x.getImageData(0,0,w,h);};
+ try{const se=grab(STOOL_EMPTY.__whole||(STOOL_EMPTY.__whole=(()=>{const c=document.createElement('canvas');c.width=765+w;c.height=488+h;c.getContext('2d').drawImage(STOOL_EMPTY,765,488);return c;})())),day=grab(ROOMS.day),now=grab(rm),
+   o=se.data,d=day.data,n=now.data,sum=[0,0,0],ref=[0,0,0],same=[];
+  for(let i=0;i<o.length;i+=4){const eq=Math.abs(o[i]-d[i])+Math.abs(o[i+1]-d[i+1])+Math.abs(o[i+2]-d[i+2])<24;same.push(eq);for(let q=0;q<3;q++){sum[q]+=n[i+q];ref[q]+=d[i+q];}}
+  const lut=new Map();for(let i=0,p=0;i<o.length;i+=4,p++)if(same[p]){const key=(d[i]>>4)<<8|(d[i+1]>>4)<<4|(d[i+2]>>4),e=lut.get(key)||[0,0,0,0];e[0]+=n[i];e[1]+=n[i+1];e[2]+=n[i+2];e[3]++;lut.set(key,e);}
+  const f=[0,1,2].map(q=>clamp(sum[q]/Math.max(1,ref[q]),0,1.2)),R=14,W1=w+1; // the hidden bits: the light of the room around them (sun streaks carry through)
+  const I=[0,1,2,3].map(()=>new Float64Array(W1*(h+1))); // running sums of now and daytime colour over the pixels the can never covered, and how many
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x,i=p*4,k=(y+1)*W1+x+1,v=same[p]?[n[i]+n[i+1]+n[i+2],d[i]+d[i+1]+d[i+2],1]:[0,0,0];
+   for(let q=0;q<3;q++)I[q][k]=v[q]+I[q][k-1]+I[q][k-W1]-I[q][k-W1-1];}
+  const box=(q,x,y)=>{const x0=Math.max(0,x-R),y0=Math.max(0,y-R),x1=Math.min(w,x+R+1),y1=Math.min(h,y+R+1);return I[q][y1*W1+x1]-I[q][y0*W1+x1]-I[q][y1*W1+x0]+I[q][y0*W1+x0];};
+  for(let y=0,p=0;y<h;y++)for(let x=0;x<w;x++,p++){const i=p*4;if(same[p]){o[i]=n[i];o[i+1]=n[i+1];o[i+2]=n[i+2];continue;}
+   const cnt=box(2,x,y),k=cnt>20?clamp(box(0,x,y)/Math.max(1,box(1,x,y)),0,1.2)/Math.max(.01,(f[0]+f[1]+f[2])/3):1; // brighter or darker than the patch as a whole, nearby
+   const b=lut.get((o[i]>>4)<<8|(o[i+1]>>4)<<4|(o[i+2]>>4)); // how this colour looks now elsewhere in the patch (the art's grading isn't one tint: the wall's diamonds darken more than the wall)
+   for(let q=0;q<3;q++)o[i+q]=Math.min(255,(b&&b[3]>=3?b[q]/b[3]:o[i+q]*f[q])*k);}
+  const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').putImageData(se,0,0);stoolCv=c;stoolKey=key;return c;}catch(e){return STOOL_EMPTY;}}
 // exact mixed-lamp rooms from Jackie (used instead of the soft cut-outs when present). key: time + '_' + floor(on/off) + desk(on/off)
 const MIX={golden_onoff:img('room_golden_floorOn_deskOff.png'),golden_offon:img('room_golden_floorOff_deskOn.png'),golden_offoff:img('room_golden_floorOff_deskOff.png'),day_c_onoff:img('room_day_closed_floorOn_deskOff.png'),day_c_offon:img('room_day_closed_floorOff_deskOn.png'),day_offoff:img('room_day_floorOff_deskOff.png'),golden_c_offoff:img('room_golden_closed_floorOff_deskOff.png')}; // _c_ = curtains closed
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
@@ -115,7 +135,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(st.started&&typeof drawSash==='function')drawSash(tk+lk+(exactC?'c':'')); // the lower sash slides up for Sloth's paw (js/paw.js)
  if(!exact&&st.lamp===false&&ok(LOFF[tk].floor))g.drawImage(LOFF[tk].floor,0,0);
  if(!exact&&st.desk===false&&ok(LOFF[tk].desk))g.drawImage(LOFF[tk].desk,831,0);
- if(held.tool==='can'&&ok(STOOL_EMPTY))g.drawImage(STOOL_EMPTY,765,488);
+ if(held.tool==='can'){const se=stoolEmpty(rm,tk+'|'+lk+'|'+exact);if(se)g.drawImage(se,765,488);} // the stool without the can, lit like the room
  fidgetDrawProps(rm);
  drawSeasonItem(); // the pumpkin (autumn) or the tree (winter) on the book stack (js/seasonal.js)
  drawPlacard(tk+'|'+lk+'|'+exact+'|'+exactC+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
