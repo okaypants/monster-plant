@@ -61,6 +61,25 @@ button{cursor:pointer;touch-action:manipulation;padding:0}
 .p u{position:absolute;left:1.2vh;top:.6vh;text-decoration:none;font-size:3.2vh}
 .p em{display:block;font-style:normal;line-height:1.15;max-height:100%;overflow:hidden;word-break:break-word}
 body.erase .p.full{--edge:var(--k)}
+/* the digging screen has three pages: DIG (records), BEAT (tempo, click, recording a loop), SAVED (beats kept on purpose) */
+#tabs{display:flex;align-items:center;gap:2.6vh;flex:0 0 auto}
+.tab{background:none;border:0;border-bottom:.6vh solid transparent;border-radius:0;color:var(--dim);font-size:3.8vh;font-weight:800;padding:.2vh 0 .4vh;min-height:6.4vh}
+.tab.on{color:var(--ink);border-bottom-color:var(--acc)}
+#dots{margin-left:auto;display:flex;gap:1vh}
+#dots i{width:2.2vh;height:2.2vh;border-radius:.5vh;background:var(--lcdbar)}
+#dots i.on{background:var(--lit)}
+.pane{flex:1;min-height:0;display:flex;flex-direction:column;gap:1.6vh}
+#pBeat{gap:1.3vh;overflow-y:auto;padding-bottom:1.6vh;scrollbar-width:none}
+.row{display:flex;align-items:center;gap:1.2vh;flex:none}
+.lab{color:var(--dim);font-size:3.2vh;min-width:10vh}
+.val{font-size:4.6vh;font-weight:800;min-width:8vh;text-align:center}
+.row .t{min-height:8.5vh;min-width:8.5vh;padding:.6vh 1.8vh}
+.row .end{margin-left:auto}
+.row.big .t{flex:1;font-weight:800}
+#bpos{color:var(--dim);font-size:3.2vh}
+#save{flex:none;min-height:10vh;background:var(--acc);color:var(--acctx);border:0;border-radius:1.2vh}
+#slist{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;margin:0 -2vh}
+body.erase #slist .r b{text-decoration:line-through}
 #tr{display:flex;gap:1.6vh;flex:0 0 14vh}
 #tr .b{flex:1;min-width:0}
 #tr .w{flex:1.6}
@@ -79,9 +98,23 @@ body.erase .p.full{--edge:var(--k)}
   </div>
   <div id="mid">
     <div id="dig">
+      <div id="tabs"><button class="tab on" type="button" data-p="pDig">DIG</button><button class="tab" type="button" data-p="pBeat">BEAT</button><button class="tab" type="button" data-p="pSaved">SAVED</button><div id="dots"><i></i><i></i><i></i><i></i></div></div>
+      <div class="pane" id="pDig">
       <form id="fs"><input id="q" type="search" enterkeyhint="search" placeholder="blues, banjo, a name…" autocomplete="off" autocapitalize="off"><button class="b" type="submit">DIG</button></form>
       <div id="tags"></div>
       <div id="list"><div id="note">Old records, free for everyone.<br>Dig one up, tap it to play, then hold a pad while the bit you like goes by.</div></div>
+      </div>
+      <div class="pane" id="pBeat" hidden>
+        <div class="row"><span class="lab">TEMPO</span><button class="t" type="button" id="bpmD" aria-label="Slower">−</button><span class="val" id="bpm">90</span><button class="t" type="button" id="bpmU" aria-label="Faster">+</button><button class="t end" type="button" id="click">CLICK</button></div>
+        <div class="row"><span class="lab">BARS</span><button class="t s bars" type="button" data-n="1">1</button><button class="t s bars" type="button" data-n="2">2</button><button class="t s bars" type="button" data-n="4">4</button><button class="t s end" type="button" id="lock">LOCK</button></div>
+        <div class="row"><span class="lab">PITCH</span><button class="t" type="button" id="pitD" aria-label="Lower">−</button><span class="val" id="pit">0</span><button class="t" type="button" id="pitU" aria-label="Higher">+</button><span class="lab end" id="pitPad">pad 1</span></div>
+        <div class="row big"><button class="t" type="button" id="rec">● REC</button><button class="t" type="button" id="bplay">▶ PLAY</button><button class="t" type="button" id="clear">CLEAR</button></div>
+        <div id="bpos"></div>
+      </div>
+      <div class="pane" id="pSaved" hidden>
+        <button class="b" type="button" id="save">SAVE THIS BEAT</button>
+        <div id="slist"></div>
+      </div>
     </div>
     <div id="right">
       <div id="pads"></div>
@@ -99,7 +132,10 @@ body.erase .p.full{--edge:var(--k)}
 /* The Crates, Monster Plant edition: the sampler on the top shelf.
    Dig up old public-domain records, play one, and hold a pad while it plays to keep that snippet on the pad.
    Light on the phone on purpose: records are streamed, never downloaded whole; moving to another record forgets the
-   last one; pads live in memory and are gone when the sampler is closed; nothing is saved anywhere. */
+   last one; pads live in memory and are gone when the sampler is closed, unless you save the beat on purpose.
+   BEAT (Jackie, Nov 16): a tempo, a click, pitch per pad, and a loop of 1, 2 or 4 bars to record pad hits into;
+   LOCK snaps recorded hits to the nearest sixteenth. SAVED keeps a beat (its pads, their pitch, the loop) in this
+   page's own storage on the phone; the game's save is never touched. */
 const $=id=>document.getElementById(id);
 const el=(t,c,tx)=>{const e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e};
 // US sound recordings enter the public domain 100 years after publication, on the following 1 January
@@ -252,7 +288,7 @@ function onChunk(b,n0){
 function padDown(i){
   unlock();
   if(erase){if(pads[i]){stopPad(i);pads[i]=null;drawPad(i);lcd(null,'Pad '+(i+1)+' is empty again.',1600)}return}
-  if(pads[i])return playPad(i);
+  if(pads[i]){SEQ.sel=i;record(i);playPad(i);beatUI();return}
   if(cap)return;
   if(!now||player.paused||player.readyState<3)return lcd(null,now?'Press ▶, then hold a pad while it plays.':'Play a record first, then hold a pad.',2200);
   cap={i,n:Math.round((AC.currentTime-lat())*AC.sampleRate),t:performance.now()};
@@ -268,15 +304,21 @@ function endCap(drop){
     const buf=AC.createBuffer(1,n,sr),out=buf.getChannelData(0);let o=0;
     for(const k of chunks){const a=Math.max(0,s-o),z=Math.min(k.b.length,s+n-o);if(z>a)out.set(k.b.subarray(a,z),o+a-s);o+=k.b.length}
     const f=Math.min(Math.round(sr*.003),n>>2);for(let j=0;j<f;j++){const g=j/f;out[j]*=g;out[n-1-j]*=g} // tiny fades: no clicks
-    pads[c.i]={buf,title:now?now.title:''};drawPad(c.i);chunks=chunks.slice(-Math.ceil(KEEP*sr/2048));
+    pads[c.i]={buf,title:now?now.title:'',pitch:0};SEQ.sel=c.i;drawPad(c.i);beatUI();chunks=chunks.slice(-Math.ceil(KEEP*sr/2048));
     lcd(null,'Pad '+(c.i+1)+' holds '+(n/sr).toFixed(1)+' s. Tap it!',2500)};
   drop?fin():setTimeout(fin,140)}
 const voices=Array(NPAD).fill(null);
 function stopPad(i){const v=voices[i];if(v){voices[i]=null;try{v.onended=null;v.stop()}catch(e){}}padEls[i].classList.remove('hit')}
-function playPad(i){
-  stopPad(i);const n=AC.createBufferSource();n.buffer=pads[i].buf;n.connect(AC.destination);n.start();
-  n.onended=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};voices[i]=n;padEls[i].classList.add('hit')}
-function drawPad(i){const p=padEls[i],d=pads[i];p.classList.toggle('full',!!d);p.querySelector('em').textContent=d?d.title:''}
+const rate=p=>Math.pow(2,(p||0)/12); // pitch in semitones; like an old sampler, higher is also faster
+const later=[]; // sounds already scheduled, so STOP can cancel them
+function voice(i,t){ // one voice per pad: a new hit cuts the last one off
+  const old=voices[i];if(old){try{old.onended=null;old.stop(t)}catch(e){}}
+  const n=AC.createBufferSource();n.buffer=pads[i].buf;n.playbackRate.value=rate(pads[i].pitch);n.connect(AC.destination);n.start(t);
+  n.onended=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};voices[i]=n;
+  later.push(n);if(later.length>64)later.splice(0,later.length-64);return n}
+function playPad(i){voice(i,0);padEls[i].classList.add('hit')}
+function drawPad(i){const p=padEls[i],d=pads[i];p.classList.toggle('full',!!d);p.querySelector('em').textContent=d?d.title:'';
+  p.querySelector('u').textContent=(i+1)+(d&&d.pitch?' · '+(d.pitch>0?'+':'')+d.pitch:'')}
 for(let i=0;i<NPAD;i++){const p=el('button','p');p.type='button';p.appendChild(el('u','',String(i+1)));p.appendChild(el('em'));
   let id=null;
   p.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{p.setPointerCapture(id)}catch(e){}ev.preventDefault();padDown(i)});
@@ -291,17 +333,127 @@ function chips(){const T=$('tags');T.textContent='';
 $('fs').onsubmit=ev=>{ev.preventDefault();st.q=$('q').value.trim();$('q').blur();chips();runSearch()};
 $('play').onclick=()=>{if(!now)return lcd(null,'Pick a record on the left first.',2000);if(player.paused)player.play().catch(()=>{});else{endCap(true);player.pause()}};
 $('prev').onclick=()=>step(-1);$('next').onclick=()=>step(1);
-$('erase').onclick=()=>{erase=!erase;sync();lcd(null,erase?'Tap a pad to empty it.':'',erase?4000:1)};
+$('erase').onclick=()=>{erase=!erase;sync();lcd(null,erase?'Tap a pad, or a saved beat, to erase it.':'',erase?4000:1)};
 (b=>{let id=null;const go=ev=>{const r=b.getBoundingClientRect();seekTo(Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*player.duration)};
   b.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{b.setPointerCapture(id)}catch(e){}go(ev)});
   b.addEventListener('pointermove',ev=>{if(ev.pointerId===id)go(ev)});
   const up=ev=>{if(ev.pointerId===id)id=null};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up)})($('bar'));
 // back to the room: stop everything first; the room then throws this whole page away, pads and all
-function leave(){endCap(true);release();for(let i=0;i<NPAD;i++)stopPad(i);try{unlockEl&&unlockEl.pause()}catch(e){}
+function leave(){endCap(true);release();clockStop();for(let i=0;i<NPAD;i++)stopPad(i);try{unlockEl&&unlockEl.pause()}catch(e){}
   if(parent!==window)parent.postMessage('mp-sampler-close','*');else history.back()}
 $('x').onclick=leave;addEventListener('keydown',e=>{if(e.key==='Escape')leave()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)endCap(true)});
-chips();sync();
+
+/* ---------- BEAT: tempo, click, a loop of pad hits ---------- */
+const SEQ={bpm:90,bars:2,click:false,lock:true,ev:[],sel:0,on:false,play:false,rec:false,count:false,a0:0,b0:0,start:0,nextClick:0,upTo:0,timer:null};
+const BPM_MIN=40,BPM_MAX=200,GRID=4/* LOCK: sixteenths */,AHEAD=.12,MAXEV=600,MAXSAVE=12;
+const spb=()=>60/SEQ.bpm,loopLen=()=>SEQ.bars*4;
+const beatAt=t=>SEQ.b0+(t-SEQ.a0)/spb(),timeAt=b=>SEQ.a0+(b-SEQ.b0)*spb();
+function clockStart(){if(SEQ.on)return true;unlock();if(!AC)return false;
+  SEQ.on=true;SEQ.a0=AC.currentTime+.08;SEQ.b0=0;SEQ.nextClick=0;SEQ.upTo=0;SEQ.timer=setInterval(tick,25);return true}
+function seqStop(){SEQ.play=SEQ.rec=SEQ.count=false;later.splice(0).forEach(n=>{try{n.onended=null;n.stop()}catch(e){}});
+  for(let i=0;i<NPAD;i++){voices[i]=null;padEls[i].classList.remove('hit')}}
+function clockStop(){seqStop();SEQ.on=false;clearInterval(SEQ.timer);SEQ.timer=null;dots(-1);beatUI()}
+function setBpm(v){v=Math.max(BPM_MIN,Math.min(BPM_MAX,Math.round(v)));if(v===SEQ.bpm)return;
+  if(SEQ.on){const t=AC.currentTime;SEQ.b0=beatAt(t);SEQ.a0=t}SEQ.bpm=v;beatUI()} // a new tempo carries on from where the beat is
+function blip(t,one){ // the click: short, higher on the first beat of each bar
+  const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=one?1568:1047;g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(.3,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.05);o.connect(g);g.connect(AC.destination);
+  o.start(t);o.stop(t+.06);later.push(o)}
+function at(t,f){setTimeout(()=>{if(SEQ.on)f()},Math.max(0,(t-AC.currentTime+lat())*1000))} // when it is heard
+function tick(){
+  if(!SEQ.on)return;const to=beatAt(AC.currentTime+AHEAD);
+  while(SEQ.nextClick<to){const b=SEQ.nextClick,t=timeAt(b),cnt=SEQ.count&&b<SEQ.start;
+    if(SEQ.click||cnt)blip(t,b%4===0);
+    at(t,()=>{dots(((b%4)+4)%4);if(cnt)lcd(null,'Recording in '+(SEQ.start-b)+'…',spb()*1100);
+      else if(SEQ.rec&&b===SEQ.start)lcd(null,'Recording. Tap the pads in time.',2000);beatUI(b)});
+    SEQ.nextClick++}
+  if(SEQ.play){const L=loopLen(),from=Math.max(SEQ.upTo,SEQ.start);
+    for(const e of SEQ.ev){if(e.b>=L||!pads[e.p])continue;
+      for(let ob=SEQ.start+e.b+Math.max(0,Math.ceil((from-SEQ.start-e.b)/L))*L;ob<to;ob+=L){
+        if(ob<from||(e.skip&&ob<e.skip))continue;const p=e.p,v=voice(p,timeAt(ob));at(timeAt(ob),()=>{if(voices[p]===v)padEls[p].classList.add('hit')})}}}
+  SEQ.upTo=to}
+// a pad hit while recording goes into the loop where it was heard; LOCK moves it to the nearest sixteenth
+function record(i){
+  if(!SEQ.rec||!SEQ.on)return;const L=loopLen(),b=beatAt(AC.currentTime-lat())-SEQ.start;if(b<-.5)return;
+  let ab=Math.floor(Math.max(0,b)/L)*L,pos=Math.max(0,b)-ab;if(SEQ.lock)pos=Math.round(pos*GRID)/GRID;if(pos>=L-1e-6){pos-=L;ab+=L}
+  addHit(i,pos,SEQ.start+ab+pos+1e-3)}
+function addHit(i,pos,skip){ // skip: this pass already heard it live, so the loop picks it up from the next pass
+  if(SEQ.ev.length>=MAXEV)return lcd(null,'The loop is full. CLEAR it to start again.',2400);
+  if(SEQ.ev.some(e=>e.p===i&&Math.abs(e.b-pos)<1e-3))return;SEQ.ev.push({p:i,b:pos,skip});beatUI()}
+function beatGo(rec){
+  if(!pads.some(Boolean))return lcd(null,'Sample onto a pad first.',2200);
+  if(!rec&&!SEQ.ev.length)return lcd(null,'Nothing recorded yet. Press REC.',2200);
+  const was=SEQ.on;if(!clockStart())return;
+  if(!SEQ.play){SEQ.start=was?Math.ceil(beatAt(AC.currentTime+.05)/4)*4:rec?4:0;SEQ.count=rec;SEQ.upTo=0} // from a standstill, REC counts in one bar
+  SEQ.play=true;if(rec)SEQ.rec=true;beatUI()}
+function beatHalt(){seqStop();if(!SEQ.click)clockStop();beatUI();lcd(null,'Stopped.',1200)}
+function dots(k){[...$('dots').children].forEach((d,j)=>d.classList.toggle('on',j===k))}
+let lastB=0;
+function beatUI(b){if(b!=null)lastB=b;
+  $('bpm').textContent=SEQ.bpm;$('click').classList.toggle('on',SEQ.click);$('lock').classList.toggle('on',SEQ.lock);
+  document.querySelectorAll('.bars').forEach(x=>x.classList.toggle('on',+x.dataset.n===SEQ.bars));
+  const d=pads[SEQ.sel];$('pit').textContent=d?(d.pitch>0?'+':'')+(d.pitch||0):'–';$('pitPad').textContent='pad '+(SEQ.sel+1);
+  $('rec').classList.toggle('on',SEQ.rec);$('bplay').classList.toggle('on',SEQ.play);$('bplay').textContent=SEQ.play?'■ STOP':'▶ PLAY';
+  const L=loopLen(),n=SEQ.ev.filter(e=>e.b<L).length;let s=n?n+(n===1?' hit':' hits')+' in the loop':'Nothing recorded yet.';
+  if(SEQ.play&&lastB>=SEQ.start){const k=(lastB-SEQ.start)%L;s='Bar '+(Math.floor(k/4)+1)+' of '+SEQ.bars+' · '+s}
+  $('bpos').textContent=s}
+function holdKey(b,f){let t=null;const go=()=>{f();t=setTimeout(go,t?90:420)}; // hold − or + to keep going
+  b.addEventListener('pointerdown',ev=>{ev.preventDefault();clearTimeout(t);t=null;go()});
+  ['pointerup','pointercancel','pointerleave'].forEach(e=>b.addEventListener(e,()=>{clearTimeout(t);t=null}))}
+holdKey($('bpmD'),()=>setBpm(SEQ.bpm-1));holdKey($('bpmU'),()=>setBpm(SEQ.bpm+1));
+function nudgePitch(d){const p=pads[SEQ.sel];if(!p)return lcd(null,'Pad '+(SEQ.sel+1)+' is empty. Tap a full pad first.',2200);
+  p.pitch=Math.max(-12,Math.min(12,(p.pitch||0)+d));drawPad(SEQ.sel);beatUI();playPad(SEQ.sel)}
+$('pitD').onclick=()=>nudgePitch(-1);$('pitU').onclick=()=>nudgePitch(1);
+$('click').onclick=()=>{SEQ.click=!SEQ.click;if(SEQ.click){if(clockStart()&&!SEQ.play)SEQ.start=0}else if(!SEQ.play)clockStop();beatUI()};
+$('lock').onclick=()=>{SEQ.lock=!SEQ.lock;beatUI();lcd(null,SEQ.lock?'LOCK: new hits snap to the beat.':'LOCK off: hits stay where you play them.',2200)};
+document.querySelectorAll('.bars').forEach(x=>x.onclick=()=>{SEQ.bars=+x.dataset.n;beatUI()});
+$('rec').onclick=()=>{if(SEQ.rec){SEQ.rec=false;beatUI();lcd(null,'Recording off. The loop keeps playing.',2000)}else beatGo(true)};
+$('bplay').onclick=()=>SEQ.play?beatHalt():beatGo(false);
+$('clear').onclick=()=>{SEQ.ev=[];beatUI();lcd(null,'The loop is empty again.',1600)};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  ['pDig','pBeat','pSaved'].forEach(id=>$(id).hidden=id!==t.dataset.p);if(t.dataset.p==='pSaved')drawSaved()});
+
+/* ---------- SAVED: beats kept on purpose, in this page's own storage (never the game's save) ---------- */
+let dbP=null;
+function idb(){return dbP||(dbP=new Promise((ok,no)=>{const r=indexedDB.open('mp-crates',1);
+  r.onupgradeneeded=()=>{r.result.createObjectStore('beats',{keyPath:'id',autoIncrement:true});r.result.createObjectStore('pads',{keyPath:'id'})};
+  r.onsuccess=()=>ok(r.result);r.onerror=()=>{dbP=null;no(r.error)}}))}
+function txn(stores,mode,fn){return idb().then(db=>new Promise((ok,no)=>{const tx=db.transaction(stores,mode);let out;
+  fn(tx,v=>out=v);tx.oncomplete=()=>ok(out);tx.onerror=tx.onabort=()=>no(tx.error)}))}
+const listBeats=()=>txn(['beats'],'readonly',(tx,put)=>{const r=tx.objectStore('beats').getAll();r.onsuccess=()=>put(r.result||[])});
+function toI16(f){const o=new Int16Array(f.length);for(let k=0;k<f.length;k++){const v=Math.max(-1,Math.min(1,f[k]));o[k]=v<0?v*32768:v*32767}return o}
+async function saveBeat(){
+  unlock();const full=pads.filter(Boolean).length;if(!full)return lcd(null,'Sample onto a pad first, then save.',2400);
+  try{const old=await listBeats();if(old.length>=MAXSAVE)return lcd(null,'Saved beats are full. ERASE one first.',2600);
+    const n=old.reduce((m,x)=>Math.max(m,x.n||0),0)+1;
+    const meta={n,name:'Beat '+n,made:Date.now(),bpm:SEQ.bpm,bars:SEQ.bars,lock:SEQ.lock,ev:SEQ.ev.map(e=>({p:e.p,b:e.b})),npads:full};
+    const pd=pads.map(d=>d?{title:d.title,pitch:d.pitch||0,sr:d.buf.sampleRate,pcm:toI16(d.buf.getChannelData(0))}:null);
+    await txn(['beats','pads'],'readwrite',tx=>{const r=tx.objectStore('beats').add(meta);r.onsuccess=()=>tx.objectStore('pads').put({id:r.result,pads:pd})});
+    lcd(null,meta.name+' is saved.',2400);drawSaved()
+  }catch(e){lcd(null,'There is no room to save on this phone right now.',2800)}}
+async function loadBeat(m){
+  unlock();if(!AC)return;
+  try{const rec=await txn(['pads'],'readonly',(tx,put)=>{const r=tx.objectStore('pads').get(m.id);r.onsuccess=()=>put(r.result)});
+    if(!rec)return lcd(null,'That beat could not be found.',2200);
+    clockStop();endCap(true);
+    rec.pads.forEach((d,i)=>{stopPad(i);if(!d){pads[i]=null}else{const b=AC.createBuffer(1,d.pcm.length,d.sr),o=b.getChannelData(0);
+      for(let k=0;k<o.length;k++)o[k]=d.pcm[k]/32768;pads[i]={buf:b,title:d.title,pitch:d.pitch||0}}drawPad(i)});
+    Object.assign(SEQ,{bpm:m.bpm,bars:m.bars,lock:m.lock,ev:m.ev.map(e=>({p:e.p,b:e.b})),sel:Math.max(0,pads.findIndex(Boolean))});
+    beatUI();lcd(null,m.name+' is loaded. Press PLAY on the BEAT page.',2800)
+  }catch(e){lcd(null,'That beat would not load.',2200)}}
+async function eraseBeat(m){await txn(['beats','pads'],'readwrite',tx=>{tx.objectStore('beats').delete(m.id);tx.objectStore('pads').delete(m.id)});
+  lcd(null,m.name+' is erased.',2000);drawSaved()}
+async function drawSaved(){
+  const L=$('slist');let all=[];try{all=await listBeats()}catch(e){}L.textContent='';
+  if(!all.length){L.appendChild(el('div','','Saved beats show up here. Saving keeps the pads, their pitch and the loop.')).id='note';return}
+  all.sort((a,b)=>b.made-a.made).forEach(m=>{const c=el('button','r'),s=el('span');c.type='button';
+    s.appendChild(el('b','',m.name));s.appendChild(el('small','',m.bpm+' BPM · '+m.bars+(m.bars===1?' bar':' bars')+' · '+m.npads+(m.npads===1?' pad':' pads')+' · '+m.ev.length+(m.ev.length===1?' hit':' hits')));
+    c.appendChild(s);c.appendChild(el('i','',new Date(m.made).toLocaleDateString(undefined,{month:'short',day:'numeric'})));
+    c.onclick=()=>erase?eraseBeat(m):loadBeat(m);L.appendChild(c)})}
+$('save').onclick=saveBeat;
+chips();sync();beatUI();
 </script>
 </body>
 </html>

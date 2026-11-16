@@ -2,6 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The sampler gets a BEAT page and saved beats (Nov 16)
+
+- Jackie asked for the sampler to pitch shift, slow down or speed up the tempo, have a metronome that samples can lock to, and record a little composition and save it. Built into the in-game sampler (The Crates); the separate MPC app isn't in this project.
+- **Where:** the screen on the left now has three pages, **DIG** (the records, as before), **BEAT** and **SAVED**. The four lights in its corner follow the beat. Nothing new on the pad side, so sampling works as it did.
+- **Pitch:** per pad, a semitone at a time, 12 up or down, on the last pad tapped. Like an old sampler, it changes speed along with pitch (no stretching). It shows on the pad as "1 · +2".
+- **Tempo:** 40 to 200 BPM, starting at 90. Changing it while the loop plays speeds it up or slows it down from where it is.
+- **Metronome (CLICK):** ticks by itself, higher on the first beat of each bar. 4/4 only.
+- **Locking to the click:** recorded hits snap to the nearest sixteenth when **LOCK** is on (on to start). Pads you play live still sound the moment you tap them, so nothing feels late; it's the loop that comes out in time, the way an MPC does it.
+- **Recording:** a loop of 1, 2 or 4 bars. REC from a standstill counts in one bar of clicks, then records every pass on top of the last until REC is pressed again. PLAY plays the loop; CLEAR empties it.
+- **Saving (on purpose only):** SAVE THIS BEAT keeps the pads' sound, their pitch, the tempo, the bars and the loop as "Beat 1", "Beat 2"... Up to 12, newest first; tap one to load it, ERASE then a beat to erase it. They're kept in the sampler page's own storage on the phone, separate from the game's save, which stays untouched. This changes the earlier rule that nothing in the sampler is saved: pads still vanish when it closes unless the beat is saved.
+- **Colors:** settings you pick (bars, LOCK) are orange like the record source chips; things that are sounding (CLICK, PLAY, REC, the beat lights) are blue.
+- `tests/beat_test.py` checks all of it without the internet.
+
 ### The milk crate does not open The Crates (Nov 16)
 
 - I tried making the milk crate open the sampler app as well; Jackie said no: the crate isn't clearly full of records. Only the sampler on the top shelf opens it.
