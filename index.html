@@ -52,6 +52,14 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .jl{left:6px;align-items:center;box-shadow:inset -8px 0 0 #f3e2c8}.jr{right:6px;box-shadow:inset 8px 0 0 #f3e2c8} /* a hard-edged shade by the spine */
 .jpix{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 .jname{font-size:22px;font-weight:700;text-align:center}
+/* Keep it safe (js/keepsafe.js): words, the two backup buttons, the copies on this phone, the iPhone tip */
+.ksnote{font-size:var(--f16,16px);font-weight:600;line-height:1.35;margin:12px 4px 0}.kstip{margin-top:18px;color:var(--ts-rust)}
+.kschoices .tschoices{margin-top:16px}.kschoices .tsbtn{font-size:var(--f18,18px)}.kschoices .tssub{font-size:var(--f14,14px);text-align:center}
+.kslist{font-size:var(--f16,16px);font-weight:600;line-height:1.35;margin:6px 4px 0}
+/* the Home Screen how-to: one small rust line under a loading or start screen, with a button where the browser can do it */
+.kshint{font-size:14px;font-weight:700;color:var(--ts-rust);text-align:center;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:center;max-width:520px}
+.screen:not(.journal) .tsscreen .kshbtn,.kshbtn{font:inherit;font-size:14px;font-weight:800;padding:5px 12px 6px;min-width:0;cursor:pointer;--bg:var(--ts-sage)}
+.kstip .kshint{font-size:var(--f16,16px);text-align:left;justify-content:flex-start;margin:18px 4px 0}
 .jrename{border:none;background:none;color:inherit;font:inherit;font-size:22px;font-weight:700;padding:0 6px;cursor:pointer}
 .jnameinput{font:inherit;font-size:22px;font-weight:700;color:#4a2a4f;background:#fbecd2;border:none;border-bottom:2px dashed #833343;width:240px;padding:0 4px;outline:none}
 .jspecies{font-size:14px;color:#833343;margin-top:-10px}
@@ -205,6 +213,7 @@ body.testing #testBadge{display:block}
 <script src="js/journal.js"></script>
 <script src="js/cratesdb.js"></script>
 <script src="js/radio.js"></script>
+<script src="js/keepsafe.js"></script>
 <script src="js/sampler.js"></script>
 <script src="js/input.js"></script>
 <script src="js/start.js"></script>

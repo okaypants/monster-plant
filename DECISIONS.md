@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Keep it safe: guarding your progress (Nov 16)
+
+- Jackie asked how to prevent losing progress on a device, and picked four layers (cloud saves are a bigger project for later):
+  1. **The game asks the browser to keep its storage** (persistent storage), so it isn't cleared to free up space.
+  2. **Copies on the phone:** every 10 minutes of play, and before Start over or loading a backup, a copy of the save goes into a second store. Only the **last 3** are kept, each new one replacing the oldest (Jackie: "backups to replace each other so they don't go nuts"). If the save itself is ever gone, the start screen offers **Bring back day N**.
+  3. **A backup file:** a new **Keep it safe** ribbon in the journal (a lock) has **Save a backup** and **Load a backup**. The file holds everything: the game, the radio's presets, and the sampler's work and songs. On a phone it opens the share sheet (Files, iCloud, email). It's **always named monster-plant-backup.json**, so saving it to the same place replaces the last one. **Load a backup** is also on the start screen, for a new phone; loading asks first and keeps a copy of the current room.
+  4. **How to put the game on the Home Screen,** for the device you're on (Jackie: "how to save on their home screen on android and iPhone and browser", "a little reminder during a load screen", smooth on every device): one small rust line on the loading screen and the start screen, and on the Keep it safe page. iPhone and iPad: Share, then Add to Home Screen. Android: ⋮, then Add to Home screen. Computers: the install button (Chrome, Edge) or File, then Add to Dock (Safari). Where the browser can do it in one tap, a button does it. Nothing pops up during play, and nothing shows when the game already plays from its icon. (Safari clears a site's storage after 7 days of Safari use without a visit, but not for a game played from its Home Screen icon.)
+- The loading screen is often gone in under a second, so the same line also sits on the start screen, which waits for a tap.
+
 ### WORLD band: 21 stations from Africa, the Middle East, Central and South Asia (Nov 16)
 
 - Jackie: "creative art shit out of the Middle East and Central Asia and Africa and South Asia." The dial grew from 71 to 92.

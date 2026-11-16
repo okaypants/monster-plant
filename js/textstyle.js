@@ -35,7 +35,8 @@ const TS_GLYPH={
  heart:['.##.##.','#######','#######','.#####.','..###..','...#...'],
  check:['......#','.....##','#...##.','##.##..','.###...','..#....'],
  hourglass:['#######','.#...#.','..#.#..','...#...','..###..','.#####.','#######'],
- plane:['#......','###....','.#####.','..#####','.#####.','###....','#......']};
+ plane:['#......','###....','.#####.','..#####','.#####.','###....','#......'],
+ lock:['..###..','.#...#.','.#...#.','#######','###.###','###.###','#######']};
 const tsGlyphCache=new Map();
 // a glyph (or any ICONS-style map: every mark becomes one color) as a data URL, each map cell px pixels
 function tsGlyphURL(name,color,px=2){const key=name+color+px;if(tsGlyphCache.has(key))return tsGlyphCache.get(key);

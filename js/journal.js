@@ -83,7 +83,7 @@ function jlabel(t){const l=jdiv('jlab',[],null);if(LAB_ICON[t])l.appendChild(tsG
 function fitBook(){if(!jEl)return;const noRib=jEl.classList.contains('archive'),r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+(noRib?0:JB.rib))),dy=noRib?-Math.round(JB.rib/2*k):0; // the Files have no ribbons: their room goes to the pages
  jEl.bookK=k;const bk=jEl.querySelector('.jbook');bk.style.setProperty('--jk',k);bk.style.transform=`translate(-50%,calc(-50% + ${dy}px)) scale(${k})`;} // --jk keeps small print at 14px or more on screen (css/textstyle.css)
 function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='archive'||jPage==='keep'){jPage=null;jSub=0;}}
-function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');return P;}
+function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');P.push('safe');return P;} // 'safe': Keep it safe (js/keepsafe.js), always last
 function openJournal(page){sfx('paper');closeJournal();
  const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
  jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
@@ -102,11 +102,11 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
  P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.left=(430+i*52)+'px';
   const q=p[0]==='p'?allRaw().find(o=>o.id===+p.slice(1)):null,lk=p==='cat'?CAT_LOOK:q?lookOf(q):null; // each ribbon: the monster's ribbon color and symbol (the cat: a paw)
-  r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':(q&&q.name)||'Plant');r.appendChild(tsGlyph(lk?lk.sym:'plane',lk?lk.name:TS.ink,'tssym',3));
+  r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':p==='safe'?'Keep it safe':(q&&q.name)||'Plant');r.appendChild(tsGlyph(lk?lk.sym:p==='safe'?'lock':'plane',lk?lk.name:TS.ink,'tssym',3));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';R.appendChild(jdiv('jday',[],dayWords())); // today in words, top corner of every page (not the Files: those are keepsakes)
  
- const main=(l,r)=>{if(jPage==='cat')catPages(l,r);else if(jPage==='world')worldPages(l,r);else withPlant(+jPage.slice(1),()=>plantPages(l,r));};
+ const main=(l,r)=>{if(jPage==='cat')catPages(l,r);else if(jPage==='world')worldPages(l,r);else if(jPage==='safe')keepPages(l,r);else withPlant(+jPage.slice(1),()=>plantPages(l,r));};
  const subs=withMore(relSpreads(jPage),jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
  if(sp.k==='main'){main(L,R);if(spill(R,jPage)){renderJournal();return;}}
  else if(sp.k==='more')morePages(L,R,main,jPage);
@@ -262,7 +262,7 @@ function catPages(L,R){
    A monster: it & you, it & the other monster, it & the cat.  The cat: the cat & you, the cat & each monster.
    Left page: the two of them side by side (a heart, a squiggle or a little hand between) and a fun detail or two.
    Right page: milestones as stamps that fill in when they happen (faint until then). No numbers. */
-function relSpreads(page){if(page==='world')return [{k:'main'}];const P=allRaw().filter(q=>q.stage>=0);
+function relSpreads(page){if(page==='world'||page==='safe')return [{k:'main'}];const P=allRaw().filter(q=>q.stage>=0);
  if(page==='cat')return [{k:'main'},{k:'catyou'}].concat(P.map(q=>({k:'catpl',q:q.id})));
  const id=+page.slice(1);return [{k:'main'},{k:'you',q:id}].concat(P.filter(o=>o.id!==id).map(o=>({k:'pair',q:id,o:o.id}))).concat([{k:'cat',q:id}]);}
 const raw=id=>allRaw().find(q=>q.id===id);

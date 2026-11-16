@@ -31,6 +31,7 @@ Tap the sampler on the top shelf, above the radio, and its own app opens over th
   - **WORLD:** 92 hand-picked live stations, laid along the dial west to east (Seattle to New Caledonia, then the online-only ones): freeform, art and underground radio (NTS, KPISS.FM, Radio WORM, LYL, Oroko, Mutant Radio, Radio alHara…), weirdo radio (Art Bell reruns, UFO and paranormal shows, old sci-fi radio plays, rare field recordings), creative radio from Africa, the Middle East and Central Asia (Wa3 in Beirut, tarab, Amazigh and Kabyle music, tizita, amapiano, Congolese rumba, Kyrgyz techno), a lot from Asia (city pop, Touhou and Vocaloid fan radio, gugak, budots, OPM, luk thung, dangdut koplo, community radio in Hanoi and Bangkok), plus tango, fado, folk, jazz, classical, lo-fi, vaporwave and space synths. Drag the dial or tap ◀ ▶; between stations there's a real recording of a radio being tuned. A station with no signal skips to the next. Live radio is only for listening: never sampled or saved. The band and station are remembered.
   - **Presets 1 to 5:** tap to jump to a kept station, hold to keep the one you're on (CRATES too).
   - The screen stays awake while it plays. It goes quiet while the sampler is open.
+- **Keep it safe** (the lock ribbon in the journal): **Save a backup** makes one file with everything (the game, the radio's presets, the sampler's songs), always named `monster-plant-backup.json` so a new one replaces the old; **Load a backup** (also on the start screen) brings it back, asking first. The game also keeps its last 3 saves on the phone and offers the newest back if the save is ever gone, asks the browser to keep its storage, and the loading and start screens say how to add it to the Home Screen on this device.
 - **Light on the phone, on purpose:** records are streamed, never downloaded whole. Moving to another record forgets the last one. The eight pads live in memory, and closing the sampler throws them away unless you saved your work. The game's save is not touched. Digging needs the internet; the rest of the game does not.
 - The app for real samplers (saving WAV files for an MPC) is a separate project and is not part of the game.
 
@@ -165,6 +166,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `growup.js` | The grow-up moment: waiting for you, the hop, crouch, size steps and payoff, the journal stamp, the cat's look |
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
+  | `keepsafe.js` | Keep it safe: backup file save and load, copies on the phone, persistent storage, the Home Screen how-to |
   | `radio.js` | The radio on the desk and its dial: CRATES (old free records and your songs from the sampler) and WORLD (92 live stations, `WORLD`), with the tuning sound between stations |
 | `cratesdb.js` | Where the sampler keeps what you save on purpose (the work in progress and finished songs), shared with the radio; never the game's save |
 | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
