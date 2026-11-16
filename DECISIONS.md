@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Pads stop by themselves when their sound is over (Nov 16)
+
+- Jackie found pads didn't stop on their own after the sample was over. A pad relied on the browser saying its sound had ended, and iPhones don't always say so (for example after the audio is interrupted), so the pad stayed lit as if still playing.
+- Now each pad also stops at the exact end of its clip (at its pitch) and goes dark on a timer as well, whether or not the browser says anything. `tests/beat_test.py` checks it with the browser's "ended" turned off.
+
 ### Clipping samples (Nov 16)
 
 - Jackie asked to be able to clip samples. The first version had no trimming screen on purpose; this adds one.

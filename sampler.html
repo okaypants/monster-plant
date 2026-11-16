@@ -333,8 +333,12 @@ const rate=p=>Math.pow(2,(p||0)/12); // pitch in semitones; like an old sampler,
 const later=[]; // sounds already scheduled, so STOP can cancel them
 function voice(i,t){ // one voice per pad: a new hit cuts the last one off
   const old=voices[i];if(old){try{old.onended=null;old.stop(t)}catch(e){}}
-  const n=AC.createBufferSource();n.buffer=pads[i].buf;n.playbackRate.value=rate(pads[i].pitch);n.connect(AC.destination);n.start(t,...clipOf(pads[i]));
-  n.onended=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};voices[i]=n;
+  const d=pads[i],[off,len]=clipOf(d),r=rate(d.pitch),t0=Math.max(t,AC.currentTime),dur=len/r;
+  const n=AC.createBufferSource();n.buffer=d.buf;n.playbackRate.value=r;n.connect(AC.destination);n.start(t,off,len);
+  try{n.stop(t0+dur+.01)}catch(e){} // and stop at the clip's end, even where a browser ignores the length above
+  const done=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};
+  n.onended=done; // the pad goes dark when its sound is over...
+  setTimeout(done,(t0-AC.currentTime+dur+lat())*1000+120);voices[i]=n; // ...and on a timer too: iPhones don't always send 'ended'
   later.push(n);if(later.length>64)later.splice(0,later.length-64);return n}
 function playPad(i){voice(i,0);padEls[i].classList.add('hit')}
 function drawPad(i){const p=padEls[i],d=pads[i];p.classList.toggle('full',!!d);p.querySelector('em').textContent=d?d.title:'';

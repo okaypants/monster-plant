@@ -2,7 +2,7 @@
 
 Run from the repository root:  python tests/beat_test.py
 Opens the sampler by itself on a phone held sideways, with two made-up pads (no internet needed), and checks:
-pitch per pad (a semitone a press, shown on the pad), clipping a pad by dragging its start and end lines (and RESET), the tempo keys, the click, LOCK snapping a recorded hit to
+pitch per pad (a semitone a press, shown on the pad), clipping a pad by dragging its start and end lines (and RESET), a pad going dark by itself when its sound is over, the tempo keys, the click, LOCK snapping a recorded hit to
 the nearest sixteenth (and not snapping with LOCK off), the loop playing its hits back, STOP, the click sounding only
 while recording, the one work in progress coming back after a reload (and replaced by saving again), the warning when
 leaving unsaved, FINISH SONG (two taps) making a song and clearing the work, sending it to the radio, and erasing it. Pictures go to tests/screenshots/sampler/.
@@ -95,6 +95,15 @@ async def main():
         check(await pg.evaluate("()=>!pads[0].s0&&!pads[0].s1"), "RESET should bring back the whole sample")
         await pg.evaluate("()=>{pads[0].s0=.1;pads[0].s1=.3;drawPad(0)}")
         await pg.click(".tab[data-p=pBeat]")
+        # a pad goes dark on its own when its sound is over, even if the browser never says it ended (iPhones)
+        await pg.evaluate("()=>{window.__oe=Object.getOwnPropertyDescriptor(AudioScheduledSourceNode.prototype,'onended');Object.defineProperty(AudioScheduledSourceNode.prototype,'onended',{set(){},get(){return null},configurable:true})}")
+        await pg.locator("#pads .p").nth(1).dispatch_event("pointerdown", {"pointerId": 7})
+        await pg.locator("#pads .p").nth(1).dispatch_event("pointerup", {"pointerId": 7})
+        lit = await pg.evaluate("()=>padEls[1].classList.contains('hit')")
+        await pg.wait_for_timeout(700)
+        st = await pg.evaluate("()=>[padEls[1].classList.contains('hit'),!!voices[1]]")
+        await pg.evaluate("()=>Object.defineProperty(AudioScheduledSourceNode.prototype,'onended',__oe)")
+        check(lit and st == [False, False], f"pad 2 (0.2 s) should light up and go dark by itself, got {lit} then {st}")
         # the click is only a guide: it sounds while recording, never while the loop just plays
         await pg.evaluate("()=>{SEQ.click=true;window.__b=0;const o=blip;blip=(t,one)=>{__b++;return o(t,one)};beatUI()}")
         await pg.click("#bplay")
