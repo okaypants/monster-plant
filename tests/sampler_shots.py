@@ -1,7 +1,7 @@
 """The sampler on the top shelf opens its own app (sampler.html).
 
 Run from the repository root:  python tests/sampler_shots.py
-On a phone held sideways: taps the sampler on the top shelf, checks its app opens over the room (and from the milk crate too) with a screen,
+On a phone held sideways: taps the sampler on the top shelf, checks its app opens over the room with a screen,
 eight empty pads and the digging panel, that an empty pad asks for a record first, and that the X brings the
 room back with nothing of the app left behind. Nothing here touches the internet. Pictures go to
 tests/screenshots/sampler/. Exit code 1 if a check fails.
@@ -56,25 +56,6 @@ async def main():
             fails.append("closing the sampler should leave nothing of it behind")
         await pg.evaluate("()=>__step(1)")
         await pg.screenshot(path=os.path.join(OUT, "back_in_room.png"))
-        # the milk crate opens the same app; the book on top of it still opens the books (the plant steps aside first)
-        await pg.evaluate("()=>{st.free={x:1100,y:918};st.perch=null;st.walk=null;__step(1);}")
-        x, y = await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return [r.left+(CRATE.x+CRATE.w/2)*S,r.top+(CRATE.y+CRATE.h/2)*S];}")
-        await pg.mouse.click(x, y)
-        try:
-            await pg.wait_for_selector(".screen.sampler iframe", timeout=3000)
-            await pg.frame_locator(".screen.sampler iframe").locator("#pads .p").first.wait_for()
-            await pg.screenshot(path=os.path.join(OUT, "from_crate.png"))
-            await pg.frame_locator(".screen.sampler iframe").locator("#x").click()
-            await pg.wait_for_selector(".screen.sampler", state="detached")
-        except Exception:
-            fails.append("tapping the milk crate should open the sampler")
-        await pg.evaluate("()=>__step(1)")
-        x, y = await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return [r.left+340*S,r.top+635*S];}")
-        await pg.mouse.click(x, y)
-        await pg.evaluate("()=>__step(1)")
-        if await pg.evaluate("()=>!!samplerEl"):
-            fails.append("the book on the milk crate should open the books, not the sampler")
-        await pg.screenshot(path=os.path.join(OUT, "crate_book.png"))
         fails += errs
         await b.close()
     for f in fails:
