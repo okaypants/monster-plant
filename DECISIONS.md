@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Every quote and fact in the books checked (Nov 15)
+
+- Jackie asked for every quote and idea in the books to be researched and verified. All 37 reads were checked against original printings and reliable sources; most were right. Fixed:
+  - **Misquotes:** Tagore "shy buds" (not "timid"); the Macbeth refrain's comma; Rossetti's "thro’" and commas; Lear's Owl and the Pussy-Cat punctuation and "Oh! let us be married;"; Jane Taylor's "trav’ller"; Humpty Dumpty's dates.
+  - **One wrong fact:** the duck's egg isn't on Sei Shōnagon's list of lovely things; it's now "a child's face drawn on a melon", which is.
+  - **Overstated science, reworded:** sloth digestion (weeks, up to a month), the flytrap (about half a minute, rarely wastes a meal), the Pleiades (counted by astronomers, not seen in a telescope), the North Star (hundreds of years, not thousands), the dandelion's air ring (slows its fall), "many" mosses, the monstera name ("probably").
+  - **Folklore made accurate:** the Sphinx sat on a mountain; the mandrake gatherers' dog instead of moonlight; turnip lanterns in Ireland and Scotland; foxfire as the English name for glowing wood; source notes corrected throughout.
+- **Free to use, two swaps:**
+  - The Beatrix Potter letter's copyright is uncertain (when it was first published is unknown), so that read now tells how the letter began and quotes the 1902 book's opening instead.
+  - Dorothy Wordsworth's daffodils are now quoted as printed in 1897, with the left-out sentences marked "…".
+- The full report with a verdict for every read is kept outside the repo.
+
 ### Twelve books, four at a time by where you tap (Nov 15)
 
 - Jackie wanted more book genres: all eight suggested, but only four available at a time, depending on WHERE you tap for books (which bookcase row or shelf, the book stack, the book lying on the milk crate).
