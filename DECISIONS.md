@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Twelve books, four at a time by where you tap (Nov 15)
+
+- Jackie wanted more book genres: all eight suggested, but only four available at a time, depending on WHERE you tap for books (which bookcase row or shelf, the book stack, the book lying on the milk crate).
+- **The twelve:** Fairy tales, Sloth's Almanac, Nonsense poems, Forbidden grimoire, plus Songs and lullabies, The star book, Riddles, Proverbs, Letters and diaries, Recipes, Ghost stories (gentle) and Field guide.
+- **Where they are** (`BOOK_ZONES` in js/care.js): each of the 11 book spots holds its own four, and every book can be found in three or four places. The left bookcase's top row has the first four; the book stack has stars, riddles, proverbs and ghost stories; the crate book has recipes, the field guide, songs and letters.
+- **Rewards:** a book's pot now comes after **10 reads** (it was 5). The new books count their reads from zero and have no reward yet; that's for later. (Pots are still paused, Nov 3.)
+- **Nudges:** each new book nudges a monster a little, like the first four: songs and letters sweet, proverbs, recipes and the field guide tidy, riddles and stars wiggly, ghost stories a touch spooky. Each has its own listening caption.
+- **Reads:** three or four real ones per new book, from all over (Tanzania, Japan, Korea, China, India, Ghana, Morocco, Ireland, Greece, England, the US). Poems and letters are word for word; folktales, facts and recipes are written plainly for the game, with where they come from on the title page and a source in the file.
+- **Covers:** drawn in code for now (each its own color and a tiny symbol). Jackie will make real cover art from a prompt; it will replace them once it's in.
+- `tests/reading_shots.py` checks that each place shows its own four, every book is in three places or more, and every read fits.
 ### Seasonal items: autumn leaves, the pumpkin and the tree (Nov 15)
 
 - Jackie uploaded the season sheets (leaves, pumpkin, tree with ornaments). Jackie decided:

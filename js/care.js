@@ -33,7 +33,17 @@ const SNACKS=[ // Jackie's treats, good -> evil. Treats are optional; regular se
  {id:'fossil',name:'Dinosaur fossils',ge:-.08,s:'crunch',trait:'Dino-skull clip'},
  {id:'blood',name:'Blood',ge:-.14,s:'slurp',trait:'Heart-charm bow'}];
 const TRAIT_AT=5; // servings to grow a trait
-const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02}];
+/* THE BOOKS (Jackie, Nov 15): twelve, each nudging a monster a little (ge: sweet + / spooky -, lc: tidy + / wiggly -). What's inside is in
+   js/stories.js; where each can be found is BOOK_ZONES below (four at a time, by where you tap). */
+const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02},
+ {id:'songs',name:'Songs and lullabies',ge:.06,lc:.02},{id:'stars',name:'The star book',ge:0,lc:-.03},{id:'riddles',name:'Riddles',ge:0,lc:-.06},{id:'proverbs',name:'Proverbs',ge:.02,lc:.06},
+ {id:'letters',name:'Letters and diaries',ge:.05,lc:.02},{id:'recipes',name:'Recipes',ge:.03,lc:.05},{id:'ghost',name:'Ghost stories',ge:-.06,lc:-.02},{id:'field',name:'Field guide',ge:0,lc:.04}];
+const BOOK_BY=id=>BOOKS.find(b=>b.id===id);
+// what a monster does while listening, the caption when a read begins
+const BOOK_SAY={fairy:'listens to the fairy tale, very still.',almanac:'nods along to Sloth’s Almanac.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.',
+ songs:'sways along to the lullaby.',stars:'gazes up, dreamy, at the star book.',riddles:'scrunches up its face at the riddle.',proverbs:'nods slowly at the old sayings.',
+ letters:'listens to the old letter, cozy.',recipes:'smacks its lips at the recipe.',ghost:'shivers happily at the ghost story.',field:'peers closely at the field guide.'};
+const READ_POT={fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'},READ_AT=10; // a pot after 10 reads of one of the first four books (Jackie, Nov 15); the new books count their reads from zero, no reward yet
 function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('basket');if(st.stage<4){sfx('purr');burst('heart',b.x+b.w*.1,b.y-20,1);return;}
  st.pets=(st.pets||[]).filter(t=>T-t<1.3);st.pets.push(T);
  if(st.pets.length>=3){sfx('giggle');st.lc=clamp(st.lc-.04,-1,1);st.pets=[];logEv('tickles');tell('Tickle attack!',{kind:'teach',key:'tickle'});burst('heart',b.x+b.w*.15,b.y-20,2);}
@@ -67,8 +77,8 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
   logEv(s.name);if(bump('treats')>=10)earnPot('lavender');if(!(st.full>.95))tell(rx,{kind:'info',who:st.id}); // just its reaction: no game terms or numbers (progress lives in the journal)
   save();held.tool=null;return;}
  if(held.tool==='book'){const bk=held.item;sfx('page');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
-  st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=5)earnPot({fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'}[bk.id]);
-  tell(who()+' '+({fairy:'listens to the fairy tale, very still.',almanac:'nods along to Sloth’s Almanac.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.'})[bk.id],{kind:'info',who:st.id});}}
+  st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=READ_AT&&READ_POT[bk.id])earnPot(READ_POT[bk.id]);
+  tell(who()+' '+BOOK_SAY[bk.id],{kind:'info',who:st.id});}}
 /* FEEDING (Jackie, Nov 4): simple and satisfying with a finger or a mouse.
    Tap the SNACKS cabinet: a small cream tray beside it holds the seven treats in a row (thumb-sized, no words).
    Press a treat and drag: it follows the finger, drawn a little above and to the side so the thumb doesn't hide it.
@@ -112,18 +122,26 @@ function chompDip(){const t=CHOMP.get(st.id);if(t==null)return 0;const f=Math.fl
 function drawFeed(){if(trayEl&&!feed.item&&performance.now()-feed.trayT>TRAY_HIDE)closeTray();if(!feed.item)return;const im=TREAT_IMG[feed.item.id];if(!ok(im))return;
  const k=.4*overK(feed.x,feed.y),w=Math.round(im.naturalWidth*k),h=Math.round(im.naturalHeight*k);g.drawImage(im,Math.round(feed.x-w/2),Math.round(feed.y-h/2),w,h);}
 addEventListener('resize',()=>setTimeout(placeTray,50));
-/* READING (Jackie, Nov 7): touch any book on either bookshelf and a small cream tray slides out with the four special books
+/* READING (Jackie, Nov 7): touch any book on either bookshelf and a small cream tray slides out with four of the twelve books (which four depends on where you touched; BOOK_ZONES)
    (pixel covers drawn here, each its own color and little emblem). Press one and drag it to a monster that's awake and has its
    eyes open (kid, teen or adult); let go there and it reads in the room: an open book in front of it, a page flipping every
    moment (a 2-frame swap), a few tiny symbols from that book rising on whole pixels, for about 8 s. Then the book closes and
    hops back to the shelf. Let go anywhere else and the book just goes back to the tray. Same feel as the treat tray. */
 // tap areas: the rows of books on both bookcases, kept clear of the snail, the boxes, the floor lamp, the snow globe and SNACKS
-const BOOK_ZONES=[{x:6,y:150,w:208,h:72},{x:6,y:250,w:132,h:74},{x:6,y:355,w:42,h:64},{x:6,y:462,w:88,h:78},{x:6,y:580,w:132,h:74},
- {x:1608,y:220,w:38,h:80},{x:1476,y:322,w:170,h:74},{x:1606,y:410,w:38,h:72},{x:1474,y:505,w:152,h:48},
- {x:282,y:612,w:116,h:46}/* the book on the milk crate */,{x:898,y:622,w:156,h:140}/* the book stack by the desk */]; // a monster or the cat sitting there is tapped first
-function onBookshelf(x,y){return BOOK_ZONES.some(r=>inR(x,y,r));}
+// Each place holds its own four books (Jackie, Nov 15: only four at a time, depending on where you tap): every book can be found in three or four places.
+const BOOK_ZONES=[
+ {x:6,y:150,w:208,h:72,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row */,{x:6,y:250,w:132,h:74,books:['songs','stars','letters','field']},
+ {x:6,y:355,w:42,h:64,books:['riddles','proverbs','recipes','ghost']},{x:6,y:462,w:88,h:78,books:['fairy','songs','ghost','stars']},{x:6,y:580,w:132,h:74,books:['almanac','field','recipes','letters']},
+ {x:1608,y:220,w:38,h:80,books:['grimoire','ghost','stars','riddles']}/* right bookcase */,{x:1476,y:322,w:170,h:74,books:['nonsense','riddles','songs','proverbs']}/* the shelf by the window */,
+ {x:1606,y:410,w:38,h:72,books:['letters','proverbs','almanac','fairy']},{x:1474,y:505,w:152,h:48,books:['field','recipes','grimoire','nonsense']},
+ {x:282,y:612,w:116,h:46,books:['recipes','field','songs','letters']}/* the book on the milk crate */,{x:898,y:622,w:156,h:140,books:['stars','riddles','proverbs','ghost']}/* the book stack by the desk */]; // a monster or the cat sitting there is tapped first
+function bookZone(x,y){return BOOK_ZONES.find(r=>inR(x,y,r))||null;}
+function onBookshelf(x,y){return !!bookZone(x,y);}
 const BOOK_LOOK={fairy:{c:C.coral,d:C.brick,e:['.y.','yyy','.y.']},almanac:{c:C.blue,d:C.navy,e:['yyy','y.y','yyy']},
- nonsense:{c:C.fl3,d:C.fl2,e:['vv.','..v','vv.']},grimoire:{c:'#4a2a4f',d:'#2d1824',e:['.w.','wyw','.w.']}};
+ nonsense:{c:C.fl3,d:C.fl2,e:['vv.','..v','vv.']},grimoire:{c:'#4a2a4f',d:'#2d1824',e:['.w.','wyw','.w.']},
+ songs:{c:'#e98aa8',d:'#a8466a',e:['.ii','.i.','ii.']}/* a note */,stars:{c:C.navy,d:'#14284f',e:['y.y','.y.','y.y']}/* a twinkle */,riddles:{c:C.vio,d:C.plum,e:['ii.','..i','.i.','...','.i.']}/* a question mark */,
+ proverbs:{c:C.sand,d:C.rust,e:['ooo','s.s','ooo']}/* a scroll */,letters:{c:C.cream,d:C.peach,e:['oooo','o..o','oooo']}/* an envelope */,recipes:{c:C.g3,d:C.g1,e:['.o.','ooo','.o.','.o.']}/* a spoon */,
+ ghost:{c:'#6b7888',d:'#3c4652',e:['.i.','iii','i.i']}/* a little ghost */,field:{c:C.g2,d:C.g1,e:['..i','.ii','i..']}/* a leaf */};
 const BPAL={y:C.fl3,v:C.vio,w:C.lav,i:C.ivory,s:C.sand,o:C.out};
 // a closed book, 10x13 art pixels: spine on the left, pages showing on the right edge, emblem on the cover
 function bookPix(id,px){const L=BOOK_LOOK[id],w=10,h=13,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;const x=c.getContext('2d');
@@ -136,8 +154,8 @@ const BOOK_CACHE=new Map();function bookImg(key,make){if(!BOOK_CACHE.has(key))BO
 const bookDrag={item:null,x:0,y:0,over:null,trayT:0};let btrayEl=null;
 const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books hopping back to the shelf
 const bookHops=[];
-function openBooks(){sfx('page');if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';
-  for(const bk of BOOKS){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
+function openBooks(ids=BOOK_ZONES[0].books){sfx('page');if(btrayEl&&btrayEl.dataset.ids!==ids.join())closeBookTray();if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';btrayEl.dataset.ids=ids.join();
+  for(const bk of ids.map(BOOK_BY)){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
    const c=bookPix(bk.id,3);c.className='jpix';b.appendChild(c);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabBook(bk,e);});btrayEl.appendChild(b);}
   btrayEl.addEventListener('pointerdown',e=>e.stopPropagation());btrayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(btrayEl);}

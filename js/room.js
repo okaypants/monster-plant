@@ -165,7 +165,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(held.tool){const x=mx|0,y=my|0;
   if(held.tool==='can')drawCarafeHeld(x,y);
   else{const k=overK(x,y),R=(a,b,c,d)=>g.fillRect(Math.round(x+a*k),Math.round(y+b*k),Math.round(c*k),Math.round(d*k)); // a book, sized for the depth it's held at
-   g.fillStyle=C.out;R(-28,-36,56,72);g.fillStyle={fairy:C.coral,almanac:C.blue,nonsense:C.fl3,grimoire:'#2d1824'}[held.item.id];R(-24,-32,48,64);g.fillStyle=C.ivory;R(-16,-20,32,4);}}
+   g.fillStyle=C.out;R(-28,-36,56,72);g.fillStyle=(BOOK_LOOK[held.item&&held.item.id]||{c:C.out}).c;R(-24,-32,48,64);g.fillStyle=C.ivory;R(-16,-20,32,4);}}
  drawFeed(); // a treat being dragged to a monster (care.js)
  drawReading(); // a monster reading, a book hopping home, a book being dragged (care.js)
 }

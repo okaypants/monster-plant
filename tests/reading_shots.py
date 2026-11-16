@@ -75,7 +75,7 @@ async def main():
         r = await pg.evaluate("""()=>{st.shelf={};st.shelfLast={};const out={};for(const bk of BOOKS){const n=STORIES[bk.id].length,seen=[];for(let i=0;i<n*3;i++)seen.push(STORIES[bk.id].indexOf(nextRead(bk.id)));
           out[bk.id]={n,seen};}save();const saved=JSON.parse(localStorage.getItem(KEY));out.saved=!!(saved.shelf&&saved.shelfLast);return out;}""")
         check = lambda ok, msg: None if ok else fails.append(msg)
-        for bk in ("fairy", "almanac", "nonsense", "grimoire"):
+        for bk in [k for k in r if k != "saved"]:
             n, seen = r[bk]["n"], r[bk]["seen"]
             check(n >= 3, f"{bk}: only {n} reads")
             check(all(sorted(seen[i:i + n]) == list(range(n)) for i in range(0, len(seen), n)), f"{bk}: every read should come once before any repeats: {seen}")
@@ -83,12 +83,27 @@ async def main():
         check(r["saved"], "the order to come should be saved")
         # every read: a title and who it's by, real pages, and every page fits its paper at the smallest words (an iPhone held sideways)
         bad = await pg.evaluate("""()=>{const bad=[];for(const bk of BOOKS)for(const s of STORIES[bk.id]){if(!s.t||!s.by||!s.p||!s.p.length)bad.push(bk.id+': '+(s.t||'?')+' needs a title, a by line and pages');
-          if(/sloth.s almanac/i.test(s.by)!==(bk.id==='almanac'))bad.push(bk.id+': '+s.t+' by line');if((bk.id==='almanac'||/^told/.test(s.by))&&!s.src)bad.push(bk.id+': '+s.t+' needs a source to check');
+          if(/sloth.s almanac/i.test(s.by)!==(bk.id==='almanac'))bad.push(bk.id+': '+s.t+' by line');if((bk.id==='almanac'||!/\\d{4}/.test(s.by)||/retold/.test(s.by))&&!s.src)bad.push(bk.id+': '+s.t+' needs a source to check');
           closeStory(true);startReading(st.id,bk);__step(.4);const r=READ.get(st.id);r.s=s;const P=readPages(s);
           for(let i=0;i<P.length;i+=2){r.page=i;showStory();for(const el of storyEl.querySelectorAll('.spage')){if(el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1)bad.push(bk.id+': '+s.t+': page '+(i+(el.classList.contains('sr')?1:0))+' does not fit');
             for(const n of el.querySelectorAll('*'))if(parseFloat(getComputedStyle(n).fontSize)<14)bad.push(s.t+': words under 14px');if(parseFloat(getComputedStyle(el).fontSize)<16)bad.push(s.t+': page words under 16px');}}}
           closeStory(true);return bad;}""")
         fails += bad
+        # twelve books, four at a time by where you tap (Jackie, Nov 15): each place has its own four, every book is in three places or more
+        r = await pg.evaluate("""()=>{const ids=BOOKS.map(b=>b.id),bad=[],where={};if(ids.length!==12)bad.push('books: '+ids.length);
+          for(const id of ids){if(!BOOK_LOOK[id])bad.push(id+': no cover');if(!BOOK_SAY[id])bad.push(id+': no caption');if((STORIES[id]||[]).length<3)bad.push(id+': fewer than 3 reads');where[id]=0;}
+          const f0=st.free,c0=cat.x;st.perch=null;st.free={x:700,y:918};cat.x=-999;__step(.1); // nothing sitting in front of a book
+          const r=cv.getBoundingClientRect();BOOK_ZONES.forEach((z,i)=>{if(z.books.length!==4||new Set(z.books).size!==4)bad.push('place '+i+': '+z.books);
+            closeBookTray();cv.dispatchEvent(new MouseEvent('click',{clientX:r.left+(z.x+z.w/2)*S,clientY:r.top+(z.y+z.h/2)*S,bubbles:true}));
+            const shown=[...document.querySelectorAll('.btray .tbook')].map(b=>b.dataset.id);if(shown.join()!==z.books.join())bad.push('place '+i+' showed '+shown+', not '+z.books);
+            z.books.forEach(b=>where[b]=(where[b]||0)+1);});closeBookTray();
+          st.free=f0;cat.x=c0;for(const id of ids)if(where[id]<3)bad.push(id+' is in only '+where[id]+' places');if(READ_AT!==10)bad.push('pots after '+READ_AT+' reads');return bad;}""")
+        fails += r
+        for i, (zx, zy) in enumerate(((100, 190), (60, 280), (1560, 360), (340, 632), (975, 700))):
+            await pg.evaluate("([x,y])=>{closeBookTray();capClear();const r=cv.getBoundingClientRect();cv.dispatchEvent(new MouseEvent('click',{clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true}));__step(.1);}", [zx, zy])
+            await pg.wait_for_timeout(150)
+            await pg.screenshot(path=os.path.join(OUT, f"tray_{i + 1}_{zx}_{zy}.png"))
+        await pg.evaluate("()=>closeBookTray()")
         # flipping back (Jackie, Nov 15): tap the left page to go back two pages; from the title page, back to the read before
         await pg.evaluate("()=>{closeStory(true);capClear();st.shelf={};st.shelfLast={};st.shelfHist={};startReading(st.id,BOOKS[0]);__step(.4);}")
         sb = await pg.locator(".story").bounding_box()
@@ -116,7 +131,7 @@ async def main():
         check(back == first, f"from a title page, the left page should go back to the read before, at its title: {back}")
         await pg.evaluate("()=>closeStory(true)")
         # pictures: each book's first read, its title page and the pages after
-        for k, bk in enumerate(("fairy", "almanac", "nonsense", "grimoire")):
+        for k, bk in enumerate(await pg.evaluate("()=>BOOKS.map(b=>b.id)")):
             for j in range(await pg.evaluate("(b)=>STORIES[b].length", bk)):
                 await pg.evaluate("([k,j])=>{closeStory(true);capClear();startReading(st.id,BOOKS[k]);__step(.4);READ.get(st.id).s=STORIES[BOOKS[k].id][j];showStory();capClear();__step(.1);}", [k, j])
                 await pg.wait_for_timeout(250)
