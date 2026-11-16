@@ -64,6 +64,11 @@ body.erase .p.full{--edge:var(--k)}
 #tr{display:flex;gap:1.6vh;flex:0 0 14vh}
 #tr .b{flex:1;min-width:0}
 #tr .w{flex:1.6}
+/* the keys under the pads are shades of grey only (Jackie): no colour down here, darker = more important, darkest = on */
+#tr .b{background:#c6c3bb}
+#tr #play{background:#8d8a82;color:var(--ink)}
+#tr #erase{background:#dcd9d2}
+#tr .b.on,#tr #play.on,#tr #erase.on{background:var(--k);color:var(--ink)}
 </style>
 </head>
 <body>
