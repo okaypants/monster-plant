@@ -11,7 +11,8 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Listening and skimming** work the same as in The Crates: records play one after another, and SKIM tastes each one and moves on (Jackie: easy to listen to, skim, find and sample snippets).
 - **Careful with storage and work (Jackie):** records are streamed, never downloaded whole; moving on forgets the last record; pads live in memory only and are gone when the sampler closes; nothing is saved and the game's save is untouched. Jackie: "you only save things on purpose."
 - **Only free-to-use records:** library-digitized 78s published 101 or more years ago (US public domain), and Wikimedia Commons audio marked public domain or CC0. Records the Internet Archive has locked are left out.
-- **Rule 1 holds in the app:** flat colors taken from the room art, black outlines, whole-pixel presses, and a 2-frame blink while a pad records. No fades, gradients or glows.
+- **Rule 1 holds in the app:** flat colors, whole-pixel presses, and a 2-frame blink while a pad records. No fades, gradients or glows.
+- **Colors:** the first version copied the machine in the room art (charcoal, coral, lime, black outlines). Jackie hated that palette. It now uses the game's own text style (cream paper, cocoa ink, rust, sage, mint, brass; never pure black), with four other palettes on a sample sheet (`sampler.html?pal=b` to `e`) for Jackie to pick from. Once picked, the others come out.
 - **Idle wiggle:** the sampler now works, so it joined the idle wiggle list, per the Nov 4 rule.
 - The radio is not part of this and still does nothing.
 - **Follow-ups, not done:** what the pads could do in the room (monsters reacting, the cat's opinion), keeping pads between visits, and Garry's sounds.
