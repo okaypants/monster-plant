@@ -68,6 +68,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/old_names_test.py` checks that the character who delivers by paw is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
 
+`python3 tests/seasonal_shots.py` pictures the pumpkin and tree on the book stack (day, tapped, night) and the leaves through the window (`tests/screenshots/seasonal/sheet.png`), and checks leaves show only through the glass, only in autumn daytime, and that the items rock, sway and settle.
+
 `python3 tests/night_window_shots.py` pictures the night room in every season with the curtains open and closed (`tests/screenshots/night_window/sheet.png`) and checks the night window pieces differ from winter's only behind the glass.
 
 `python tests/ui_shots.py` checks the UI look (Nunito text; captions, bubbles and buttons in the one text style: round corners, a hard shadow) and saves the start screen, a caption, Sloth's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
@@ -144,6 +146,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
+  | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the book stack |
   | `stories.js` | What's inside the four special books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
   | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |
@@ -169,6 +172,10 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `room_day/golden/night.png`, `room_<time>_[closed_]floorOn/Off_deskOn/Off.png` | Whole-room pictures |
 | `<time>_floorlamp_off.png`, `<time>_desklamp_off.png`, `<time>_curtains_closed.png` | Lamp and curtain pieces |
 | `day_window_<season>.png`, `night_window_<season>.png` | Season windows, day and night (drawn at 318,88) |
+| `leaf_<maple/redmaple/ginkgo/oak/twig/round>.png` | Autumn leaves that drift past the window (cut from `season_leaves.png`; its leaf piles wait for an outdoor space) |
+| `window_glass.png` | Where the window's glass is, so the falling leaves show only there (made by `tools/window_glass.py`) |
+| `pumpkin1-4.png` | Pumpkin on the book stack in autumn: idle, rock one way, rock the other, lit at night (cut from `season_pumpkin.png`) |
+| `tree1/2.png`, `ornament_<star/ball/heart/mushroom/bell/pot>1/2.png` | Winter tree on the book stack (2-frame sway) and its six ornaments (2-frame swing), cut from `season_tree.png` |
 | `seedling_soil1/2.png`, `seedling_sprout1/2.png`, `seedling_bigsprout1/2.png` | Seedling pot: seed (soil), first sprout, bigger sprout, 2 frames each (cut from `seedling_sheet.png`) |
 | `baby_01..16.png`, `baby_NN_sleep.png` | Kids (+ sleeping) |
 | `teen_01..16.png`, `adult_01..16.png` | Teens and adults |

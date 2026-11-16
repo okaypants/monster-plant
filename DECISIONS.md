@@ -2,6 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Seasonal items: autumn leaves, the pumpkin and the tree (Nov 15)
+
+- Jackie uploaded the season sheets (leaves, pumpkin, tree with ornaments). Jackie decided:
+  - **No leaf pile in the room.** The leaf piles on the sheet are saved for an outdoor space.
+  - **The pumpkin and the tree sit on the stack of books next to the desk.**
+- **Autumn:** now and then a single leaf (maple, red maple, ginkgo, oak, twig, round) drifts down outside the window: one at a time, two at most, every 5-12 s, falling in whole pixels with a side-to-side sway. It shows only through the glass, never over the bars, curtains or armchair (`window_glass.png`, made from the four day windows: the glass is what changes between seasons). Daytime and golden hour only; not at night, not with the curtains shut, not with the phone's reduce-motion setting.
+- **Autumn:** the pumpkin sits on the book stack. Tap it and it rocks (its two rocking frames, 6 swaps), then settles. At night it shows its lit frame.
+- **Winter:** the potted tree sits there instead, with its six ornaments hung on its branches (star, ball, heart, mushroom, bell, little pot). Tap it and the tree sways and the ornaments swing a beat apart.
+- **Sharing the book stack:** a plant placed on the book stack gets it, and the pumpkin or tree steps aside (isn't drawn) until the plant moves. The cat doesn't pick the book stack for naps while the pumpkin or tree is out.
+- Both get the idle wiggle (seasonal items were already on the list of usable things), only while they're out.
+- Spring and summer: nothing seasonal yet.
+- Art is untouched: magenta keyed out only (`tools/season_cut.py`); sizes are set in code. `python3 tests/seasonal_shots.py` pictures and checks all of it.
+
 ### Nunito lettering (Nov 15)
 
 - Jackie wanted the lettering swapped for something cleaner, rounder and cuter (the old one, Fredoka, read as Comic Sans style). From a sample sheet of six, Jackie picked **Nunito**.

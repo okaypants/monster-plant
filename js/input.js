@@ -32,6 +32,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&sillHit(x,y)){sillTap();return;} // what Sloth's paw left on the windowsill
  if(!held.tool&&!onPlantPx(x,y)&&catHit(x,y)){petCat(x);return;}
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openArchive();return;} // the drawers hold the files of past monsters (Jackie, Nov 8); the journal opens from a name tag
+ if(!held.tool&&!onPlantPx(x,y)&&seasonPoke(x,y))return; // the pumpkin or the tree, sitting on the book stack (js/seasonal.js)
  if(!held.tool&&!st.night&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks();return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
  if(st.night){ // night: lights and curtains still work; wake only on purpose

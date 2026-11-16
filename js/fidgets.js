@@ -89,7 +89,7 @@ function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now
  if(Math.round(fGlobeKick.ox)||Math.round(fGlobeKick.oy))pc(fGlobeKick.x,fGlobeKick.y,fGlobeKick.w,fGlobeKick.h,fGlobeKick.ox,fGlobeKick.oy);
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
  g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);
- idleTick(now);const io=idleOffset(now);if(io){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
+ idleTick(now);const io=idleOffset(now);if(io&&idleOn.it.k!=='sprite'){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
 function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s,s);}}
 
 /* ---------- IDLE WIGGLE (Jackie, Nov 3; RULES.md 10) ----------
@@ -103,7 +103,8 @@ function fidgetDrawTop(){for(const b of fBits){g.fillStyle=b.c;const s=b.big?6:3
 const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
  {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
  {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
- {n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'}];
+ {n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'},
+ {n:'pumpkin',k:'sprite',when:()=>seasonItem()==='pumpkin'},{n:'tree',k:'sprite',when:()=>seasonItem()==='tree'}]; // seasonal items (js/seasonal.js) nudge their own sprite, only while they're out
 const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
@@ -113,5 +114,5 @@ function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.le
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
  if(!st.started||touching()||somethingMoving()){idleNext=now+1000;return;} // busy: try again in a second, so the 10 s rhythm holds
- idleOn={it:IDLE_ITEMS[Math.floor(Math.random()*IDLE_ITEMS.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>400)idleLog.shift();}
+ const can=IDLE_ITEMS.filter(it=>!it.when||it.when());idleOn={it:can[Math.floor(Math.random()*can.length)],t0:now};idleLog.push({n:idleOn.it.n,t:now});if(idleLog.length>400)idleLog.shift();}
 function idleOffset(now){return idleOn?(IDLE_FRAMES[Math.floor((now-idleOn.t0)/IDLE_MS)]||0)*ART_PX:0;}
