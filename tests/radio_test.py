@@ -1,10 +1,13 @@
 """The radio on the desk (js/radio.js).
 
 Run from the repository root:  python tests/radio_test.py
-On a phone held sideways, with the internet blocked (so no records), it puts a finished song from the sampler on
-the radio and checks: tapping the radio plays that song with its caption, tapping again switches it off, the radio
-goes quiet while the sampler is open and comes back after, and with no songs on the radio and no internet it says
-there is only static and switches itself off. Pictures go to tests/screenshots/radio/. Exit code 1 if a check fails.
+On a phone held sideways, with the internet blocked (so no records and no live stations), it puts a finished song
+from the sampler on the radio and checks: tapping the radio opens its dial and plays that song with its caption,
+tapping again closes the dial and the music keeps going, OFF switches it off, the radio goes quiet while the sampler is
+open and comes back after, and with no songs on the radio and no internet it says there is only static and switches
+itself off. Then the WORLD band: 30 stations along the dial, the arrows step through them (wrapping round), the band
+and station are remembered, and with no internet each station says No signal, tries the next, and after a few the
+radio says so and switches off. Pictures go to tests/screenshots/radio/. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
 from playwright.async_api import async_playwright
@@ -36,6 +39,7 @@ async def main():
         ctx = await b.new_context(viewport={"width": 844, "height": 390}, device_scale_factor=2, has_touch=True)
         await ctx.add_init_script(VIRTUAL_TIME)
         await ctx.route("https://archive.org/**", lambda r: r.abort())
+        await ctx.route(lambda u: not u.startswith(f"http://localhost:{PORT}"), lambda r: r.abort())  # no live stations either
         pg = await ctx.new_page()
         errs = []
         pg.on("pageerror", lambda e: errs.append(str(e)))
@@ -61,9 +65,18 @@ async def main():
         check(await pg.evaluate("()=>!radio.on&&radio.src===null"), "the radio should go quiet while the sampler is open")
         await pg.evaluate("()=>closeSampler()")
         await until(pg, "radio.on&&radio.src!==null", 5)
-        # off
+        # the dial: a second tap closes it and the music keeps going; OFF switches it off
+        check(await pg.evaluate("()=>!radio.panel"), "the sampler should close the dial")
         await pg.mouse.click(x, y)
-        check(await pg.evaluate("()=>!radio.on&&radio.src===null"), "a second tap should switch the radio off")
+        check(await pg.evaluate("()=>!!radio.panel&&radio.on"), "a tap should open the dial")
+        await pg.screenshot(path=os.path.join(OUT, "dial_crates.png"))
+        await pg.mouse.click(x, y)
+        check(await pg.evaluate("()=>!radio.panel&&radio.on"), "a second tap should close the dial and keep playing")
+        await pg.mouse.click(x, y)
+        await pg.click(".rpanel .rpow")
+        check(await pg.evaluate("()=>!radio.on&&radio.src===null"), "OFF should switch the radio off")
+        await pg.click(".rpanel .rx")
+        check(await pg.evaluate("()=>!radio.panel"), "the close button should close the dial")
         # nothing on the radio and no internet: static, and it switches itself off
         await pg.evaluate("()=>cratesTx(['songs'],'readwrite',tx=>tx.objectStore('songs').clear())")
         await pg.evaluate("()=>{capClear();CAP.log=[];}")
@@ -73,6 +86,28 @@ async def main():
         log = await pg.evaluate("()=>CAP.log.concat(CAP.q).map(l=>l.t)")
         check(any("static" in t for t in log), f"no songs and no internet should say static, log {log}")
         await pg.screenshot(path=os.path.join(OUT, "static.png"))
+        # WORLD: no internet here, so each station has no signal
+        check(await pg.evaluate("()=>WORLD.length===30&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p)"), "WORLD should have 30 https stations, each with a name, what it plays and where")
+        await pg.evaluate("()=>{capClear();CAP.log=[];}")
+        check(await pg.evaluate("()=>!!radio.panel"), "the dial should stay open when the radio switches itself off")
+        await pg.click(".rpanel [data-b=world]")
+        check(await pg.evaluate("()=>radio.band==='world'&&radio.on&&radio.el.src===WORLD[radio.wi].u"), "WORLD should tune to the remembered station")
+        w0 = await pg.evaluate("()=>radio.wi")
+        await pg.click(".rpanel [data-d='1']")
+        check(await pg.evaluate(f"()=>radio.wi==={(w0 + 1) % 30}"), "the right arrow should step to the next station")
+        await pg.evaluate("()=>radioPanelShow()")
+        name = await pg.evaluate("()=>document.querySelector('.rpanel .rname b').textContent")
+        check(name == await pg.evaluate("()=>WORLD[radio.wi].n"), f"the dial should show the station's name, got {name}")
+        await pg.screenshot(path=os.path.join(OUT, "dial_world.png"))
+        await pg.evaluate("()=>{radio.on=true;radio.fails=0;radio.wi=0;worldPlay(-1)}")
+        check(await pg.evaluate("()=>radio.wi===29"), "stepping back from the first station should wrap to the last")
+        check(await pg.evaluate("()=>JSON.parse(localStorage.getItem('mp-radio')).band==='world'"), "the band should be remembered")
+        for _ in range(60):
+            await pg.evaluate("()=>__step(.5)")
+            if await pg.evaluate("()=>!radio.on"):
+                break
+        log = await pg.evaluate("()=>CAP.log.concat(CAP.q).map(l=>l.t)")
+        check(await pg.evaluate("()=>!radio.on") and any("No signal on the WORLD band" in t for t in log), f"with no internet WORLD should give up and say so, log {log}")
         fails += errs
         await b.close()
     for f in fails:

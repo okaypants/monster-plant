@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The radio's WORLD band: 30 live stations and a dial (Nov 16)
+
+- Jackie wanted more choice on the radio: the crates, or a global radio of real stations, with the feel of changing stations. Picked: **hand-pick 30**, a mix of everything (jazz, folk, classical, lo-fi, traditional music), and above all **"COOL stations - weird good arty or just fun."** Live radio is **only for the radio**: never sampled, never saved.
+- **Tapping the radio** now switches it on and opens a little dial above it: CRATES or WORLD, a tuning strip with a tick for each station, ◀ ▶, and the station's name, what it plays and where. Tap again to close the dial (the music keeps going); OFF switches it off.
+- **WORLD** runs west to east along the dial, San Francisco to New Caledonia: freeform and art radio (WFMU and two of its side channels, NTS 1 and 2, dublab, Cashmere Radio, Resonance Extra, Radio alHara, Kiosk Radio, Radio 80000, Radio Raheem, Refuge Worldwide, Radio Quântica, Noods, BFF.fm, Radio Meuh, FIP, Radio Paradise World/Etc), plus tango (La 2x4), Argentine folk, fado, Senegalese music, Norwegian folk, world music from Athens, jazz, classical (Venice), bossa nova from Ashiya, lo-fi from New Caledonia, and space synths. Each one was checked to stream over https in a browser; SomaFM was left out because it refuses to play in web pages.
+- **Changing stations:** a burst of a real recording of a radio being tuned (CC0, Freesound, sounds/tune.m4a), held while you drag the dial. Not synthesized, since Jackie dislikes the made-up sounds.
+- Freeform and DJ stations talk between records now and then, and anything can come on; that's part of their charm. A dead station says No signal and skips to the next; if several fail, the radio says so and switches off.
+
 ### Five real recorded sounds (Nov 16)
 
 - Garry won't be making foley (page turns and the like), so Jackie picked free recordings instead, from two to four CC0 takes for each sound in the game (all from Freesound; CC0 means free to use with no credit).
