@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The milk crate opens The Crates too (Nov 16)
+
+- Jackie asked to connect the sampler to the crates and left the how to me. The Crates is an app for digging through records, so the milk crate under the window now opens it as well as the sampler on the top shelf. It is the same app, opened the same way, day or night.
+- Only the crate's body counts. The book lying on top still opens the books, a plant or the cat sitting there is tapped first, and the floor lamp beside it still switches from its pole and shade.
+- The other options, not done: playing the pads from the room after the app closes, and sharing the record list with the separate MPC app.
+
 ### The shelf sampler opens its own app, The Crates (Nov 16)
 
 - Jackie asked for two versions of The Crates (the public-domain record finder and sampler built in the Phone-Game project): one for this game and its in-game sampler, and one for people to really use with an MPC. The MPC one stays its own app outside the game.
