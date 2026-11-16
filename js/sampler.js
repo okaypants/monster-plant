@@ -6,8 +6,9 @@ const SAMPLER={x:1252,y:152,w:182,h:72}; // the same box as the 'drum' fidget in
 let samplerEl=null;
 function openSampler(){
  if(samplerEl)return;
+ radioHold(true); // the radio goes quiet while the sampler is open
  samplerEl=document.createElement('div');samplerEl.className='screen sampler';
  const f=document.createElement('iframe');f.src='sampler.html';f.title='The sampler';f.setAttribute('allow','autoplay');
  samplerEl.appendChild(f);ui.appendChild(samplerEl);}
-function closeSampler(){if(!samplerEl)return;samplerEl.remove();samplerEl=null;}
+function closeSampler(){if(!samplerEl)return;samplerEl.remove();samplerEl=null;radioHold(false);}
 addEventListener('message',e=>{if(e.data==='mp-sampler-close'&&samplerEl&&e.source===samplerEl.firstChild.contentWindow)closeSampler();});

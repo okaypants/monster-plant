@@ -3,8 +3,9 @@
 Run from the repository root:  python tests/beat_test.py
 Opens the sampler by itself on a phone held sideways, with two made-up pads (no internet needed), and checks:
 pitch per pad (a semitone a press, shown on the pad), the tempo keys, the click, LOCK snapping a recorded hit to
-the nearest sixteenth (and not snapping with LOCK off), the loop playing its hits back, STOP, and saving a beat,
-loading it back after the page is reloaded, and erasing it. Pictures go to tests/screenshots/sampler/.
+the nearest sixteenth (and not snapping with LOCK off), the loop playing its hits back, STOP, the click sounding only
+while recording, the one work in progress coming back after a reload (and replaced by saving again), the warning when
+leaving unsaved, FINISH SONG (two taps) making a song and clearing the work, sending it to the radio, and erasing it. Pictures go to tests/screenshots/sampler/.
 Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -79,25 +80,60 @@ async def main():
         st = await pg.evaluate("()=>[SEQ.rec,SEQ.play,SEQ.count,SEQ.start]")
         check(st == [True, True, True, 4], f"REC from a standstill counts in a bar, got {st}")
         await pg.click("#bplay")
-        # save, reload, load, erase
+        # the click is only a guide: it sounds while recording, never while the loop just plays
+        await pg.evaluate("()=>{SEQ.click=true;window.__b=0;const o=blip;blip=(t,one)=>{__b++;return o(t,one)};beatUI()}")
+        await pg.click("#bplay")
+        await pg.wait_for_timeout(1200)
+        check(await pg.evaluate("()=>__b") == 0, "the click should be silent while the loop plays back")
+        await pg.click("#rec")
+        await pg.wait_for_timeout(1200)
+        check(await pg.evaluate("()=>__b") >= 2, "the click should sound while recording")
+        await pg.click("#bplay")
+        await pg.evaluate("()=>{SEQ.click=false;beatUI()}")
+        # work in progress: save it, reload, and it is back
+        await pg.evaluate("()=>{SEQ.ev=[{p:0,b:0},{p:1,b:2}];SEQ.bars=1;beatUI()}")
         await pg.click(".tab[data-p=pSaved]")
         await pg.click("#save")
-        await pg.wait_for_selector("#slist .r")
-        await pg.screenshot(path=os.path.join(OUT, "saved_page.png"))
+        await pg.wait_for_function("()=>/^Work in progress saved/.test(document.getElementById('wip').textContent)")
         await pg.reload(wait_until="load")
-        await pg.evaluate("()=>unlock()")
-        check(not await pg.evaluate("()=>pads.some(Boolean)"), "pads are not kept unless a beat is loaded")
-        await pg.click(".tab[data-p=pSaved]")
-        await pg.wait_for_selector("#slist .r")
-        await pg.click("#slist .r")
         await pg.wait_for_function("()=>pads.some(Boolean)")
-        st = await pg.evaluate("()=>[pads[0].title,pads[0].pitch,pads[1].title,pads.filter(Boolean).length,SEQ.bpm,SEQ.bars,JSON.stringify(SEQ.ev.map(e=>[e.p,e.b])),Math.abs(pads[0].buf.duration-.4)<.01]")
-        check(st == ["Test tone low", 2, "Test tone high", 2, 120, 1, "[[0,0],[1,2]]", True], f"the loaded beat should match the saved one, got {st}")
-        await pg.screenshot(path=os.path.join(OUT, "loaded.png"))
+        st = await pg.evaluate("()=>[pads[0].title,pads[0].pitch,pads[1].title,pads.filter(Boolean).length,SEQ.bpm,SEQ.bars,JSON.stringify(SEQ.ev.map(e=>[e.p,e.b])),Math.abs(pads[0].buf.duration-.4)<.01,document.getElementById('l2').textContent]")
+        check(st[:8] == ["Test tone low", 2, "Test tone high", 2, 120, 1, "[[0,0],[1,2]]", True] and "back" in st[8], f"the work in progress should come back when the sampler opens, got {st}")
+        # only one work in progress: saving again replaces it
+        await pg.evaluate("()=>{setBpm(100)}")
+        await pg.click(".tab[data-p=pSaved]")
+        await pg.click("#save")
+        await pg.wait_for_timeout(300)
+        n = await pg.evaluate("()=>cratesTx(['work'],'readonly',(tx,put)=>{const r=tx.objectStore('work').getAllKeys();r.onsuccess=()=>put(r.result)})")
+        bpm = await pg.evaluate("()=>cratesGet('work','wip').then(w=>w.bpm)")
+        check(n == ["wip"] and bpm == 100, f"there is one work in progress, replaced by saving again: keys {n}, bpm {bpm}")
+        # leaving with unsaved changes asks once
+        await pg.evaluate("()=>setBpm(101)")
+        await pg.click("#x")
+        check("not saved" in await pg.locator("#l2").text_content(), "leaving with unsaved work should warn first")
+        await pg.evaluate("()=>setBpm(100)")
+        # finish the song: two taps; the work in progress is cleared
+        await pg.click("#finish")
+        check(not await pg.locator("#slist .srow").count(), "one tap on FINISH SONG only asks")
+        await pg.click("#finish")
+        await pg.wait_for_selector("#slist .srow")
+        st = await pg.evaluate("()=>Promise.all([cratesGet('work','wip'),cratesAll('songs'),cratesAll('songpcm')]).then(([w,s,p])=>[!!w,s.length,s[0].name,s[0].radio,Math.round(s[0].secs),p[0].sr,p[0].pcm.length>p[0].sr*20])")
+        check(st[0] is False and st[1:4] == [1, "Song 1", False] and 24 <= st[4] <= 50 and st[5] == 22050 and st[6], f"FINISH SONG should make Song 1 (about half a minute) and clear the work in progress, got {st}")
+        # the song has the loop in it and no click: its first sound is the low tone at the very start
+        peak = await pg.evaluate("()=>cratesAll('songpcm').then(p=>{const a=p[0].pcm;let m=0;for(let k=0;k<2205;k++)m=Math.max(m,Math.abs(a[k]));return m})")
+        check(peak > 3000, f"the song should start with the first hit, peak {peak}")
+        # send it to the radio
+        await pg.click("#slist .srow .t")
+        await pg.wait_for_function("()=>cratesAll('songs').then(s=>s[0].radio)")
+        await pg.wait_for_selector("#slist .srow .t.on")
+        await pg.screenshot(path=os.path.join(OUT, "songs_page.png"))
+        # listen, then erase
+        await pg.click("#slist .srow .r")
+        await pg.wait_for_function("()=>songSrc!==null")
         await pg.click("#erase")
-        await pg.click("#slist .r")
+        await pg.click("#slist .srow .r")
         await pg.wait_for_selector("#slist #note")
-        check(await pg.locator("#slist .r").count() == 0, "ERASE then tapping a saved beat should erase it")
+        check(await pg.evaluate("()=>Promise.all([cratesAll('songs'),cratesAll('songpcm')]).then(([s,p])=>s.length+p.length)") == 0, "ERASE then a song should erase it and its sound")
         check(not await pg.evaluate("()=>Object.keys(localStorage).length"), "the sampler must not write to the game's storage")
         fails += errs
         await b.close()

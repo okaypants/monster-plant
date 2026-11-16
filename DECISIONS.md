@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Work in progress, finished songs, and the radio (Nov 16)
+
+- **The click is never in the recording (Jackie).** The loop and songs hold only pad hits, never the click. The click now sounds only while recording (and the count-in) or on its own; when the loop just plays back, it's silent.
+- **One work in progress (Jackie):** SAVE WORK keeps it (pads, pitch, tempo, bars, LOCK, the loop), and saving again replaces it; there's only ever one. It comes back by itself when the sampler opens. Leaving with unsaved changes warns once (tap ✕ again to leave anyway). The SAVED page is now **SONGS**.
+- **Finished songs:** FINISH SONG (a second tap to confirm, since it clears the work in progress) plays the loop out a few times into a song of about half a minute, faded at the end, no click. Up to 12 songs, named Song 1, Song 2...; tap one to listen, ERASE then a song erases it.
+- **Sending to the radio (Jackie):** each song has a RADIO key; sent songs can come on the radio in the room.
+- **The radio on the desk (Jackie picked):** tap it to switch on or off (it used to do nothing). While on, it plays a station of old free records (the same library and rules as the sampler, streamed), and now and then one of your sent songs (about a third of the time, and always after two records). Your song gets a caption, "On the radio: Song 2, by you! Fig bops along." (Jackie picked a caption), and hearts over every monster. Quiet while the sampler is open. Without the internet it plays only your songs; with neither, it says it's static and switches off. Off whenever the game starts.
+- **Storage:** all of it lives in the site's own storage on the phone (`js/cratesdb.js`), shared by the sampler and the radio, never in the game's save. Beats saved the earlier way (from an hour before) still show in SONGS; tapping one makes it the work in progress.
+- **Follow-ups, not done:** money from airplay, and a game economy for buying things for the monsters and the house (Jackie: "at some point"); naming songs; something visible on the radio while it plays.
+
 ### The sampler gets a BEAT page and saved beats (Nov 16)
 
 - Jackie asked for the sampler to pitch shift, slow down or speed up the tempo, have a metronome that samples can lock to, and record a little composition and save it. Built into the in-game sampler (The Crates); the separate MPC app isn't in this project.
@@ -11,7 +21,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Metronome (CLICK):** ticks by itself, higher on the first beat of each bar. 4/4 only.
 - **Locking to the click:** recorded hits snap to the nearest sixteenth when **LOCK** is on (on to start). Pads you play live still sound the moment you tap them, so nothing feels late; it's the loop that comes out in time, the way an MPC does it.
 - **Recording:** a loop of 1, 2 or 4 bars. REC from a standstill counts in one bar of clicks, then records every pass on top of the last until REC is pressed again. PLAY plays the loop; CLEAR empties it.
-- **Saving (on purpose only):** SAVE THIS BEAT keeps the pads' sound, their pitch, the tempo, the bars and the loop as "Beat 1", "Beat 2"... Up to 12, newest first; tap one to load it, ERASE then a beat to erase it. They're kept in the sampler page's own storage on the phone, separate from the game's save, which stays untouched. This changes the earlier rule that nothing in the sampler is saved: pads still vanish when it closes unless the beat is saved.
+- **Saving (on purpose only; replaced the same day by work in progress and songs, above):** SAVE THIS BEAT keeps the pads' sound, their pitch, the tempo, the bars and the loop as "Beat 1", "Beat 2"... Up to 12, newest first; tap one to load it, ERASE then a beat to erase it. They're kept in the sampler page's own storage on the phone, separate from the game's save, which stays untouched. This changes the earlier rule that nothing in the sampler is saved: pads still vanish when it closes unless the beat is saved.
 - **Colors:** settings you pick (bars, LOCK) are orange like the record source chips; things that are sounding (CLICK, PLAY, REC, the beat lights) are blue.
 - `tests/beat_test.py` checks all of it without the internet.
 
@@ -34,7 +44,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Pads are one color (Jackie):** every pad has the same stone face. What changes is a hard-edged line down its right and bottom sides, as if the pad is seen at an angle: grey when empty, orange when it holds a sample, blue while it sounds. A pressed pad moves down into its edge.
 - **The keys under the pads are shades of grey (Jackie):** no color there. Play is the darkest of the three greys, and a key that is on (playing, or ERASE armed) goes graphite.
 - **Idle wiggle:** the sampler now works, so it joined the idle wiggle list, per the Nov 4 rule.
-- The radio is not part of this and still does nothing.
+- The radio was not part of this at first (it now plays a station and your songs; see "Work in progress, finished songs, and the radio").
 - **Follow-ups, not done:** what the pads could do in the room (monsters reacting, the cat's opinion), keeping pads between visits, and Garry's sounds.
 
 ### Every quote and fact in the books checked (Nov 15)
