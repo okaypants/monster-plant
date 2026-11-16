@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Fewer US stations on the WORLD band (Nov 16)
+
+- Jackie: "Let's get rid of some of the more boring US ones which are basically all in California and Jersey lol." Off the dial: BFF.fm, Radio Paradise World/Etc, dublab, KALX, and WFMU with its two side channels. The US stations left are the weird ones (KPISS.FM, the Art Bell reruns, UFO talk, field recordings, old-time radio, Montez Press). 71 stations now; a preset kept on one that left says so.
+
 ### Five presets on the radio (Nov 16)
 
 - Jackie wanted five preset channels, like an old car radio, to program favorites. A row of buttons 1 to 5 under the dial: **tap** one to jump to the station kept on it, **hold** it (half a second) to keep the station you're on there. The button for the station playing now is lit; empty ones are pale, and tapping one says how to fill it. CRATES can be kept on a preset too.

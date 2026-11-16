@@ -3,8 +3,8 @@
    CRATES: old records that are free for everyone (the same library as the sampler: digitized 78s published 101 or more
      years ago), and now and then one of the songs you finished in the sampler and sent to the radio. Your song gets a
      caption, and the monsters bop along. The songs come from js/cratesdb.js.
-   WORLD: 78 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
-     from Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, San Francisco to
+   WORLD: 71 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
+     from Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, Seattle to
      New Caledonia, then the ones that live only online. Drag the dial or
      tap the arrows; between stations you hear a real recording of a radio being tuned (sounds/tune.m4a). Live radio is
      only for listening: it never goes into the sampler or the crates.
@@ -78,19 +78,12 @@ function wakeOff(){const w=WAKE;WAKE=null;if(w)w.release().catch(()=>{})}
    may vanish (Jackie: keep it, just skip it if it disappears; a dead station already skips to the next).
    Freeform and DJ stations talk between records now and then, and anything can come on: that's the fun of them. */
 const WORLD=[
- {n:'BFF.fm',k:'Indie and local',p:'San Francisco, USA',u:'https://stream.bff.fm/1/mp3.mp3',x:-122.42},
  {n:'KPISS.FM',k:'Gloriously weird',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
- {n:'KALX',k:'College radio, anything goes',p:'Berkeley, USA',u:'https://stream.kalx.berkeley.edu:8443/kalx-128.mp3',x:-122.27},
- {n:'Radio Paradise World/Etc',k:'World music and surprises',p:'California, USA',u:'https://stream.radioparadise.com/world-etc-128',x:-121.6},
- {n:'dublab',k:'Arty and experimental',p:'Los Angeles, USA',u:'https://dublab.out.airtime.pro/dublab_a',x:-118.24},
  {n:'Coast to Coast AM',k:'Art Bell reruns: aliens, ghosts and callers',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
  {n:'Midnight in the Desert',k:'More Art Bell reruns, late-night strange',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
  {n:'Free People of the Cosmos',k:'UFO and paranormal shows',p:'USA',u:'https://podradio.us/stream/free-cosmos',x:-98.0},
  {n:'Radio is a Foreign Country',k:'Rare tapes, records and field recordings',p:'USA',u:'https://s5.radio.co/s20251311a/listen',x:-95.0},
  {n:'Conyers Old Time Radio',k:'Old-time radio shows',p:'Conyers, Georgia, USA',u:'https://s8.yesstreaming.net:17011/stream',x:-84.02},
- {n:'WFMU',k:'Freeform: anything at all',p:'Jersey City, USA',u:'https://stream0.wfmu.org/freeform-128k',x:-74.08},
- {n:'WFMU Rock\'n\'Soul Ichiban',k:'Old rock\'n\'roll and soul',p:'Jersey City, USA',u:'https://stream0.wfmu.org/ichiban',x:-74.079},
- {n:'WFMU Give the Drummer Radio',k:'Freeform, more of it',p:'Jersey City, USA',u:'https://stream0.wfmu.org/drummer',x:-74.078},
  {n:'Montez Press Radio: The Sounded Word',k:'Sound and poetry',p:'New York, USA',u:'https://stream.montezpress.com/icecast/reading-and-poetry-the-sounded-word',x:-74.01},
  {n:'Montez Press Radio',k:'Art radio',p:'New York, USA',u:'https://stream.montezpress.com/icecast/recent',x:-74.0},
  {n:'La 2x4',k:'Tango',p:'Buenos Aires, Argentina',u:'https://media.radios.ar:9270/',x:-58.38},
