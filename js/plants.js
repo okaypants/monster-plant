@@ -400,7 +400,7 @@ function offerTick(){const o=st.seedOffer;if(!o||bubble||T<offerAt||capBusy()||s
   {s:()=>{closeBubble();seedSend();},k:()=>{closeBubble();seedKeep();}});}
 // PAYMENT ISN'T DECIDED (Jackie): whatever Sloth, PhD gives for a seed goes here
 function seedSentHook(seed){st.seedsSent=(st.seedsSent||0)+1;}
-function seedSend(){const o=st.seedOffer;st.seedOffer=null;st.sendSeed=o.seed;st.sillItem='send';st.pawWait='take';sfx('page');save();} // the packet waits on the sill for the paw; seedSentHook when it's taken
+function seedSend(){const o=st.seedOffer;st.seedOffer=null;st.sendSeed=o.seed;st.sillItem='send';st.pawWait='take';sfx('paper');save();} // the packet waits on the sill for the paw; seedSentHook when it's taken
 const KEEP_DEST='Out living their own lives';
 function seedKeep(){const o=st.seedOffer;st.seedOffer=null;st.seedKeep=o.seed;const P=o.ids.map(id=>allRaw().find(q=>q.id===id));for(const q of P){q.goDest=KEEP_DEST;q.goDay=st.day+1;delete q.goAgain;}
  sfx('chime');tell(nameOf(P[0],true)+' and '+nameOf(P[1],true)+' will head off in the morning to live their own lives.',{kind:'important'});save();}
@@ -416,10 +416,10 @@ function seedKeptArrives(){const c=st.seedKeep;st.seedKeep=null;if(plantCount()=
 const SLOTH_ASK='I have a seedling in need of a home. May I send it over?';
 function slothReady(){if(plantCount()!==1||st.giftSeed||st.slothSend||st.sillItem==='seed'||st.sillItem==='send'||st.pawWait==='seed'||st.pawWait==='take'||allRaw().some(q=>q.goDest))return false;const q=allRaw().find(p=>p.stage>=0);return !!q&&(q.stage>=8||(q.stage===6&&(q.timer||0)>=GROW_FOR[6]/2));}
 function slothOnSill(){return st.slothNote==='sill'&&slothReady();}
-function slothAsk(){sfx('page');const b=sillBox('envelope')||{x:SILL_ITEM.x,y:SILL_ITEM.y-50};
+function slothAsk(){sfx('letter');const b=sillBox('envelope')||{x:SILL_ITEM.x,y:SILL_ITEM.y-50};
  openBubble(b.x-140,b.y-230,'<div class="tsfrom">'+tsStampHTML()+'<b>From Sloth, PhD</b></div>'+SLOTH_ASK+tsChoices(SLOTH_CHOICES),{y:()=>{closeBubble();slothYes();},n:()=>{closeBubble();slothNotYet();}},'tsmint');}
 function slothYes(){st.slothSend=st.day+1;st.slothNote=null;st.slothJournal=0;sfx('chime');tell('Sloth, PhD will send the seedling over in the morning.',{kind:'info'});save();}
-function slothNotYet(){st.slothNote=null;st.slothJournal=1;st.giftAskDay=st.day+3;sfx('page');save();}
+function slothNotYet(){st.slothNote=null;st.slothJournal=1;st.giftAskDay=st.day+3;sfx('paper');save();}
 function slothArrive(){ // the next morning: the paw brings the seed packet (js/paw.js); tapping it plants the seed (plantGift)
  if(!st.slothSend||st.day<st.slothSend)return;st.slothSend=0;if(plantCount()>=MAX_PLANTS)return;st.pawWait='seed';save();}
 /* ASKING TO GO (Jackie, Nov 8): a content adult may ask, now and then, to go somewhere that fits its nature (GO_REASONS in names.js).
@@ -435,7 +435,7 @@ function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  const due=ids.filter(id=>allRaw().find(q=>q.id===id).goAgain);if(due.length){goAsk(due[0]);return;} // it said it would ask again
  if(Math.random()<GO_CHANCE)goAsk(ids[Math.floor(Math.random()*ids.length)]);else save();}
 function goAsk(id){withPlant(id,()=>{const p=pers(),R=[p.g,p.l].filter(Boolean).flatMap(k=>GO_REASONS[k]),L=R.length?R:GO_REASONS.neutral,r=L[Math.floor(Math.random()*L.length)],b=plantBox(),N=esc(who());
-  st.goAgain=st.day+GO_AGAIN;st.goNext=st.day+GO_AGAIN;sfx('page');const right=b.x+b.w+390<W;
+  st.goAgain=st.day+GO_AGAIN;st.goNext=st.day+GO_AGAIN;sfx('paper');const right=b.x+b.w+390<W;
   openBubble(right?b.x+b.w+10:b.x-390,Math.max(20,b.y+10),N+' '+esc(r[0])+'. May '+N+' go?'+tsChoices(CHOICES.go),{y:()=>{closeBubble();goYes(id,r[1]);},n:()=>{closeBubble();goNotYet(id);}});if(bubble)bubble.style.setProperty('--bg',lookOf(st).tint);});save();} // asked in its own tint
 function goYes(id,dest){withPlant(id,()=>{st.goDest=dest;st.goDay=st.day+1;delete st.goAgain;sfx('chime');tell(who()+' will set off in the morning.',{kind:'important',who:st.id});});save();}
 function goNotYet(id){withPlant(id,()=>{const b=plantBox();st.goAgain=st.day+GO_AGAIN;burst('heart',b.x+b.w/2,b.y-20,3);plantBoing(b.x+b.w/2);tell(who()+' snuggles back in.',{kind:'important',who:st.id});});save();}
@@ -456,7 +456,7 @@ function letterOnSill(){return st.letterNote==='sill'&&!!letterQ();}
 function letterInJournal(){return !!st.letterJournal&&!!letterQ();}
 function letterWaiting(){return letterOnSill()||letterInJournal();}
 function letterClear(){st.letterNote=null;st.letterFor=null;st.letterJournal=0;st.letterAgain=0;}
-function letterLand(id){st.letterNote='sill';st.letterFor=id;st.pawWait='envelope';st.goNext=st.day+GO_AGAIN;sfx('page');save();}
+function letterLand(id){st.letterNote='sill';st.letterFor=id;st.pawWait='envelope';st.goNext=st.day+GO_AGAIN;sfx('paper');save();}
 function letterTick(dt){if((st.letterNote||st.letterJournal)&&!letterQ()){letterClear();return;}if(letterOnSill()||!quiet())return;
  if(st.night||T<8||goBusy()||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){letterCalm=0;return;}
  if(st.letterJournal){if(st.day>=(st.letterAgain||0))letterLand(st.letterFor);return;} // you said not yet: it lands again in 3 days
@@ -469,12 +469,12 @@ function fitLetter(){if(!letterEl)return;const p=letterEl.querySelector('.jlette
  p.style.setProperty('--lk',k);p.style.transform=`translate(-50%,-50%) scale(${k})`;}
 addEventListener('resize',()=>setTimeout(fitLetter,50));
 function letterStamp(){return jdiv('jlstamp',[tsGlyph('paw',TS.mintInk,'jpix',6)]);} // a paw-print stamp
-function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('page');letterFrom=!!fromJournal;
+function openLetter(fromJournal){const q=letterQ();if(!q)return;closeBubble();closeLetter();sfx('letter');letterFrom=!!fromJournal;
  const N=nameOf(q,true),el=document.createElement('div');el.className='screen journal letter';const p=jdiv('jletter tsb tsmint');p.appendChild(letterStamp());p.appendChild(tsNamify(jdiv('jltext',[],slothLetter(N))));p.appendChild(tsKeepName(jdiv('jlsign',[],'— Sloth, PhD'))); // mint paper (js/textstyle.js)
  const row=jdiv('jlbtns');row.innerHTML=tsChoices(CHOICES.letter);const act={y:letterYes,n:letterNotYet};row.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();act[b.dataset.k]();}));
  p.appendChild(row);el.appendChild(p);el.addEventListener('click',e=>{if(e.target===el)closeLetter();});letterEl=el;ui.appendChild(el);fitLetter();tsPop(p);}
 function letterYes(){const q=letterQ();closeLetter();if(!q)return;const id=q.id;letterClear();goYes(id,LETTER_DEST);if(jEl)renderJournal();}
-function letterNotYet(){closeLetter();if(letterFrom)return;st.letterNote=null;st.letterJournal=1;st.letterAgain=st.day+GO_AGAIN;st.goNext=Math.max(st.goNext||0,st.day+GO_AGAIN);sfx('page');save();} // from the journal it simply stays there
+function letterNotYet(){closeLetter();if(letterFrom)return;st.letterNote=null;st.letterJournal=1;st.letterAgain=st.day+GO_AGAIN;st.goNext=Math.max(st.goNext||0,st.day+GO_AGAIN);sfx('paper');save();} // from the journal it simply stays there
 function seedTick(dt){
  offerTick();
  if(st.slothNote==='sill'||st.pawWait||st.sillItem||letterWaiting()||st.night||T<8||!quiet()||!slothReady())return; // not in the first moments after you arrive: the welcome comes first

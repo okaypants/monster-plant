@@ -76,7 +76,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
   if(st.treats[s.id]>=((st.dormant||[]).includes(s.trait)?3:TRAIT_AT)&&!st.traits.includes(s.trait)){st.dormant=(st.dormant||[]).filter(t=>t!==s.trait);st.traits.push(s.trait);const gw=who(),gid=st.id;setTimeout(()=>{sfx('chime');st.listen=3;tell(gw+' grew a '+s.trait.toLowerCase()+'!',{kind:'important',who:gid});},900);}
   logEv(s.name);if(bump('treats')>=10)earnPot('lavender');if(!(st.full>.95))tell(rx,{kind:'info',who:st.id}); // just its reaction: no game terms or numbers (progress lives in the journal)
   save();held.tool=null;return;}
- if(held.tool==='book'){const bk=held.item;sfx('page');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
+ if(held.tool==='book'){const bk=held.item;sfx('paper');st.listen=4;const was=st.needs.attention;st.needs.attention=Math.max(0,was-.6);if(was>.6)met('attention');
   st.ge=clamp(st.ge+bk.ge,-1,1);st.lc=clamp(st.lc+bk.lc,-1,1);held.tool=null;logEv(bk.name);if(bump('read_'+bk.id)>=READ_AT&&READ_POT[bk.id])earnPot(READ_POT[bk.id]);
   tell(who()+' '+BOOK_SAY[bk.id],{kind:'info',who:st.id});}}
 /* FEEDING (Jackie, Nov 4): simple and satisfying with a finger or a mouse.
@@ -154,7 +154,7 @@ const BOOK_CACHE=new Map();function bookImg(key,make){if(!BOOK_CACHE.has(key))BO
 const bookDrag={item:null,x:0,y:0,over:null,trayT:0};let btrayEl=null;
 const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books hopping back to the shelf
 const bookHops=[];
-function openBooks(ids=BOOK_ZONES[0].books){sfx('page');if(btrayEl&&btrayEl.dataset.ids!==ids.join())closeBookTray();if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';btrayEl.dataset.ids=ids.join();
+function openBooks(ids=BOOK_ZONES[0].books){sfx('paper');if(btrayEl&&btrayEl.dataset.ids!==ids.join())closeBookTray();if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';btrayEl.dataset.ids=ids.join();
   for(const bk of ids.map(BOOK_BY)){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
    const c=bookPix(bk.id,3);c.className='jpix';b.appendChild(c);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabBook(bk,e);});btrayEl.appendChild(b);}
@@ -166,7 +166,7 @@ function closeBookTray(){if(btrayEl){btrayEl.remove();btrayEl=null;}}
 cv.addEventListener('pointerdown',()=>{if(!bookDrag.item)closeBookTray();});
 addEventListener('resize',()=>setTimeout(placeBookTray,50));
 function bookPos(e){const [x,y]=toGame(e);bookDrag.x=x+(rightHand()?-30:30)/S;bookDrag.y=y-46/S;}
-function grabBook(bk,e){bookDrag.item=bk;bookDrag.sx=e.clientX;bookDrag.sy=e.clientY;bookDrag.btn=e.currentTarget&&e.currentTarget.getBoundingClientRect?e.currentTarget.getBoundingClientRect():null;bookDrag.moved=false;bookPos(e);bookOver();bookDrag.trayT=performance.now();sfx('page');
+function grabBook(bk,e){bookDrag.item=bk;bookDrag.sx=e.clientX;bookDrag.sy=e.clientY;bookDrag.btn=e.currentTarget&&e.currentTarget.getBoundingClientRect?e.currentTarget.getBoundingClientRect():null;bookDrag.moved=false;bookPos(e);bookOver();bookDrag.trayT=performance.now();sfx('paper');
  addEventListener('pointermove',bookMove);addEventListener('pointerup',bookUp);addEventListener('pointercancel',bookUp);}
 function bookMove(e){if(!bookDrag.item)return;if(Math.hypot(e.clientX-bookDrag.sx,e.clientY-bookDrag.sy)>10)bookDrag.moved=true;bookPos(e);bookOver();}
 function canRead(){return st.stage>=4&&st.nap<=0&&!st.night;}
@@ -224,7 +224,7 @@ function backStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+story
  setTimeout(()=>{f.className='sturn sturn1 jstep';},90); // and lands on the right
  setTimeout(()=>{f.remove();delete storyEl.dataset.turning;go();},180);}
 function closeStory(quiet){if(!storyEl)return;const id=+storyEl.dataset.id,r=READ.get(id);storyEl.remove();storyEl=null;if(!r)return;READ.delete(id);
- if(!quiet)sfx('page');bookHops.push({id:r.bk.id,x:1220,y:630,t0:performance.now()}); // the closed book hops home
+ if(!quiet)sfx('paper');bookHops.push({id:r.bk.id,x:1220,y:630,t0:performance.now()}); // the closed book hops home
  if(r.from)withPlant(id,()=>{st.perch=r.from.perch;if(r.from.free)st.free=r.from.free;st.walk=null;pickChair();});save();}
 cv.addEventListener('pointerdown',()=>{if(storyEl&&!bookDrag.item)closeStory();}); // tap the room: close the book
 function drawReading(){const now=performance.now();

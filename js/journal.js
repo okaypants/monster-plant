@@ -84,7 +84,7 @@ function fitBook(){if(!jEl)return;const noRib=jEl.classList.contains('archive'),
  jEl.bookK=k;const bk=jEl.querySelector('.jbook');bk.style.setProperty('--jk',k);bk.style.transform=`translate(-50%,calc(-50% + ${dy}px)) scale(${k})`;} // --jk keeps small print at 14px or more on screen (css/textstyle.css)
 function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='archive'||jPage==='keep'){jPage=null;jSub=0;}}
 function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');return P;}
-function openJournal(page){sfx('page');closeJournal();
+function openJournal(page){sfx('paper');closeJournal();
  const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
  jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
  jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();}); // tap outside the book
@@ -131,7 +131,7 @@ function morePages(L,R,build,key){const tL=document.createElement('div'),tR=docu
  const items=[...tR.children].filter(c=>c.classList.contains('jgroup')||c.classList.contains('jrow')).slice(-n);if(tL.firstChild)L.appendChild(tL.firstChild); // the name on top
  for(const it of items)L.appendChild(it);while(L.scrollHeight>L.clientHeight+1&&L.children.length>2)R.prepend(L.lastChild);}
 function letterJournalNote(R){const n=document.createElement('button');n.type='button';n.className='jslothnote jletternote';n.setAttribute('aria-label','A letter from Sloth, PhD');n.appendChild(imgPic(ITEM_ART.envelope,46,31));n.addEventListener('click',e=>{e.stopPropagation();openLetter(true);});R.appendChild(n);}
-function slothCard(){const old=jEl.querySelector('.jslothask');if(old){old.remove();return;}sfx('page');
+function slothCard(){const old=jEl.querySelector('.jslothask');if(old){old.remove();return;}sfx('paper');
  const c=jdiv('jslothask tsb tsmint',[],null);c.innerHTML='<div>“'+SLOTH_ASK+'”</div>'+tsChoices(SLOTH_CHOICES);tsPop(c); // Sloth's mint paper
  c.querySelector('[data-k=y]').addEventListener('click',e=>{e.stopPropagation();slothYes();renderJournal();c.remove();});
  c.querySelector('[data-k=n]').addEventListener('click',e=>{e.stopPropagation();c.remove();});jEl.querySelector('.jcover').appendChild(c);}
@@ -163,14 +163,14 @@ function moveOut(p,dest,also=[]){const id=p&&typeof p==='object'?p.id:p,q=allRaw
  if(st.id!==id)st.others=st.others.filter(x=>x.id!==id);
  else if((st.others||[]).length){swapIn(0);st.others=st.others.filter(x=>x.id!==id);}
  else{for(const k of Object.keys(st))if(!GLOBAL.has(k))delete st[k];const f=fresh();for(const k in f)if(!GLOBAL.has(k))st[k]=f[k];st.id=(st.nextId=(st.nextId||1)+1);} // the last one: an empty room, ready for a new seed
- st.archive=(st.archive||[]).concat(e);ACT=st.id;pickChair();sfx('page');tell(moveOutCaption(firstName(e.snap)||NAMES[e.snap.species]),{kind:'important',key:'moveout'+id});
+ st.archive=(st.archive||[]).concat(e);ACT=st.id;pickChair();sfx('paper');tell(moveOutCaption(firstName(e.snap)||NAMES[e.snap.species]),{kind:'important',key:'moveout'+id});
  if(jEl)renderJournal();save();return e;}
 // runs f with the room as it was the day that monster left: read-only and all in one go, so nothing is ever drawn or saved from it
 function withKeepsake(e,f){const live=st,t={};for(const k of Object.keys(live))if(GLOBAL.has(k))t[k]=live[k];
  st=Object.assign(t,jsonCopy(e.world),jsonCopy(e.snap),{others:jsonCopy(e.pals),night:false});try{return f();}finally{st=live;}}
 function archiveShell(){jEl=document.createElement('div');jEl.className='screen journal archive';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
  jEl.addEventListener('click',e=>{if(e.target===jEl)archiveBack();});jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();archiveBack();});}
-function openArchive(){sfx('page');closeJournal();jPage='archive';jSub=0;archiveShell();ui.appendChild(jEl);fitBook();renderArchive();archiveSteps();}
+function openArchive(){sfx('paper');closeJournal();jPage='archive';jSub=0;archiveShell();ui.appendChild(jEl);fitBook();renderArchive();archiveSteps();}
 // out of a keepsake goes back to the drawer; out of the drawer closes it
 function archiveBack(){if(jPage==='keep'){jKeep=null;jTurn('archive',jArchSub);return;}closeJournal();}
 // the drawer opens in 3 stepped frames: the book comes up out of the drawers, no fade

@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Five real recorded sounds (Nov 16)
+
+- Garry won't be making foley (page turns and the like), so Jackie picked free recordings instead, from two to four CC0 takes for each sound in the game (all from Freesound; CC0 means free to use with no credit).
+- **Picked:** turning a page (stories and the journal), opening a letter or Sloth's note (an envelope tearing open), the tap on buttons, the pop, and the hungry plant's tummy rumble. Each one is trimmed, faded at both ends and evened out; files and sources are in `sounds/` (`CREDITS.md`).
+- **Everything else stays silent,** by Jackie's choice: pulling out a book, the chime, purr, watering, sipping, eating, planting, boing, and the voices (giggle, sigh, burp, hmm, hum). Paper moments that aren't page turns or opening a letter (pulling out a book, a letter landing, the curtain, the journal opening) are now a silent `paper` sound, so the page turn only plays on a turn.
+
 ### All the made-up sounds off (Nov 16)
 
 - Jackie: "I dislike them period so tone doesn't matter." Every synthesized sound (taps, pages, chimes, purrs, pours, snacks, boings...) is now silent until Garry's real sounds arrive. The radio and the sampler play real recordings and still sound.

@@ -150,7 +150,7 @@ function trustGain(v){if(st.catDayN!==st.day){st.catDayN=st.day;st.catGain=0;}co
 // then loafs with its eyes open, then curls up and naps; patience refills during the nap. Touch it while it winds down and it simply moves
 // farther (each move makes the winding down a little longer).
 const HUFF_FRAMES=()=>['sit1','sit2','loaf1'].map(n=>CATF[n]);
-function catLeave(why){catSaw('huff');cat.state='annoyed';cat.t=0;cat.pets=0;cat.huff=1;cat.huffN=0;cat.huffFrom=cat.touchX??cat.x;cat.back=catTrust()>=TRUST_FOND;sfx('page');
+function catLeave(why){catSaw('huff');cat.state='annoyed';cat.t=0;cat.pets=0;cat.huff=1;cat.huffN=0;cat.huffFrom=cat.touchX??cat.x;cat.back=catTrust()>=TRUST_FOND;sfx('paper');
  if(why!=='shy'&&!catSession.enough){catSession.enough=true;tell(catName()+' has had enough pets for now.',{kind:'info',who:'cat'});}} // said once a play session; after that, body language only
 function huffSpot(){const from=cat.huffFrom??cat.x,pl=[];if(st.started)eachPlant(()=>{if(st.stage>=0){const b=plantBox();pl.push(b.x+b.w/2);}});
  const far=x=>Math.abs(x-from)>=350&&pl.every(px=>Math.abs(x-px)>=220); // not right next to you or a monster

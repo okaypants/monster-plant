@@ -40,7 +40,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(st.night){ // night: lights and curtains still work; wake only on purpose
   if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx(st.lamp?'chime':'sigh');save();return;}
   if(inR(x,y,LAMP)){st.desk=st.desk===false;save();return;}
-  if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');save();return;}
+  if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('paper');save();return;}
   openBubble(x-120,y-90,'Wake up for a new day?'+tsChoices(CHOICES.wake),{y:()=>{closeBubble();wake();},n:closeBubble});return;} // any other tap, as the goodnight caption says
  const on=held.tool==='can'?(faceAt(x),pourOver(x,y,holdK(x,y))):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
@@ -49,7 +49,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(inR(x,y,CAN)){held.tool='can';carryFace.dir=0;return;}
  // treats only come from the SNACKS box (Jackie)
  if(inR(x,y,JAR)){openSnacks(x,y);return;}
- if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('page');return;}
+ if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('paper');return;}
  if(inR(x,y,FLOOR)){st.lamp=!st.lamp;sfx('tick');sfx(st.lamp?'chime':'sigh');save();return;}
  if(inR(x,y,LAMP)){st.desk=st.desk===false;sfx('tick');save();return;}
  if(inR(x,y,CHAIR)&&!onPlant(x,y)){openBubble(CHAIR.x,CHAIR.y-90,'Settle in for the night?'+tsChoices(CHOICES.night),{y:tuckIn,n:closeBubble});return;}

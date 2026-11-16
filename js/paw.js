@@ -40,7 +40,7 @@ function pawStart(){const kind=st.pawWait;pawCalm=0;paw={kind,t:0,end:2*PAW_OPEN
  tell('A very slow paw reaches in through the window…',{kind:'teach',key:'paw'});}
 // the moment it lets go (or picks up)
 function pawStep(){const p=paw;if(p.did)return;const at=PAW_OPEN+PAW_IN+2*PAW_PAUSE;if(p.t<at)return;p.did=true; // after the settle and its pause
- if(p.kind==='take'){st.sillItem=null;sfx('page');save();return;}
+ if(p.kind==='take'){st.sillItem=null;sfx('paper');save();return;}
  st.sillItem=p.kind;sfx(p.kind==='seed'?'soil':'page');if(p.kind==='seed')tell('A seed packet from Sloth, PhD is on the windowsill.',{kind:'important'});save();}
 function pawFinish(){if(!paw)return;const k=paw.kind;if(!paw.did){paw.t=PAW_OPEN+PAW_IN+2*PAW_PAUSE;pawStep();}paw=null;st.pawWait=null;
  if(k==='take'){const seed=st.sendSeed;st.sendSeed=null;seedSentHook(seed);tell('Off it goes to Sloth, PhD.',{kind:'important'});}save();}

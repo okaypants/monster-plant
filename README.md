@@ -152,7 +152,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | File | What |
   | --- | --- |
   | `core.js` | Canvas and screen fitting, image loading, errors, palette, captions and bubbles, effects, full screen |
-  | `audio.js` | The little synth sounds (`sfx`) |
+  | `audio.js` | Sounds (`sfx`): five real recordings from `sounds/`, and the old synth sounds (muted) |
   | `saving.js` | The save (`st`), shared room keys (`GLOBAL`), swapping plants in and out, loading old saves |
   | `nudges.js` | Small per-species and per-frame position fixes (`NUDGE`), set with the debug Nudge tool |
   | `room.js` | Room pictures, seasons, curtains, lamps, time of day, spots, drawing each frame |
@@ -182,7 +182,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 - Spots: seed = windowsill or desk; kid = milk crate or book stack; teen/adult = anywhere on the rug (`st.free`, depth-scaled).
 - Room scenes: `ROOMS` (day/golden/night base), `MIX` (exact lamp/curtain pictures), `LOFF` lamp-off cut-outs, `CURTS` curtain layers, `WIN_SEASON` window pieces.
 - **Text style** (Jackie, Nov 10): every word uses one look, set in `css/textstyle.css` (shapes, sizes) and `js/textstyle.js` (the palette `TS`, each monster's `LOOKS` entry: tint, name color, ribbon color and pixel symbol, given at birth by `looksTick`; names in color with their symbol via `tsNamify`; choice buttons via `tsChoices`, with their words in `CHOICES` in js/names.js).
-- Sound: named slots (`sfx(...)`, `fplay(...)`) are ready for Garry's sounds.
+- Sound: `sfx(...)` plays the real recordings in `sounds/` (page turn, letter, tap, pop, hungry tummy; sources in `sounds/CREDITS.md`); every other sound is silent for now. `fplay(...)` slots are ready for Garry's sounds.
 
 ### File map
 
