@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Radio: superfluous stations off (Nov 16)
+
+- Jackie: "Remove some superfluous channels on the radio." Off the dial (92 down to 81), picked as doubles or plain playlists next to the more distinctive ones: NTS 2 (NTS 1 stays), Montez Press Radio's general channel (The Sounded Word stays), Conyers Old Time Radio (the sci-fi radio plays stay), Radio Swiss Jazz, Venice Classic Radio, Jazz Sakura, OPM Radio, UbuntuFM Africa, Dundee Radio Club, Echobox Radio and Radio Brennpunkt. Any of them can come back.
+
 ### Keep it safe: guarding your progress (Nov 16)
 
 - Jackie asked how to prevent losing progress on a device, and picked four layers (cloud saves are a bigger project for later):
