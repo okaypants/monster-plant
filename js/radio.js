@@ -16,8 +16,8 @@ const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0
 try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi}catch(e){}
 function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi}))}catch(e){}}
 function radioTap(){if(radio.panel){radioPanelClose();return}if(!radio.on)radioOn(true);radioPanel()}
-function radioOn(quiet){if(!AC)audioInit();radio.on=true;radio.fails=0;if(!quiet)tell('The radio is on.',{kind:'info',key:'radioOn'});if(radio.band==='world')worldPlay(radio.wi);else radioNext();radioPanelShow()}
-function radioOff(said){radio.on=false;radio.tok++;radioStop();hissStop();radioPanelShow();if(said)tell('The radio is off.',{kind:'info',key:'radioOff'})}
+function radioOn(quiet){if(!AC)audioInit();radio.on=true;radio.fails=0;wakeOn();if(!quiet)tell('The radio is on.',{kind:'info',key:'radioOn'});if(radio.band==='world')worldPlay(radio.wi);else radioNext();radioPanelShow()}
+function radioOff(said){radio.on=false;radio.tok++;radioStop();hissStop();wakeOff();radioPanelShow();if(said)tell('The radio is off.',{kind:'info',key:'radioOff'})}
 function radioStop(){
   if(radio.el){try{radio.el.onended=radio.el.onerror=null;radio.el.pause();radio.el.removeAttribute('src');radio.el.load()}catch(e){}}
   if(radio.src){try{radio.src.onended=null;radio.src.stop()}catch(e){}radio.src=null}}
@@ -63,7 +63,13 @@ async function radioRecord(tok){
   return false}
 // quiet while the sampler is open, and while the game is in the background
 function radioHold(on){if(on){radioPanelClose();radio.hold=radio.on;if(radio.on)radioOff(false)}else if(radio.hold){radio.hold=false;radioOn(true)}}
-document.addEventListener('visibilitychange',()=>{if(radio.el&&radio.on&&!radio.src){if(document.hidden)radio.el.pause();else radio.el.play().catch(()=>{})}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&radio.on)wakeOn();if(radio.el&&radio.on&&!radio.src){if(document.hidden)radio.el.pause();else radio.el.play().catch(()=>{})}});
+// the screen stays awake while the radio is on (Jackie, Nov 16: Garry's phone went to sleep and the music stopped). Uses the
+// browser's Screen Wake Lock where it has one (iPhone Safari 16.4 and up, Chrome on Android); elsewhere nothing changes.
+// The phone lets go of it by itself whenever the game is in the background, so it is asked for again on coming back.
+let WAKE=null;
+async function wakeOn(){if(WAKE||!radio.on||document.hidden||!navigator.wakeLock)return;try{const w=await navigator.wakeLock.request('screen');if(!radio.on){w.release().catch(()=>{});return}WAKE=w;w.addEventListener('release',()=>{if(WAKE===w)WAKE=null})}catch(e){}}
+function wakeOff(){const w=WAKE;WAKE=null;if(w)w.release().catch(()=>{})}
 
 /* ---------- WORLD: live stations ----------
    n name, k what it plays, p where, u the stream (https, plain MP3 or AAC so it plays everywhere), x how far east (the

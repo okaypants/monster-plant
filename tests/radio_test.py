@@ -3,7 +3,7 @@
 Run from the repository root:  python tests/radio_test.py
 On a phone held sideways, with the internet blocked (so no records and no live stations), it puts a finished song
 from the sampler on the radio and checks: tapping the radio opens its dial and plays that song with its caption,
-tapping again closes the dial and the music keeps going, OFF switches it off, the radio goes quiet while the sampler is
+tapping again closes the dial and the music keeps going, the screen is kept awake while it plays, OFF switches it off, the radio goes quiet while the sampler is
 open and comes back after, and with no songs on the radio and no internet it says there is only static and switches
 itself off. Then the WORLD band: 50-some stations along the dial, the arrows step through them (wrapping round), the band
 and station are remembered, and with no internet each station says No signal, tries the next, and after a few the
@@ -38,6 +38,10 @@ async def main():
         b = await p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])
         ctx = await b.new_context(viewport={"width": 844, "height": 390}, device_scale_factor=2, has_touch=True)
         await ctx.add_init_script(VIRTUAL_TIME)
+        # test browsers refuse the real screen wake lock, so count requests with a stand-in
+        await ctx.add_init_script("""(()=>{window.__wake={asked:0,held:0};const wl={request:async()=>{__wake.asked++;__wake.held++;const s={released:false,_l:[],
+          addEventListener(t,f){this._l.push(f)},release:async function(){if(!this.released){this.released=true;__wake.held--;this._l.forEach(f=>f())}}};return s}};
+          Object.defineProperty(navigator,'wakeLock',{get:()=>wl,configurable:true})})()""")
         await ctx.route("https://archive.org/**", lambda r: r.abort())
         await ctx.route(lambda u: not u.startswith(f"http://localhost:{PORT}"), lambda r: r.abort())  # no live stations either
         pg = await ctx.new_page()
@@ -52,6 +56,7 @@ async def main():
         x, y = await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return [r.left+(RADIO.x+RADIO.w/2)*S,r.top+(RADIO.y+RADIO.h/2)*S];}")
         await pg.mouse.click(x, y)
         await until(pg, "radio.src!==null", 5)
+        check(await pg.evaluate("()=>__wake.held===1"), "the screen should be kept awake while the radio is on")
         await pg.evaluate("()=>__step(1.5)")
         log = await pg.evaluate("()=>CAP.log.concat(CAP.q).map(l=>l.t)")
         check(any(t.startswith("On the radio: Song 1, by you!") and "bops along" in t for t in log), f"the song should be announced, log {log}")
@@ -75,6 +80,7 @@ async def main():
         await pg.mouse.click(x, y)
         await pg.click(".rpanel .rpow")
         check(await pg.evaluate("()=>!radio.on&&radio.src===null"), "OFF should switch the radio off")
+        check(await pg.evaluate("()=>__wake.held===0"), "the screen may sleep again once the radio is off")
         await pg.click(".rpanel .rx")
         check(await pg.evaluate("()=>!radio.panel"), "the close button should close the dial")
         # nothing on the radio and no internet: static, and it switches itself off

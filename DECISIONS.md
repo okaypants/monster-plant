@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The screen stays awake while the radio plays (Nov 16)
+
+- Jackie: Garry's phone went to sleep and the music stopped. While the radio is on, the game now asks the phone to keep the screen awake (the browser's Screen Wake Lock: iPhone Safari 16.4 and up, Chrome on Android). It lets go when the radio goes off or the sampler opens, so the phone sleeps normally otherwise. If the game goes to the background anyway, the phone drops the lock, and it is asked for again on coming back.
+- On a phone too old for it, nothing changes. On an iPhone, the game saved to the home screen needs iOS 18.4 or later for this.
+
 ### WORLD band: 24 stations from Asia (Nov 16)
 
 - Jackie: "more out of Japan Korea Philippines and Asia more generally they have a lot of cool stuff and du cultures and interest in lots of genres." The dial grew from 54 to 78.
