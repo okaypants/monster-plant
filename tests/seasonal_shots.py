@@ -3,7 +3,7 @@
 Run from the repository root:  python3 tests/seasonal_shots.py
 Pictures to tests/screenshots/seasonal/ (plus sheet.png, the book stack and window up close).
 Checks: falling leaves show only through the glass (never on the bars, curtains or armchair), only in autumn and never at night;
-the pumpkin is out in autumn and lit at night, rocks when tapped and settles back; the tree is out in winter, sways and its
+the pumpkin is out in autumn with the same face day and night, rocks when tapped and settles back; the tree is out in winter, sways and its
 ornaments swing when tapped; nothing seasonal in spring or summer; a plant on the book stack gets the stack (the item makes room);
 every frame is drawn on whole pixels. Exit code 1 if a check fails.
 """
@@ -83,12 +83,12 @@ async def main():
         check(diff(await pg.evaluate(STACK_PX), idle) > .5, "pumpkin: tapping it didn't rock it")
         await pg.evaluate("()=>__step(2)")
         check(diff(await pg.evaluate(STACK_PX), idle) < .01, "pumpkin: it didn't settle back after rocking")
-        # autumn night: lit, no falling leaves
+        # autumn night: the same pumpkin, no falling leaves
         await at("autumn", day=False)
         await pg.evaluate("()=>__step(30,250)")
         check(await pg.evaluate("()=>sLeaves.length") == 0, "autumn night: leaves are falling at night")
-        await shot("autumn_night", "Autumn night: the pumpkin is lit")
-        check(diff(await pg.evaluate(STACK_PX), idle) > .5, "pumpkin: not lit at night")
+        await shot("autumn_night", "Autumn night: the same sleepy pumpkin")
+        check(await pg.evaluate("()=>{const b=seasonBox();return !!b&&sRock<performance.now();}"), "pumpkin: not out at night")
         # winter: the tree; tap = sway + ornaments swing
         await at("winter")
         check(await pg.evaluate("()=>seasonItem()") == "tree", "winter: no tree on the book stack")

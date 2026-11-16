@@ -1,8 +1,8 @@
 """Sleepy closed eyes on the pumpkin (Jackie, Nov 16: she didn't like it with its eyes open).
 Run from the repository root:  python3 tools/pumpkin_eyes.py   (reads the cut frames as they came from tools/season_cut.py, from git)
 Only the eyes change. Frames 1-3: each eye arc is turned upside down in place (a closed, sleepy curve), with its own pixels;
-the spot it leaves (and the see-through pinholes the keying left along it) is filled from the pumpkin just above and below it. Frame 4 (lit): the glowing open eyes become glowing
-sleepy slits the same shape as the day eyes, in the lit frame's own glow and carving colours. Everything else is untouched.
+the spot it leaves (and the see-through pinholes the keying left along it) is filled from the pumpkin just above and below it. Everything else is untouched.
+(The lit night frame isn't used: Jackie likes only the closed eyes and the black mouth, so the pumpkin wears this face at night too.)
 """
 import io, subprocess
 import numpy as np
@@ -55,38 +55,7 @@ def flip_eyes(a):
         b[y0:y1, x0:x1][mm] = px[mm]
     return b, es
 
-frames = {i: orig(i) for i in range(1, 5)}
-day_eyes = None
+frames = {i: orig(i) for i in range(1, 4)}
 for i in (1, 2, 3):
-    b, es = flip_eyes(frames[i])
-    if i == 1:
-        day_eyes = es
+    b, _ = flip_eyes(frames[i])
     Image.fromarray(b).save(f"pumpkin{i}.png")
-
-# frame 4, lit: the glowing domes (and their carved rim) above the bar become glowing sleepy slits
-a = frames[4]
-br = (a[..., 3] > 0) & (a[..., 0] > 245) & (a[..., 1] > 200)
-lab, n = ndimage.label(br)
-domes = [lab == c for c in range(1, n + 1) if 1400 < (lab == c).sum() < 2000]
-assert len(domes) == 2
-GLOW = a[245, 120].copy()       # the eyes' glow
-CARVE = a[265, 110].copy()      # the carved rim
-area = np.zeros(a.shape[:2], bool)
-for d in domes:
-    area |= ndimage.binary_dilation(d, iterations=6)
-area[260:] = False               # the bar under the eyes stays
-area &= (a[..., 3] > 0) | pinholes(a)
-b = fill(a, area)
-for d, e in zip(domes, day_eyes):
-    dy, dx = np.where(d)
-    ey, ex = np.where(e)
-    m = e[ey.min():ey.max() + 1, ex.min():ex.max() + 1][::-1, ::-1]
-    h, w = m.shape
-    cx = (dx.min() + dx.max()) // 2
-    x0, y0 = cx - w // 2, 259 - h      # resting on the bar
-    rim = ndimage.binary_dilation(np.pad(m, 3), iterations=3)
-    core = np.pad(m, 3)
-    sub = b[y0 - 3:y0 + h + 3, x0 - 3:x0 + w + 3]
-    sub[rim] = CARVE
-    sub[core] = GLOW
-Image.fromarray(b).save("pumpkin4.png")

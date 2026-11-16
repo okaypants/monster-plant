@@ -1,12 +1,13 @@
 'use strict';
 /* Seasonal items (Jackie, Nov 15), cut from her season sheets (magenta keyed out only; tools/season_cut.py).
    Autumn: now and then a single leaf drifts down outside the window, seen only through the glass (window_glass.png, tools/window_glass.py),
-   in the daytime and at golden hour. The pumpkin sits on the book stack by the desk: tap it and it rocks; at night it's lit.
+   in the daytime and at golden hour. The pumpkin sits on the book stack by the desk: tap it and it rocks. It wears the same face day and night
+   (closed eyes, black mouth: Jackie, Nov 16; tools/pumpkin_eyes.py).
    Winter: the potted tree with its six ornaments sits there instead: tap it and it sways and the ornaments swing.
    The leaf pile waits for an outdoor space. While a plant sits on the book stack the seasonal item makes room (it isn't drawn); the cat naps elsewhere while it's out. */
 const LEAVES=['maple','redmaple','ginkgo','oak','twig','round'].map(n=>img('leaf_'+n+'.png'));
 const GLASS=img('window_glass.png'),GLASS_AT={x:318,y:88},GLASS_W=254,GLASS_H=434; // over the season window piece
-const PUMPKIN=[1,2,3,4].map(i=>img('pumpkin'+i+'.png')); // idle, rock one way, rock the other, lit
+const PUMPKIN=[1,2,3].map(i=>img('pumpkin'+i+'.png')); // idle, rock one way, rock the other
 const TREE=[img('tree1.png'),img('tree2.png')];
 // each ornament: its two swing frames, where its hook hangs on the tree (in tree1.png's pixels) and the hook's column in its own art
 const ORNAMENTS=[['star',70,55,60],['ball',128,57,56],['heart',40,112,56],['mushroom',152,112,57],['bell',65,180,56],['pot',135,182,54]]
@@ -42,7 +43,7 @@ function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin
  return {k,sc,x:STACK_TOP.x-Math.round(w/2),y:STACK_TOP.y-h,w,h};}
 function drawSeasonItem(){const b=seasonBox();if(!b)return;const now=performance.now(),o=stackOff(),x0=b.x+o.x+seasonIdle(b.k),y0=b.y+o.y;
  const L=lightAt(b.x+b.w/2,b.y+b.h),put=(im,x,y,sc)=>{if(ok(im))g.drawImage(litPic(im,L),Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
- if(b.k==='pumpkin'){const rock=now<sRock?1+Math.floor((sRock-now)/SWAP_MS)%2:0;put(PUMPKIN[rock?rock:timeKey()==='night'?3:0],x0,y0,b.sc);return;}
+ if(b.k==='pumpkin'){const rock=now<sRock?1+Math.floor((sRock-now)/SWAP_MS)%2:0;put(PUMPKIN[rock],x0,y0,b.sc);return;}
  put(TREE[now<sSway?Math.floor((sSway-now)/SWAP_MS)%2:0],x0,y0,b.sc);
  for(const o2 of ORNAMENTS){const f=o2.f[now<o2.swing?Math.floor((o2.swing-now)/SWAP_MS)%2:0];if(!ok(f))continue;
   put(f,x0+o2.x*b.sc-o2.hx*ORN_SC,y0+o2.y*b.sc,ORN_SC);}}

@@ -12,7 +12,8 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 ### The pumpkin's eyes are closed (Nov 16)
 
-- Jackie didn't like how the pumpkin looked with its eyes open, so it now has sleepy closed eyes. In the three day frames each eye arc is turned upside down in place, using its own pixels. In the lit night frame, the glowing open eyes are now glowing sleepy slits the same shape, in that frame's own glow and carving colours. Only the eyes changed, with Jackie's OK. The mouth, rock frames and sizes are the same as before (`tools/pumpkin_eyes.py`).
+- Jackie didn't like how the pumpkin looked with its eyes open, so it now has sleepy closed eyes. In the three day frames each eye arc is turned upside down in place, using its own pixels. Only the eyes changed, with Jackie's OK. The mouth, rock frames and sizes are the same as before (`tools/pumpkin_eyes.py`).
+- Jackie likes only the closed eyes and the black mouth, so the lit night frame (glowing carved face) is gone: the pumpkin looks the same day and night.
 
 ### The moon in the window shows tonight's real phase (Nov 16)
 

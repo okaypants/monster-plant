@@ -1,7 +1,7 @@
 # Cut Jackie's season sheets (season_pumpkin.png, season_tree.png, season_leaves.png) into the game's pieces.
 # Background removal only (RULES 6): binary alpha, tight crop + 1px margin, frame pairs on one shared canvas.
 # Run from the repository root:  python3 tools/season_cut.py .
-import sys,numpy as np
+import os,sys,numpy as np
 from PIL import Image
 from scipy import ndimage
 OUT=sys.argv[1]
@@ -46,6 +46,7 @@ def save_group(name_fmt,parts,align):
 P='season_pumpkin.png'
 pk=[piece(P,60,500),piece(P,600,1040),piece(P,1130,1580),piece(P,1690,2120)]
 save_group('pumpkin%d.png',pk,'bottom')
+os.remove(OUT+'/pumpkin4.png')  # the lit frame isn't used (Jackie, Nov 16: closed eyes and the black mouth only); cut with the rest so the frames share one canvas
 T='season_tree.png'  # the two trees touch on the sheet: split at x 224, the narrowest column between them
 save_group('tree%d.png',[piece(T,20,224),piece(T,224,430)],'bottom')
 orn=[('ball',461,568,596,702),('star',748,866,878,992),('mushroom',1039,1151,1162,1275),('pot',1324,1426,1450,1557),('heart',1604,1714,1734,1843),('bell',1889,1998,2033,2140)]
