@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Clipping samples (Nov 16)
+
+- Jackie asked to be able to clip samples. The first version had no trimming screen on purpose; this adds one.
+- **CLIP** is a fourth page on the sampler's screen (DIG, BEAT, CLIP, SONGS). It shows the last pad you tapped as a waveform: the kept part in white, the cut parts grey, with an orange start line and end line. Drag either one (whichever is nearest your finger); letting go plays the clip. PLAY plays it again; RESET brings the whole sample back.
+- **Nothing is thrown away:** the pad keeps its whole sound and just plays from the start line to the end line, so a clip can always be undone. The shortest clip is 0.05 s.
+- The clip is used everywhere the pad plays: tapping it, the loop, finished songs. It's kept with your saved work, and the pad shows "clip" next to its number.
+
 ### Work in progress, finished songs, and the radio (Nov 16)
 
 - **The click is never in the recording (Jackie).** The loop and songs hold only pad hits, never the click. The click now sounds only while recording (and the count-in) or on its own; when the loop just plays back, it's silent.

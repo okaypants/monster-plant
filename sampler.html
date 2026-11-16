@@ -81,6 +81,8 @@ body.erase .p.full{--edge:var(--k)}
 #save{background:var(--acc);color:var(--acctx);border:0}
 #slist{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;margin:0 -2vh}
 body.erase #slist .r b{text-decoration:line-through}
+#cinfo{flex:none}
+#wave{flex:1;min-height:0;width:100%;display:block;touch-action:none;cursor:ew-resize;margin-bottom:1.6vh}
 .two{display:flex;gap:1.4vh;flex:none}
 .two .b{flex:1;min-height:10vh;min-width:0;font-size:3.8vh;border-radius:1.2vh}
 #finish{background:transparent;color:var(--ink);border-color:var(--dim)}
@@ -107,7 +109,7 @@ body.erase #slist .r b{text-decoration:line-through}
   </div>
   <div id="mid">
     <div id="dig">
-      <div id="tabs"><button class="tab on" type="button" data-p="pDig">DIG</button><button class="tab" type="button" data-p="pBeat">BEAT</button><button class="tab" type="button" data-p="pSaved">SONGS</button><div id="dots"><i></i><i></i><i></i><i></i></div></div>
+      <div id="tabs"><button class="tab on" type="button" data-p="pDig">DIG</button><button class="tab" type="button" data-p="pBeat">BEAT</button><button class="tab" type="button" data-p="pClip">CLIP</button><button class="tab" type="button" data-p="pSaved">SONGS</button><div id="dots"><i></i><i></i><i></i><i></i></div></div>
       <div class="pane" id="pDig">
       <form id="fs"><input id="q" type="search" enterkeyhint="search" placeholder="blues, banjo, a name…" autocomplete="off" autocapitalize="off"><button class="b" type="submit">DIG</button></form>
       <div id="tags"></div>
@@ -119,6 +121,11 @@ body.erase #slist .r b{text-decoration:line-through}
         <div class="row"><span class="lab">PITCH</span><button class="t" type="button" id="pitD" aria-label="Lower">−</button><span class="val" id="pit">0</span><button class="t" type="button" id="pitU" aria-label="Higher">+</button><span class="lab end" id="pitPad">pad 1</span></div>
         <div class="row big"><button class="t" type="button" id="rec">● REC</button><button class="t" type="button" id="bplay">▶ PLAY</button><button class="t" type="button" id="clear">CLEAR</button></div>
         <div id="bpos"></div>
+      </div>
+      <div class="pane" id="pClip" hidden>
+        <div id="cinfo" class="lab"></div>
+        <canvas id="wave" aria-label="The pad's sound. Drag the orange lines to clip it."></canvas>
+        <div class="row big"><button class="t" type="button" id="cplay">▶ PLAY</button><button class="t" type="button" id="creset">RESET</button></div>
       </div>
       <div class="pane" id="pSaved" hidden>
         <div class="two"><button class="b" type="button" id="save">SAVE WORK</button><button class="b" type="button" id="finish">FINISH SONG</button></div>
@@ -145,6 +152,7 @@ body.erase #slist .r b{text-decoration:line-through}
    last one; pads live in memory and are gone when the sampler is closed, unless you save your work on purpose.
    BEAT (Jackie, Nov 16): a tempo, a click, pitch per pad, and a loop of 1, 2 or 4 bars to record pad hits into;
    LOCK snaps recorded hits to the nearest sixteenth. The click is only a guide: it is never part of the loop.
+   CLIP: drag the start and end lines over a pad's sound to keep only part of it.
    SONGS: SAVE WORK keeps the one work in progress (it comes back when the sampler opens); FINISH SONG plays the
    loop out into a song, and a song can be sent to the radio on the desk (js/radio.js). All of it lives in this
    site's own storage on the phone (js/cratesdb.js); the game's save is never touched. */
@@ -325,12 +333,12 @@ const rate=p=>Math.pow(2,(p||0)/12); // pitch in semitones; like an old sampler,
 const later=[]; // sounds already scheduled, so STOP can cancel them
 function voice(i,t){ // one voice per pad: a new hit cuts the last one off
   const old=voices[i];if(old){try{old.onended=null;old.stop(t)}catch(e){}}
-  const n=AC.createBufferSource();n.buffer=pads[i].buf;n.playbackRate.value=rate(pads[i].pitch);n.connect(AC.destination);n.start(t);
+  const n=AC.createBufferSource();n.buffer=pads[i].buf;n.playbackRate.value=rate(pads[i].pitch);n.connect(AC.destination);n.start(t,...clipOf(pads[i]));
   n.onended=()=>{if(voices[i]===n){voices[i]=null;padEls[i].classList.remove('hit')}};voices[i]=n;
   later.push(n);if(later.length>64)later.splice(0,later.length-64);return n}
 function playPad(i){voice(i,0);padEls[i].classList.add('hit')}
 function drawPad(i){const p=padEls[i],d=pads[i];p.classList.toggle('full',!!d);p.querySelector('em').textContent=d?d.title:'';
-  p.querySelector('u').textContent=(i+1)+(d&&d.pitch?' · '+(d.pitch>0?'+':'')+d.pitch:'')}
+  p.querySelector('u').textContent=(i+1)+(d&&d.pitch?' · '+(d.pitch>0?'+':'')+d.pitch:'')+(d&&(d.s0||d.s1)?' · clip':'')}
 for(let i=0;i<NPAD;i++){const p=el('button','p');p.type='button';p.appendChild(el('u','',String(i+1)));p.appendChild(el('em'));
   let id=null;
   p.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{p.setPointerCapture(id)}catch(e){}ev.preventDefault();padDown(i)});
@@ -413,7 +421,7 @@ function beatUI(b){if(b!=null)lastB=b;
   $('rec').classList.toggle('on',SEQ.rec);$('bplay').classList.toggle('on',SEQ.play);$('bplay').textContent=SEQ.play?'■ STOP':'▶ PLAY';
   const L=loopLen(),n=SEQ.ev.filter(e=>e.b<L).length;let s=n?n+(n===1?' hit':' hits')+' in the loop':'Nothing recorded yet.';
   if(SEQ.play&&lastB>=SEQ.start){const k=(lastB-SEQ.start)%L;s='Bar '+(Math.floor(k/4)+1)+' of '+SEQ.bars+' · '+s}
-  $('bpos').textContent=s}
+  $('bpos').textContent=s;if(!$('pClip').hidden&&clipFor!==SEQ.sel+':'+!!pads[SEQ.sel])clipUI()}
 function holdKey(b,f){let t=null;const go=()=>{f();t=setTimeout(go,t?90:420)}; // hold − or + to keep going
   b.addEventListener('pointerdown',ev=>{ev.preventDefault();clearTimeout(t);t=null;go()});
   ['pointerup','pointercancel','pointerleave'].forEach(e=>b.addEventListener(e,()=>{clearTimeout(t);t=null}))}
@@ -429,12 +437,12 @@ $('bplay').onclick=()=>SEQ.play?beatHalt():beatGo(false);
 $('clear').onclick=()=>{if(SEQ.ev.length)dirty=true;SEQ.ev=[];beatUI();lcd(null,'The loop is empty again.',1600)};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
-  ['pDig','pBeat','pSaved'].forEach(id=>$(id).hidden=id!==t.dataset.p);if(t.dataset.p==='pSaved')drawSaved()});
+  ['pDig','pBeat','pClip','pSaved'].forEach(id=>$(id).hidden=id!==t.dataset.p);if(t.dataset.p==='pSaved')drawSaved();if(t.dataset.p==='pClip')clipUI()});
 
 /* ---------- SONGS: one work in progress, finished songs, the radio (storage: js/cratesdb.js, never the game's save) ---------- */
 const MAXSONGS=12,SONG_SR=22050;
-const padsOut=()=>pads.map(d=>d?{title:d.title,pitch:d.pitch||0,sr:d.buf.sampleRate,pcm:cratesI16(d.buf.getChannelData(0))}:null);
-function padsIn(list){list.forEach((d,i)=>{stopPad(i);pads[i]=d?{buf:cratesBuf(d.pcm,d.sr,AC),title:d.title,pitch:d.pitch||0}:null;drawPad(i)})}
+const padsOut=()=>pads.map(d=>d?{title:d.title,pitch:d.pitch||0,s0:d.s0||0,s1:d.s1||0,sr:d.buf.sampleRate,pcm:cratesI16(d.buf.getChannelData(0))}:null);
+function padsIn(list){list.forEach((d,i)=>{stopPad(i);pads[i]=d?{buf:cratesBuf(d.pcm,d.sr,AC),title:d.title,pitch:d.pitch||0,s0:d.s0||0,s1:d.s1||0}:null;drawPad(i)})}
 const when=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'})+', '+new Date(t).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
 let wipMade=0;
 function wipUI(){$('wip').textContent=wipMade?'Work in progress saved '+when(wipMade)+'.'+(dirty?' Changed since.':''):'Work in progress: not saved yet.'}
@@ -456,7 +464,7 @@ async function renderSong(){
   out.connect(O.destination);out.gain.setValueAtTime(1,end);out.gain.linearRampToValueAtTime(0,end+tail);
   const hits=[];for(let k=0;k<passes;k++)for(const e of SEQ.ev)if(e.b<L&&pads[e.p])hits.push({p:e.p,t:(k*L+e.b)*spb()});
   hits.sort((a,b)=>a.t-b.t);const last={};
-  for(const h of hits){if(last[h.p])last[h.p].stop(h.t);const n=O.createBufferSource();n.buffer=pads[h.p].buf;n.playbackRate.value=rate(pads[h.p].pitch);n.connect(out);n.start(h.t);last[h.p]=n}
+  for(const h of hits){if(last[h.p])last[h.p].stop(h.t);const n=O.createBufferSource();n.buffer=pads[h.p].buf;n.playbackRate.value=rate(pads[h.p].pitch);n.connect(out);n.start(h.t,...clipOf(pads[h.p]));last[h.p]=n}
   const buf=await O.startRendering(),d=buf.getChannelData(0);let pk=0;for(let k=0;k<d.length;k++)pk=Math.max(pk,Math.abs(d[k]));
   return {pcm:cratesI16(d,pk>.95?.95/pk:1),secs:buf.duration}}
 let finArm=0;
@@ -500,6 +508,44 @@ async function drawSaved(){
     s.appendChild(el('b','',m.name));s.appendChild(el('small','','an older saved beat · tap to keep working on it'));c.appendChild(s);
     c.onclick=()=>erase?eraseOldBeat(m):useOldBeat(m);L.appendChild(c)})}
 $('save').onclick=saveWork;$('finish').onclick=finishSong;
+
+/* ---------- CLIP: keep only part of a pad's sound (Jackie, Nov 16). The sound itself is kept whole; the pad just
+   plays from its start line to its end line, so RESET brings it all back. s1 0 = to the end. ---------- */
+const CLIP_MIN=.05;
+function clipOf(d){const L=d.buf.duration,a=Math.min(d.s0||0,L-CLIP_MIN),b=d.s1?Math.min(d.s1,L):L;return [Math.max(0,a),Math.max(CLIP_MIN/2,b-Math.max(0,a))]}
+let clipFor='',peaks=null;
+function clipUI(){
+  const d=pads[SEQ.sel],cv=$('wave'),r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1,W=Math.max(1,Math.round(r.width*dpr)),H=Math.max(1,Math.round(r.height*dpr));
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;peaks=null}
+  const key=SEQ.sel+':'+!!d;if(key!==clipFor)peaks=null;clipFor=key;
+  const g=cv.getContext('2d'),css=getComputedStyle(document.documentElement),c=n=>css.getPropertyValue(n).trim();
+  g.fillStyle=c('--lcdbar');g.fillRect(0,0,W,H);
+  if(!d){$('cinfo').textContent='Pad '+(SEQ.sel+1)+' is empty. Tap a full pad to clip it.';$('cplay').disabled=$('creset').disabled=true;return}
+  $('cplay').disabled=$('creset').disabled=false;
+  const L=d.buf.duration,[a,len]=clipOf(d),b=a+len,bar=Math.max(1,Math.round(2*dpr)),cols=Math.floor(W/(bar*2));
+  if(!peaks||peaks.length!==cols){const x=d.buf.getChannelData(0),per=Math.max(1,Math.floor(x.length/cols));peaks=new Float32Array(cols);
+    for(let i=0;i<cols;i++){let m=0;for(let k=i*per,e=Math.min(x.length,k+per);k<e;k++){const v=Math.abs(x[k]);if(v>m)m=v}peaks[i]=m}
+    let top=0;peaks.forEach(v=>top=Math.max(top,v));if(top>0)for(let i=0;i<cols;i++)peaks[i]/=top}
+  const xa=Math.round(a/L*W),xb=Math.round(b/L*W);
+  for(let i=0;i<cols;i++){const x=i*bar*2,h=Math.max(bar,Math.round(peaks[i]*(H*.8)/bar)*bar),y=Math.round((H-h)/2);
+    g.fillStyle=x+bar>xa&&x<xb?c('--ink'):c('--dim');g.globalAlpha=x+bar>xa&&x<xb?1:.45;g.fillRect(x,y,bar,h)}
+  g.globalAlpha=1;g.fillStyle=c('--acc');const hw=Math.max(2,Math.round(3*dpr)),tab=Math.round(14*dpr);
+  [[xa,1],[xb,-1]].forEach(([x,dir])=>{const px=Math.max(0,Math.min(W-hw,dir>0?x:x-hw));g.fillRect(px,0,hw,H);g.fillRect(dir>0?px:px+hw-tab,0,tab,tab);g.fillRect(dir>0?px:px+hw-tab,H-tab,tab,tab)});
+  const t1=v=>v.toFixed(2).replace(/0$/,'')+' s';
+  $('cinfo').textContent='Pad '+(SEQ.sel+1)+' · '+t1(len)+(len<L-.005?' of '+t1(L):' (the whole sample)')}
+(cv=>{let id=null,which=0;
+  const at=ev=>{const r=cv.getBoundingClientRect();return Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))};
+  const move=ev=>{const d=pads[SEQ.sel];if(!d)return;const L=d.buf.duration,t=at(ev)*L,[a,len]=clipOf(d),b=a+len;
+    if(which<0)d.s0=Math.max(0,Math.min(t,b-CLIP_MIN));else{const e=Math.max(a+CLIP_MIN,Math.min(t,L));d.s1=e>=L-.001?0:e}
+    dirty=true;clipUI()};
+  cv.addEventListener('pointerdown',ev=>{const d=pads[SEQ.sel];if(!d)return;unlock();id=ev.pointerId;try{cv.setPointerCapture(id)}catch(e){}
+    const L=d.buf.duration,[a,len]=clipOf(d),t=at(ev)*L;which=Math.abs(t-a)<=Math.abs(t-(a+len))?-1:1;stopPad(SEQ.sel);move(ev)});
+  cv.addEventListener('pointermove',ev=>{if(ev.pointerId===id)move(ev)});
+  const up=ev=>{if(ev.pointerId!==id)return;id=null;if(pads[SEQ.sel]){playPad(SEQ.sel);drawPad(SEQ.sel)}}; // let go: hear the clip
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up)})($('wave'));
+$('cplay').onclick=()=>{if(pads[SEQ.sel]){unlock();playPad(SEQ.sel)}};
+$('creset').onclick=()=>{const d=pads[SEQ.sel];if(!d)return;if(d.s0||d.s1)dirty=true;d.s0=d.s1=0;clipUI();drawPad(SEQ.sel);lcd(null,'Pad '+(SEQ.sel+1)+' plays the whole sample again.',2000)};
+addEventListener('resize',()=>{if(!$('pClip').hidden)clipUI()});
 loadWork();
 chips();sync();beatUI();
 </script>

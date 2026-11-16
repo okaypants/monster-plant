@@ -2,7 +2,7 @@
 
 Run from the repository root:  python tests/beat_test.py
 Opens the sampler by itself on a phone held sideways, with two made-up pads (no internet needed), and checks:
-pitch per pad (a semitone a press, shown on the pad), the tempo keys, the click, LOCK snapping a recorded hit to
+pitch per pad (a semitone a press, shown on the pad), clipping a pad by dragging its start and end lines (and RESET), the tempo keys, the click, LOCK snapping a recorded hit to
 the nearest sixteenth (and not snapping with LOCK off), the loop playing its hits back, STOP, the click sounding only
 while recording, the one work in progress coming back after a reload (and replaced by saving again), the warning when
 leaving unsaved, FINISH SONG (two taps) making a song and clearing the work, sending it to the radio, and erasing it. Pictures go to tests/screenshots/sampler/.
@@ -80,6 +80,21 @@ async def main():
         st = await pg.evaluate("()=>[SEQ.rec,SEQ.play,SEQ.count,SEQ.start]")
         check(st == [True, True, True, 4], f"REC from a standstill counts in a bar, got {st}")
         await pg.click("#bplay")
+        # CLIP: drag the start line in to a quarter and the end line back to three quarters on pad 1 (0.4 s long)
+        await pg.evaluate("()=>{SEQ.sel=0;beatUI()}")
+        await pg.click(".tab[data-p=pClip]")
+        box = await pg.locator("#wave").bounding_box()
+        y = box["y"] + box["height"] / 2
+        await pg.mouse.move(box["x"] + 2, y); await pg.mouse.down(); await pg.mouse.move(box["x"] + box["width"] * .25, y, steps=4); await pg.mouse.up()
+        await pg.mouse.move(box["x"] + box["width"] - 2, y); await pg.mouse.down(); await pg.mouse.move(box["x"] + box["width"] * .75, y, steps=4); await pg.mouse.up()
+        st = await pg.evaluate("()=>[pads[0].s0,pads[0].s1,clipOf(pads[0]),document.getElementById('cinfo').textContent,document.querySelector('#pads .p u').textContent,!!voices[0]]")
+        check(abs(st[0] - .1) < .01 and abs(st[1] - .3) < .01 and abs(st[2][1] - .2) < .01, f"the clip should keep 0.1-0.3 s of pad 1, got {st[:3]}")
+        check("0.2 s of 0.4 s" in st[3] and st[4].endswith("clip") and st[5], f"the clip page and pad should show the clip and play it on letting go, got {st[3:]}")
+        await pg.screenshot(path=os.path.join(OUT, "clip_page.png"))
+        await pg.click("#creset")
+        check(await pg.evaluate("()=>!pads[0].s0&&!pads[0].s1"), "RESET should bring back the whole sample")
+        await pg.evaluate("()=>{pads[0].s0=.1;pads[0].s1=.3;drawPad(0)}")
+        await pg.click(".tab[data-p=pBeat]")
         # the click is only a guide: it sounds while recording, never while the loop just plays
         await pg.evaluate("()=>{SEQ.click=true;window.__b=0;const o=blip;blip=(t,one)=>{__b++;return o(t,one)};beatUI()}")
         await pg.click("#bplay")
@@ -98,7 +113,7 @@ async def main():
         await pg.reload(wait_until="load")
         await pg.wait_for_function("()=>pads.some(Boolean)")
         st = await pg.evaluate("()=>[pads[0].title,pads[0].pitch,pads[1].title,pads.filter(Boolean).length,SEQ.bpm,SEQ.bars,JSON.stringify(SEQ.ev.map(e=>[e.p,e.b])),Math.abs(pads[0].buf.duration-.4)<.01,document.getElementById('l2').textContent]")
-        check(st[:8] == ["Test tone low", 2, "Test tone high", 2, 120, 1, "[[0,0],[1,2]]", True] and "back" in st[8], f"the work in progress should come back when the sampler opens, got {st}")
+        check(st[:8] == ["Test tone low", 2, "Test tone high", 2, 120, 1, "[[0,0],[1,2]]", True] and "back" in st[8] and await pg.evaluate("()=>Math.abs(pads[0].s0-.1)<1e-6&&Math.abs(pads[0].s1-.3)<1e-6"), f"the work in progress should come back when the sampler opens, got {st}")
         # only one work in progress: saving again replaces it
         await pg.evaluate("()=>{setBpm(100)}")
         await pg.click(".tab[data-p=pSaved]")
