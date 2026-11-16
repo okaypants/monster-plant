@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Five presets on the radio (Nov 16)
+
+- Jackie wanted five preset channels, like an old car radio, to program favorites. A row of buttons 1 to 5 under the dial: **tap** one to jump to the station kept on it, **hold** it (half a second) to keep the station you're on there. The button for the station playing now is lit; empty ones are pale, and tapping one says how to fill it. CRATES can be kept on a preset too.
+- Presets remember the station by name, so they survive the dial gaining or losing stations; if a kept station has left the dial, the button says so.
+- With the extra row the dial is taller, so on a phone held sideways it now opens beside the radio instead of above it, keeping the radio tappable.
+
 ### The screen stays awake while the radio plays (Nov 16)
 
 - Jackie: Garry's phone went to sleep and the music stopped. While the radio is on, the game now asks the phone to keep the screen awake (the browser's Screen Wake Lock: iPhone Safari 16.4 and up, Chrome on Android). It lets go when the radio goes off or the sampler opens, so the phone sleeps normally otherwise. If the game goes to the background anyway, the phone drops the lock, and it is asked for again on coming back.

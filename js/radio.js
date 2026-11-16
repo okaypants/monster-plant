@@ -12,9 +12,9 @@
    Off when the game starts; quiet while the sampler is open. */
 const RADIO={x:1078,y:468,w:106,h:60}; // the same box as the 'radio' fidget in js/fidgets.js
 const RADIO_VOL=.55,RADIO_MINE=.35; // how loud; the chance one of your songs is next (it comes after two records at the latest)
-const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'crates',wi:0,panel:null,hiss:null};
-try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi}catch(e){}
-function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi}))}catch(e){}}
+const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'crates',wi:0,panel:null,hiss:null,pre:[null,null,null,null,null]};
+try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi;if(Array.isArray(r.pre))radio.pre=[0,1,2,3,4].map(k=>r.pre[k]||null)}catch(e){}
+function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi,pre:radio.pre}))}catch(e){}}
 function radioTap(){if(radio.panel){radioPanelClose();return}if(!radio.on)radioOn(true);radioPanel()}
 function radioOn(quiet){if(!AC)audioInit();radio.on=true;radio.fails=0;wakeOn();if(!quiet)tell('The radio is on.',{kind:'info',key:'radioOn'});if(radio.band==='world')worldPlay(radio.wi);else radioNext();radioPanelShow()}
 function radioOff(said){radio.on=false;radio.tok++;radioStop();hissStop();wakeOff();radioPanelShow();if(said)tell('The radio is off.',{kind:'info',key:'radioOff'})}
@@ -183,13 +183,17 @@ function radioPanel(){
    '<div class="rtop"><button type="button" class="rbtn" data-b="crates">CRATES</button><button type="button" class="rbtn" data-b="world">WORLD</button>'+
    '<button type="button" class="rbtn rpow">ON</button><button type="button" class="rbtn rx" aria-label="Close">✕</button></div>'+
    '<div class="rdial"><div class="rticks"></div><div class="rneedle"></div></div>'+
-   '<div class="rrow"><button type="button" class="rbtn rarrow" data-d="-1" aria-label="Back">◀</button><div class="rname"><b></b><span></span><em></em></div><button type="button" class="rbtn rarrow" data-d="1" aria-label="Next">▶</button></div>';
+   '<div class="rrow"><button type="button" class="rbtn rarrow" data-d="-1" aria-label="Back">◀</button><div class="rname"><b></b><span></span><em></em></div><button type="button" class="rbtn rarrow" data-d="1" aria-label="Next">▶</button></div>'+
+   '<div class="rpre">'+[1,2,3,4,5].map(k=>'<button type="button" class="rbtn" data-p="'+(k-1)+'" aria-label="Preset '+k+'">'+k+'</button>').join('')+'</div>';
   const tk=el.querySelector('.rticks');for(let i=0;i<WORLD.length;i++){const t=document.createElement('i');t.style.left=((i+.5)/WORLD.length*100)+'%';tk.appendChild(t)}
   el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>e.stopPropagation());
   el.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{sfx('tick');radioBand(b.dataset.b)});
   el.querySelector('.rpow').onclick=()=>{sfx('tick');if(radio.on)radioOff(true);else radioOn(true)};
   el.querySelector('.rx').onclick=()=>{sfx('tick');radioPanelClose()};
   el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{sfx('tick');radioStep(+b.dataset.d)});
+  el.querySelectorAll('[data-p]').forEach(b=>{let t0=0;b.addEventListener('pointerdown',()=>{t0=performance.now();b.classList.add('rhold')});
+    b.addEventListener('pointerleave',()=>{t0=0;b.classList.remove('rhold')});
+    b.addEventListener('pointerup',()=>{b.classList.remove('rhold');if(!t0)return;const held=performance.now()-t0>=PRESET_HOLD;t0=0;sfx('tick');if(held)presetSave(+b.dataset.p);else presetGo(+b.dataset.p)})});
   const dial=el.querySelector('.rdial'),nd=el.querySelector('.rneedle');let drag=false;
   const at=e=>{const r=dial.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width,0,1)};
   const near=f=>clamp(Math.round(f*WORLD.length-.5),0,WORLD.length-1);
@@ -204,8 +208,10 @@ function radioPanel(){
 function radioOutside(e){if(radio.panel&&!radio.panel.contains(e.target)){const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S,y=(e.clientY-r.top)/S;if(!inR(x,y,RADIO))radioPanelClose()}}
 function radioPanelClose(){if(!radio.panel)return;radio.panel.remove();radio.panel=null;document.removeEventListener('pointerdown',radioOutside,true)}
 function radioPanelPlace(){const el=radio.panel;if(!el)return;const w=el.offsetWidth,h=el.offsetHeight;
-  const top=clamp(RADIO.y*S-h-10,4,H*S-h-4),right=top<48?160:4; // on a short phone screen it slides left, clear of the debug and full-screen buttons
-  el.style.left=Math.round(clamp((RADIO.x+RADIO.w/2)*S-w/2,4,W*S-w-right))+'px';el.style.top=Math.round(top)+'px'}
+  let left,top=RADIO.y*S-h-10;
+  if(top>=48)left=clamp((RADIO.x+RADIO.w/2)*S-w/2,4,W*S-w-4); // room above the radio
+  else{left=clamp(RADIO.x*S-w-10,4,W*S-w-4);top=clamp((RADIO.y+RADIO.h/2)*S-h/2,48,H*S-h-4)} // a short phone screen: beside it, so the radio stays tappable, below the corner buttons
+  el.style.left=Math.round(left)+'px';el.style.top=Math.round(top)+'px'}
 addEventListener('resize',()=>setTimeout(radioPanelPlace,60));
 function radioPanelName(s,line){const el=radio.panel;if(!el)return;const b=el.querySelector('.rname b'),sp=el.querySelector('.rname span'),pl=el.querySelector('.rname em');
   if(s){b.textContent=s.n;sp.textContent=line||s.k;pl.textContent=s.p}else{b.textContent='· · ·';sp.textContent=line||'Static';pl.textContent=''}}
@@ -214,8 +220,22 @@ function radioPanelShow(msg){const el=radio.panel;if(!el)return;
   el.querySelectorAll('[data-b]').forEach(b=>b.classList.toggle('on',b.dataset.b===radio.band));
   const pw=el.querySelector('.rpow');pw.textContent=radio.on?'ON':'OFF';pw.classList.toggle('on',radio.on);
   el.classList.toggle('rworld',radio.band==='world');el.classList.toggle('roff',!radio.on);
+  el.querySelectorAll('[data-p]').forEach(b=>{const q=radio.pre[+b.dataset.p];b.classList.toggle('on',!!q&&radio.on&&presetIs(q));b.classList.toggle('rempty',!q)});
   const nd=el.querySelector('.rneedle');if(!nd.classList.contains('rnow'))nd.style.left=((radio.wi+.5)/WORLD.length*100)+'%';
   if(msg==='…')return radioPanelName(null);
   if(!radio.on)return radioPanelName(null,'Off. Tap ON, or pick a band.');
   if(radio.band==='world')return radioPanelName(WORLD[radio.wi],msg);
   el.querySelector('.rname b').textContent='The Crates';el.querySelector('.rname span').textContent=msg||'Old 78s and your own songs';el.querySelector('.rname em').textContent=msg?'':'Sent from the sampler'}
+
+/* ---------- five presets, like an old car radio (Jackie, Nov 16) ----------
+   Tap a number to jump to the station kept on it; hold it (half a second or more) to keep the station you're on there.
+   A preset remembers the station by name, so it still works when the dial gains or loses stations; CRATES can be kept too. */
+const PRESET_HOLD=500;
+function presetNow(){return radio.band==='world'?{band:'world',n:WORLD[radio.wi].n}:{band:'crates'}}
+function presetIs(q){return q.band===radio.band&&(q.band==='crates'||(WORLD[radio.wi]&&q.n===WORLD[radio.wi].n))}
+function presetSave(k){const q=presetNow();radio.pre[k]=q;radioKeep();radioPanelShow('Kept on '+(k+1)+'. Tap '+(k+1)+' to come back.');tell((q.band==='world'?q.n:'The Crates')+' is on preset '+(k+1)+'.',{kind:'info',key:'preset'+k})}
+function presetGo(k){const q=radio.pre[k];
+  if(!q){radioPanelShow('Nothing on '+(k+1)+' yet. Hold it to keep this station there.');return}
+  if(q.band==='crates'){if(!radio.on)radio.band='crates',radioOn(true);else radioBand('crates');return}
+  const i=WORLD.findIndex(w=>w.n===q.n);if(i<0){radioPanelShow('That station has left the dial.');return}
+  radio.band='world';if(!radio.on){radio.wi=i;radioOn(true)}else worldPlay(i);radioKeep();radioPanelShow()}
