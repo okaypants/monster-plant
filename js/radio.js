@@ -3,8 +3,9 @@
    CRATES: old records that are free for everyone (the same library as the sampler: digitized 78s published 101 or more
      years ago), and now and then one of the songs you finished in the sampler and sent to the radio. Your song gets a
      caption, and the monsters bop along. The songs come from js/cratesdb.js.
-   WORLD: 30 live stations Jackie asked for (cool, weird, arty or just fun, plus jazz, folk, tango, fado, classical and
-     lo-fi), hand-picked and checked, laid along the dial west to east, San Francisco to New Caledonia. Drag the dial or
+   WORLD: 54 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, plus
+     jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, San Francisco to
+     New Caledonia, then the ones that live only online. Drag the dial or
      tap the arrows; between stations you hear a real recording of a radio being tuned (sounds/tune.m4a). Live radio is
      only for listening: it never goes into the sampler or the crates.
    Everything is streamed, never downloaded whole. The band and the station are remembered (localStorage 'mp-radio').
@@ -12,7 +13,7 @@
 const RADIO={x:1078,y:468,w:106,h:60}; // the same box as the 'radio' fidget in js/fidgets.js
 const RADIO_VOL=.55,RADIO_MINE=.35; // how loud; the chance one of your songs is next (it comes after two records at the latest)
 const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'crates',wi:0,panel:null,hiss:null};
-try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi%30}catch(e){}
+try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi}catch(e){}
 function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi}))}catch(e){}}
 function radioTap(){if(radio.panel){radioPanelClose();return}if(!radio.on)radioOn(true);radioPanel()}
 function radioOn(quiet){if(!AC)audioInit();radio.on=true;radio.fails=0;if(!quiet)tell('The radio is on.',{kind:'info',key:'radioOn'});if(radio.band==='world')worldPlay(radio.wi);else radioNext();radioPanelShow()}
@@ -65,40 +66,66 @@ function radioHold(on){if(on){radioPanelClose();radio.hold=radio.on;if(radio.on)
 document.addEventListener('visibilitychange',()=>{if(radio.el&&radio.on&&!radio.src){if(document.hidden)radio.el.pause();else radio.el.play().catch(()=>{})}});
 
 /* ---------- WORLD: live stations ----------
-   n name, k what it plays, p where, u the stream (https, plain MP3 or AAC so it plays everywhere). All checked Nov 16, in a
-   browser too (SomaFM was left out: it refuses to stream to web pages).
+   n name, k what it plays, p where, u the stream (https, plain MP3 or AAC so it plays everywhere), x how far east (the
+   dial runs west to east; the ones that live only online sit at the far end). All checked Nov 16, in a browser too
+   (SomaFM was left out: it refuses to stream to web pages). The two Art Bell reruns come from an unofficial relay that
+   may vanish (Jackie: keep it, just skip it if it disappears; a dead station already skips to the next).
    Freeform and DJ stations talk between records now and then, and anything can come on: that's the fun of them. */
 const WORLD=[
- {n:'BFF.fm',k:'Indie and local',p:'San Francisco, USA',u:'https://stream.bff.fm/1/mp3.mp3'},
- {n:'Radio Paradise World/Etc',k:'World music and surprises',p:'California, USA',u:'https://stream.radioparadise.com/world-etc-128'},
- {n:'dublab',k:'Arty and experimental',p:'Los Angeles, USA',u:'https://dublab.out.airtime.pro/dublab_a'},
- {n:'WFMU',k:'Freeform: anything at all',p:'Jersey City, USA',u:'https://stream0.wfmu.org/freeform-128k'},
- {n:'WFMU Rock\'n\'Soul Ichiban',k:'Old rock\'n\'roll and soul',p:'Jersey City, USA',u:'https://stream0.wfmu.org/ichiban'},
- {n:'WFMU Give the Drummer Radio',k:'Freeform, more of it',p:'Jersey City, USA',u:'https://stream0.wfmu.org/drummer'},
- {n:'La 2x4',k:'Tango',p:'Buenos Aires, Argentina',u:'https://media.radios.ar:9270/'},
- {n:'Radio Nacional Folklórica',k:'Argentine folk',p:'Buenos Aires, Argentina',u:'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38'},
- {n:'Radio Thiossane',k:'Senegalese music',p:'Dakar, Senegal',u:'https://listen.senemultimedia.net:8112/stream'},
- {n:'Radio Quântica',k:'Club and underground',p:'Lisbon, Portugal',u:'https://libretime.radioquantica.com/main.mp3'},
- {n:'Rádio Fado de Coimbra',k:'Fado',p:'Coimbra, Portugal',u:'https://nl.digitalrm.pt:8048/stream'},
- {n:'Noods Radio',k:'DJs, anything goes',p:'Bristol, UK',u:'https://noods-radio.radiocult.fm/stream'},
- {n:'NTS 1',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream'},
- {n:'NTS 2',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream2'},
- {n:'Resonance Extra',k:'Sound art and strange music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra'},
- {n:'FIP',k:'A bit of everything',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac'},
- {n:'Kiosk Radio',k:'From a kiosk in a park',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b'},
- {n:'Radio Meuh',k:'Groovy and eclectic',p:'The French Alps',u:'https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3'},
- {n:'Radio Swiss Jazz',k:'Jazz',p:'Switzerland',u:'https://stream.srg-ssr.ch/m/rsj/mp3_128'},
- {n:'Radio Raheem',k:'DJs and odd records',p:'Milan, Italy',u:'https://radioraheem.out.airtime.pro/radioraheem_a'},
- {n:'NRK Folkemusikk',k:'Norwegian folk',p:'Norway',u:'https://lyd.nrk.no/icecast/aac/high/s0w7hwn47m/folkemusikk'},
- {n:'Radio 80000',k:'DJs and weird pop',p:'Munich, Germany',u:'https://radio80k.out.airtime.pro:8000/radio80k_a'},
- {n:'Venice Classic Radio',k:'Classical',p:'Venice, Italy',u:'https://uk2.streamingpulse.com/ssl/vcr1'},
- {n:'Cashmere Radio',k:'Experimental',p:'Berlin, Germany',u:'https://cashmereradio.out.airtime.pro/cashmereradio_b'},
- {n:'Refuge Worldwide',k:'DJs and community shows',p:'Berlin, Germany',u:'https://streaming.radio.co/s3699c5e49/listen'},
- {n:'ERT Kosmos',k:'Music from all over the world',p:'Athens, Greece',u:'https://radiostreaming.ert.gr/ert-kosmos'},
- {n:'Radio alHara',k:'Arty, from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra'},
- {n:'Ashiya Radio',k:'Bossa nova and mellow tunes',p:'Ashiya, Japan',u:'https://s3.radio.co/sc8d895604/listen'},
- {n:'NIA Radio Lo-Fi',k:'Lo-fi beats',p:'New Caledonia',u:'https://radio.nia.nc/radio/8020/lofi-hq-stream.aac'},
- {n:'Nightride FM Spacesynth',k:'Space-age synths',p:'Somewhere online',u:'https://stream.nightride.fm/spacesynth.mp3'}];
+ {n:'BFF.fm',k:'Indie and local',p:'San Francisco, USA',u:'https://stream.bff.fm/1/mp3.mp3',x:-122.42},
+ {n:'KPISS.FM',k:'Gloriously weird',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
+ {n:'KALX',k:'College radio, anything goes',p:'Berkeley, USA',u:'https://stream.kalx.berkeley.edu:8443/kalx-128.mp3',x:-122.27},
+ {n:'Radio Paradise World/Etc',k:'World music and surprises',p:'California, USA',u:'https://stream.radioparadise.com/world-etc-128',x:-121.6},
+ {n:'dublab',k:'Arty and experimental',p:'Los Angeles, USA',u:'https://dublab.out.airtime.pro/dublab_a',x:-118.24},
+ {n:'Coast to Coast AM',k:'Art Bell reruns: aliens, ghosts and callers',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
+ {n:'Midnight in the Desert',k:'More Art Bell reruns, late-night strange',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
+ {n:'Free People of the Cosmos',k:'UFO and paranormal shows',p:'USA',u:'https://podradio.us/stream/free-cosmos',x:-98.0},
+ {n:'Radio is a Foreign Country',k:'Rare tapes, records and field recordings',p:'USA',u:'https://s5.radio.co/s20251311a/listen',x:-95.0},
+ {n:'Conyers Old Time Radio',k:'Old-time radio shows',p:'Conyers, Georgia, USA',u:'https://s8.yesstreaming.net:17011/stream',x:-84.02},
+ {n:'WFMU',k:'Freeform: anything at all',p:'Jersey City, USA',u:'https://stream0.wfmu.org/freeform-128k',x:-74.08},
+ {n:'WFMU Rock\'n\'Soul Ichiban',k:'Old rock\'n\'roll and soul',p:'Jersey City, USA',u:'https://stream0.wfmu.org/ichiban',x:-74.079},
+ {n:'WFMU Give the Drummer Radio',k:'Freeform, more of it',p:'Jersey City, USA',u:'https://stream0.wfmu.org/drummer',x:-74.078},
+ {n:'Montez Press Radio: The Sounded Word',k:'Sound and poetry',p:'New York, USA',u:'https://stream.montezpress.com/icecast/reading-and-poetry-the-sounded-word',x:-74.01},
+ {n:'Montez Press Radio',k:'Art radio',p:'New York, USA',u:'https://stream.montezpress.com/icecast/recent',x:-74.0},
+ {n:'La 2x4',k:'Tango',p:'Buenos Aires, Argentina',u:'https://media.radios.ar:9270/',x:-58.38},
+ {n:'Radio Nacional Folklórica',k:'Argentine folk',p:'Buenos Aires, Argentina',u:'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38',x:-58.37},
+ {n:'Radio Thiossane',k:'Senegalese music',p:'Dakar, Senegal',u:'https://listen.senemultimedia.net:8112/stream',x:-17.44},
+ {n:'Radio Quântica',k:'Club and underground',p:'Lisbon, Portugal',u:'https://libretime.radioquantica.com/main.mp3',x:-9.14},
+ {n:'Rádio Fado de Coimbra',k:'Fado',p:'Coimbra, Portugal',u:'https://nl.digitalrm.pt:8048/stream',x:-8.42},
+ {n:'Radio Relativa',k:'Underground',p:'Madrid, Spain',u:'https://streamer.radio.co/sd6131729c/listen',x:-3.7},
+ {n:'Dundee Radio Club',k:'Community DJs',p:'Dundee, Scotland',u:'https://dundee-radio-club.radiocult.fm/stream',x:-2.97},
+ {n:'Noods Radio',k:'DJs, anything goes',p:'Bristol, UK',u:'https://noods-radio.radiocult.fm/stream',x:-2.59},
+ {n:'ROKit Radio Science Fiction',k:'Old sci-fi radio plays',p:'UK',u:'https://streaming05.liveboxstream.uk/proxy/roksta12/stream',x:-1.0},
+ {n:'Oroko Radio',k:'Underground',p:'Accra, Ghana',u:'https://oroko-radio.radiocult.fm/stream',x:-0.2},
+ {n:'NTS 1',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream',x:-0.12},
+ {n:'NTS 2',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream2',x:-0.119},
+ {n:'Resonance Extra',k:'Sound art and strange music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra',x:-0.118},
+ {n:'FIP',k:'A bit of everything',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac',x:2.35},
+ {n:'Kiosk Radio',k:'From a kiosk in a park',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b',x:4.35},
+ {n:'Radio WORM',k:'Experimental, from a music venue',p:'Rotterdam, Netherlands',u:'https://origin.streamnerd.nl/worm/worm/icecast.audio',x:4.48},
+ {n:'LYL Radio',k:'Underground and odd',p:'Lyon, France',u:'https://icecast.lyl.live/live',x:4.83},
+ {n:'Echobox Radio',k:'Underground',p:'Amsterdam, Netherlands',u:'https://play.streamnerd.nl/echobox/echobox/icecast.audio',x:4.9},
+ {n:'Noise Radio',k:'Noise and field recordings',p:'Netherlands',u:'https://a2.asurahosting.com:7890/radio.mp3',x:5.3},
+ {n:'Radio Meuh',k:'Groovy and eclectic',p:'The French Alps',u:'https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3',x:6.5},
+ {n:'Radio Swiss Jazz',k:'Jazz',p:'Switzerland',u:'https://stream.srg-ssr.ch/m/rsj/mp3_128',x:7.44},
+ {n:'Radio Raheem',k:'DJs and odd records',p:'Milan, Italy',u:'https://radioraheem.out.airtime.pro/radioraheem_a',x:9.19},
+ {n:'NRK Folkemusikk',k:'Norwegian folk',p:'Norway',u:'https://lyd.nrk.no/icecast/aac/high/s0w7hwn47m/folkemusikk',x:10.75},
+ {n:'Radio 80000',k:'DJs and weird pop',p:'Munich, Germany',u:'https://radio80k.out.airtime.pro:8000/radio80k_a',x:11.58},
+ {n:'Venice Classic Radio',k:'Classical',p:'Venice, Italy',u:'https://uk2.streamingpulse.com/ssl/vcr1',x:12.33},
+ {n:'Cashmere Radio',k:'Experimental',p:'Berlin, Germany',u:'https://cashmereradio.out.airtime.pro/cashmereradio_b',x:13.4},
+ {n:'Refuge Worldwide',k:'DJs and community shows',p:'Berlin, Germany',u:'https://streaming.radio.co/s3699c5e49/listen',x:13.41},
+ {n:'Radio Helsinki',k:'Free community radio',p:'Graz, Austria',u:'https://live.helsinki.at:8088/live160.mp3',x:15.44},
+ {n:'Palanga Street Radio',k:'Underground by the sea',p:'Palanga, Lithuania',u:'https://stream.palanga.live:8443/palanga128.mp3',x:21.07},
+ {n:'ERT Kosmos',k:'Music from all over the world',p:'Athens, Greece',u:'https://radiostreaming.ert.gr/ert-kosmos',x:23.73},
+ {n:'XRaydio',k:'A kaleidoscope of sound',p:'Bulgaria',u:'https://xraydio.ddns.net/live',x:25.0},
+ {n:'Radio alHara',k:'Arty, from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra',x:35.2},
+ {n:'Mutant Radio',k:'Underground',p:'Tbilisi, Georgia',u:'https://listen.radioking.com/radio/282820/stream/328621',x:44.8},
+ {n:'Ashiya Radio',k:'Bossa nova and mellow tunes',p:'Ashiya, Japan',u:'https://s3.radio.co/sc8d895604/listen',x:135.3},
+ {n:'NIA Radio Lo-Fi',k:'Lo-fi beats',p:'New Caledonia',u:'https://radio.nia.nc/radio/8020/lofi-hq-stream.aac',x:166.45},
+ {n:'Nightride FM Spacesynth',k:'Space-age synths',p:'Somewhere online',u:'https://stream.nightride.fm/spacesynth.mp3',x:999},
+ {n:'Nightwave Plaza',k:'Vaporwave',p:'Somewhere online',u:'https://radio.plaza.one/mp3',x:999.1},
+ {n:'Radio Brennpunkt',k:'Sound art and odd music',p:'Somewhere online',u:'https://radio-brennpunkt.radiocult.fm/stream',x:999.2},
+ {n:'Dark Matter Sessions',k:'Strange signals',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3}];
 const HISS_VOL=.22; // the tuning sound between stations: quiet
 let HISS_BUF=null,hissLoading=false;
 function hissLoad(){if(HISS_BUF||hissLoading||!AC)return;hissLoading=true;fetch('sounds/tune.m4a').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>AC.decodeAudioData(b,ok,no))).then(b=>{HISS_BUF=b}).catch(()=>{hissLoading=false})}
@@ -108,7 +135,7 @@ function hiss(dur){hissLoad();if(!HISS_BUF||!AC)return;hissStop();if(AC.state!==
   g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(HISS_VOL,t+.04);n.connect(g).connect(AC.destination);n.start(t,3+Math.random()*8);
   radio.hiss={n,g};if(dur){g.gain.setValueAtTime(HISS_VOL,t+dur);g.gain.exponentialRampToValueAtTime(0.0001,t+dur+.35);n.stop(t+dur+.4)}}
 function hissStop(fade){const h=radio.hiss;if(!h)return;radio.hiss=null;try{const t=AC.currentTime;h.g.gain.cancelScheduledValues(t);h.g.gain.setValueAtTime(h.g.gain.value,t);h.g.gain.exponentialRampToValueAtTime(0.0001,t+(fade||.05));h.n.stop(t+(fade||.05)+.05)}catch(e){}}
-function worldPlay(i){
+function worldPlay(i){if(!(radio.wi<WORLD.length))radio.wi=0;
   if(!radio.on)return;i=(i%WORLD.length+WORLD.length)%WORLD.length;radio.wi=i;radioKeep();const tok=++radio.tok;radioStop();
   const s=WORLD[i];hiss(.9);radioPanelShow();
   if(!radio.el){radio.el=new Audio();radio.el.setAttribute('playsinline','');radio.el.preload='none'}

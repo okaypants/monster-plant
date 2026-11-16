@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### WORLD band: 24 more stations, underground and weirdo (Nov 16)
+
+- Jackie: "the more underground but amazing the better", and asked for "alien or weirdo radio things too think art bell but 2026." Then: **"Keep it all. Just skip if it disappears."** The dial grew from 30 to 54; nothing was taken off.
+- **Weirdo:** Coast to Coast AM and Midnight in the Desert (Art Bell reruns, from an unofficial relay that may vanish), Free People of the Cosmos (UFO and paranormal shows), Radio is a Foreign Country (rare tapes, records and field recordings), ROKit Radio Science Fiction (old sci-fi radio plays), Conyers Old Time Radio, Dark Matter Sessions (Signal City).
+- **Underground:** KPISS.FM, KALX, Montez Press Radio (two channels), Radio Relativa, Dundee Radio Club, Oroko Radio (Accra), Radio WORM, LYL Radio, Echobox, Noise Radio, Radio Helsinki (Graz), Palanga Street Radio, XRaydio, Mutant Radio (Tbilisi), Nightwave Plaza (vaporwave), Radio Brennpunkt.
+- All checked playing in a browser. Still west to east, San Francisco to New Caledonia, with the online-only stations at the far end. A station that disappears says No signal and skips to the next (already how it worked). No live numbers station exists to stream; those are shortwave only.
+- Each station's description can now wrap to two lines on the dial.
+
 ### The radio's WORLD band: 30 live stations and a dial (Nov 16)
 
 - Jackie wanted more choice on the radio: the crates, or a global radio of real stations, with the feel of changing stations. Picked: **hand-pick 30**, a mix of everything (jazz, folk, classical, lo-fi, traditional music), and above all **"COOL stations - weird good arty or just fun."** Live radio is **only for the radio**: never sampled, never saved.

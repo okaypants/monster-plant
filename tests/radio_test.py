@@ -5,7 +5,7 @@ On a phone held sideways, with the internet blocked (so no records and no live s
 from the sampler on the radio and checks: tapping the radio opens its dial and plays that song with its caption,
 tapping again closes the dial and the music keeps going, OFF switches it off, the radio goes quiet while the sampler is
 open and comes back after, and with no songs on the radio and no internet it says there is only static and switches
-itself off. Then the WORLD band: 30 stations along the dial, the arrows step through them (wrapping round), the band
+itself off. Then the WORLD band: 50-some stations along the dial, the arrows step through them (wrapping round), the band
 and station are remembered, and with no internet each station says No signal, tries the next, and after a few the
 radio says so and switches off. Pictures go to tests/screenshots/radio/. Exit code 1 if a check fails.
 """
@@ -87,20 +87,20 @@ async def main():
         check(any("static" in t for t in log), f"no songs and no internet should say static, log {log}")
         await pg.screenshot(path=os.path.join(OUT, "static.png"))
         # WORLD: no internet here, so each station has no signal
-        check(await pg.evaluate("()=>WORLD.length===30&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p)"), "WORLD should have 30 https stations, each with a name, what it plays and where")
+        check(await pg.evaluate("()=>WORLD.length>=50&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p)"), "WORLD should have 50 or more https stations, each with a name, what it plays and where")
         await pg.evaluate("()=>{capClear();CAP.log=[];}")
         check(await pg.evaluate("()=>!!radio.panel"), "the dial should stay open when the radio switches itself off")
         await pg.click(".rpanel [data-b=world]")
         check(await pg.evaluate("()=>radio.band==='world'&&radio.on&&radio.el.src===WORLD[radio.wi].u"), "WORLD should tune to the remembered station")
         w0 = await pg.evaluate("()=>radio.wi")
         await pg.click(".rpanel [data-d='1']")
-        check(await pg.evaluate(f"()=>radio.wi==={(w0 + 1) % 30}"), "the right arrow should step to the next station")
+        check(await pg.evaluate(f"()=>radio.wi===({w0}+1)%WORLD.length"), "the right arrow should step to the next station")
         await pg.evaluate("()=>radioPanelShow()")
         name = await pg.evaluate("()=>document.querySelector('.rpanel .rname b').textContent")
         check(name == await pg.evaluate("()=>WORLD[radio.wi].n"), f"the dial should show the station's name, got {name}")
         await pg.screenshot(path=os.path.join(OUT, "dial_world.png"))
         await pg.evaluate("()=>{radio.on=true;radio.fails=0;radio.wi=0;worldPlay(-1)}")
-        check(await pg.evaluate("()=>radio.wi===29"), "stepping back from the first station should wrap to the last")
+        check(await pg.evaluate("()=>radio.wi===WORLD.length-1"), "stepping back from the first station should wrap to the last")
         check(await pg.evaluate("()=>JSON.parse(localStorage.getItem('mp-radio')).band==='world'"), "the band should be remembered")
         for _ in range(60):
             await pg.evaluate("()=>__step(.5)")
