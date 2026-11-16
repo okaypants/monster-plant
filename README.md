@@ -166,6 +166,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `growup.js` | The grow-up moment: waiting for you, the hop, crouch, size steps and payoff, the journal stamp, the cat's look |
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
+  | `moon.js` | The moon in the night window: tonight's real phase, drawn over the painted moon (`moonAge`, `moonLit`, `moonName`) |
   | `keepsafe.js` | Keep it safe: backup file save and load, copies on the phone, persistent storage, the Home Screen how-to |
   | `radio.js` | The radio on the desk and its dial: CRATES (old free records and your songs from the sampler) and WORLD (81 live stations, `WORLD`), with the tuning sound between stations |
 | `cratesdb.js` | Where the sampler keeps what you save on purpose (the work in progress and finished songs), shared with the radio; never the game's save |

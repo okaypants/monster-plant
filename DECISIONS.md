@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon in the window shows tonight's real phase (Nov 16)
+
+- Jackie asked whether moon phases could be added without new pictures or slowing loading. Yes: at night the moon outside the window matches the real moon, worked out from the phone's date (no internet, no new pictures, nothing extra to load). Checked against real new, full and quarter moons from 2024 and 2025.
+- Each season's night picture had its own painted moon (a crescent in spring, full in summer and autumn, none in winter). At night that one is painted over with the sky around it, and a chunky pixel moon is drawn in its place, lit like the real one, with the dark part a faint shade so the round shape still reads (at new moon there's nothing). Winter now has a moon too, in a clear patch of sky at the same height.
+- Seen from the northern half of the world (a waxing moon is lit on the right). Behind the glass, so the curtains close over it; by day there's no moon drawn.
+- `moonAge()`, `moonLit()` and `moonName()` (js/moon.js) are ready for the astrology box.
+
 ### Radio: superfluous stations off (Nov 16)
 
 - Jackie: "Remove some superfluous channels on the radio." Off the dial (92 down to 81), picked as doubles or plain playlists next to the more distinctive ones: NTS 2 (NTS 1 stays), Montez Press Radio's general channel (The Sounded Word stays), Conyers Old Time Radio (the sci-fi radio plays stay), Radio Swiss Jazz, Venice Classic Radio, Jazz Sakura, OPM Radio, UbuntuFM Africa, Dundee Radio Club, Echobox Radio and Radio Brennpunkt. Any of them can come back.
