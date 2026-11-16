@@ -84,7 +84,6 @@ body.erase .p.full{background:var(--acc);color:var(--acctx)}
         <button class="b" id="prev" aria-label="Previous record">⏮</button>
         <button class="b" id="play" aria-label="Play or pause">▶</button>
         <button class="b" id="next" aria-label="Next record">⏭</button>
-        <button class="b w" id="skim">SKIM</button>
         <button class="b w" id="erase">ERASE</button>
       </div>
     </div>
@@ -101,9 +100,9 @@ const el=(t,c,tx)=>{const e=document.createElement(t);if(c)e.className=c;if(tx!=
 // US sound recordings enter the public domain 100 years after publication, on the following 1 January
 const CUT=new Date().getFullYear()-101;
 const TAGS=['blues','jazz','ragtime','piano','banjo','fiddle','orchestra','choir','hawaiian','tango','march','organ','whistling','yodel'];
-const NPAD=8,MAXCAP=8,KEEP=.6,SKIM_PLAY=6,SKIM_HOP=20; // pads; longest sample (s); audio kept just behind the playhead (s)
+const NPAD=8,MAXCAP=8,KEEP=.6; // pads; longest sample (s); audio kept just behind the playhead (s)
 const st={src:'ia78',q:'',page:1,more:false};
-let list=[],now=null,skim=false,erase=false,segT=0,fails=0,openTok=0,searchTok=0;
+let list=[],now=null,erase=false,fails=0,openTok=0,searchTok=0;
 const pads=Array(NPAD).fill(null),padEls=[];
 
 /* ---------- screen ---------- */
@@ -198,7 +197,7 @@ function release(){try{player.pause();player.removeAttribute('src');player.load(
 function setSrc(url){player.src=url;const p=player.play();p&&p.catch(()=>{})}
 async function openItem(it){
   if(now&&now.key===it.key)return player.paused?player.play().catch(()=>{}):player.pause();
-  const tok=++openTok;endCap(true);release();segT=0;
+  const tok=++openTok;endCap(true);release();
   list.forEach(x=>x.card.classList.toggle('on',x===it));
   now={src:it.src,key:it.key,id:it.id,title:it.title,artist:it.artist,year:it.year,alt:null,triedAlt:false};
   lcd(it.title,'Loading…');$('barF').style.width='0';
@@ -228,19 +227,15 @@ player.addEventListener('waiting',()=>{if(now&&!cap)lcd(null,'Loading…')});
 player.addEventListener('playing',()=>{fails=0});
 ['play','pause','playing','ended'].forEach(ev=>player.addEventListener(ev,()=>{sync();lcdNow()}));
 ['play','seeking'].forEach(ev=>player.addEventListener(ev,()=>{if(!cap)chunks=[]}));
-player.addEventListener('seeked',()=>{segT=player.currentTime});
-player.addEventListener('loadedmetadata',()=>{const d=player.duration;if(skim&&isFinite(d)&&d>40)player.currentTime=Math.min(12,d*.08)});
 player.addEventListener('ended',()=>step(1)); // records play one after another
 player.addEventListener('timeupdate',()=>{ // the player's own few-times-a-second clock; no per-frame loop
   if(!now)return;const d=player.duration,t=player.currentTime;
   if(isFinite(d)&&d>0)$('barF').style.width=(t/d*100).toFixed(1)+'%';
-  if(!cap&&player.readyState>2)lcdNow();
-  // SKIM: a few seconds here, hop ahead, then on to the next record
-  if(skim&&!cap&&!player.paused&&isFinite(d)&&t-segT>=SKIM_PLAY){const nx=segT+Math.max(SKIM_HOP,d/7);if(nx>=d-4)step(1);else{segT=nx;player.currentTime=nx}}});
+  if(!cap&&player.readyState>2)lcdNow()});
 function seekTo(t){const d=player.duration;if(!now||!isFinite(d))return;endCap(true);player.currentTime=Math.max(0,Math.min(t,d-.2))}
 function sync(){
   const off=player.paused||!!player.error||!now;$('play').textContent=off?'▶':'❚❚';$('play').classList.toggle('on',!off);
-  $('skim').classList.toggle('on',skim);$('erase').classList.toggle('on',erase);document.body.classList.toggle('erase',erase)}
+  $('erase').classList.toggle('on',erase);document.body.classList.toggle('erase',erase)}
 
 /* ---------- pads: hold an empty pad while a record plays to sample onto it; tap a full pad to play it ---------- */
 function onChunk(b,n0){
@@ -291,7 +286,6 @@ function chips(){const T=$('tags');T.textContent='';
 $('fs').onsubmit=ev=>{ev.preventDefault();st.q=$('q').value.trim();$('q').blur();chips();runSearch()};
 $('play').onclick=()=>{if(!now)return lcd(null,'Pick a record on the left first.',2000);if(player.paused)player.play().catch(()=>{});else{endCap(true);player.pause()}};
 $('prev').onclick=()=>step(-1);$('next').onclick=()=>step(1);
-$('skim').onclick=()=>{skim=!skim;segT=player.currentTime;sync();if(skim)lcd(null,'Skimming: a taste of each, then onward.',2000);if(skim&&now&&player.paused)player.play().catch(()=>{})};
 $('erase').onclick=()=>{erase=!erase;sync();lcd(null,erase?'Tap a pad to empty it.':'',erase?4000:1)};
 (b=>{let id=null;const go=ev=>{const r=b.getBoundingClientRect();seekTo(Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*player.duration)};
   b.addEventListener('pointerdown',ev=>{id=ev.pointerId;try{b.setPointerCapture(id)}catch(e){}go(ev)});

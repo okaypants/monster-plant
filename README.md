@@ -21,7 +21,7 @@ A cozy monster-plant raising game: Tamagotchi meets Little Shop of Horrors, with
 Tap the sampler on the top shelf, above the radio, and its own app opens over the room: `sampler.html`, a separate page that also works by itself.
 
 - **Dig:** type a word or tap one (blues, banjo, organ...) to find old records. They come from two libraries, and only what is free for everyone: 78rpm discs and cylinders that libraries digitized for the Internet Archive, published 101 or more years ago (public domain in the US; the year moves on by itself each January), and Wikimedia Commons audio marked public domain or CC0.
-- **Play:** tap a record and it plays; when it ends the next one starts. ⏮ ⏭ change record, the bar under the screen jumps around in it, and SKIM plays a taste of each record and moves on.
+- **Play:** tap a record and it plays; when it ends the next one starts. ⏮ ⏭ change record, and tapping the bar under the screen jumps anywhere in it.
 - **Sample:** hold an empty pad while the bit you like goes by, and let go. That snippet (up to 8 seconds) is now on the pad. Tap a full pad to play it; pads play over the record and over each other. ERASE, then a pad, empties it.
 - **Light on the phone, on purpose:** records are streamed, never downloaded whole. Moving to another record forgets the last one. The eight pads live in memory, and closing the sampler throws everything away. Nothing is saved, and the game's save is not touched. It needs the internet; the rest of the game does not.
 - The app for real samplers (saving WAV files for an MPC) is a separate project and is not part of the game.

@@ -41,7 +41,7 @@ async def main():
             fails.append(f"the sampler should have 8 pads, found {n}")
         if await fr.locator("#pads .p.full").count():
             fails.append("pads should start empty")
-        for sel in ("#lcd", "#q", "#tags .t", "#play", "#skim", "#erase", "#x"):
+        for sel in ("#lcd", "#q", "#tags .t", "#play", "#erase", "#x"):
             if not await fr.locator(sel).first.is_visible():
                 fails.append(f"missing on the sampler: {sel}")
         await pg.screenshot(path=os.path.join(OUT, "open.png"))

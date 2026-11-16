@@ -8,7 +8,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **Where:** the sampler is the machine on the top shelf on the wall, above the radio (Jackie). Tapping it opens the app; it used to be a bouncy fidget only.
 - **Its own app:** Jackie said the sampler needs its own app. It is a separate page, `sampler.html`, shown in a frame over the room. Why a frame: nothing of it loads until it is opened, none of its code mixes with the game's, and closing it throws the whole thing away.
 - **How sampling works:** like the machine in the picture. Tap a record to play it, hold an empty pad while the bit you like plays, let go, and it is on the pad. Eight pads, two rows of four. No trimming screen and no files.
-- **Listening and skimming** work the same as in The Crates: records play one after another, and SKIM tastes each one and moves on (Jackie: easy to listen to, skim, find and sample snippets).
+- **Listening:** records play one after another, and tapping the bar under the screen jumps anywhere in a record. There was a SKIM button at first; Jackie found it redundant with the bar, so it is gone.
 - **Careful with storage and work (Jackie):** records are streamed, never downloaded whole; moving on forgets the last record; pads live in memory only and are gone when the sampler closes; nothing is saved and the game's save is untouched. Jackie: "you only save things on purpose."
 - **Only free-to-use records:** library-digitized 78s published 101 or more years ago (US public domain), and Wikimedia Commons audio marked public domain or CC0. Records the Internet Archive has locked are left out.
 - **Rule 1 holds in the app:** flat colors, whole-pixel presses, and a 2-frame blink while a pad records. No fades, gradients or glows.
