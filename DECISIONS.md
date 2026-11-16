@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The pumpkin's eyes are closed (Nov 16)
+
+- Jackie didn't like how the pumpkin looked with its eyes open, so it now has sleepy closed eyes. In the three day frames each eye arc is turned upside down in place, using its own pixels. In the lit night frame, the glowing open eyes are now glowing sleepy slits the same shape, in that frame's own glow and carving colours. Only the eyes changed, with Jackie's OK. The mouth, rock frames and sizes are the same as before (`tools/pumpkin_eyes.py`).
+
 ### The moon in the window shows tonight's real phase (Nov 16)
 
 - Jackie asked whether moon phases could be added without new pictures or slowing loading. Yes: at night the moon outside the window matches the real moon, worked out from the phone's date (no internet, no new pictures, nothing extra to load). Checked against real new, full and quarter moons from 2024 and 2025.

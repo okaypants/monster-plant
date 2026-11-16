@@ -200,7 +200,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `day_window_<season>.png`, `night_window_<season>.png` | Season windows, day and night (drawn at 318,88) |
 | `leaf_<maple/redmaple/ginkgo/oak/twig/round>.png` | Autumn leaves that drift past the window (cut from `season_leaves.png`; its leaf piles wait for an outdoor space) |
 | `window_glass.png` | Where the window's glass is, so the falling leaves show only there (made by `tools/window_glass.py`) |
-| `pumpkin1-4.png` | Pumpkin on the book stack in autumn: idle, rock one way, rock the other, lit at night (cut from `season_pumpkin.png`) |
+| `pumpkin1-4.png` | Pumpkin on the book stack in autumn: idle, rock one way, rock the other, lit at night (cut from `season_pumpkin.png`; eyes closed by `tools/pumpkin_eyes.py`) |
 | `tree1/2.png`, `ornament_<star/ball/heart/mushroom/bell/pot>1/2.png` | Winter tree on the book stack (2-frame sway) and its six ornaments (2-frame swing), cut from `season_tree.png` |
 | `seedling_soil1/2.png`, `seedling_sprout1/2.png`, `seedling_bigsprout1/2.png` | Seedling pot: seed (soil), first sprout, bigger sprout, 2 frames each (cut from `seedling_sheet.png`) |
 | `baby_01..16.png`, `baby_NN_sleep.png` | Kids (+ sleeping) |
