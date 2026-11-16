@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### All the made-up sounds off (Nov 16)
+
+- Jackie: "I dislike them period so tone doesn't matter." Every synthesized sound (taps, pages, chimes, purrs, pours, snacks, boings...) is now silent until Garry's real sounds arrive. The radio and the sampler play real recordings and still sound.
+- They're kept, not deleted: `SFX_OFF` in `js/audio.js` lists them, and the debug drawer's Sounds group still plays each one.
+
 ### Page and tap sounds off for now (Nov 16)
 
 - Jackie: still awful when picking a book or turning a page, even after the softening. Those are the synthesized paper sound (books, page turns, the journal, the curtains) and the tick on every tap, both made from noise, which doesn't sound like paper. Both are **off** until Garry's real sounds arrive (`SFX_OFF` in `js/audio.js`).
