@@ -7,26 +7,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* The shelf sampler's own app (opened from the room by js/sampler.js). Colours are the game's text style.
+/* The shelf sampler's own app (opened from the room by js/sampler.js). Colours: see the palette below.
    RULES.md rule 1 holds here too: flat colours, whole-pixel moves and 2-frame swaps only. */
-/* Palettes. A is the game's own text style (css/textstyle.css): cream paper, cocoa ink, rust, sage, mint, brass. ?pal=b..e shows the others. */
-:root{--wall:#F3E2C6;--body:#FFF4E0;--deep:#F3E2C6;--k:#5B3A2E;--btn:#FFF4E0;--pad:#FBECD2;--full:#E2B04A;--lit:#CFE3C2;--lcd:#E4F4EA;--ink:#2F6B57;--lcdbar:#CFE3C2;--acc:#A84B26;--acctx:#FFF4E0;--note:#5B3A2E}
-.pal-b{--wall:#F3E2C6;--body:#B98C66;--deep:#5B3A2E;--k:#3A2406;--btn:#FFF4E0;--pad:#FFF4E0;--full:#E2B04A;--lit:#CFE3C2;--lcd:#FFF4E0;--ink:#5B3A2E;--lcdbar:#F3E2C6;--acc:#E2B04A;--acctx:#3A2406;--note:#FFF4E0}
-.pal-c{--wall:#19101b;--body:#341839;--deep:#4a2a4f;--k:#19101b;--btn:#fdebc9;--pad:#fdebc9;--full:#c8d145;--lit:#fff4e2;--lcd:#c8d145;--ink:#19101b;--lcdbar:#a9b233;--acc:#6c61a4;--acctx:#fff4e2;--note:#fdebc9}
-.pal-d{--wall:#E4F4EA;--body:#CFE3C2;--deep:#2F6B57;--k:#5B3A2E;--btn:#FFF4E0;--pad:#FFF4E0;--full:#E2B04A;--lit:#E4F4EA;--lcd:#FFF4E0;--ink:#2F6B57;--lcdbar:#F3E2C6;--acc:#2F6B57;--acctx:#FFF4E0;--note:#E4F4EA}
-.pal-e{--wall:#F3E2C6;--body:#A84B26;--deep:#5B3A2E;--k:#3A2406;--btn:#FFF4E0;--pad:#FFF4E0;--full:#E2B04A;--lit:#CFE3C2;--lcd:#FFF4E0;--ink:#A84B26;--lcdbar:#F3E2C6;--acc:#E2B04A;--acctx:#3A2406;--note:#FFF4E0}
+/* Palette (Jackie, Nov 16: "more teenage engineering"): a pale grey machine, dark grey pads, a black screen, one orange
+   and a little blue. Soft black and off-white, never pure. */
+:root{--wall:#c9c9c3;--body:#e3e3de;--deep:#d2d2cc;--k:#1c1c1a;--btn:#f3f3ee;--pad:#55554f;--padtx:#f3f3ee;--full:#ff5a1f;--fulltx:#1c1c1a;--lit:#6fb7e8;--lcd:#1c1c1a;--ink:#f3f3ee;--lcdbar:#3a3a36;--barf:#ff5a1f;--acc:#ff5a1f;--acctx:#1c1c1a;--note:#1c1c1a}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--wall);font-family:Nunito,ui-rounded,'Arial Rounded MT Bold',system-ui,sans-serif;font-weight:700;color:var(--k);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation;padding:0}
 [hidden]{display:none!important}
-#m{position:absolute;inset:1.5vh;display:flex;flex-direction:column;gap:2vh;background:var(--body);border:.9vh solid var(--k);border-radius:3vh;padding:2.5vh}
+#m{position:absolute;inset:1.5vh;display:flex;flex-direction:column;gap:2vh;background:var(--body);border:.7vh solid var(--k);border-radius:2.4vh;padding:2.5vh}
 #top{display:flex;gap:2vh;flex:0 0 19vh}
 #lcd{flex:1;min-width:0;background:var(--lcd);color:var(--ink);border:.7vh solid var(--k);border-radius:1.6vh;padding:1.2vh 2vh 0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
 #l1{font-size:5.6vh;font-weight:800;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #l2{font-size:4vh;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #bar{height:3.4vh;margin:0 -2vh;border-top:.5vh solid var(--k);background:var(--lcdbar);touch-action:none;cursor:pointer}
-#barF{height:100%;width:0;background:var(--ink)}
+#barF{height:100%;width:0;background:var(--barf)}
 .b{background:var(--btn);border:.7vh solid var(--k);border-radius:1.6vh;font-size:4.2vh;font-weight:800;min-width:13vh;min-height:13vh}
 .b:active,.b.down{transform:translate(0,.6vh)}
 .b.on{background:var(--lit)}
@@ -40,8 +37,8 @@ button{cursor:pointer;touch-action:manipulation;padding:0}
 #tags::-webkit-scrollbar{display:none}
 .t{flex:none;border:.5vh solid var(--k);border-radius:5vh;background:var(--btn);font-size:3.6vh;padding:.6vh 2.2vh;min-height:8vh}
 .t.on{background:var(--lit)}
-.t.s{background:var(--pad)}
-.t.s.on{background:var(--full)}
+.t.s{background:var(--pad);color:var(--padtx)}
+.t.s.on{background:var(--full);color:var(--fulltx)}
 #list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:1.2vh}
 .r{flex:none;display:flex;align-items:center;gap:1.5vh;text-align:left;border:.5vh solid var(--k);border-radius:1.4vh;background:var(--btn);padding:1.2vh 1.8vh;min-height:12vh}
 .r.on{background:var(--lit)}
@@ -53,14 +50,14 @@ button{cursor:pointer;touch-action:manipulation;padding:0}
 #more{flex:none;min-height:10vh;background:var(--acc);color:var(--acctx)}
 #right{flex:1;min-width:0;display:flex;flex-direction:column;gap:2vh}
 #pads{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:2vh}
-.p{position:relative;background:var(--pad);border:.8vh solid var(--k);border-radius:2vh;font-size:3.4vh;font-weight:800;touch-action:none;overflow:hidden;padding:1vh}
-.p.full{background:var(--full)}
-.p.hit{background:var(--lit);transform:translate(0,.6vh)}
+.p{position:relative;background:var(--pad);color:var(--padtx);border:.8vh solid var(--k);border-radius:2vh;font-size:3.4vh;font-weight:800;touch-action:none;overflow:hidden;padding:1vh}
+.p.full{background:var(--full);color:var(--fulltx)}
+.p.hit{background:var(--lit);color:var(--fulltx);transform:translate(0,.6vh)}
 .p.rec{animation:rec .5s steps(2,jump-none) infinite}
-@keyframes rec{0%{background:var(--acc)}100%{background:var(--lit)}}
+@keyframes rec{0%{background:var(--acc)}100%{background:var(--btn)}}
 .p u{position:absolute;left:1.2vh;top:.6vh;text-decoration:none;font-size:3.2vh}
 .p em{display:block;font-style:normal;line-height:1.15;max-height:100%;overflow:hidden;word-break:break-word}
-body.erase .p.full{background:var(--acc);color:var(--acctx)}
+body.erase .p.full{background:var(--lit);color:var(--fulltx)}
 #tr{display:flex;gap:1.6vh;flex:0 0 14vh}
 #tr .b{flex:1;min-width:0}
 #tr .w{flex:1.6}
@@ -296,7 +293,6 @@ function leave(){endCap(true);release();for(let i=0;i<NPAD;i++)stopPad(i);try{un
   if(parent!==window)parent.postMessage('mp-sampler-close','*');else history.back()}
 $('x').onclick=leave;addEventListener('keydown',e=>{if(e.key==='Escape')leave()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)endCap(true)});
-const PAL=(new URLSearchParams(location.search).get('pal')||'').toLowerCase();if(/^[b-e]$/.test(PAL))document.documentElement.classList.add('pal-'+PAL);
 chips();sync();
 </script>
 </body>
