@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### WORLD band: 21 stations from Africa, the Middle East, Central and South Asia (Nov 16)
+
+- Jackie: "creative art shit out of the Middle East and Central Asia and Africa and South Asia." The dial grew from 71 to 92.
+- **Middle East:** Wa3 Radio (Beirut: ambient, dabke and drum and bass), Radio Antalya (downtempo and indie), Radyo Şiran (Turkish folk), Kurd1 Radyo (Kurdish folk), RadioSimorgh (classical Persian), Yurd FM (Azerbaijani folk). **North Africa:** Mosaique FM Tarab (Tunis), Radio Arts Tripoli, Antinea Radio (Kabyle, Tizi Ouzou), Medina FM Amazigh (Morocco).
+- **Africa:** Caboradio (Cape Verde), Radio Malijet (Mali), Radio Mix Congolaise (rumba and soukous), Tizta FM (tizita, slow nostalgic Ethiopian songs), Bush Radio (Cape Town community radio), UbuntuFM Africa, Amapiano FM, Radio Rock Madagascar.
+- **Central and South Asia:** Coldstar Radio (Kyrgyzstan, deep house and techno), Radio Sangwari (Chhattisgarhi folk), Mellow Bangla (Bangladesh).
+- All 92 checked playing in a browser. South Asia's art and underground stations (boxout.fm and others) mostly don't share a stream a game can play, so that corner is thinner than the rest.
+
 ### Fewer US stations on the WORLD band (Nov 16)
 
 - Jackie: "Let's get rid of some of the more boring US ones which are basically all in California and Jersey lol." Off the dial: BFF.fm, Radio Paradise World/Etc, dublab, KALX, and WFMU with its two side channels. The US stations left are the weird ones (KPISS.FM, the Art Bell reruns, UFO talk, field recordings, old-time radio, Montez Press). 71 stations now; a preset kept on one that left says so.

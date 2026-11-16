@@ -3,8 +3,8 @@
    CRATES: old records that are free for everyone (the same library as the sampler: digitized 78s published 101 or more
      years ago), and now and then one of the songs you finished in the sampler and sent to the radio. Your song gets a
      caption, and the monsters bop along. The songs come from js/cratesdb.js.
-   WORLD: 71 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
-     from Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, Seattle to
+   WORLD: 92 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
+     from Asia, Africa, the Middle East and Central Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, Seattle to
      New Caledonia, then the ones that live only online. Drag the dial or
      tap the arrows; between stations you hear a real recording of a radio being tuned (sounds/tune.m4a). Live radio is
      only for listening: it never goes into the sampler or the crates.
@@ -88,9 +88,12 @@ const WORLD=[
  {n:'Montez Press Radio',k:'Art radio',p:'New York, USA',u:'https://stream.montezpress.com/icecast/recent',x:-74.0},
  {n:'La 2x4',k:'Tango',p:'Buenos Aires, Argentina',u:'https://media.radios.ar:9270/',x:-58.38},
  {n:'Radio Nacional Folklórica',k:'Argentine folk',p:'Buenos Aires, Argentina',u:'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38',x:-58.37},
+ {n:'Caboradio',k:'Cape Verdean music',p:'Cape Verde',u:'https://listen.radioking.com/radio/281506/stream/327253',x:-23.5},
  {n:'Radio Thiossane',k:'Senegalese music',p:'Dakar, Senegal',u:'https://listen.senemultimedia.net:8112/stream',x:-17.44},
  {n:'Radio Quântica',k:'Club and underground',p:'Lisbon, Portugal',u:'https://libretime.radioquantica.com/main.mp3',x:-9.14},
  {n:'Rádio Fado de Coimbra',k:'Fado',p:'Coimbra, Portugal',u:'https://nl.digitalrm.pt:8048/stream',x:-8.42},
+ {n:'Radio Malijet',k:'Malian music',p:'Mali',u:'https://stream-157.zeno.fm/yerp85sughwtv',x:-8.0},
+ {n:'Medina FM Amazigh',k:'Amazigh (Berber) music',p:'Morocco',u:'https://medinaamazigh.ice.infomaniak.ch/medinaamazigh-128.mp3',x:-7.6},
  {n:'Radio Relativa',k:'Underground',p:'Madrid, Spain',u:'https://streamer.radio.co/sd6131729c/listen',x:-3.7},
  {n:'Dundee Radio Club',k:'Community DJs',p:'Dundee, Scotland',u:'https://dundee-radio-club.radiocult.fm/stream',x:-2.97},
  {n:'Noods Radio',k:'DJs, anything goes',p:'Bristol, UK',u:'https://noods-radio.radiocult.fm/stream',x:-2.59},
@@ -100,6 +103,7 @@ const WORLD=[
  {n:'NTS 2',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream2',x:-0.119},
  {n:'Resonance Extra',k:'Sound art and strange music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra',x:-0.118},
  {n:'FIP',k:'A bit of everything',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac',x:2.35},
+ {n:'Antinea Radio',k:'Kabyle radio',p:'Tizi Ouzou, Algeria',u:'https://listen.radioking.com/radio/6640/stream/347',x:4.05},
  {n:'Kiosk Radio',k:'From a kiosk in a park',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b',x:4.35},
  {n:'Radio WORM',k:'Experimental, from a music venue',p:'Rotterdam, Netherlands',u:'https://origin.streamnerd.nl/worm/worm/icecast.audio',x:4.48},
  {n:'LYL Radio',k:'Underground and odd',p:'Lyon, France',u:'https://icecast.lyl.live/live',x:4.83},
@@ -108,19 +112,36 @@ const WORLD=[
  {n:'Radio Meuh',k:'Groovy and eclectic',p:'The French Alps',u:'https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3',x:6.5},
  {n:'Radio Swiss Jazz',k:'Jazz',p:'Switzerland',u:'https://stream.srg-ssr.ch/m/rsj/mp3_128',x:7.44},
  {n:'Radio Raheem',k:'DJs and odd records',p:'Milan, Italy',u:'https://radioraheem.out.airtime.pro/radioraheem_a',x:9.19},
+ {n:'Mosaique FM Tarab',k:'Tarab: classic Arabic song',p:'Tunis, Tunisia',u:'https://radio.mosaiquefm.net/mosatarab',x:10.18},
  {n:'NRK Folkemusikk',k:'Norwegian folk',p:'Norway',u:'https://lyd.nrk.no/icecast/aac/high/s0w7hwn47m/folkemusikk',x:10.75},
  {n:'Radio 80000',k:'DJs and weird pop',p:'Munich, Germany',u:'https://radio80k.out.airtime.pro:8000/radio80k_a',x:11.58},
  {n:'Venice Classic Radio',k:'Classical',p:'Venice, Italy',u:'https://uk2.streamingpulse.com/ssl/vcr1',x:12.33},
+ {n:'Radio Arts Tripoli',k:'Arts radio',p:'Tripoli, Libya',u:'https://stream.zeno.fm/z9wfrdpmgg0uv',x:13.19},
  {n:'Cashmere Radio',k:'Experimental',p:'Berlin, Germany',u:'https://cashmereradio.out.airtime.pro/cashmereradio_b',x:13.4},
  {n:'Refuge Worldwide',k:'DJs and community shows',p:'Berlin, Germany',u:'https://streaming.radio.co/s3699c5e49/listen',x:13.41},
+ {n:'Radio Mix Congolaise',k:'Congolese rumba and soukous',p:'Kinshasa, DR Congo',u:'https://stream.zeno.fm/qe5g83upga0uv',x:15.3},
  {n:'Radio Helsinki',k:'Free community radio',p:'Graz, Austria',u:'https://live.helsinki.at:8088/live160.mp3',x:15.44},
+ {n:'Bush Radio',k:'Community radio',p:'Cape Town, South Africa',u:'https://zas4.ndx.co.za:9100/stream',x:18.42},
+ {n:'UbuntuFM Africa',k:'Music from all over Africa',p:'South Africa',u:'https://streaming.coollective.nl:8443/UbuntuFMafrica',x:18.43},
  {n:'Palanga Street Radio',k:'Underground by the sea',p:'Palanga, Lithuania',u:'https://stream.palanga.live:8443/palanga128.mp3',x:21.07},
  {n:'ERT Kosmos',k:'Music from all over the world',p:'Athens, Greece',u:'https://radiostreaming.ert.gr/ert-kosmos',x:23.73},
  {n:'XRaydio',k:'A kaleidoscope of sound',p:'Bulgaria',u:'https://xraydio.ddns.net/live',x:25.0},
+ {n:'Amapiano FM',k:'Amapiano',p:'Johannesburg, South Africa',u:'https://stream.zeno.fm/xs6zeac1ts8uv',x:28.04},
+ {n:'Radio Antalya',k:'Downtempo, electronica and indie',p:'Antalya, Turkey',u:'https://my.radiolize.com/radio/8000/radio.mp3',x:30.7},
  {n:'Radio alHara',k:'Arty, from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra',x:35.2},
+ {n:'Wa3 Radio',k:'Ambient, dabke and drum and bass',p:'Beirut, Lebanon',u:'https://stream.wa3.live/wa3.mp3',x:35.5},
+ {n:'Tizta FM',k:'Tizita: slow, nostalgic Ethiopian songs',p:'Addis Ababa, Ethiopia',u:'https://stream.zeno.fm/55nlq5yzqlftv',x:38.74},
+ {n:'Radyo Şiran',k:'Turkish folk',p:'Turkey',u:'https://live.radyositesihazir.com/8078/stream',x:39.1},
+ {n:'Kurd1 Radyo',k:'Kurdish folk songs',p:'Kurdish, broadcast from France',u:'https://listen.radioking.com/radio/119251/stream/158701',x:43.0},
  {n:'Mutant Radio',k:'Underground',p:'Tbilisi, Georgia',u:'https://listen.radioking.com/radio/282820/stream/328621',x:44.8},
+ {n:'Radio Rock Madagascar',k:'Malagasy rock',p:'Madagascar',u:'https://tanjona.radioca.st/stream',x:47.5},
+ {n:'Yurd FM',k:'Azerbaijani folk',p:'Baku, Azerbaijan',u:'https://icecast.livetv.az/yurdfm',x:49.86},
+ {n:'RadioSimorgh',k:'Classical Persian music',p:'Iran',u:'https://stream.zeno.fm/9svfnobkrxrvv',x:51.4},
  {n:'Qazaq radiosy',k:'Kazakh folk and steppe songs',p:'Kazakhstan',u:'https://radio-streams.kaztrk.kz/qazradio/qazradio/icecast.audio',x:71.4},
+ {n:'Coldstar Radio',k:'Deep house and techno',p:'Kyrgyzstan',u:'https://ice.coldstar.online/high.mp3',x:74.6},
  {n:'Bollywood Gaane Purane',k:'Old Bollywood songs',p:'India',u:'https://stream.zeno.fm/6n6ewddtad0uv',x:77.2},
+ {n:'Radio Sangwari',k:'Chhattisgarhi folk',p:'Chhattisgarh, India',u:'https://servidor19.brlogic.com:7002/live',x:81.63},
+ {n:'Mellow Bangla',k:'Bangla music',p:'Bangladesh',u:'https://radio.mellowbangla.com/stream',x:90.4},
  {n:'Looktung Eingdoi',k:'Luk thung, Thai country music',p:'Northern Thailand',u:'https://inter.lannaradio.com/radio/8000/radio.mp3',x:98.98},
  {n:'BKK.FM',k:'Alternative and electronic',p:'Bangkok, Thailand',u:'https://rsas.bkk.fm/radio',x:100.5},
  {n:'Bangkok Community Radio',k:'Underground DJs',p:'Bangkok, Thailand',u:'https://bcr.radiocult.fm/stream',x:100.51},
