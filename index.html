@@ -172,7 +172,27 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tcross .ts6{grid-area:7/5/9/6}.tcross .ts7{grid-area:5/5/7/6}.tcross .ts8{grid-area:3/5/5/6}.tcross .ts9{grid-area:1/5/3/6}
 .tnum{position:absolute;left:-4px;top:-4px;min-width:16px;height:16px;border-radius:8px;background:var(--ton);color:var(--tonink);font-size:12px;font-weight:800;line-height:16px;text-align:center;pointer-events:none;z-index:2}
 .tcross .ts1 .tnum{left:auto;right:-6px;top:auto;bottom:-6px}
-.tone .tcard{height:min(44vh,250px)}
+.tone .tcard{height:min(40vh,230px)}
+/* under each turned card: its name with its place in parentheses, then its meaning (Jackie, Nov 16) */
+.tspread.tthree,.tspread.tone{width:100%;justify-content:center;gap:min(3vw,28px)}
+.tthree .tslot{flex:1 1 0;max-width:230px;min-width:0}.tone .tslot{max-width:440px}
+.tthree .tcard{height:min(30vh,190px)}
+.tslot .tlab,.tfocus .tlab{white-space:normal;text-align:center;line-height:1.25;font-size:15px}
+.tmn{font-size:14px;font-weight:600;line-height:1.3;text-align:center;color:var(--ttext)}.tmn:empty{display:none}
+/* the Celtic Cross: a small map of the cross, and the card you're on beside it */
+.tcrosswrap{display:flex;gap:min(4vw,30px);align-items:center;justify-content:center;width:100%;height:100%;min-height:0}
+.tcrosswrap .tspread.tcross{--ch:min(13.5vh,96px);flex:none}
+.tcross .tslot.tsel .tflip{outline:3px solid var(--taccent);outline-offset:1px;border-radius:2px}
+.tfocus{flex:1;min-width:0;max-width:430px;height:100%;display:flex;gap:14px;align-items:center}
+.tfbig{background:none;border:none;padding:0;cursor:pointer;flex:none;-webkit-tap-highlight-color:transparent}.tfbig .tcard{height:min(48vh,300px)}
+.tftext{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start;max-height:100%;overflow:auto}
+.tfocus .tlab,.tfocus .tmn{text-align:left}.tfocus .tmn{font-size:15px}.tfwhere{font-size:14px;font-weight:600;color:var(--tquote);line-height:1.3;text-align:left}
+.tnext{font:inherit;font-size:14px;font-weight:800;padding:5px 12px 6px;cursor:pointer;margin-top:2px}.tfnav{display:flex;gap:8px;flex-wrap:wrap}
+/* the zoom's details */
+.tlore{font-size:15px;font-weight:600;line-height:1.35}.tlore b{font-weight:800;color:var(--tsub)}
+.tarot .tread .tback{position:absolute;right:12px;top:10px;align-self:auto}
+.tarot .tread .ttext{padding-right:74px}
+@media (max-height:520px){.tthree .tcard{height:min(30vh,190px)}.tone .tcard{height:min(38vh,230px)}.tmn{font-size:14px}.tfbig .tcard{height:min(52vh,300px)}}
 /* birth charts (js/charts.js): the people along the left, a chart card that scrolls */
 .chwrap{display:flex;gap:14px;width:100%;height:100%;min-height:0;align-items:stretch}
 .chpeople{display:flex;flex-direction:column;gap:8px;flex:none;width:min(150px,24%);overflow:auto;padding:4px 2px}
@@ -275,6 +295,7 @@ body.testing #testBadge{display:block}
 <script src="js/radio.js"></script>
 <script src="js/keepsafe.js"></script>
 <script src="js/tarotdata.js"></script>
+<script src="js/tarotlore.js"></script>
 <script src="js/tarot.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/sampler.js"></script>

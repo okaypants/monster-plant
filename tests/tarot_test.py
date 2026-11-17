@@ -3,8 +3,9 @@
 Run from the repository root:  python3 tests/tarot_test.py
 On a phone held sideways: tapping the moon box on the right bookcase opens the deck; tapping the deck shuffles it; it
 splits into three piles to cut; three cards are dealt face down as the past, the present and the future; each turns over
-when tapped (reversed ones upside down); once all three are up a line reads the spread; tapping a card reads it in plain
-words. Each spread (card of the day, three cards, the Celtic Cross laid out as Waite gives it) can be
+when tapped (reversed ones upside down), and its name, its place in parentheses and its meaning appear under it; once all
+three are up a line reads the spread; tapping a card opens the zoom with the card's details. The Celtic Cross shows a map
+of the cross and one card at a time beside it. Each spread (card of the day, three cards, the Celtic Cross laid out as Waite gives it) can be
 read once a calendar day: opening the box again shows today's cards face up, and the next day the deck is back. The close
 button and tapping outside close it.
 Also checks the deck: 78 different cards, every picture present and the same size, every card with plain meanings and
@@ -75,6 +76,8 @@ async def main():
             await pg.evaluate("()=>__step(.4)")
         faces = await pg.evaluate("()=>[...document.querySelectorAll('.tflip img')].map(i=>i.src.split('/').pop()+(i.classList.contains('trev')?' R':''))")
         check(all(not f.startswith("back") for f in faces) and faces[1].endswith(" R"), f"all three should be turned, the reversed one upside down: {faces}")
+        under = await pg.evaluate("()=>[...document.querySelectorAll('.tthree .tslot')].map((s,i)=>[s.querySelector('.tlab').textContent,tr.cards[i].c.n+(tr.cards[i].rev?', reversed':''),s.querySelector('.tmn').textContent,tarotMean(i)])")
+        check([u[0] for u in under] == [under[0][1] + " (the past)", under[1][1] + " (the present)", under[2][1] + " (the future)"] and under[1][1].endswith(", reversed") and all(u[2] == u[3] for u in under), f"under each card: its name, its place in parentheses, its meaning: {under}")
         say = await pg.evaluate("()=>document.querySelector('.tsay').textContent")
         check("Major Arcana" in say and "comes tomorrow" in say, f"the spread should be read as a whole, and say a new one comes tomorrow: {say}")
         await pg.evaluate("()=>capClear()")
@@ -82,7 +85,8 @@ async def main():
         await pg.locator(".tflip").nth(1).click()
         read = await pg.evaluate("()=>document.querySelector('.tread').innerText")
         want = await pg.evaluate("()=>[tr.cards[1].c.n,tr.cards[1].c.r]")
-        check(want[0] in read and "(reversed)" in read and want[1] in read and "Right now" in read, f"reading the present card: {read!r} {want}")
+        check(read.startswith(want[0] + ", reversed (the present)") and want[1] in read, f"the zoom starts with the card and its place: {read!r} {want}")
+        check(all(k in read for k in ["In the picture.", "In the deck.", "In astrology.", "The artist."]), f"the zoom should have the card's details: {read!r}")
         check(await pg.evaluate("()=>!document.querySelector('.twaite')&&!/Waite/.test(document.querySelector('.tread').innerText)"), "the reading should show plain words only, no Waite quote or button")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "4_read.png"))
@@ -101,6 +105,8 @@ async def main():
         check(await pg.locator(".tflip").count() == 1, "card of the day should deal one card")
         await pg.locator(".tflip").nth(0).click()
         await pg.evaluate("()=>{__step(.4);capClear()}")
+        one = await pg.evaluate("()=>[document.querySelector('.tone .tlab').textContent,tr.cards[0].c.n,tr.cards[0].rev,document.querySelector('.tone .tmn').textContent,tarotMean(0)]")
+        check(one[0] == one[1] + (", reversed" if one[2] else "") and "(" not in one[0] and one[3] == one[4], f"the card of the day should have its name and meaning under it, with no place in parentheses: {one}")
         await pg.screenshot(path=os.path.join(OUT, "5_card_of_the_day.png"))
         # the Celtic Cross: ten cards, the second laid across the first, four in a column
         await pg.click(".tspick[data-k=cross]")
@@ -108,16 +114,24 @@ async def main():
         await pg.evaluate("()=>__step(1.2)")
         await pg.locator(".tpile").nth(2).click()
         check(await pg.locator(".tflip").count() == 10, "the Celtic Cross should deal ten cards")
-        for i in range(10):
-            await pg.locator(".tflip").nth(i).click(force=True)
+        for i in range(10):  # the Turn card button turns them in order, 1 to 10 (card 2 lies across card 1, so the button is the sure way)
+            check(await pg.locator(".tfocus .tnext").text_content() == f"Turn card {i + 1}", f"the button should offer card {i + 1}")
+            await pg.click(".tfocus .tnext")
             await pg.evaluate("()=>__step(.4)")
         geo = await pg.evaluate("""()=>{const r=i=>document.querySelector('.tcross .ts'+i+' .tflip').getBoundingClientRect(),c=i=>{const b=r(i);return [b.left+b.width/2,b.top+b.height/2,b.width,b.height]};return [0,1,2,3,4,5,6,7,8,9].map(c)}""")
         g = geo
         check(abs(g[0][0] - g[1][0]) < 3 and abs(g[0][1] - g[1][1]) < 3 and g[1][2] > g[1][3], f"card 2 should lie across card 1 {g[0]} {g[1]}")
         check(g[2][1] < g[0][1] < g[3][1] and g[4][0] < g[0][0] < g[5][0], "cards 3 and 4 above and below, 5 and 6 left and right")
         check(all(g[k][0] > g[5][0] for k in (6, 7, 8, 9)) and g[6][1] > g[7][1] > g[8][1] > g[9][1], "cards 7 to 10 in a column on the right, rising")
-        read_where = await pg.evaluate("()=>{tarotRead(9);return document.querySelector('.twhere').textContent}")
-        check(read_where.startswith("10. What will come"), f"the tenth card is what will come: {read_where}")
+        foc = await pg.evaluate("()=>[tr.focus,document.querySelector('.tfocus .tlab').textContent,document.querySelector('.tfocus .tmn').textContent,tarotTitle(9),tarotMean(9),!!document.querySelector('.tcross .ts9.tsel')]")
+        check(foc[0] == 9 and foc[1] == "10. " + foc[3] and foc[1].endswith("(what will come)") and foc[2] == foc[4] and foc[5], f"the card just turned should be shown large beside the map with its name, place and meaning: {foc}")
+        await pg.locator(".tcross .ts2 .tflip").click(force=True)
+        check(await pg.evaluate("()=>tr.focus===2&&document.querySelector('.tfocus .tlab').textContent.includes('(what crowns you)')&&!document.querySelector('.tread')"), "tapping a turned card on the map should show it beside the map")
+        await pg.click(".tfnav .tnext:has-text('Next card')")
+        check(await pg.evaluate("()=>tr.focus===3"), "Next card should move to the next place")
+        await pg.click(".tfbig")
+        read_where = await pg.evaluate("()=>document.querySelector('.tread .tname').textContent")
+        check(read_where.endswith("(what is beneath you)"), f"tapping the large card opens its zoom: {read_where}")
         await pg.evaluate("()=>{document.querySelector('.tread').remove();capClear()}")
         await pg.screenshot(path=os.path.join(OUT, "6_celtic_cross.png"))
         # the next day, a new reading

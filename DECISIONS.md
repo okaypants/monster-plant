@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot: the reading under the cards, a new Celtic Cross page, details in the zoom (Nov 16)
+
+- Jackie: "I would rather have the reading under the spread", with each card's name written beneath it "and then its role (the past, etc.) in parenthesis". Once a card is turned, its name, its place in parentheses and its meaning are under it: "The Star (the past)", then the meaning. The card of the day has just its name ("it doesn't need to say today because it's the card of the day").
+- "The Celtic Cross page looks dumb": ten cards with their readings don't fit side by side on a phone, so the cards were tiny with empty space around them. Now the cross is a small numbered map on the left, and the card you're on is shown large beside it with its number, name, place and meaning. **Turn card 1, 2, 3…** turns them in order (card 2 lies across card 1, so the button is the sure way to turn card 1); once all are turned, tap any card on the map or use Previous card and Next card.
+- "More details including about the card itself and the creation… dork details, in the zoom": tapping a turned card opens the zoom with the card large and, after its meaning, what is in the picture, its place in the deck, its sign, planet or element in the Golden Dawn's system (with a line when tonight's moon or sun is in that sign), a note on how the card was made where there is one (Waite swapping Strength and Justice, scenes borrowed from the Sola Busca deck, what older decks show), and Pamela Colman Smith as the artist. All 78 are in js/tarotlore.js, written as plain sentences.
+
 ### Plain prose in the game's text (Nov 16)
 
 - Jackie flagged "The planets' places are real astronomy. What they mean is old tradition." as reading like AI writing, and asked for such lines to be found and replaced with straightforward prose. The pattern to avoid: neat paired sentences, a clipped phrase followed by a colon and a punchy tag, semicolon fragments, and cute flourishes.

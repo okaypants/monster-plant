@@ -10,10 +10,12 @@
                        (yourself, your house, your hopes or fears, what will come). Waite's "him" is "you" here; his
                        Significator (a card picked to stand for the one asking) is left out, as most readers do today.
    A reading: think of a question, tap the deck to shuffle, cut it into three piles and pick one, then turn the cards over one
-   by one. About one in three comes up reversed (upside down), which changes its meaning, as in Waite's book. Tap a turned card
-   to read it: the card big and its meaning in plain words for its place (Waite's own 1910 wording was shown one tap away at
-   first; Jackie had it taken out, Nov 16; it stays in js/tarotdata.js as the record of where each meaning comes from). Once all are turned, a
-   line reads the spread the traditional way (how many Major Arcana, which suit leads, whether several are reversed).
+   by one. About one in three comes up reversed (upside down), which changes its meaning, as in Waite's book. Once a card is
+   turned, its name, its place in the spread in parentheses and its meaning are written under it ("The Star (the past)"); the
+   Celtic Cross shows a small map of the cross and one card at a time beside it. Tap a turned card for the zoom: the card big,
+   with the details for the curious (js/tarotlore.js). Once all are turned, a line reads the spread the traditional way (how
+   many Major Arcana, which suit leads, whether several are reversed). (Waite's own 1910 wording was shown one tap away at
+   first; Jackie had it taken out; it stays in js/tarotdata.js as the record of where each meaning comes from.)
    ONCE A DAY (Jackie: "you should not be able to re-do it in the same calendar day", by the phone's clock): each spread can be
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
    opening the box again that day shows the same cards face up to read again; a new one comes tomorrow.
@@ -81,22 +83,47 @@ function tarotDeal(p){if(tr.step!=='cut')return;tr.step='dealt';sfx('paper');con
   const piles=[tr.deck.slice(0,a),tr.deck.slice(a,b),tr.deck.slice(b)];tr.deck=piles[p].concat(piles[(p+1)%3],piles[(p+2)%3]); // the chosen pile goes on top
   tr.cards=tr.deck.slice(0,SPREADS[tr.k].pos.length);tr.cards.forEach(x=>{const i=new Image();i.src='tarot/'+x.c.id+'.png'}); // fetch the faces now
   tarotKeep(tr.k,tr.cards);tarotLay(false);tSay(tr.cards.length===1?'Tap the card to turn it over.':'Tap each card to turn it over.')}
-// lay the spread out: face down (a new reading) or face up (today's, opened again)
-function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';const row=document.createElement('div');row.className='tspread t'+k;
+// what's written under a card: its name, then its place in the spread in parentheses ("The Star (the past)"); the card of
+// the day has no place to name (Jackie, Nov 16)
+function tarotRole(i){if(tr.k==='one')return '';const t=SPREADS[tr.k].pos[i].t;return t[0].toLowerCase()+t.slice(1)}
+function tarotTitle(i){const x=tr.cards[i],r=tarotRole(i);return x.c.n+(x.rev?', reversed':'')+(r?' ('+r+')':'')}
+function tarotMean(i){const x=tr.cards[i];return x.rev?x.c.r:x.c.u}
+// lay the spread out: face down (a new reading) or face up (today's, opened again). One card and three cards: each card
+// with its name, place and meaning written beneath it once it's turned. The Celtic Cross: the ten cards as a small map of
+// the cross on the left, and on the right the card you're on, larger, with its name, place and meaning (ten cards with
+// their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway).
+function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
   S.pos.forEach((s,i)=>{const slot=document.createElement('div');slot.className='tslot ts'+i;
     const btn=document.createElement('button');btn.type='button';btn.className='tflip';
-    btn.addEventListener('click',e=>{e.stopPropagation();if(tr.open[i])tarotRead(i);else tarotFlip(i,btn)});
+    btn.addEventListener('click',e=>{e.stopPropagation();if(!tr.open[i])tarotFlip(i,btn);else if(k==='cross'&&tr.focus!==i)tarotFocus(i);else tarotRead(i)});
     slot.appendChild(btn);
-    if(k!=='cross'){const lab=document.createElement('div');lab.className='tlab';slot.appendChild(lab)}
+    if(k!=='cross'){const lab=document.createElement('div');lab.className='tlab';const mn=document.createElement('div');mn.className='tmn';slot.append(lab,mn)}
     else{const n=document.createElement('div');n.className='tnum';n.textContent=i+1;slot.appendChild(n)}
     row.appendChild(slot);tr.open[i]=up;tarotFace(i,btn,up)});
-  st0.appendChild(row)}
+  if(k!=='cross'){st0.appendChild(row);return}
+  const wrap=document.createElement('div');wrap.className='tcrosswrap';const f=document.createElement('div');f.className='tfocus';wrap.append(row,f);st0.appendChild(wrap);tarotFocus(up?0:-1)}
 function tarotFace(i,btn,up){const x=tr.cards[i],s=SPREADS[tr.k].pos[i];btn.innerHTML='';
-  if(up){const f=tarotImg(x.c.id);f.className='tcard'+(x.rev?' trev':'');btn.appendChild(f);btn.setAttribute('aria-label',s.t+': '+x.c.n+(x.rev?', reversed':'')+'. Tap to read it.')}
+  if(up){const f=tarotImg(x.c.id);f.className='tcard'+(x.rev?' trev':'');btn.appendChild(f);btn.setAttribute('aria-label',tarotTitle(i)+'. Tap for more about this card.')}
   else{btn.appendChild(tBack());btn.setAttribute('aria-label',s.t+': turn the card over')}
-  const lab=btn.parentNode&&btn.parentNode.querySelector('.tlab');if(lab)lab.textContent=s.t+(up&&x.rev?' · reversed':'')}
+  const slot=btn.parentNode,lab=slot&&slot.querySelector('.tlab'),mn=slot&&slot.querySelector('.tmn');
+  if(lab)lab.textContent=up?tarotTitle(i):(tr.k==='one'?'':s.t);if(mn)mn.textContent=up?tarotMean(i):''}
+// the Celtic Cross: show one card larger beside the map (i = -1: none turned yet)
+function tarotFocus(i){tr.focus=i;const f=tarotEl.querySelector('.tfocus');if(!f)return;f.innerHTML='';
+  tarotEl.querySelectorAll('.tcross .tslot').forEach((s,j)=>s.classList.toggle('tsel',j===i));
+  const next=tr.open.indexOf(false),txt=document.createElement('div');txt.className='tftext';
+  if(i>=0&&tr.open[i]){const x=tr.cards[i],b=document.createElement('button');b.type='button';b.className='tfbig';b.setAttribute('aria-label','More about '+x.c.n);
+    const im=tarotImg(x.c.id);im.className='tcard'+(x.rev?' trev':'');b.appendChild(im);b.addEventListener('click',e=>{e.stopPropagation();tarotRead(i)});f.appendChild(b);
+    const h=document.createElement('div');h.className='tlab';h.textContent=(i+1)+'. '+tarotTitle(i);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(i);
+    txt.append(h,m);const pin=SPREADS.cross.pos[i].in;if(pin.includes(',')){const w=document.createElement('div');w.className='tfwhere';w.textContent=pin.replace(/^[^,]*, /,'This place shows ')+'.';txt.appendChild(w)}}
+  else{const m=document.createElement('div');m.className='tmn';m.textContent='Ten cards are laid out in the shape of a cross with a column beside it. Turn them over in order from 1 to 10.';txt.appendChild(m)}
+  if(next>=0){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent='Turn card '+(next+1);
+    nb.addEventListener('click',e=>{e.stopPropagation();const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn)tarotFlip(next,btn)});txt.appendChild(nb)}
+  else if(i>=0){const row=document.createElement('div');row.className='tfnav';
+    for(const [d,label] of [[-1,'Previous card'],[1,'Next card']]){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent=label;
+      nb.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotFocus((i+d+10)%10)});row.appendChild(nb)}txt.appendChild(row)}
+  f.appendChild(txt)}
 function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
-  const show=()=>{tarotFace(i,btn,true);if(tr.open.every(Boolean))tarotSum();else tSay(x.c.n+(x.rev?', reversed':'')+'. Tap it to read it, or turn the next one.')};
+  const show=()=>{tarotFace(i,btn,true);if(tr.k==='cross')tarotFocus(i);if(tr.open.every(Boolean))tarotSum();else tSay(tr.k==='cross'?'':'Turn the next card.')};
   if(tsCalm()){show();return}
   btn.classList.add('tturn');setTimeout(()=>{show();btn.classList.remove('tturn');btn.classList.add('tturn2');setTimeout(()=>btn.classList.remove('tturn2'),120)},120)} // a stepped turn: narrow, then the face
 // today's reading, opened again: the same cards, face up
@@ -110,16 +137,18 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
   else{t+=maj===n?'All of these cards are Major Arcana, which suggests the question is about something important.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which suggests the question is about something important.':maj===1?'One of these cards is Major Arcana.':maj>1?maj+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which suggests an everyday matter.';
     if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Most of the '+(maj?'others':'cards')+' are '+suitIs(top[0])+'.';
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
-  tr.sum=t;tSay((again?'This is today’s reading. ':'')+t+(n===1?' Tap it to read it.':' Tap a card to read it.')+' '+SPREADS[tr.k].next);
+  tr.sum=t;tSay((again?'This is today’s reading. ':'')+t+(n===1?' Tap the card for more about it.':' Tap a card for more about it.')+' '+SPREADS[tr.k].next);
   tarotTabs()}
-// 4. read one card: big, with its meaning for its place
+// 4. the zoom: the card big, with its meaning and the details for the curious (js/tarotlore.js): what is in the picture,
+// its place in the deck, its sign or planet in the old system, and how it was made
 function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
   const r=document.createElement('div');r.className='tread tsb';
   const big=tarotImg(x.c.id);big.className='tbig'+(x.rev?' trev':'');
   const txt=document.createElement('div');txt.className='ttext';
-  const h=document.createElement('div');h.className='tname';h.textContent=x.c.n+(x.rev?' (reversed)':'');
-  const where=document.createElement('div');where.className='twhere';where.textContent=(tr.k==='cross'?(i+1)+'. ':'')+s.in+':';
-  const m=document.createElement('div');m.className='tmean';m.textContent=x.rev?x.c.r:x.c.u;
-  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back to the spread';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
-  txt.append(h,where,m,back);r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
+  const h=document.createElement('div');h.className='tname';h.textContent=tarotTitle(i);
+  const m=document.createElement('div');m.className='tmean';m.textContent=tarotMean(i);txt.append(h,m);
+  if(tr.k!=='one'){const w=document.createElement('div');w.className='tlore';w.textContent=s.in.replace(/^[^,]*, /,'This place in the spread shows ')+(s.in.includes(',')?'.':'');if(s.in.includes(','))txt.appendChild(w)}
+  for(const [k,v] of tarotLore(x.c)){const d=document.createElement('div');d.className='tlore';const b=document.createElement('b');b.textContent=k+'. ';d.append(b,document.createTextNode(v));txt.appendChild(d)}
+  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
+  r.append(big,txt,back);r.addEventListener('click',e=>e.stopPropagation());
   tarotEl.querySelector('.tbox').appendChild(r)}
