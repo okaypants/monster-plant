@@ -3,8 +3,8 @@
 Run from the repository root:  python3 tests/tarot_test.py
 On a phone held sideways: tapping the moon box on the right bookcase opens the deck; tapping the deck shuffles it; it
 splits into three piles to cut; three cards are dealt face down as the past, the present and the future; each turns over
-when tapped (reversed ones upside down); once all three are up a line reads the spread; tapping a card reads it, with
-Waite's own words a tap away. Each spread (card of the day, three cards, the Celtic Cross laid out as Waite gives it) can be
+when tapped (reversed ones upside down); once all three are up a line reads the spread; tapping a card reads it in plain
+words. Each spread (card of the day, three cards, the Celtic Cross laid out as Waite gives it) can be
 read once a calendar day: opening the box again shows today's cards face up, and the next day the deck is back. The close
 button and tapping outside close it.
 Also checks the deck: 78 different cards, every picture present and the same size, every card with plain meanings and
@@ -83,9 +83,7 @@ async def main():
         read = await pg.evaluate("()=>document.querySelector('.tread').innerText")
         want = await pg.evaluate("()=>[tr.cards[1].c.n,tr.cards[1].c.r]")
         check(want[0] in read and "(reversed)" in read and want[1] in read and "Right now" in read, f"reading the present card: {read!r} {want}")
-        await pg.click(".twaite")
-        q = await pg.evaluate("()=>{const q=document.querySelector('.tquote');return q.hidden?'':q.textContent}")
-        check("Waite, 1910" in q, f"Waite's own words should show: {q!r}")
+        check(await pg.evaluate("()=>!document.querySelector('.twaite')&&!/Waite/.test(document.querySelector('.tread').innerText)"), "the reading should show plain words only, no Waite quote or button")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "4_read.png"))
         await pg.click(".tback")

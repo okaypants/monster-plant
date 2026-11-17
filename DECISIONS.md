@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot: Waite's words taken out (Nov 16)
+
+- Jackie: "Remove the 'waite's words' or whatever." Reading a card now shows only its name, its place in the spread and its meaning in plain words; the "Waite's own words" button and the 1910 quote are gone. The plain meanings are still written from Waite's, and his wording stays in `js/tarotdata.js` as the record of where each one comes from, not shown in the game.
+- The Two of Cups reversed (Waite gives no reversed meaning) now reads "The same as upright: love, friendship and getting along."
+
 ### Birth charts and daily horoscopes for everyone (Nov 16)
 
 - Jackie: "birth charts and connected horoscopes for everyone who participates (Tofu, plant(s), you)". Your birth place is where you were born ("isn't birth chart birth place?"), and any city in the world can be picked; Jackie went with my picks for the rest: a built-in world city list you search by typing, a clean list layout (not a round chart), daily lines in the moon box.

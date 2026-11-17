@@ -2,7 +2,7 @@
 /* The tarot deck (js/tarot.js): the 78 cards of the Rider-Waite-Smith deck, pictures by Pamela Colman Smith, published 1909,
    both public domain. id: the picture in tarot/; n: its name; u, r: what it means upright and reversed, in plain words written
    for the game from Waite's meanings; wu, wr: Waite's own words, from The Pictorial Key to the Tarot (1910, public domain),
-   shown one tap away (wr is null where Waite gives no reversed meaning). Waite's Major Arcana numbers: Strength 8, Justice 11. */
+   kept as the record of where each meaning comes from, not shown in the game (wr is null where Waite gives no reversed meaning). Waite's Major Arcana numbers: Strength 8, Justice 11. */
 const TAROT=[
 {
 "id": "M00",
@@ -304,7 +304,7 @@ const TAROT=[
 "id": "C02",
 "n": "Two of Cups",
 "u": "Love, friendship and getting along.",
-"r": "Waite gives no reversed meaning; read it as upright.",
+"r": "The same as upright: love, friendship and getting along.",
 "wu": "Love, passion, friendship, affinity, union, concord, sympathy, the interrelation of the sexes, and—as a suggestion apart from all offices of divination—that desire which is not in Nature, but by which Nature is sanctified.",
 "wr": null
 },

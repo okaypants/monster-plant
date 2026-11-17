@@ -1,7 +1,7 @@
 'use strict';
 /* THE MOON BOX: A TAROT READING (Jackie, Nov 16). Tap the little box with the moon on the right-hand bookcase and it opens
    over the room: a velvet cloth and a real deck, the Rider-Waite-Smith tarot (Pamela Colman Smith's pictures, 1909, made into
-   the room's pixel style), with A. E. Waite's own meanings (1910) behind plain words (js/tarotdata.js).
+   the room's pixel style), with meanings in plain words written from A. E. Waite's own (1910; js/tarotdata.js).
    Three spreads, picked on the cloth:
      Card of the day   one card.
      Three cards       the past, the present, the future.
@@ -11,7 +11,8 @@
                        Significator (a card picked to stand for the one asking) is left out, as most readers do today.
    A reading: think of a question, tap the deck to shuffle, cut it into three piles and pick one, then turn the cards over one
    by one. About one in three comes up reversed (upside down), which changes its meaning, as in Waite's book. Tap a turned card
-   to read it: the card big, its meaning in plain words for its place, Waite's own words one tap away. Once all are turned, a
+   to read it: the card big and its meaning in plain words for its place (Waite's own 1910 wording was shown one tap away at
+   first; Jackie had it taken out, Nov 16; it stays in js/tarotdata.js as the record of where each meaning comes from). Once all are turned, a
    line reads the spread the traditional way (how many Major Arcana, which suit leads, whether several are reversed).
    ONCE A DAY (Jackie: "you should not be able to re-do it in the same calendar day", by the phone's clock): each spread can be
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
@@ -110,7 +111,7 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several reversed: things are tangled or slow.'}
   tr.sum=t;tSay((again?'Today’s reading. ':'')+t+(n===1?' Tap it to read it.':' Tap a card to read it.')+' '+SPREADS[tr.k].next);
   tarotTabs()}
-// 4. read one card: big, its meaning for its place, and Waite's own words a tap away
+// 4. read one card: big, with its meaning for its place
 function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
   const r=document.createElement('div');r.className='tread tsb';
   const big=tarotImg(x.c.id);big.className='tbig'+(x.rev?' trev':'');
@@ -118,10 +119,6 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   const h=document.createElement('div');h.className='tname';h.textContent=x.c.n+(x.rev?' (reversed)':'');
   const where=document.createElement('div');where.className='twhere';where.textContent=(tr.k==='cross'?(i+1)+'. ':'')+s.in+':';
   const m=document.createElement('div');m.className='tmean';m.textContent=x.rev?x.c.r:x.c.u;
-  const w=document.createElement('button');w.type='button';w.className='tsb twaite';w.textContent="Waite's own words";
-  const q=document.createElement('div');q.className='tquote';q.hidden=true;const wt=x.rev?x.c.wr:x.c.wu;
-  q.textContent=wt?'“'+wt+'” (A. E. Waite, 1910'+(x.rev?', reversed':'')+')':'Waite gives no reversed meaning for this card.';
-  w.addEventListener('click',e=>{e.stopPropagation();q.hidden=!q.hidden;w.textContent=q.hidden?"Waite's own words":"Hide Waite's words"});
   const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back to the spread';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
-  txt.append(h,where,m,q,w,back);r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
+  txt.append(h,where,m,back);r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
   tarotEl.querySelector('.tbox').appendChild(r)}
