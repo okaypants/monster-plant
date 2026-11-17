@@ -214,7 +214,7 @@ function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if
 /* A page can carry the words in their original script (Jackie, Nov 16): {o: the original, l: its language code, e: the English}.
    The original sits on top, in its own script, only where a real source text exists (js/stories.js says where it is from). */
 function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));if(!pg)return;if(typeof pg==='string'){el.textContent=pg;return;}
- if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.textContent=pg.o;box.appendChild(o);}if(pg.e){const e=document.createElement('span');e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);return;}
+ if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.dir='auto';o.textContent=pg.o;box.appendChild(o);}if(pg.e){const e=document.createElement('span');e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);return;}
  const t=document.createElement('b');t.textContent=pg.t;el.appendChild(t);if(pg.by){const by=document.createElement('span');by.className='sby';by.textContent=pg.by;el.appendChild(by);}}
 /* THE SONG BOOK (Jackie, Nov 17): a read about a real song carries its record from the crates (rec, js/stories.js). The open
    book then has a Play the record button: it streams the old record, and a caption says who is playing. Tap it again or close

@@ -8,6 +8,20 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
 - **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
 
+### Every book gone over again to a higher bar (Nov 17)
+
+- Jackie: "let's go over all of the book content again -- High quality, not basic choices, due to length, this often means major concision without losing voice or heart of the content/story/knowledge/thesis. No western common knowledge, when using non-english text they should be because it's the original version not your translation of a translation." Then, asked whether to see a list first: "Just write them."
+- **Fairy tales:** the three poems (Rossetti, Tagore, Allingham) are gone. Six short folktales: the Sun and the Moon (Korea, with the tiger's line in Korean), Why the Sky Is High (Philippines), the Toad Who Sued Heaven (Vietnam, with its saying in Vietnamese), the Smell of Soup (Nasreddin), the Tea-Kettle (Japan) and the Bird Who Raised a King (Iran).
+- **Nonsense poems:** Lear and the Purple Cow are gone. Sukumar Ray's Khichuri in Bengali (1923), Morgenstern's Das große Lalulā and Hugo Ball's Karawane (both made-up words, as printed), and the Great Panjandrum (1755).
+- **Forbidden grimoire:** Macbeth is gone. Abracadabra as a Roman fever cure, the five-word square from Pompeii, Ethiopia's scrolls cut to a person's height, Japan's weather doll, and the mandrake (without Shakespeare).
+- **The star book:** the Big Dipper read is gone. The Weaver and the Cowherd stays; the Rabbit in the Moon moved here from the grimoire; new are the Emu in the Sky, stars with Arabic names (in Arabic), the Pacific star compass and Matariki.
+- **Proverbs:** the well-worn ones (a journey of a thousand miles, fall seven times) are gone. Less common sayings in their own scripts from Japan, China, India, Korea, East Africa, the Philippines, Turkey, the Arab world, Iran and Ghana, and the Chinese story of the old man's horse.
+- **Letters and diaries:** Beatrix Potter and Dorothy Wordsworth are gone. The Pillow Book stays; new are a Roman birthday invitation (in Latin), the oldest complaint letter (Ur, about 1750 BC), a Novgorod boy's homework on birch bark, and a Tang Chinese form letter for apologizing after getting drunk.
+- **Ghost stories:** Jack of the Lantern is gone. The House Child and Foxfire stay; new are the kapre (Philippines), hundred-year-old tools (Japan), dokkaebi (Korea) and the hopping ghost (China).
+- **Added to the books Jackie liked:** two Almanac entries (flowers that hear bees, a plant that learns), three recipes (halo-halo, Ethiopia's three cups of coffee, the oldest stew), three Field guide entries (banana slug, slime mold, pill bug).
+- Each read names its source in the file. The texts in other languages were checked against a printed or scholarly source before going in; the Japanese, Chinese, Korean, Hindi, Arabic, Persian, Turkish, Tagalog and Swahili sayings are standard forms written from memory and not yet checked against a dictionary.
+- **Why:** Jackie's bar for the books is a clever ten-year-old through an adult who would open the book twice.
+
 ### A magnifying glass over the books (Nov 17)
 
 - Jackie: "I would like a magnifying glass cursor to open a book maybe". On a computer, the cursor turns into a magnifying glass over any book you can open (both bookcases, the book on the crate, the book stack). It follows the same rules as the tap, so not at night and not over a monster or the cat sitting there. A phone has no cursor, so nothing changes there.

@@ -1,5 +1,8 @@
 'use strict';
 /* THE BOOKS (Jackie, Nov 15): each of the twelve books holds many reads, and all of them are real.
+   THE BAR (Jackie, Nov 17): for clever older kids through adults. No nursery material and nothing a Western reader already
+   knows. Uncommon, real, and short: cut hard, but keep the voice and the heart of the thing. Words in another language appear
+   only as the original text, copied from a named source, with English made from that original (never from another translation).
    Poems and old texts are word for word (spelling and punctuation as printed), free to use (published before 1931).
    Sloth's Almanac is true facts told by Sloth, PhD; the grimoire is real folklore, with the place it comes from named.
    Folktales, facts and old texts that can't be quoted word for word are written for the game in plain words: the title page names
@@ -16,56 +19,85 @@
    "from" in a title means it's a part of a longer piece. The open book shows two pages at a time; the title is the first page. */
 const STORIES={
  fairy:[
-  {t:'Who Has Seen the Wind?',by:'Christina Rossetti, 1872',p:[
-   'Who has seen the wind?\nNeither I nor you:',
-   'But when the leaves hang trembling\nThe wind is passing thro’.',
-   'Who has seen the wind?\nNeither you nor I:',
-   'But when the trees bow down their heads\nThe wind is passing by.']},
-  {t:'Paper Boats',by:'Rabindranath Tagore, 1913',p:[
-   'Day by day I float my paper boats one by one down the running stream.',
-   'In big black letters I write my name on them and the name of the village where I live.',
-   'I hope that someone in some strange land will find them and know who I am.',
-   'I load my little boats with shiuli flowers from our garden,',
-   'and hope that these blooms of the dawn will be carried safely to land in the night.',
-   'I launch my paper boats and look up into the sky',
-   'and see the little clouds setting their white bulging sails.',
-   'I know not what playmate of mine in the sky sends them down the air to race with my boats!',
-   'When night comes I bury my face in my arms',
-   'and dream that my paper boats float on and on under the midnight stars.',
-   'The fairies of sleep are sailing in them,',
-   'and the lading is their baskets full of dreams.']},
-  {t:'from The Fairies',by:'William Allingham, 1850',p:[
-   'Up the airy mountain,\nDown the rushy glen,',
-   'We daren’t go a-hunting\nFor fear of little men;',
-   'Wee folk, good folk,\nTrooping all together;',
-   'Green jacket, red cap,\nAnd white owl’s feather!']}],
+  {t:'The Sun and the Moon',by:'told in Korea',src:'해와 달이 된 오누이 (the brother and sister who became the sun and the moon), a Korean folktale; the tiger’s line "떡 하나 주면 안 잡아먹지" is its best-known sentence; the red sorghum stalks are the tale’s ending.',p:[
+   'A mother was walking home over the hills at night with a basket of rice cakes.',
+   'A tiger stepped onto the path.',
+   {o:'떡 하나 주면 안 잡아먹지.',l:'ko',e:'“Give me one rice cake and I won’t eat you.”'},
+   'It said so at every hill, until the basket was empty. Then it ate her, put on her clothes and went to her house.',
+   'Her two children saw the tail under the skirt. They climbed a tree and begged the sky for a rope.',
+   'A strong rope came down, and they climbed up. The tiger asked too, and got a rotten one.',
+   'It fell into a field of sorghum. That is why sorghum stalks are stained red.',
+   'The brother became the moon. The sister became the sun.']},
+  {t:'Why the Sky Is High',by:'told in the Philippines',src:'A Bukidnon tale from Mindanao, in Mabel Cook Cole, Philippine Folk Tales (1916), "How the Moon and the Stars Came to Be"; retold.',p:[
+   'Long ago the sky hung so low you could reach up and touch it.',
+   'One day a woman went out to pound rice.',
+   'She took off her beads and her comb and hung them on the sky to keep them out of the way.',
+   'Each time she lifted her pestle, it knocked against the sky.',
+   'She lifted it higher, and hit harder. The sky began to rise.',
+   'It rose so far that she never got her things back.',
+   'Her comb became the moon. Her beads scattered and became the stars.']},
+  {t:'The Toad Who Sued Heaven',by:'told in Vietnam',src:'Cóc kiện Trời, a Vietnamese folktale; the saying "Con cóc là cậu ông Trời, hễ ai đánh nó thì trời đánh cho" comes from it.',p:[
+   'It had not rained for three years. Toad decided to go up and complain to Heaven.',
+   'On the way Toad was joined by Crab, Bear, Tiger, Fox and a swarm of bees.',
+   'At the gate of Heaven stood a great drum. Toad beat it.',
+   'Heaven sent a rooster to peck Toad. Fox caught it. Heaven sent a dog. Bear dealt with the dog.',
+   'Heaven sent the god of thunder. The bees stung him, Crab pinched him and Tiger sat on him.',
+   'So Heaven listened. “Uncle Toad,” Heaven said, “next time just grind your teeth, and I will send rain.”',
+   {o:'Con cóc là cậu ông Trời.',l:'vi',e:'The toad is Heaven’s uncle. People in Vietnam still say it, and toads still croak before rain.'}]},
+  {t:'The Smell of Soup',by:'told from Turkey to Central Asia',src:'A Nasreddin Hodja tale (Nasreddin, Molla Nasreddin, Afandi), told across Turkey, Iran, the Caucasus and Central Asia.',p:[
+   'A poor man had only a piece of dry bread. He held it over the steam of a cook’s soup pot to soften it.',
+   'The cook grabbed him. “You took the smell of my soup. Pay for it.”',
+   'They went before the judge, who that day was Nasreddin.',
+   'Nasreddin listened. Then he took out his own purse and shook it next to the cook’s ear.',
+   '“Did you hear the coins?”\n“Yes,” said the cook.',
+   '“Then you are paid. The sound of money is the price of the smell of soup.”']},
+  {t:'The Tea-Kettle',by:'told in Japan',src:'Bunbuku Chagama (分福茶釜), a folktale attached to Morin-ji temple in Tatebayashi, Gunma, where a kettle said to be the one is kept.',p:[
+   'A priest bought an old iron tea-kettle and set it on the fire.',
+   'The kettle shouted “Hot!” It grew a head, four legs and a bushy tail, and ran around the room.',
+   'It was a tanuki, a raccoon dog, and tanuki can change their shape.',
+   'The frightened priest sold it to a tinker for almost nothing.',
+   'That night the kettle spoke. “Feed me well and never put me on a fire, and I will make you rich.”',
+   'The tinker put up a tent. Crowds paid to watch a tea-kettle walk a tightrope with a fan and a parasol.',
+   'When the tinker had enough money, the kettle went home to the temple. The temple says it is still there.']},
+  {t:'The Bird Who Raised a King',by:'told in Iran',src:'The story of Zal and the Simurgh in Ferdowsi’s Shahnameh (about 1010); retold.',p:[
+   'A baby was born with hair as white as snow. The baby’s name was Zal.',
+   'Zal’s father, a great warrior, was ashamed. He left the baby on a mountain.',
+   'On that mountain lived the Simurgh, a bird so old it had seen the world end three times.',
+   'It carried the baby to its nest and raised Zal with its own chicks.',
+   'Years later the father came back, sorry, to look for his child.',
+   'The Simurgh let Zal go, and gave a parting gift of its own feathers.',
+   '“Burn one if you are ever in trouble,” it said, “and I will come.”',
+   'Zal grew up to rule a kingdom. Twice in his life he burned a feather, and both times the bird came.']}],
  nonsense:[
-  {t:'The Owl and the Pussy-Cat',by:'Edward Lear, 1871',p:[
-   'The Owl and the Pussy-Cat went to sea\nIn a beautiful pea-green boat:',
-   'They took some honey, and plenty of money\nWrapped up in a five-pound note.',
-   'The Owl looked up to the stars above,\nAnd sang to a small guitar,',
-   '“O lovely Pussy, O Pussy, my love,\nWhat a beautiful Pussy you are,',
-   'You are,\nYou are!\nWhat a beautiful Pussy you are!”',
-   'Pussy said to the Owl, “You elegant fowl,\nHow charmingly sweet you sing!',
-   'Oh! let us be married; too long we have tarried:\nBut what shall we do for a ring?”',
-   'They sailed away, for a year and a day,\nTo the land where the bong-tree grows;',
-   'And there in a wood a Piggy-wig stood,\nWith a ring at the end of his nose,',
-   'His nose,\nHis nose,\nWith a ring at the end of his nose.',
-   '“Dear Pig, are you willing to sell for one shilling\nYour ring?” Said the Piggy, “I will.”',
-   'So they took it away, and were married next day\nBy the Turkey who lives on the hill.',
-   'They dined on mince and slices of quince,\nWhich they ate with a runcible spoon;',
-   'And hand in hand, on the edge of the sand,\nThey danced by the light of the moon,',
-   'The moon,\nThe moon,\nThey danced by the light of the moon.']},
-  {t:'The Purple Cow',by:'Gelett Burgess, 1895',p:[
-   'I never saw a Purple Cow,\nI never hope to see one;',
-   'But I can tell you, anyhow,\nI’d rather see than be one!']},
-  {t:'Two Limericks',by:'Edward Lear, 1861',p:[
-   'There was an Old Man with a beard,\nWho said, “It is just as I feared!—',
-   'Two Owls and a Hen,\nFour Larks and a Wren,',
-   'Have all built their nests in my beard!”',
-   'There was an Old Man in a tree,\nWho was horribly bored by a Bee;',
-   'When they said, “Does it buzz?”\nHe replied, “Yes, it does!',
-   'It’s a regular brute of a Bee!”']}],
+  {t:'Khichuri',by:'Sukumar Ray, 1923',src:'সুকুমার রায়, খিচুড়ি, the first poem of আবোল তাবোল (Abol Tabol, 1923); Bengali as printed in সুকুমার রায় রচনাবলী vol. 1, from Bengali Wikisource (proofread page 27), lines 1-4 and 13-14. English from the Bengali.',p:[
+   'In 1923 a Bengali writer, Sukumar Ray, published a book of nonsense poems. It is still one of the best-loved children’s books in Bengal.',
+   'The first poem is named after khichuri, a dish of rice and lentils cooked into one mush. In it, animals get mixed the same way.',
+   {o:'হাঁস ছিল, সজারু, (ব্যাকরণ মানি না),\nহয়ে গেলে ‘হাঁসজারু’ কেমনে তা জানি না।',l:'bn'},
+   'There was a duck, and a porcupine (I don’t obey grammar). They became a duckupine. How, I don’t know.',
+   {o:'বক কহে কচ্ছপে—“বাহবা কি ফুর্তি!\nঅতি খাসা আমাদের বকচ্ছপ মূর্তি।”',l:'bn'},
+   'The stork says to the turtle, “Bravo, what fun! Our storkturtle shape is very fine.”',
+   {o:'হাতিমির দশা দেখ-তিমি ভাবে জলে যাই,\nহাতি বলে, “এই বেলা জঙ্গলে চল ভাই।”',l:'bn'},
+   'Look at the poor elewhale. The whale thinks, “To the water.” The elephant says, “Time for the jungle, brother.”']},
+  {t:'Das große Lalulā',by:'Christian Morgenstern, 1905',src:'Christian Morgenstern, Galgenlieder (1905); text as on German Wikisource (Alle Galgenlieder, p. 19), first stanza and refrain. The words are invented, so there is nothing to translate.',p:[
+   'A German poet wrote this in 1905. It is not in German, or in any other language.',
+   'Kroklokwafzi? Semememi!\nSeiokrontro – prafriplo:',
+   'Bifzi, bafzi; hulalemi:\nquasti basti bo...',
+   'Lalu, lalu lalu lalu la!',
+   'He once said, joking, that it was the record of a chess game. Read it out loud and decide for yourself.']},
+  {t:'Karawane',by:'Hugo Ball, 1917',src:'Hugo Ball, Karawane, performed at the Cabaret Voltaire, Zurich, June 1916; printed in Dada Almanach (Berlin, 1920), p. 53; text as on German Wikisource, lines 1-9.',p:[
+   'In 1916, in a café in Zurich, a man walked on stage dressed in a tall cardboard tube and recited a poem with no words in it.',
+   'He said he wanted to get away from language that newspapers had worn out.',
+   'jolifanto bambla ô falli bambla\ngrossiga m’pfa habla horem',
+   'égiga goramen\nhigo bloiko russula huju\nhollaka hollala',
+   'anlogo bung\nblago bung\nblago bung\nbosso fataka',
+   'The title means “caravan”. Some people hear elephants walking.']},
+  {t:'The Great Panjandrum',by:'Samuel Foote, 1755',src:'Attributed to Samuel Foote, 1755, written to test the memory of the actor Charles Macklin, who claimed he could repeat anything after hearing it once; first printed in Maria Edgeworth, Harry and Lucy Concluded (1825).',p:[
+   'An actor boasted that he could repeat any speech after hearing it once. A rival wrote this to test him. The actor gave up.',
+   'So she went into the garden to cut a cabbage-leaf to make an apple-pie;',
+   'and at the same time a great she-bear, coming up the street, pops its head into the shop.',
+   '“What! no soap?” So he died, and she very imprudently married the barber;',
+   'and there were present the Picninnies, and the Joblillies, and the Garyulies,',
+   'and the great Panjandrum himself, with the little round button at top.']}],
  almanac:[
   {t:'On Sloths',by:'Sloth’s Almanac',src:'Three-toed sloths (Bradypus): weekly descent and fur algae, Pauli et al. 2014, Proc. R. Soc. B; digestion about 6 to 30 days, averaging about 16 (Cliffe et al. 2015, PeerJ; Foley et al. 1995); swimming, Smithsonian National Zoo sloth fact sheet',p:[
    'Ah, sloths. A subject I know from the inside.',
@@ -90,31 +122,56 @@ const STORIES={
    'A second touch within about half a minute, and the trap snaps shut.',
    'Around five touches, and the plant begins its dinner.',
    'So a flytrap rarely wastes a meal on a false alarm.',
-   'Flytraps are native to just one small corner of the world: the Carolinas.']}],
+   'Flytraps are native to just one small corner of the world: the Carolinas.']},
+  {t:'On Flowers That Listen',by:'Sloth’s Almanac',src:'Evening primrose (Oenothera drummondii): within three minutes of the sound of a flying bee, or a recording at the same pitch, nectar sugar rose by about 20 percent; higher-pitched sound did nothing (Veits et al., Ecology Letters, 2019).',p:[
+   'Some flowers can hear. I did not believe it either.',
+   'The beach evening primrose is a yellow flower shaped like a small bowl.',
+   'When a bee buzzes nearby, the petals shake very slightly at the same pitch.',
+   'Within three minutes, the flower makes its nectar about a fifth sweeter.',
+   'Scientists played it recordings to be sure. Bee sounds worked. Higher sounds did nothing.',
+   'Sweeter nectar means the bee stays longer and comes back.']},
+  {t:'On the Plant That Learns',by:'Sloth’s Almanac',src:'Mimosa pudica: leaves fold when touched or dropped; plants dropped repeatedly from 15 cm stopped folding within one session and still did not fold a month later, while folding normally when shaken (Gagliano et al., Oecologia, 2014).',p:[
+   'The sensitive plant folds its leaves shut the moment anything touches it.',
+   'A scientist in Australia wondered if it could learn to stop.',
+   'She dropped potted plants a short way onto soft foam, again and again. It gave them a fright and did them no harm.',
+   'At first they folded up every time. After a few dozen drops, they stopped bothering.',
+   'They still folded when they were shaken, so they were not just tired.',
+   'A month later she dropped them again. They remembered, and stayed open.',
+   'A plant has no brain. Nobody yet knows where it keeps the memory.']}],
  grimoire:[
-  {t:'The Rabbit in the Moon',by:'told in China, Japan and Korea',src:'Jade Rabbit and Chang’e (Mid-Autumn Festival, China); tsuki no usagi pounding mochi (Japan); daltokki (Korea); rabbit on the moon in Aztec legend (Florentine Codex, Sahagún)',p:[
-   'Look at the full moon. Some people see a face. Many see a rabbit.',
-   'In China, the Jade Rabbit lives on the moon with Chang’e, the moon goddess.',
-   'The rabbit pounds herbs in a mortar, and a cassia tree grows nearby.',
-   'The herbs, people say, make the medicine of long life.',
-   'In Japan and Korea, the rabbit is pounding rice into soft rice cakes.',
-   'Far away in Mexico, the Aztec saw a rabbit on the moon too.',
-   'At the Mid-Autumn Festival, families share round mooncakes and look up.']},
-  {t:'The Mandrake',by:'told across Europe and the Middle East',src:'Mandragora officinarum, nightshade family (Solanaceae, with tomato and potato); root shape and the shriek legend from medieval herbals; pulling it up with a dog from Josephus, The Jewish War 7.6.3 (a root he calls baaras); Shakespeare, Romeo and Juliet 4.3',p:[
+  {t:'Abracadabra',by:'a Roman cure, about the year 200',src:'Quintus Serenus Sammonicus, Liber Medicinalis, chapter 51 (2nd-3rd century): the first known record of the word, written out losing a letter each line and worn around the neck against fever.',p:[
+   'The oldest book that mentions this word is a Roman doctor’s, from about 1,800 years ago. It was medicine.',
+   'For a fever, he says, write the word on a slip of paper. Under it write it again with the last letter gone, and go on to the end.',
+   'ABRACADABRA\nABRACADABR\nABRACADAB\nABRACADA\nABRACAD\nABRACA',
+   'ABRAC\nABRA\nABR\nAB\nA',
+   'Tie the paper round the neck with a linen thread and wear it for nine days.',
+   'As the word shrinks to nothing, the fever is supposed to shrink with it.']},
+  {t:'The Square',by:'a charm found at Pompeii',src:'The Sator (Rotas) square: the oldest examples were scratched on walls at Pompeii before the eruption of AD 79; later used across Europe and Ethiopia as a charm against fire, fever and mad dogs. AREPO appears nowhere else in Latin.',p:[
+   'Five Latin words, five letters each.',
+   'SATOR\nAREPO\nTENET\nOPERA\nROTAS',
+   'Read it left to right, right to left, top to bottom or bottom to top. It says the same thing every way.',
+   'Someone scratched it on a wall in Pompeii before the volcano buried the town in the year 79.',
+   'For the next 1,800 years people wrote it on houses to stop fires and on bread to cure dog bites.',
+   'Nobody can say for sure what it means. One of the five words, AREPO, has never been found anywhere else.']},
+  {t:'A Scroll as Tall as You',by:'made in Ethiopia',src:'Ethiopian healing (protective) scrolls in Ge’ez, made by a dabtara from the hide of an animal chosen for the patient and cut to the patient’s height, with prayers, names and talismanic drawings, often of eyes (see J. Mercier, Ethiopian Magic Scrolls, 1979).',p:[
+   'In the highlands of Ethiopia, a person who is ill or unlucky can have a scroll made.',
+   'A scholar called a dabtara makes it from the skin of a sheep or goat chosen for that one person.',
+   'The strip is cut exactly as long as the person is tall, so it protects them from head to foot.',
+   'It is filled with prayers in Ge’ez, an old church language, and with drawings.',
+   'Many of the drawings are faces with wide-open eyes. They stare back at whatever is causing the trouble.',
+   'The owner keeps the scroll rolled in a leather case and wears it, sometimes for life.']},
+  {t:'Shine, Shine, Monk',by:'a weather charm from Japan',src:'Teru teru bōzu (てるてる坊主): a doll of white paper or cloth hung under the eaves for fine weather; a face is drawn on it only after the wish comes true; hung upside down to ask for rain.',p:[
+   'In Japan, on the night before a picnic or a sports day, children make a small ghost-shaped doll from white paper or cloth.',
+   {o:'てるてる坊主',l:'ja',e:'It is called a teru teru bōzu. The name means “shine, shine, monk”.'},
+   'They hang it by the window and ask it for a sunny day.',
+   'It has no face yet. If the sun comes out, it gets one drawn on as a thank-you.',
+   'Hang it upside down, and you are asking for rain.']},
+  {t:'The Mandrake',by:'told across Europe and the Middle East',src:'Mandragora officinarum, nightshade family (Solanaceae, with tomato and potato); root shape and the shriek legend from medieval herbals; pulling it up with a dog from Josephus, The Jewish War 7.6.3 (a root he calls baaras).',p:[
    'The mandrake is a real plant, a cousin of the tomato and the potato.',
-   'A mandrake root often forks in two, like a little person with legs.',
-   'So people long ago said the root was alive.',
-   'Pull one from the ground, the old books warn, and the mandrake shrieks.',
-   'Careful gatherers stopped their ears, and some tied a dog to the root to pull it up.',
-   'Shakespeare wrote of “shrieks like mandrakes torn out of the earth”.',
-   'Best, the old books agree, to let a sleeping mandrake lie.']},
-  {t:'from Macbeth',by:'William Shakespeare, about 1606',p:[
-   'Double, double toil and trouble;\nFire burn, and cauldron bubble.',
-   'Fillet of a fenny snake,\nIn the cauldron boil and bake;',
-   'Eye of newt and toe of frog,\nWool of bat and tongue of dog,',
-   'Adder’s fork and blind-worm’s sting,\nLizard’s leg and howlet’s wing,',
-   'For a charm of powerful trouble,\nLike a hell-broth boil and bubble.',
-   'Double, double toil and trouble;\nFire burn, and cauldron bubble.']}],
+   'Its root often forks in two, like a little person with legs.',
+   'So people said the root was alive, and that it screamed when it was pulled up.',
+   'The scream was supposed to kill whoever heard it.',
+   'Old books give the method. Stop your ears with wax, tie a hungry dog to the plant, and throw the dog some food from far away.']}],
  /* THE SONG BOOK (Jackie, Nov 17): the true story of a real song, told in plain words, and the song itself. Every one is a record
     in the crates (the same library of old free 78s the radio and the sampler use), so the open book has a Play the record
     button that streams it (js/care.js). rec = {id: the record at archive.org, f: its sound file, by: who plays it and the year}.
@@ -167,29 +224,45 @@ const STORIES={
    'So they played this instead, and the crowd sang along.',
    'The singer on this record is Enrico Caruso, who grew up in Naples.']}],
  stars:[
-  {t:'The Weaver and the Cowherd',by:'told in China, Japan and Korea',src:'Qixi (China), Tanabata (Japan), Chilseok (Korea), the 7th day of the 7th month; Vega (Zhinü, Orihime) and Altair (Niulang, Hikoboshi) on either side of the Milky Way; the magpie bridge (crows and magpies in Korea, Ojakgyo); the traditional date is lunar, and most of Japan now keeps July 7; wishes on paper strips (tanzaku) hung on bamboo',p:[
+  {t:'The Weaver and the Cowherd',by:'told in China, Japan and Korea',src:'Qixi (China), Tanabata (Japan), Chilseok (Korea), the 7th day of the 7th month; Vega (Zhinü, Orihime) and Altair (Niulang, Hikoboshi) on either side of the Milky Way; the magpie bridge (crows and magpies in Korea, Ojakgyo); wishes on paper strips (tanzaku) hung on bamboo.',p:[
    'On summer nights, look for two bright stars, one on each side of the Milky Way.',
    'In China, Japan and Korea, they are the Weaver and the Cowherd.',
-   'The Weaver wove the clouds. The Cowherd minded the cows. The two fell in love.',
-   'But the Milky Way, a river of stars, flowed between them.',
-   'Once a year, on the seventh night of the seventh month, magpies fly up and make a bridge.',
-   'And the Weaver and the Cowherd meet in the middle.',
-   'In Japan, people write wishes on paper strips that night and hang them on bamboo.',
+   'The Weaver wove the clouds. The Cowherd minded the cows. They fell in love and stopped working.',
+   'So the Milky Way, a river of stars, was put between them.',
+   'Once a year, on the seventh night of the seventh month, magpies fly up and make a bridge with their wings.',
+   'In Korea, people say magpies look bald after that night, from being stepped on.',
    'The stars are real. Vega is the Weaver, and Altair is the Cowherd.']},
-  {t:'The Little Cluster',by:'told around the world',src:'The Pleiades (M45): about 444 light-years away, over 1,000 member stars, six or seven seen by eye; the Seven Sisters (Greece), Subaru (Japan), Matariki (Māori, whose rising in midwinter marks the new year)',p:[
-   'There is a tiny clump of stars that people everywhere have noticed.',
-   'In Greece, they were the Seven Sisters. In Japan, they are Subaru.',
-   'In New Zealand, they are Matariki. When they rise before dawn in midwinter, many Māori mark the new year.',
-   'Most people can count six or seven stars there.',
-   'Astronomers have counted more than a thousand.',
-   'The light you see left them about four hundred and forty years ago.']},
-  {t:'The Seven Sages',by:'told in India, Britain and America',src:'The Big Dipper in Ursa Major: the Saptarishi, seven sages (India), the Plough (Britain); the pointer stars Merak and Dubhe line up with Polaris',p:[
-   'Seven bright stars make the shape of a big ladle with a bent handle.',
-   'In India, they are the Saptarishi, seven wise sages.',
-   'In Britain, they are the Plough. In America, the Big Dipper.',
-   'Find the two stars at the end of the cup, and follow the line they make.',
-   'They point to the North Star, which hardly moves all night.',
-   'For hundreds of years, travelers have found north this way.']}],
+  {t:'The Rabbit in the Moon',by:'told in China, Japan, Korea and Mexico',src:'Jade Rabbit and Chang’e (Mid-Autumn Festival, China); tsuki no usagi pounding mochi (Japan); daltokki (Korea); the rabbit on the moon in Aztec legend (Florentine Codex, Sahagún, book 7).',p:[
+   'Look at the full moon. Some people see a face. Many more see a rabbit.',
+   'In China, the Jade Rabbit lives on the moon with Chang’e, the moon goddess, and pounds the medicine of long life in a mortar.',
+   'In Japan and Korea, the rabbit is pounding rice into soft rice cakes.',
+   'The Aztecs of Mexico saw a rabbit too, with no way of having heard it from Asia.',
+   'In their story, the moon was once as bright as the sun. One of the gods threw a rabbit at its face to dim it.']},
+  {t:'The Emu in the Sky',by:'told in Australia',src:'The Emu in the Sky (Gawarrgay in Kamilaroi and Euahlayi tradition): a dark constellation from the Coalsack beside the Southern Cross along the Milky Way’s dust lanes toward Scorpius; its changing posture through autumn and winter marks emu egg season (Fuller et al., Journal of Astronomical History and Heritage, 2014).',p:[
+   'Most star pictures are made by joining bright stars. This one is made of the dark.',
+   'Along the Milky Way there are black patches, where clouds of dust hide the stars behind them.',
+   'Aboriginal Australians see an emu in those patches. Its head is the dark spot beside the Southern Cross.',
+   'Its neck, body and legs stretch out along the Milky Way.',
+   'Through the year the emu changes. In autumn it looks as if it is running. That is when real emus lay their eggs.',
+   'In winter its legs disappear and it seems to sit. Then it is time to go and collect the eggs.']},
+  {t:'Stars with Arabic Names',by:'a true fact about star names',src:'Arabic star names passed into Latin through medieval translations of Arabic astronomy: Aldebaran (al-dabarān), Vega (an-nasr al-wāqiʿ), Altair (an-nasr aṭ-ṭāʾir), Deneb (dhanab ad-dajāja), Betelgeuse (yad al-jawzāʾ, misread) (Kunitzsch and Smart, A Dictionary of Modern Star Names).',p:[
+   'Most of the bright stars have Arabic names. Astronomers writing in Arabic kept the best star lists for hundreds of years.',
+   {o:'الدبران',l:'ar',e:'Aldebaran means “the follower”. It rises just after the Pleiades and follows them across the sky.'},
+   {o:'النسر الواقع',l:'ar',e:'Vega comes from the end of this name, “the swooping eagle”.'},
+   {o:'النسر الطائر',l:'ar',e:'Altair is “the flying eagle”.'},
+   {o:'يد الجوزاء',l:'ar',e:'Betelgeuse was “the hand of al-Jawza”. A translator misread the first letter, and the mistake stuck.'}]},
+  {t:'The Star Compass',by:'from the islands of the Pacific',src:'Pacific wayfinding: the Carolinian star compass (rising and setting points of stars around the horizon), taught with stones or shells laid in a circle; Mau Piailug of Satawal navigated Hōkūleʻa from Hawaiʻi to Tahiti in 1976 without instruments.',p:[
+   'The people of the Pacific found islands thousands of miles apart with no compass and no map.',
+   'A star always rises at the same point on the horizon and sets at the same point on the other side.',
+   'A navigator learned those points for dozens of stars. As one star climbed too high to steer by, the next rose in its place.',
+   'Children learned it on the ground, with stones laid in a circle around a canoe made of leaves.',
+   'In 1976 a navigator from the island of Satawal, Mau Piailug, guided a canoe from Hawaiʻi to Tahiti this way. It took a month.']},
+  {t:'Matariki',by:'told in Aotearoa New Zealand and Japan',src:'The Pleiades (M45): about 440 light-years away, over 1,000 stars; Matariki, whose rising before dawn in midwinter marks the Māori new year, a public holiday in New Zealand since 2022; Subaru (昴) in Japan, the six-star badge.',p:[
+   'There is a tiny cluster of stars that people everywhere have noticed.',
+   'In New Zealand, it is Matariki. When it rises before dawn in midwinter, it is the Māori new year, and the whole country has the day off.',
+   'People look at how bright each star is to guess how the year’s food will grow.',
+   'In Japan, the cluster is Subaru. It is the six stars on the front of the cars.',
+   'Most people can count six or seven stars there. Astronomers have counted more than a thousand.']}],
  /* CATS (Jackie, Nov 17: "replace riddles with something else entirely, maybe more nonfiction", "fun facts related to something
     specific -- a book", "cats but like all cat history and facts"). One subject, like a real nonfiction book. Every read is true,
     told in plain words, and src says where to check it. Old texts are in their original language, copied from the printed
@@ -259,35 +332,28 @@ const STORIES={
    'Another is silver-gray all over with green eyes, and is said to bring rain.',
    'Some copies add six unlucky kinds at the back, as a warning.']}],
  proverbs:[
-  {t:'Slowly, Slowly',by:'sayings in Swahili, Spanish and Hindi',src:'Swahili: "Pole pole ndio mwendo", "Haba na haba hujaza kibaba"; Spanish: "Poco a poco se va lejos"; Hindi: "Boond boond se ghada bharta hai"',p:[
-   'Pole pole ndio mwendo.\nSlowly, slowly is the way to go.\n— Swahili',
-   'Haba na haba hujaza kibaba.\nLittle by little fills the measure.\n— Swahili',
-   'Poco a poco se va lejos.\nLittle by little, you go far.\n— Spanish',
-   {o:'बूँद-बूँद से घड़ा भरता है',l:'hi',e:'Boond boond se ghada bharta hai.\nDrop by drop, the pot fills.\n— Hindi'}]}, // spellings बूँद, घड़ा: हिंदी शब्दसागर; the saying as an MP Board Class 8 chapter title (with ही)
-  {t:'Falling Down',by:'sayings from Japan and Korea',src:'Japanese: "Nana korobi ya oki" (七転び八起き), "Saru mo ki kara ochiru" (猿も木から落ちる); Korean: "하늘이 무너져도 솟아날 구멍이 있다"',p:[
-   {o:'七転び八起き',l:'ja',e:'Nana korobi ya oki.\nFall down seven times, get up eight.\n— Japanese'},
-   {o:'猿も木から落ちる',l:'ja',e:'Saru mo ki kara ochiru.\nEven monkeys fall from trees.\n— Japanese'}, // both: Kotobank (Digital Daijisen)
-   {o:'하늘이 무너져도 솟아날 구멍이 있다',l:'ko',e:'Even if the sky falls, there is a hole to climb out of.\n— Korean'}]}, // Standard Korean Language Dictionary (표준국어대사전), under 하늘
-  {t:'Together, and Going Back',by:'sayings from Ireland, Ghana and China',src:'Irish: "Ar scáth a chéile a mhaireann na daoine"; Akan (Ghana): Sankofa, "Se wo were fi na wosankofa a yenkyi"; Chinese: Laozi, Tao Te Ching, chapter 64',p:[
-   'Ar scáth a chéile a mhaireann na daoine.\nPeople live in each other’s shelter.\n— Irish',
-   {o:'Sɛ wo werɛ firi na wosan kɔfa a, yɛnkyiri.',l:'ak',e:'Sankofa.\nIt is not wrong to go back for what you forgot.\n— Akan, Ghana'}, // Twi spelling: adinkrasymbols.org and Twi Wikipedia
-   {o:'千里之行，始於足下。',l:'zh-Hant',e:'A journey of a thousand miles begins beneath your feet.\n— after Laozi, China'}]}], // Daodejing 64, Wang Bi text, Chinese Wikisource
+  {t:'Wasted on Them',by:'sayings from Japan, China and India',src:'Japanese: 猫に小判 (neko ni koban); Chinese: 對牛彈琴 (duì niú tán qín), from the Mouzi Lihuolun; Hindi: बंदर क्या जाने अदरक का स्वाद.',p:[
+   {o:'猫に小判',l:'ja',e:'Gold coins to a cat.\n— Japan'},
+   {o:'對牛彈琴',l:'zh-Hant',e:'Playing the lute to a cow.\n— China'},
+   {o:'बंदर क्या जाने अदरक का स्वाद',l:'hi',e:'What does a monkey know of the taste of ginger?\n— India'}]},
+  {t:'When the Big Ones Fight',by:'sayings from Korea and East Africa',src:'Korean: 고래 싸움에 새우 등 터진다; Swahili: Wapiganapo tembo, nyasi huumia.',p:[
+   {o:'고래 싸움에 새우 등 터진다',l:'ko',e:'When whales fight, the shrimp’s back bursts.\n— Korea'},
+   'Wapiganapo tembo, nyasi huumia.\nWhen elephants fight, it is the grass that gets hurt.\n— Swahili']},
+  {t:'Food First',by:'sayings from Japan, the Philippines and Turkey',src:'Japanese: 花より団子 (hana yori dango); Tagalog: Kapag may tiyaga, may nilaga; Turkish: Bir fincan kahvenin kırk yıl hatırı vardır.',p:[
+   {o:'花より団子',l:'ja',e:'Dumplings over flowers. Said of people at a blossom-viewing picnic who came for the snacks.\n— Japan'},
+   'Kapag may tiyaga, may nilaga.\nWhere there is patience, there is stew.\n— Tagalog, the Philippines',
+   'Bir fincan kahvenin kırk yıl hatırı vardır.\nOne cup of coffee is remembered for forty years.\n— Turkey']},
+  {t:'The Old Man’s Horse',by:'a saying from China, with its story',src:'塞翁失馬，焉知非福, from the Huainanzi (2nd century BC), chapter 18 (人間訓).',p:[
+   'An old man on the border lost his horse. The neighbors were sorry. “How do you know this isn’t good luck?” he said.',
+   'The horse came back with a second, finer horse. The neighbors were glad. “How do you know this isn’t bad luck?”',
+   'His son rode the new horse, fell and broke a leg. The neighbors were sorry again.',
+   'Then war came, and every young man was sent to fight. The son, with his bad leg, stayed home.',
+   {o:'塞翁失馬，焉知非福',l:'zh-Hant',e:'The old man on the border lost his horse. Who can say it isn’t good fortune?'}]},
+  {t:'How It Looks from Here',by:'sayings from Arabic, Persian and Akan',src:'Arabic: القرد في عين أمه غزال; Persian: هر که بامش بیش، برفش بیشتر; Akan (Ghana): Sankofa, "Sɛ wo werɛ firi na wosan kɔfa a, yɛnkyiri".',p:[
+   {o:'القرد في عين أمه غزال',l:'ar',e:'In its mother’s eye, the monkey is a gazelle.\n— Arabic'},
+   {o:'هر که بامش بیش، برفش بیشتر',l:'fa',e:'The bigger your roof, the more snow on it.\n— Persian'},
+   {o:'Sɛ wo werɛ firi na wosan kɔfa a, yɛnkyiri.',l:'ak',e:'It is not wrong to go back for what you forgot.\n— Akan, Ghana'}]}],
  letters:[
-  {t:'How Peter Rabbit Began',by:'Beatrix Potter, 1902',src:'Potter’s picture letter to Noel Moore, 4 September 1893, written while Noel was ill (Morgan Library); The Tale of Peter Rabbit, Frederick Warne 1902 (privately printed 1901), quoted from Project Gutenberg #14838. The letter itself is not quoted: when it was first published, and so its copyright, is uncertain',p:[
-   'In 1893, Beatrix Potter wrote a letter to Noel Moore, a child who was ill in bed.',
-   'To cheer Noel up, the letter told a story, with drawings, about four little rabbits.',
-   'Nine years later, the story became a book. It begins:',
-   'Once upon a time there were four little Rabbits, and their names were—',
-   'Flopsy,\nMopsy,\nCotton-tail,\nand Peter.',
-   'They lived with their Mother in a sand-bank, underneath the root of a very big fir-tree.']},
-  {t:'from a Journal',by:'Dorothy Wordsworth, April 15, 1802',src:'Quoted as printed in William Knight’s edition, Journals of Dorothy Wordsworth (Macmillan, 1897), Project Gutenberg #42856; the middle sentences are left out (…). Later editions from the manuscript (1941 on) read a little differently',p:[
-   'When we were in the woods beyond Gowbarrow Park we saw a few daffodils close to the water-side.',
-   '… I never saw daffodils so beautiful.',
-   'They grew among the mossy stones about and above them;',
-   'some rested their heads upon these stones, as on a pillow, for weariness;',
-   'and the rest tossed and reeled and danced,',
-   'and seemed as if they verily laughed with the wind, that blew upon them over the lake;',
-   'they looked so gay, ever glancing, ever changing.']},
   {t:'Lovely Things',by:'retold from The Pillow Book, Japan, about 1000',src:'Sei Shōnagon, Makura no Sōshi: section 1 ("In spring, the dawn"); "Adorable things" (a child’s face drawn on a melon, a sparrow hopping closer when you chirp at it, tiny lotus leaves from a pond, and "anything small is lovely")',p:[
    'About a thousand years ago, Sei Shōnagon filled a notebook called a pillow book.',
    'It was full of lists: lovely things, annoying things, things that make the heart beat faster.',
@@ -296,7 +362,36 @@ const STORIES={
    {o:'雀の子の、ねずなきするにをどりくる。',l:'ja',e:'Some lovely things: a sparrow hopping closer when you chirp at it.'},
    {o:'瓜にかきたるちごの顔。',l:'ja',e:'A child’s face drawn on a melon.'},
    {o:'蓮の浮葉のいとちひさきを、池よりとりあげたる。',l:'ja',e:'Tiny lotus leaves pulled from a pond.'},
-   {o:'なにもなにも、ちひさきものはみなうつくし。',l:'ja',e:'Anything small, the notebook says, is lovely.'}]}], // Japanese: the 三巻本 text, in its old kana, as on manapedia.jp (うつくしきもの) and houkagonojisyushitsu.jp
+   {o:'なにもなにも、ちひさきものはみなうつくし。',l:'ja',e:'Anything small, the notebook says, is lovely.'}]}, // Japanese: the 三巻本 text, in its old kana, as on manapedia.jp (うつくしきもの) and houkagonojisyushitsu.jp
+  {t:'A Birthday Invitation',by:'Claudia Severa, about the year 100',src:'Vindolanda Tablet 291 (British Museum): Claudia Severa to Sulpicia Lepidina, about AD 100, at a Roman fort in northern Britain; most of it in a scribe’s hand, the closing lines in her own. Latin as transcribed in Tab. Vindol. II 291 (accent marks and brackets left out). English from the Latin.',p:[
+   'This is a party invitation, written in ink on a slice of wood as thin as a postcard. It is 1,900 years old.',
+   'It was found at a Roman army fort in the north of Britain. The commander’s wife at one fort is writing to her friend at the next.',
+   {o:'iii Idus Septembres, soror, ad diem sollemnem natalem meum',l:'la',e:'On 11 September, sister, for my birthday party,'},
+   {o:'rogo libenter facias ut venias ad nos',l:'la',e:'I ask you warmly to come to us.'},
+   'A scribe wrote that part. Then she took the pen and added the ending herself.',
+   {o:'sperabo te soror\nvale soror anima mea',l:'la',e:'I will be expecting you, sister. Goodbye, sister, my soul.'},
+   'Those lines are some of the oldest handwriting by a woman in Latin that still exists.']},
+  {t:'The Copper Complaint',by:'Nanni, about 1750 BC',src:'Clay tablet from Ur, about 1750 BC (British Museum 131236): Nanni to the merchant Ea-nasir, complaining about the grade of copper ingots and the treatment of his messenger; found with other letters of complaint in the house thought to be Ea-nasir’s.',p:[
+   'The oldest complaint letter we have is about 3,750 years old. It is pressed into a lump of clay small enough to hold in one hand.',
+   'A man named Nanni is writing to a copper merchant named Ea-nasir, in the city of Ur.',
+   'Nanni had paid in advance for good copper. What arrived was poor, and Ea-nasir was rude to the messenger sent to fetch it.',
+   'Nanni says he will not accept copper that is not fine quality, and that from now on he will pick out each bar himself, in his own yard.',
+   'The letter was dug up in what seems to be Ea-nasir’s own house.',
+   'It was not the only one. Other customers had written to complain too, and he had kept them all.']},
+  {t:'Onfim’s Homework',by:'Onfim, about 1260',src:'Birch-bark documents nos. 199-210 and 331 from Novgorod, about 1240-1260, by a boy named Onfim, aged about six or seven: alphabet and syllable exercises, psalm phrases, drawings of riders and battles, a beast labeled "I am a wild beast", and "Greetings from Onfim to Danilo".',p:[
+   'In the Russian city of Novgorod, people used to write notes on strips of birch bark, scratching the letters in with a point.',
+   'The wet ground there kept hundreds of them from rotting. Seventeen belong to one boy, Onfim, who was about seven.',
+   'They are his schoolwork from about the year 1260. He practiced his alphabet, forward, then in syllables.',
+   'Then he got bored and drew on them: knights on horses, battles, himself as a hero with a spear.',
+   'On one he drew a creature with a long neck and a curly tail and wrote beside it, “I am a wild beast.”',
+   'Next to the beast he wrote, “Greetings from Onfim to Danilo.” Danilo was probably the boy at the next desk.']},
+  {t:'Sorry About Last Night',by:'a model letter from Dunhuang, China, 856',src:'A manuscript of model letters from the Dunhuang caves dated 856 (British Library, Stein collection), with a letter of apology for drunken behavior and the host’s polite reply; retold, not quoted.',p:[
+   'In a cave in western China, sealed up for nine hundred years, there was a book of letters to copy.',
+   'It gave the correct words for every occasion. One of them is for the morning after you got drunk at someone’s dinner.',
+   'The writer says that he drank too much yesterday and went past all limits, and that he did not know what he was saying.',
+   'He says that when friends told him this morning what he had said, he wished the ground would swallow him.',
+   'He promises to come and apologize in person.',
+   'The book also has the host’s answer, to copy if you need it. It says, more or less, don’t worry about it.']}],
  recipes:[
   {t:'Moon-Viewing Dumplings',by:'a recipe from Japan',src:'Tsukimi dango: shiratamako (sweet rice flour) and water, rolled, boiled until they float, cooled in water; stacked in a pyramid for the autumn full moon (jūgoya) with susuki pampas grass',p:[
    'In Japan, on the autumn full moon, people make tsukimi dango to share with the moon.',
@@ -321,32 +416,73 @@ const STORIES={
    'They called it Fairy Floss.',
    'At the 1904 World’s Fair, they sold tens of thousands of boxes.',
    'The recipe is just sugar, and maybe a drop of color.',
-   'The secret is the spinning.']}],
+   'The secret is the spinning.']},
+  {t:'Mix-Mix',by:'a recipe from the Philippines',src:'Halo-halo ("mix-mix"): shaved ice and evaporated milk over sweetened beans, coconut gel, jackfruit, purple yam and more; traced to Japanese migrants’ mong-ya (sweet mung beans on shaved ice) stalls in Manila before the Second World War.',p:[
+   'Halo-halo means “mix-mix”, which is also the only instruction.',
+   'Into a tall glass go sweet red beans, chewy cubes of coconut jelly, strips of jackfruit and whatever else is in the house.',
+   'Pack the glass to the top with shaved ice. Pour evaporated milk over it.',
+   'On top goes a spoon of purple yam jam, a slice of caramel custard, or both.',
+   'It began with Japanese shopkeepers in Manila about a hundred years ago, who sold sweet beans on shaved ice. Filipinos kept adding things.',
+   'Now mix it all into a purple mess and eat it with a long spoon.']},
+  {t:'Three Cups',by:'a custom from Ethiopia',src:'The Ethiopian and Eritrean coffee ceremony (buna): green beans roasted in a pan, the smoke wafted to guests, ground by hand, brewed in a clay jebena; three rounds, abol, tona and baraka; often served with popcorn.',p:[
+   'Coffee comes from Ethiopia, and there it is not something you grab on the way out.',
+   'The host starts with green beans and roasts them in a flat pan over coals while everyone talks.',
+   'When they smoke, the pan is carried around so each guest can wave the smell toward their face.',
+   'The beans are pounded and boiled in a round clay pot with a long neck.',
+   'There are three rounds from the same grounds, each one weaker. They have names: abol, tona and baraka.',
+   'The third is the blessing. It is rude to leave before it. There is usually popcorn.']},
+  {t:'The Oldest Stew',by:'a recipe from Babylon, about 1750 BC',src:'Yale Babylonian Collection tablets YBC 4644, 8958 and 4648, about 1750 BC: about 25 stew recipes in Akkadian; tuh’u, a stew of lamb and beets with onion, leek, garlic, cumin, coriander and beer (Bottéro; Barjamovic et al., 2019).',p:[
+   'The oldest recipes in the world are on three clay tablets from Babylon. They are about 3,750 years old.',
+   'Most of them are stews. They are short, because they were written for cooks who already knew how.',
+   'One is for a lamb and beet stew, as red as it sounds.',
+   'Brown the lamb in fat. Add salt, beer, onion, and a leafy green.',
+   'Add cumin and beets, and let it cook.',
+   'At the end, crush leek and garlic together and stir them in. Scatter fresh coriander on top.',
+   'People have cooked it from the tablet. They say it is good.']}],
  ghost:[
-  {t:'The House Child',by:'told in Japan',src:'Zashiki-warashi, a house spirit of Iwate in northern Japan; Kunio Yanagita, Tōno Monogatari (1910), tales 17-18 (old houses have one; a house with one prospers; luck leaves when it is seen leaving); the footprints in the ashes and leaving out a treat are wider folk tradition, not in those tales',p:[
+  {t:'The House Child',by:'told in Japan',src:'Zashiki-warashi, a house spirit of Iwate in northern Japan; Kunio Yanagita, Tōno Monogatari (1910), tales 17-18 (old houses have one; a house with one prospers; luck leaves when it is seen leaving); the footprints in the ashes are wider folk tradition.',p:[
    'In the north of Japan, some old houses have a zashiki-warashi.',
-   'A zashiki-warashi is a house spirit that looks like a child.',
-   'It patters about the guest room at night and leaves tiny footprints in the ashes.',
+   'It is a house spirit that looks like a child of five or six.',
+   'It patters about the guest room at night and leaves small footprints in the ashes of the fire.',
    'Nobody minds. A house with a zashiki-warashi has good luck.',
-   'But if it is ever seen leaving, the luck goes with it.',
-   'So people keep the guest room cozy, and leave out a little treat.',
-   'If you hear a soft patter tonight, say goodnight.']},
-  {t:'Jack of the Lantern',by:'told in Ireland',src:'The Irish tale of Stingy Jack; jack-o’-lanterns were first carved from turnips in Ireland and Scotland, then pumpkins in North America',p:[
-   'In Ireland, they tell of Stingy Jack, who played one trick too many.',
-   'Jack tricked the Devil up an apple tree, and kept the Devil stuck there.',
-   'When Jack’s days were done, no place would take such a trickster in.',
-   'So Jack wanders still, with a coal glowing inside a carved-out turnip to light the way.',
-   'That is Jack of the lantern: the jack-o’-lantern.',
-   'People in Ireland and Scotland carved turnip lanterns at Halloween, to keep Jack and other wandering spirits away.',
-   'In America, pumpkins were bigger and easier to carve. So pumpkins it is.']},
-  {t:'Foxfire',by:'told in Japan and across Europe',src:'Kitsunebi (fox fire) and the fox’s wedding lanterns, Japan; the will-o’-the-wisp, England; explanations: marsh gas burning in the air, and glowing fungi in rotting wood (the "foxfire" of Armillaria)',p:[
-   'On damp nights, people have seen little lights floating over marshes.',
-   'In Japan, they are kitsunebi, foxfire: lanterns carried by foxes on the way to a wedding.',
-   'In England, they are will-o’-the-wisps, leading travelers off the path.',
-   'Follow one, the old stories say, and you’ll only get your feet wet.',
-   'Scientists think some were swamp gas, flickering as it burned in the air.',
-   'Some may have been glowing fungi. In English, that soft green glow in rotting wood is also called foxfire.',
-   'So a light in the marsh might be gas, or mushrooms, or foxes.']}],
+   'If it is ever seen leaving, the luck goes with it, and the family is soon poor.',
+   'So people keep the guest room comfortable and leave out sweets.']},
+  {t:'The Kapre',by:'told in the Philippines',src:'The kapre of Philippine folklore: a tall, dark, hairy giant that sits in large trees (balete, acacia, mango) smoking; it leads travelers astray, and turning one’s shirt inside out breaks the spell.',p:[
+   'In the Philippines, if you see a small red glow high in a big old tree at night, do not go and look.',
+   'It is the end of a cigar. The one smoking it is a kapre.',
+   'A kapre is a giant, taller than the house, dark and hairy, who sits in the branches of balete and mango trees.',
+   'Mostly a kapre just sits and smokes. Sometimes it takes a liking to a person and follows them through life.',
+   'Its favorite trick is to make travelers walk in circles on a path they know well.',
+   'If that happens, take off your shirt and put it back on inside out. Then you will find your way home.']},
+  {t:'A Hundred Years Old',by:'told in Japan',src:'Tsukumogami (付喪神): tools that reach a hundred years gain a spirit (Tsukumogami-ki, Muromachi period); the year-end cleaning (susuharai) and memorial services for used needles (hari-kuyō) and dolls; kasa-obake, the umbrella with one eye and one leg.',p:[
+   'In Japan, people say a tool that reaches its hundredth birthday comes alive.',
+   'An old paper umbrella grows one eye and one leg, and hops. An old sandal runs about the house at night.',
+   'A thing that was looked after turns out friendly. A thing that was thrown in a corner comes back to complain.',
+   'So for centuries, households cleared out their old tools at the end of each year, before any could turn ninety-nine.',
+   'Some things are still given a proper goodbye. Every February, tailors take their bent and broken needles to a temple.',
+   'They stick them into a block of soft tofu, to thank them and let them rest.']},
+  {t:'Dokkaebi',by:'told in Korea',src:'Dokkaebi (도깨비) of Korean folklore: not spirits of the dead; said to form from discarded household objects such as brooms; fond of buckwheat jelly (memil-muk), wrestling (ssireum) and tricks; carry a club (bangmangi) that produces what is asked for.',p:[
+   'A dokkaebi is a Korean goblin. It was never a person. It starts out as some old thing thrown away, like a worn broom.',
+   'Dokkaebi come out at night and stop travelers on the road. What they want is a wrestling match.',
+   'They are very strong and not very clever. In the stories, people usually win by a trick.',
+   'They love buckwheat jelly, songs and bets, and they cannot stand to owe anyone.',
+   'Each one carries a club. Tap it on the ground and ask, and gold or dinner appears.',
+   'In the morning, the traveler finds an arm wrapped tight around an old broomstick.']},
+  {t:'The Hopping Ghost',by:'told in China',src:'Jiangshi (殭屍), the "stiff corpse" of Chinese folklore: hops with arms outstretched; stopped by a paper talisman on the forehead, sticky rice, or holding one’s breath; often linked to accounts of "corpse-driving" in western Hunan (Xiangxi).',p:[
+   'The Chinese ghost called a jiangshi cannot walk. Its body is too stiff to bend.',
+   'So it hops, with both arms held straight out in front.',
+   'It finds people by their breath. If one comes close, hold yours.',
+   'A strip of yellow paper with the right words on it, stuck to its forehead, stops it where it stands.',
+   'Sticky rice thrown on the ground will also slow it down.',
+   'One old explanation: families paid to have a relative who died far away carried home.',
+   'The carriers walked at night with the body upright between bamboo poles. From a distance, it bobbed.']},
+  {t:'Foxfire',by:'told in Japan',src:'Kitsunebi (狐火) and the fox’s wedding procession (kitsune no yomeiri); explanations: marsh gas burning in the air, and glowing fungi in rotting wood (the "foxfire" of Armillaria).',p:[
+   'On damp nights, people have seen rows of small lights floating over the fields.',
+   'In Japan they are kitsunebi, foxfire. They are lanterns carried by foxes walking to a wedding.',
+   'A fox wedding is also why rain sometimes falls while the sun is shining.',
+   'Follow the lights and they go out. Then they light again farther off.',
+   'Some were probably swamp gas, which can catch and flicker in the air.',
+   'Some may have been fungi. There are mushrooms that grow in rotting wood and glow green in the dark.']}],
  field:[
   {t:'The Garden Snail',by:'Field guide',src:'Cornu aspersum: eyes at the tips of the upper tentacles, which roll in when touched; the radula, with thousands of tiny teeth; mucus to glide on; an epiphragm of dried mucus to wait out dry weather',p:[
    'The garden snail carries its house wherever it goes.',
@@ -369,7 +505,28 @@ const STORIES={
    'Add water, and within hours it turns green again.',
    'Peat moss can soak up about twenty times its own weight in water.',
    'Moss grows on every continent, even Antarctica.',
-   'Look for it on the shady side of rocks and trees, wherever it stays damp.']}]};
+   'Look for it on the shady side of rocks and trees, wherever it stays damp.']},
+  {t:'The Banana Slug',by:'Field guide',src:'Ariolimax (Pacific banana slug), coastal forests from California to Alaska: up to about 25 cm; breathes through a pneumostome on the right side of the mantle; mucus contains an anesthetic; feeds on fungi and leaf litter and spreads spores and seeds.',p:[
+   'The banana slug lives in the wet forests of the Pacific coast, from California to Alaska.',
+   'It is bright yellow, sometimes spotted like an old banana, and can grow as long as a pencil.',
+   'It breathes through a single hole in its right side, which opens and closes.',
+   'Its slime numbs the mouth of anything that tries to eat it. Raccoons roll them in dirt first.',
+   'It eats mushrooms and dead leaves and leaves rich soil behind it.',
+   'Look for one on the forest floor on a damp morning.']},
+  {t:'The Slime Mold',by:'Field guide',src:'Physarum polycephalum: a single giant cell with many nuclei, no brain or nerves; finds the shortest path through a maze (Nakagaki et al., Nature, 2000); connected oat flakes laid out as cities around Tokyo with a network like the rail system (Tero et al., Science, 2010).',p:[
+   'A slime mold is a yellow smear on a rotting log. It is not a plant, an animal or a fungus.',
+   'The whole thing is one single cell, sometimes as big as a dinner plate.',
+   'It creeps along at about a thumb’s width an hour, looking for food.',
+   'It has no brain. Scientists put one in a maze with food at both ends, and it found the shortest way through.',
+   'Others laid out oat flakes on a map where the cities around Tokyo are.',
+   'The slime mold joined them up with a web of tubes. It looked very much like the real Tokyo train map.']},
+  {t:'The Pill Bug',by:'Field guide',src:'Armadillidium vulgare: a land-living crustacean (isopod); breathes with gill-like pleopods that must stay moist; conglobation; females carry eggs in a brood pouch; individuals infected with an iridovirus turn blue.',p:[
+   'The pill bug under your flowerpot is not an insect. It is a crustacean, a cousin of crabs and shrimp.',
+   'It still breathes with gills, so it has to stay damp. That is why it hides under things.',
+   'When it is scared it rolls into a ball, armor out.',
+   'A mother carries her eggs in a pouch on her belly, like a kangaroo.',
+   'Once in a while you may find a bright blue one. It has caught a virus that forms tiny crystals under the shell.',
+   'Turn over a stone or a log, and put it back the way you found it.']}]};
 
 // the pages of a read as the open book shows them: the title page first
 function readPages(s){return s?[{t:s.t,by:s.by}].concat(s.p):[];}
