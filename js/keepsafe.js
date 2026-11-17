@@ -90,14 +90,14 @@ function ksStart(el){const c=el&&el.firstChild;if(!c)return;c.classList.add('kss
 // the journal's Keep it safe page
 function keepPages(L,R){
   L.appendChild(jdiv('jname',[],'Keep it safe'));
-  L.appendChild(jdiv('ksnote',[],'Your room lives only on this phone. Now and then, save a backup and keep the file somewhere safe: Files, iCloud, or an email to yourself. If anything is ever lost, or on a new phone, load it back.'));
+  L.appendChild(jdiv('ksnote',[],'Your game is saved only on this phone. To protect it, save a backup file from time to time and keep it in Files, iCloud or an email to yourself. You can load it later on this phone or a new one.'));
   const c=jdiv('kschoices');c.innerHTML=tsChoices([['save','Save a backup','A small file','yes','check'],['load','Load a backup','From a file','wait','hourglass']]);
   c.querySelector('[data-k=save]').addEventListener('click',e=>{e.stopPropagation();sfx('tick');ksSaveFile()});
   c.querySelector('[data-k=load]').addEventListener('click',e=>{e.stopPropagation();sfx('tick');ksLoadFile()});L.appendChild(c);
   R.appendChild(jdiv('jlab',[],'Copies on this phone'));
   const list=jdiv('kslist',[],'…');R.appendChild(list);
-  ksCopies().then(cs=>{list.textContent='';if(!cs.length){list.textContent='The first one is made a few minutes into play.';return}
-    list.textContent='The game keeps its last '+KS_KEEP+' saves here by itself, in case one goes wrong. Newest: day '+cs[0].day+', '+new Date(cs[0].t).toLocaleString(undefined,{weekday:'long',hour:'numeric',minute:'2-digit'})+'.'});
+  ksCopies().then(cs=>{list.textContent='';if(!cs.length){list.textContent='The game makes the first copy a few minutes after you start playing.';return}
+    list.textContent='The game also keeps its last '+KS_KEEP+' saves on this phone automatically. The newest is from day '+cs[0].day+', '+new Date(cs[0].t).toLocaleString(undefined,{weekday:'long',hour:'numeric',minute:'2-digit'})+'.'});
   const how=jdiv('kstip');ksHint(how);if(how.firstChild)R.appendChild(how);}
 
 // the start screen, when there's no save: bring back the newest copy on this phone, if there is one

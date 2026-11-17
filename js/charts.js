@@ -8,25 +8,26 @@
      you were born in, picked from a list of the world's cities, data/cities.json).
    - Places: your rising sign needs your birth city and time. The cat and the monsters were born where you play, worked out
      from the phone's time zone (its biggest city), so they have rising signs too.
-   - The sky is real (js/sky.js). What it means is the old tradition, said plainly: each body is one part of a personality
-     (the sun who you are, the moon your feelings, rising how you meet the world, Mercury talking and thinking, Venus love and
-     taste, Mars drive, Jupiter luck and growth, Saturn lessons), and each sign is a way of doing it.
-   - Today's horoscope: what today's real sky is doing to each chart (the moon, the sun and the planets making aspects to
-     someone's sun, moon or rising), the strongest one or two, in plain words. Together: today's moon against both suns, and,
-     to keep, how the two charts' suns and moons fit (same element, complementary elements, or different).
+   - The sky is real (js/sky.js). The meanings are the traditional ones, written as plain sentences (Jackie, Nov 16: no
+     clever paired lines, just straightforward prose): each body is about one part of a personality and each sign has a
+     character, for example "The moon is about feelings, and Leo is a warm, confident sign."
+   - Today's horoscope: the strongest one or two angles today's sky makes to someone's sun, moon or rising sign, each as
+     one sentence. Together: whether today's moon suits both charts, and how the two suns and the two moons fit.
    No genders anywhere: everyone is said by name. */
-const SIGN_HOW=['boldly and fast, first in line','steadily, with comfort and good things','curiously, in many directions at once','tenderly, close to home','warmly and with flair','carefully, noticing every detail','gracefully, looking for balance','deeply and intensely','freely, with big hopes','patiently, building for the long run','in an original way, a little apart from the crowd','dreamily, with a big, soft heart'];
-const BODY_DOES={sun:'shines',moon:'feels',asc:'meets the world',mercury:'thinks and talks',venus:'loves',mars:'goes after things',jupiter:'grows and finds luck',saturn:'learns life\'s lessons'};
+const SIGN_IS=['a bold, impatient sign','a steady, comfort-loving sign','a curious, talkative sign','a caring, home-loving sign','a warm, confident sign','a careful, practical sign','a friendly, fair-minded sign','an intense, private sign','an adventurous, optimistic sign','a patient, hard-working sign','an independent, original sign','a dreamy, gentle sign'];
+const BODY_ABOUT={sun:'who someone is at heart',moon:'feelings',asc:'how someone comes across to others',mercury:'thinking and talking',venus:'love and what someone enjoys',mars:'energy and drive',jupiter:'luck and growth',saturn:'discipline and hard lessons'};
+const BODY_THE={sun:'The sun',moon:'The moon',asc:'The rising sign',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn'};
 const BODY_NAME={sun:'Sun',moon:'Moon',asc:'Rising',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn'};
 const BODY_GLYPH={sun:'☉',moon:'☽',asc:'AC',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄'};
 // today's sky on someone: by the moving body, an easy aspect and a hard one
-const TRANSIT={moon:{easy:'an easy, comfy mood',hard:'some moody moments, so go gently',big:'feelings run big'},
-  sun:{easy:'a day to shine',hard:'a little friction; take it slow',big:'a fresh-start feeling'},
-  mercury:{easy:'good for chatting and new ideas',hard:'mixed-up messages',big:'a busy, chatty head'},
-  venus:{easy:'extra affection all around',hard:'wanting a bit more attention',big:'a sweet, cuddly day'},
-  mars:{easy:'lots of get-up-and-go',hard:'a short fuse; burn off the extra energy',big:'bursting with energy'},
-  jupiter:{easy:'lucky breaks',hard:'too much of a good thing',big:'a big, lucky, growing time'},
-  saturn:{easy:'steady progress',hard:'a tiring, serious day',big:'a time to be patient and build'}};
+// today's sky on someone, by the moving body: what an easy angle, a tense angle and a meeting usually bring
+const TRANSIT={moon:{easy:'so the mood should be relaxed',hard:'so moods may swing a little',big:'so feelings will be strong'},
+  sun:{easy:'so it is a good day to get things done',hard:'so things may take more effort',big:'so it is a good day to start something'},
+  mercury:{easy:'so it is a good day for talking and ideas',hard:'so messages may get mixed up',big:'so there will be a lot to think and talk about'},
+  venus:{easy:'so expect extra affection',hard:'so someone may want more attention',big:'so it should be an affectionate day'},
+  mars:{easy:'so there will be plenty of energy',hard:'so tempers may be short',big:'so there will be a lot of energy to use up'},
+  jupiter:{easy:'so some good luck is likely',hard:'so it is easy to overdo things',big:'so this is a lucky stretch'},
+  saturn:{easy:'so steady work will pay off',hard:'so the day may feel heavy',big:'so this is a time for patience'}};
 const POINT_OF={sun:'sun',moon:'moon',asc:'rising sign'};
 const CAT_AGE0=1.34; // how old the cat is, in years, when the game starts
 let CITIES=null,citiesP=null;
@@ -59,32 +60,32 @@ function chartPeople(){const home=homePlace(),P=[];
   for(const q of allRaw())if(q.stage>=1){const about=!q.bornAt,t=q.bornAt||Date.now()-plantAgeMs(q);P.push({k:'p'+q.id,name:nameOf(q,true),t,about,tz:home&&home.tz,place:home,q})}
   return P}
 function chartOf(p){if(!p.t)return null;if(!p._c)p._c=skyChart(p.t,p.place);return p._c}
-function chartLine(p,b,c){const s=c[b];return p.name+' '+(p.k==='you'?BODY_DOES[b].replace('shines','shine').replace('feels','feel').replace('meets','meet').replace('thinks and talks','think and talk').replace('loves','love').replace('goes','go').replace('grows and finds','grow and find').replace('learns','learn'):BODY_DOES[b])+' '+SIGN_HOW[s.i]+'.'}
+function chartLine(p,b,c){return BODY_THE[b]+' is about '+BODY_ABOUT[b]+', and '+c[b].name+' is '+SIGN_IS[c[b].i]+'.'}
 // today's horoscope for one person: the strongest aspects today's sky makes to their sun, moon and rising
 function horoscope(p,now){const c=chartOf(p);if(!c)return null;const sky=skyChart(now);const hits=[];
   const pts=['sun','moon'].concat(c.asc?['asc']:[]),weight={moon:3,sun:2,venus:2,mars:2,mercury:1.5,jupiter:1.2,saturn:1.2},pw={sun:1.2,moon:1,asc:.8};
   for(const tb of ['moon','sun','mercury','venus','mars','jupiter','saturn'])for(const np of pts){if(p.noTime&&np==='moon'&&tb!=='moon')continue;const a=skyAspect(sky[tb].lon,c[np].lon,true);if(a)hits.push({tb,np,a,s:weight[tb]*pw[np]*(1-a.off/8)})}
   hits.sort((x,y)=>y.s-x.s);const who=p.k==='you'?'your':p.name+'’s';
-  const say=h=>{const kind=h.a.n==='conjunct'?'big':(h.a.n==='trine'||h.a.n==='sextile')?'easy':'hard',tone=TRANSIT[h.tb][kind];
-    const verb={conjunct:'sits right on',trine:'flows easily with',sextile:'gently helps',square:'rubs against',opposite:'pulls against'}[h.a.n];
-    return 'Today’s '+(h.tb==='sun'||h.tb==='moon'?h.tb:BODY_NAME[h.tb])+' '+verb+' '+who+' '+POINT_OF[h.np]+': '+tone+'.'};
+  const say=h=>{const kind=h.a.n==='conjunct'?'big':(h.a.n==='trine'||h.a.n==='sextile')?'easy':'hard';
+    const rel={conjunct:'in the same place as',trine:'at an easy angle to',sextile:'at a helpful angle to',square:'at a tense angle to',opposite:'opposite'}[h.a.n];
+    return BODY_THE[h.tb]+' is '+rel+' '+who+' '+POINT_OF[h.np]+' today, '+TRANSIT[h.tb][kind]+'.'};
   if(hits.length){const out=[say(hits[0])];const h2=hits.find(h=>h.tb!==hits[0].tb&&h.np!==hits[0].np);if(h2&&h2.s>1)out.push(say(h2));return out.join(' ')}
-  const m=sky.moon,same=m.element===c.sun.element;return 'The moon is in '+m.name+' today. '+(same?'That suits '+(p.k==='you'?'you':p.name)+': a comfortable, easy day.':'A quiet day, sky-wise: nothing big pulling '+(p.k==='you'?'at you':'at '+p.name)+'.')}
+  const m=sky.moon,same=m.element===c.sun.element;return 'The moon is in '+m.name+' today. '+(same?'That is the same element as '+who+' sun, so it should be an easy day.':'Nothing in the sky is at a strong angle to '+who+' chart, so it should be a quiet day.')}
 // two people: today, and always
 const ELEM_FIT=(a,b)=>a===b?'same':({fire:'air',air:'fire',earth:'water',water:'earth'})[a]===b?'pair':'diff';
 function together(p1,p2,now){const c1=chartOf(p1),c2=chartOf(p2);if(!c1||!c2)return null;const m=skyChart(now).moon;
-  const f1=ELEM_FIT(m.element,c1.sun.element),f2=ELEM_FIT(m.element,c2.sun.element),good=v=>v!=='diff';
-  const today=good(f1)&&good(f2)?'a sweet day together; plan something fun.':good(f1)||good(f2)?'one of you is in the mood and one isn’t; meet in the middle.':'give each other a little space today.';
+  const f1=ELEM_FIT(m.element,c1.sun.element),f2=ELEM_FIT(m.element,c2.sun.element),good=v=>v!=='diff',you=p1.k==='you'||p2.k==='you',two=you?'the two of you':'the two of them';
+  const P=(p,cap)=>p.k==='you'?(cap?'Your':'your'):p.name+'’s';
+  const today='The moon is in '+m.name+' today, which '+(good(f1)&&good(f2)?'suits both charts, so it is a good day for '+two+' to do something together.':good(f1)||good(f2)?'suits one chart more than the other, so '+two+' may need to be patient with each other.':'suits neither chart, so '+two+' may want some space from each other.');
   const sf=ELEM_FIT(c1.sun.element,c2.sun.element),mf=ELEM_FIT(c1.moon.element,c2.moon.element);
-  const an=w=>(/^[aeiou]/.test(w)?'An ':'A ')+w,an2=w=>(/^[aeiou]/.test(w)?'an ':'a ')+w;
-  const always=(sf==='same'?'Both suns are '+c1.sun.element+' signs: natural friends who just get each other':sf==='pair'?an(c1.sun.element)+' sun and '+an2(c2.sun.element)+' sun: you spark each other':an(c1.sun.element)+' sun and '+an2(c2.sun.element)+' sun: different, and you can learn a lot from each other')
-    +(mf==='same'||mf==='pair'?', and your moons feel things the same way.':', though your moons feel things differently.');
-  return {today:'With the moon in '+m.name+': '+today,always}}
+  const always=P(p1,1)+' sun and '+P(p2)+' sun are '+(sf==='same'?'both in '+c1.sun.element+' signs, which usually makes for an easy friendship.':'in '+c1.sun.element+' and '+c2.sun.element+' signs, which '+(sf==='pair'?'usually get along well.':'are quite different, so '+two+' may see things differently.'))
+    +' The two moons are in '+(mf==='diff'?'different kinds of signs, so '+two+' may react to things differently.':'compatible signs, so '+two+' tend to feel things in similar ways.');
+  return {today,always}}
 /* ---------- the CHARTS page in the moon box ---------- */
 let chartSel='cat';
 function chartsShow(){tr={k:'charts',step:'charts',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='<div class="chwrap"><div class="chpeople"></div><div class="chcard"></div></div>';tSay('');
   const sayEl=tarotEl.querySelector('.tsay');sayEl.textContent='Loading the sky…';
-  citiesLoad().catch(()=>{}).finally(()=>{if(!tarotEl||tr.k!=='charts')return;sayEl.textContent='The planets’ places are real astronomy. What they mean is old tradition.';chartsDraw()})}
+  citiesLoad().catch(()=>{}).finally(()=>{if(!tarotEl||tr.k!=='charts')return;sayEl.textContent='These charts use the real positions of the planets and the traditional astrological meanings.';chartsDraw()})}
 function chartsDraw(){const P=chartPeople(),pe=tarotEl.querySelector('.chpeople');pe.innerHTML='';if(!P.find(p=>p.k===chartSel))chartSel=P[0].k;
   for(const p of P){const b=document.createElement('button');b.type='button';b.className='tsb chp'+(p.k===chartSel?' on':'');b.textContent=p.name;
     b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');chartSel=p.k;chartsDraw()});pe.appendChild(b)}

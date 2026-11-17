@@ -69,7 +69,7 @@ async def main():
         await asyncio.sleep(.6)
         text = await pg.evaluate("()=>document.querySelector('.journal').innerText")
         check("Save a backup" in text and "Load a backup" in text and "Copies on this phone" in text, f"the Keep it safe page should have both buttons and the copies, got {text[:200]}")
-        check("Newest: day 12" in text, f"the page should say the newest copy, got {text[:400]}")
+        check("The newest is from day 12" in text, f"the page should say the newest copy, got {text[:400]}")
         await pg.screenshot(path=os.path.join(OUT, "journal_keep_it_safe.png"))
         async with pg.expect_download() as dl:
             await pg.click(".kschoices [data-k=save]")

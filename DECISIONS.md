@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Plain prose in the game's text (Nov 16)
+
+- Jackie flagged "The planets' places are real astronomy. What they mean is old tradition." as reading like AI writing, and asked for such lines to be found and replaced with straightforward prose. The pattern to avoid: neat paired sentences, a clipped phrase followed by a colon and a punchy tag, semicolon fragments, and cute flourishes.
+- Rewritten as plain sentences: the charts' footer ("These charts use the real positions of the planets and the traditional astrological meanings."), every horoscope line ("Venus is at a helpful angle to Tofu's moon today, so expect extra affection."), the lines for pairs, the chart rows ("The moon is about feelings, and Leo is a warm, confident sign."), the tarot's summary of a spread, all 156 card meanings (no colons or semicolons), the Keep it safe page, and the radio's station descriptions.
+- For new text: say the thing directly in a full, ordinary sentence.
+
 ### Tofu is about 1.34 years old when the game starts (Nov 16)
 
 - Jackie: "make tofu about 1.34 years old when the game starts." The cat's birth moment, used for its birth chart and horoscopes, is now 1.34 years before the moment the game began (it used to be the moment the cat came into the room). The chart says "Born" with that date. In games started before birth moments were kept, the start is estimated from the first monster, as before.

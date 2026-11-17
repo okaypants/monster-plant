@@ -78,9 +78,9 @@ function wakeOff(){const w=WAKE;WAKE=null;if(w)w.release().catch(()=>{})}
    may vanish (Jackie: keep it, just skip it if it disappears; a dead station already skips to the next).
    Freeform and DJ stations talk between records now and then, and anything can come on: that's the fun of them. */
 const WORLD=[
- {n:'KPISS.FM',k:'Gloriously weird',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
- {n:'Coast to Coast AM',k:'Art Bell reruns: aliens, ghosts and callers',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
- {n:'Midnight in the Desert',k:'More Art Bell reruns, late-night strange',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
+ {n:'KPISS.FM',k:'Weird internet radio',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
+ {n:'Coast to Coast AM',k:'Reruns of Art Bell\'s call-in show about aliens and ghosts',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
+ {n:'Midnight in the Desert',k:'More reruns of Art Bell\'s late-night show',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
  {n:'Free People of the Cosmos',k:'UFO and paranormal shows',p:'USA',u:'https://podradio.us/stream/free-cosmos',x:-98.0},
  {n:'Radio is a Foreign Country',k:'Rare tapes, records and field recordings',p:'USA',u:'https://s5.radio.co/s20251311a/listen',x:-95.0},
  {n:'Montez Press Radio: The Sounded Word',k:'Sound and poetry',p:'New York, USA',u:'https://stream.montezpress.com/icecast/reading-and-poetry-the-sounded-word',x:-74.01},
@@ -97,16 +97,16 @@ const WORLD=[
  {n:'ROKit Radio Science Fiction',k:'Old sci-fi radio plays',p:'UK',u:'https://streaming05.liveboxstream.uk/proxy/roksta12/stream',x:-1.0},
  {n:'Oroko Radio',k:'Underground',p:'Accra, Ghana',u:'https://oroko-radio.radiocult.fm/stream',x:-0.2},
  {n:'NTS 1',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream',x:-0.12},
- {n:'Resonance Extra',k:'Sound art and strange music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra',x:-0.118},
- {n:'FIP',k:'A bit of everything',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac',x:2.35},
+ {n:'Resonance Extra',k:'Sound art and experimental music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra',x:-0.118},
+ {n:'FIP',k:'Many kinds of music',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac',x:2.35},
  {n:'Antinea Radio',k:'Kabyle radio',p:'Tizi Ouzou, Algeria',u:'https://listen.radioking.com/radio/6640/stream/347',x:4.05},
- {n:'Kiosk Radio',k:'From a kiosk in a park',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b',x:4.35},
+ {n:'Kiosk Radio',k:'DJs broadcasting from a park kiosk',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b',x:4.35},
  {n:'Radio WORM',k:'Experimental, from a music venue',p:'Rotterdam, Netherlands',u:'https://origin.streamnerd.nl/worm/worm/icecast.audio',x:4.48},
  {n:'LYL Radio',k:'Underground and odd',p:'Lyon, France',u:'https://icecast.lyl.live/live',x:4.83},
  {n:'Noise Radio',k:'Noise and field recordings',p:'Netherlands',u:'https://a2.asurahosting.com:7890/radio.mp3',x:5.3},
  {n:'Radio Meuh',k:'Groovy and eclectic',p:'The French Alps',u:'https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3',x:6.5},
  {n:'Radio Raheem',k:'DJs and odd records',p:'Milan, Italy',u:'https://radioraheem.out.airtime.pro/radioraheem_a',x:9.19},
- {n:'Mosaique FM Tarab',k:'Tarab: classic Arabic song',p:'Tunis, Tunisia',u:'https://radio.mosaiquefm.net/mosatarab',x:10.18},
+ {n:'Mosaique FM Tarab',k:'Tarab, classic Arabic songs',p:'Tunis, Tunisia',u:'https://radio.mosaiquefm.net/mosatarab',x:10.18},
  {n:'NRK Folkemusikk',k:'Norwegian folk',p:'Norway',u:'https://lyd.nrk.no/icecast/aac/high/s0w7hwn47m/folkemusikk',x:10.75},
  {n:'Radio 80000',k:'DJs and weird pop',p:'Munich, Germany',u:'https://radio80k.out.airtime.pro:8000/radio80k_a',x:11.58},
  {n:'Radio Arts Tripoli',k:'Arts radio',p:'Tripoli, Libya',u:'https://stream.zeno.fm/z9wfrdpmgg0uv',x:13.19},
@@ -117,12 +117,12 @@ const WORLD=[
  {n:'Bush Radio',k:'Community radio',p:'Cape Town, South Africa',u:'https://zas4.ndx.co.za:9100/stream',x:18.42},
  {n:'Palanga Street Radio',k:'Underground by the sea',p:'Palanga, Lithuania',u:'https://stream.palanga.live:8443/palanga128.mp3',x:21.07},
  {n:'ERT Kosmos',k:'Music from all over the world',p:'Athens, Greece',u:'https://radiostreaming.ert.gr/ert-kosmos',x:23.73},
- {n:'XRaydio',k:'A kaleidoscope of sound',p:'Bulgaria',u:'https://xraydio.ddns.net/live',x:25.0},
+ {n:'XRaydio',k:'Mixed electronic and vaporwave',p:'Bulgaria',u:'https://xraydio.ddns.net/live',x:25.0},
  {n:'Amapiano FM',k:'Amapiano',p:'Johannesburg, South Africa',u:'https://stream.zeno.fm/xs6zeac1ts8uv',x:28.04},
  {n:'Radio Antalya',k:'Downtempo, electronica and indie',p:'Antalya, Turkey',u:'https://my.radiolize.com/radio/8000/radio.mp3',x:30.7},
- {n:'Radio alHara',k:'Arty, from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra',x:35.2},
+ {n:'Radio alHara',k:'Experimental music from many cities',p:'Bethlehem, Palestine',u:'https://stream.radioalhara.net/ra',x:35.2},
  {n:'Wa3 Radio',k:'Ambient, dabke and drum and bass',p:'Beirut, Lebanon',u:'https://stream.wa3.live/wa3.mp3',x:35.5},
- {n:'Tizta FM',k:'Tizita: slow, nostalgic Ethiopian songs',p:'Addis Ababa, Ethiopia',u:'https://stream.zeno.fm/55nlq5yzqlftv',x:38.74},
+ {n:'Tizta FM',k:'Slow Ethiopian tizita songs',p:'Addis Ababa, Ethiopia',u:'https://stream.zeno.fm/55nlq5yzqlftv',x:38.74},
  {n:'Radyo Şiran',k:'Turkish folk',p:'Turkey',u:'https://live.radyositesihazir.com/8078/stream',x:39.1},
  {n:'Kurd1 Radyo',k:'Kurdish folk songs',p:'Kurdish, broadcast from France',u:'https://listen.radioking.com/radio/119251/stream/158701',x:43.0},
  {n:'Mutant Radio',k:'Underground',p:'Tbilisi, Georgia',u:'https://listen.radioking.com/radio/282820/stream/328621',x:44.8},
@@ -140,13 +140,13 @@ const WORLD=[
  {n:'Pop Radio 21',k:'Khmer pop and folk',p:'Phnom Penh, Cambodia',u:'https://listen.radioking.com/radio/318317/stream/365846',x:104.9},
  {n:'Hà Nội Community Radio',k:'Underground DJs and live music',p:'Hanoi, Vietnam',u:'https://ha-noi-community-radio.radiocult.fm/stream',x:105.85},
  {n:'Elgen Nutag',k:'Mongolian folk, stories and talk',p:'Mongolia',u:'https://a6.asurahosting.com:7210/radio.mp3',x:106.9},
- {n:'Mettaswara Koplo',k:'Dangdut koplo: wild Javanese dance music',p:'Java, Indonesia',u:'https://mettaswara.com:8700//koplo',x:110.0},
- {n:'Radio Campursari',k:'Campursari: gamelan meets keyboards',p:'Yogyakarta, Indonesia',u:'https://a8.siar.us/listen/campursari/stream',x:110.37},
+ {n:'Mettaswara Koplo',k:'Dangdut koplo dance music',p:'Java, Indonesia',u:'https://mettaswara.com:8700//koplo',x:110.0},
+ {n:'Radio Campursari',k:'Campursari, gamelan with keyboards',p:'Yogyakarta, Indonesia',u:'https://a8.siar.us/listen/campursari/stream',x:110.37},
  {n:'FM Belowground',k:'Electronic',p:'Hong Kong',u:'https://listen.belowground.fm/radio/8000/radio.mp3',x:114.17},
  {n:'90s Pinoy Alternative',k:'Filipino alt-rock from the 90s',p:'Philippines',u:'https://cast3.my-control-panel.com/proxy/ronald/stream',x:120.97},
  {n:'Pinoy Rap Radio',k:'Filipino hip-hop',p:'Philippines',u:'https://stream.zeno.fm/0cdp55nqam0uv',x:120.99},
  {n:'Taipei Classical Radio',k:'Classical',p:'Taipei, Taiwan',u:'https://stream.zeno.fm/w66d3dp6ynhvv',x:121.5},
- {n:'Budots FM',k:'Budots: Davao\'s homemade dance remixes',p:'Philippines',u:'https://stream.zeno.fm/2uhuu5hvzqzuv',x:125.6},
+ {n:'Budots FM',k:'Budots dance remixes from Davao',p:'Philippines',u:'https://stream.zeno.fm/2uhuu5hvzqzuv',x:125.6},
  {n:'yojosuknam Radio',k:'Gugak, jazz and lo-fi',p:'Korea',u:'https://stream.yojosuknam.com/live.mp3',x:127.0},
  {n:'Ashiya Radio',k:'Bossa nova and mellow tunes',p:'Ashiya, Japan',u:'https://s3.radio.co/sc8d895604/listen',x:135.3},
  {n:'Japan City Pop',k:'Japanese city pop',p:'Japan',u:'https://play.streamafrica.net/japancitypop',x:139.0},
@@ -154,11 +154,11 @@ const WORLD=[
  {n:'NIA Radio Lo-Fi',k:'Lo-fi beats',p:'New Caledonia',u:'https://radio.nia.nc/radio/8020/lofi-hq-stream.aac',x:166.45},
  {n:'Nightride FM Spacesynth',k:'Space-age synths',p:'Somewhere online',u:'https://stream.nightride.fm/spacesynth.mp3',x:999},
  {n:'Nightwave Plaza',k:'Vaporwave',p:'Somewhere online',u:'https://radio.plaza.one/mp3',x:999.1},
- {n:'Dark Matter Sessions',k:'Strange signals',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3},
+ {n:'Dark Matter Sessions',k:'Experimental broadcasts',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3},
  {n:'LISTEN.moe K-pop',k:'K-pop, fan-run',p:'Somewhere online',u:'https://listen.moe/kpop/fallback',x:999.4},
  {n:'LISTEN.moe',k:'J-pop and anime songs, fan-run',p:'Somewhere online',u:'https://listen.moe/fallback',x:999.5},
  {n:'Gensokyo Radio',k:'Fan music for the Touhou games',p:'Gensokyo, in spirit',u:'https://stream.gensokyoradio.net/3',x:999.6},
- {n:'Miku Radio',k:'Vocaloid: Hatsune Miku and friends',p:'Somewhere online',u:'https://miku.fm/listen/miku/mp3-128',x:999.7}];
+ {n:'Miku Radio',k:'Vocaloid songs',p:'Somewhere online',u:'https://miku.fm/listen/miku/mp3-128',x:999.7}];
 const HISS_VOL=.22; // the tuning sound between stations: quiet
 let HISS_BUF=null,hissLoading=false;
 function hissLoad(){if(HISS_BUF||hissLoading||!AC)return;hissLoading=true;fetch('sounds/tune.m4a').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>AC.decodeAudioData(b,ok,no))).then(b=>{HISS_BUF=b}).catch(()=>{hissLoading=false})}
@@ -240,5 +240,5 @@ function presetSave(k){const q=presetNow();radio.pre[k]=q;radioKeep();radioPanel
 function presetGo(k){const q=radio.pre[k];
   if(!q){radioPanelShow('Nothing on '+(k+1)+' yet. Hold it to keep this station there.');return}
   if(q.band==='crates'){if(!radio.on)radio.band='crates',radioOn(true);else radioBand('crates');return}
-  const i=WORLD.findIndex(w=>w.n===q.n);if(i<0){radioPanelShow('That station has left the dial.');return}
+  const i=WORLD.findIndex(w=>w.n===q.n);if(i<0){radioPanelShow('That station is no longer on the dial.');return}
   radio.band='world';if(!radio.on){radio.wi=i;radioOn(true)}else worldPlay(i);radioKeep();radioPanelShow()}

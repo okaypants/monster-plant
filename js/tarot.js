@@ -75,7 +75,7 @@ function tarotCut(){tr.step='cut';const st0=tStage();st0.innerHTML='';const row=
   for(let p=0;p<3;p++){const b=document.createElement('button');b.type='button';b.className='tpile';b.setAttribute('aria-label','Pile '+(p+1));
     for(let i=0;i<3;i++){const c=tBack();c.style.setProperty('--i',i);b.appendChild(c)}
     b.addEventListener('click',e=>{e.stopPropagation();tarotDeal(p)});row.appendChild(b)}
-  st0.appendChild(row);tSay('Now cut the deck: tap one of the three piles.')}
+  st0.appendChild(row);tSay('Now cut the deck by tapping one of the three piles.')}
 // 3. deal from the top of the pile you chose; the reading counts for today from here on
 function tarotDeal(p){if(tr.step!=='cut')return;tr.step='dealt';sfx('paper');const n=tr.deck.length,a=Math.floor(n/3),b=Math.floor(2*n/3);
   const piles=[tr.deck.slice(0,a),tr.deck.slice(a,b),tr.deck.slice(b)];tr.deck=piles[p].concat(piles[(p+1)%3],piles[(p+2)%3]); // the chosen pile goes on top
@@ -105,11 +105,12 @@ function tarotShow(k,cards){tr={k,step:'shown',cards,open:cards.map(()=>true)};t
 function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==='M').length,cnt={};
   for(const x of C)if(x.c.id[0]!=='M')cnt[x.c.id[0]]=(cnt[x.c.id[0]]||0)+1;
   const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0],rev=C.filter(x=>x.rev).length;let t='';
-  if(n===1){const x=C[0];t=x.c.id[0]==='M'?'A big card (Major Arcana) for today.':SUIT[x.c.id[0]].n+' today: '+SUIT[x.c.id[0]].m+'.';if(x.rev)t+=' It came up reversed.'}
-  else{t+=maj===n?'All big cards (Major Arcana): this is about more than everyday life.':maj>=Math.max(2,n*.4)?'Many big cards (Major Arcana): big forces are at work.':maj>=1?(maj===1?'One big card':maj+' big cards')+' (Major Arcana) in the mix.':'No big cards (Major Arcana): an everyday matter.';
-    if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Mostly '+SUIT[top[0]].n+': '+SUIT[top[0]].m+'.';
-    if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several reversed: things are tangled or slow.'}
-  tr.sum=t;tSay((again?'Today’s reading. ':'')+t+(n===1?' Tap it to read it.':' Tap a card to read it.')+' '+SPREADS[tr.k].next);
+  const suitIs=k=>SUIT[k].n+', the suit of '+SUIT[k].m;
+  if(n===1){const x=C[0];t=x.c.id[0]==='M'?'This is one of the 22 Major Arcana, the most important cards in the deck.':'This card is from '+suitIs(x.c.id[0])+'.';if(x.rev)t+=' It came up reversed, which changes its meaning.'}
+  else{t+=maj===n?'All of these cards are Major Arcana, which suggests the question is about something important.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which suggests the question is about something important.':maj===1?'One of these cards is Major Arcana.':maj>1?maj+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which suggests an everyday matter.';
+    if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Most of the '+(maj?'others':'cards')+' are '+suitIs(top[0])+'.';
+    if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
+  tr.sum=t;tSay((again?'This is today’s reading. ':'')+t+(n===1?' Tap it to read it.':' Tap a card to read it.')+' '+SPREADS[tr.k].next);
   tarotTabs()}
 // 4. read one card: big, with its meaning for its place
 function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
