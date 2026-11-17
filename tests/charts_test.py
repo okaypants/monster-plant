@@ -5,7 +5,7 @@ The sky: planet places on 1 Jan 2000 against the published ones (within half a d
 into Gemini (May 2024), Saturn into Aries (May 2025), the March 2026 equinox, a full moon, Mercury retrograde in Aug 2024,
 and a rising sign at the equator. Birth times: local times turn into the right moment, daylight saving included.
 The game: the moon box's Charts button lists you, the cat and each monster that has sprouted; a monster sprouting now keeps
-its birth minute; one without it gets an estimate marked "about"; your birthday is entered with a city picked from the
+its birth minute; one without it gets an estimate marked "about"; the cat is born 1.34 years before the game began; your birthday is entered with a city picked from the
 world list; every chart has its sun, moon and planets, a line for today and lines for each pair; no he or she anywhere.
 Pictures go to tests/screenshots/charts/. Exit code 1 if a check fails.
 """
@@ -69,6 +69,9 @@ async def main():
             texts.append(t)
             check(all(w in t for w in ["Sun in", "Moon in", "Rising in", "Mercury in", "Venus in", "Mars in", "Jupiter in", "Saturn in", "TODAY", "TOGETHER"]), f"{name}'s chart should be whole: {t[:200]}")
         check("about" in texts[2], "Pip has no saved birth minute, so the date should say about")
+        cat = await pg.evaluate("()=>{const p=chartPeople().find(p=>p.k==='cat');return [(st.catBornAt-p.t)/(365.2425*864e5),new Date(p.t).toISOString().slice(0,10)]}")
+        check(abs(cat[0] - 1.34) < .001 and cat[1] == "2025-07-01", f"the cat should be born 1.34 years before the game started: {cat}")
+        check(texts[0].split("\n")[1].startswith("Born July 1, 2025"), f"the cat's chart should give its birth date: {texts[0][:80]!r}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "monster.png"))
         await pg.click(".chp >> text=You")

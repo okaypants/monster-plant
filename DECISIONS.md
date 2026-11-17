@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tofu is about 1.34 years old when the game starts (Nov 16)
+
+- Jackie: "make tofu about 1.34 years old when the game starts." The cat's birth moment, used for its birth chart and horoscopes, is now 1.34 years before the moment the game began (it used to be the moment the cat came into the room). The chart says "Born" with that date. In games started before birth moments were kept, the start is estimated from the first monster, as before.
+
 ### Tarot: Waite's words taken out (Nov 16)
 
 - Jackie: "Remove the 'waite's words' or whatever." Reading a card now shows only its name, its place in the spread and its meaning in plain words; the "Waite's own words" button and the 1910 quote are gone. The plain meanings are still written from Waite's, and his wording stays in `js/tarotdata.js` as the record of where each one comes from, not shown in the game.

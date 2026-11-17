@@ -2,7 +2,8 @@
 /* BIRTH CHARTS AND HOROSCOPES (Jackie, Nov 16): a real birth chart for everyone in the room (you, the cat, each monster),
    a horoscope for each of them every day, and how each pair gets along, today and always. The CHARTS button in the moon box.
    - Birth moments: a monster's is the minute it sprouted (st.bornAt, kept from Nov 16; older monsters get an estimate from
-     their age, marked "about"); the cat's is when it first came into the room (st.catBornAt; for older games, an estimate
+     their age, marked "about"); the cat is about 1.34 years old when the game starts (Jackie, Nov 16), so its birth is 1.34
+     years before the moment the game began (st.catBornAt, the moment you met; for older games, an estimate
      from the first monster's); yours is the birthday you enter (st.you: date, and if you know them a birth time and the city
      you were born in, picked from a list of the world's cities, data/cities.json).
    - Places: your rising sign needs your birth city and time. The cat and the monsters were born where you play, worked out
@@ -27,6 +28,7 @@ const TRANSIT={moon:{easy:'an easy, comfy mood',hard:'some moody moments, so go 
   jupiter:{easy:'lucky breaks',hard:'too much of a good thing',big:'a big, lucky, growing time'},
   saturn:{easy:'steady progress',hard:'a tiring, serious day',big:'a time to be patient and build'}};
 const POINT_OF={sun:'sun',moon:'moon',asc:'rising sign'};
+const CAT_AGE0=1.34; // how old the cat is, in years, when the game starts
 let CITIES=null,citiesP=null;
 function citiesLoad(){return citiesP||(citiesP=fetch('data/cities.json').then(r=>r.json()).then(j=>{CITIES=j;return j}).catch(e=>{citiesP=null;throw e}))}
 function cityRow(r){return {n:r[0],lat:r[1],lon:r[2],tz:CITIES.tz[r[3]],cc:r[4],region:r[5],country:CITIES.country[r[4]]||r[4]}}
@@ -52,6 +54,7 @@ function chartPeople(){const home=homePlace(),P=[];
     P.push({k:'you',name:'You',t:wallToUTC(Y,M-1,D,h,mi,tz),tz,place:y.time&&y.place?y.place:null,noTime:!y.time,when:y.date})}
   else P.push({k:'you',name:'You',t:null});
   if(st.started){let t=st.catBornAt,about=false;if(!t){const q=allRaw().filter(q=>q.stage>=1)[0];t=q?(q.bornAt||Date.now()-plantAgeMs(q))-5*60000:Date.now();about=true}
+    t-=CAT_AGE0*365.2425*864e5; // born 1.34 years before you met
     P.push({k:'cat',name:catName(),t,about,tz:home&&home.tz,place:home,look:'cat'})}
   for(const q of allRaw())if(q.stage>=1){const about=!q.bornAt,t=q.bornAt||Date.now()-plantAgeMs(q);P.push({k:'p'+q.id,name:nameOf(q,true),t,about,tz:home&&home.tz,place:home,q})}
   return P}
@@ -89,7 +92,7 @@ function chartsDraw(){const P=chartPeople(),pe=tarotEl.querySelector('.chpeople'
   if(p.k==='you'&&!p.t){chartForm(card);return}
   const c=chartOf(p),now=Date.now(),add=(cls,txt)=>{const d=document.createElement('div');d.className=cls;d.textContent=txt;card.appendChild(d);return d};
   add('chname',p.name);
-  add('chborn',(p.k==='you'?'Born ':p.k==='cat'?'Came to the room ':'Sprouted ')+(p.about?'about ':'')+(p.k==='you'?new Date(p.when+'T12:00').toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})+(st.you.time?', '+st.you.time:''):fmtWhen(p.t,p.tz))+(p.place?' · '+p.place.n:''));
+  add('chborn',(p.k==='you'||p.k==='cat'?'Born ':'Sprouted ')+(p.about?'about ':'')+(p.k==='you'?new Date(p.when+'T12:00').toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})+(st.you.time?', '+st.you.time:''):fmtWhen(p.t,p.tz))+(p.place?' · '+p.place.n:''));
   const big=document.createElement('div');big.className='chbig';
   for(const b of ['sun','moon','asc']){const s=c[b],d=document.createElement('div');d.className='chb';
     d.innerHTML='<span class="chg"></span><span class="chs"></span><span class="chl"></span>';d.querySelector('.chg').textContent=BODY_GLYPH[b];d.querySelector('.chs').textContent=s?s.glyph+' '+s.name:'—';d.querySelector('.chl').textContent=BODY_NAME[b];big.appendChild(d)}
