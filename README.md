@@ -179,6 +179,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the book stack |
+  | `books/` | The twelve book covers, 42 x 60 each, cut from Jackie's sheet (`covers_sheet.png`); `care.js` draws them (BOOK_COVER, bookPix) |
   | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file. The Song book's songs are here too: words with chords in [brackets] and the tune as notes; `care.js` draws the chords above the words and plays the tune |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
   | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |

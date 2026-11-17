@@ -143,14 +143,20 @@ const BOOK_LOOK={fairy:{c:C.coral,d:C.brick,e:['.y.','yyy','.y.']},almanac:{c:C.
  proverbs:{c:C.sand,d:C.rust,e:['ooo','s.s','ooo']}/* a scroll */,letters:{c:C.cream,d:C.peach,e:['oooo','o..o','oooo']}/* an envelope */,recipes:{c:C.g3,d:C.g1,e:['.o.','ooo','.o.','.o.']}/* a spoon */,
  ghost:{c:'#6b7888',d:'#3c4652',e:['.i.','iii','i.i']}/* a little ghost */,field:{c:C.g2,d:C.g1,e:['..i','.ii','i..']}/* a leaf */};
 const BPAL={y:C.fl3,v:C.vio,w:C.lav,i:C.ivory,s:C.sand,o:C.out};
-// a closed book, 10x13 art pixels: spine on the left, pages showing on the right edge, emblem on the cover
-function bookPix(id,px){const L=BOOK_LOOK[id],w=10,h=13,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;const x=c.getContext('2d');
+/* THE COVERS (Jackie, Nov 17): each book has its own illustrated cover, cut from Jackie's sheet (books/, 42 x 60). The tray, the
+   journal's favorite story and the book hopping home show it at its own size; the book in your hand is twice that. Whole pixels,
+   a dark outline. Until a cover's picture has loaded, the old drawn book stands in. */
+const BOOK_COVER={};for(const b of BOOKS)BOOK_COVER[b.id]=img('books/'+b.id+'.png');
+function bookPix(id,px){const im=BOOK_COVER[id];if(!ok(im))return bookPixOld(id,px);const k=px>=5?2:1,o=2*k,c=document.createElement('canvas');c.width=im.naturalWidth*k+2*o;c.height=im.naturalHeight*k+2*o;
+ const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle=C.out;x.fillRect(0,0,c.width,c.height);x.drawImage(im,o,o,im.naturalWidth*k,im.naturalHeight*k);c.dataset.cover=id;return c;}
+// the old drawn book, 10x13 art pixels: spine on the left, pages showing on the right edge, emblem on the cover
+function bookPixOld(id,px){const L=BOOK_LOOK[id],w=10,h=13,c=document.createElement('canvas');c.width=(w+2)*px;c.height=(h+2)*px;const x=c.getContext('2d');
  const cell=(i,j,col)=>{x.fillStyle=col;x.fillRect((i+1)*px,(j+1)*px,px,px);};x.fillStyle=C.out;x.fillRect(0,0,c.width,c.height);
  for(let j=0;j<h;j++)for(let i=0;i<w;i++)cell(i,j,i<2?L.d:i===w-1?C.ivory:L.c);
  for(let j=1;j<h-1;j+=3)cell(w-1,j,C.sand); // page lines
  L.e.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch!=='.')cell(4+i,5+j,BPAL[ch]);}));
  cell(2,0,C.ivory);cell(3,0,C.ivory);return c;} // a little highlight
-const BOOK_CACHE=new Map();function bookImg(key,make){if(!BOOK_CACHE.has(key))BOOK_CACHE.set(key,make());return BOOK_CACHE.get(key);}
+const BOOK_CACHE=new Map();function bookImg(key,make){if(BOOK_CACHE.has(key))return BOOK_CACHE.get(key);const c=make();if(c.dataset.cover)BOOK_CACHE.set(key,c);return c;} // kept once its cover has loaded
 const bookDrag={item:null,x:0,y:0,over:null,trayT:0};let btrayEl=null;
 const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books hopping back to the shelf
 const bookHops=[];

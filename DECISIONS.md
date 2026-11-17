@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Illustrated book covers (Nov 17)
+
+- Jackie: "we need to make illustrative book covers", and made a sheet of twelve (one picture per book on a cream card with a colored border: a cottage under a flower, Sloth's paw with a sprig, a fish in a hat in a teacup, an eye in thorns, a moon with a music note, a constellation, a keyhole with a question-mark key, a tree with a bird, an envelope with a paw seal, a steaming pot, a ghost with a candle, a leaf with a beetle and a mushroom).
+- Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
+- **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
+
 ### The Songs book is a song book you can play (Nov 17)
 
 - Jackie on the old Songs and lullabies book ("Twinkle, Twinkle", Tennyson, Tagore): "very unfun", written for small children of the early 1900s, "not like smart clever funny older kids through adult adults". All three reads are gone.

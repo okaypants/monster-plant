@@ -35,6 +35,11 @@ async def main():
         await pg.evaluate("()=>__step(.1)")
         if await pg.locator(".btray .tbook").count() != 4:
             fails.append("tapping a book didn't open the tray")
+        covers = await pg.evaluate("()=>({shown:[...document.querySelectorAll('.btray .tbook')].every(b=>{const c=b.querySelector('canvas');return c&&c.dataset.cover===b.dataset.id&&c.width===46&&c.height===64}),all:BOOKS.every(b=>ok(BOOK_COVER[b.id])&&BOOK_COVER[b.id].naturalWidth===42&&BOOK_COVER[b.id].naturalHeight===60)})")
+        if not covers["shown"]:
+            fails.append("the tray should show each book's own cover picture (books/)")
+        if not covers["all"]:
+            fails.append("every book needs a 42 x 60 cover picture in books/")
         await pg.screenshot(path=os.path.join(OUT, "1_tray.png"))
         bk = await pg.locator(".tbook[data-id=fairy]").bounding_box()
         await pg.mouse.move(bk["x"] + bk["width"] / 2, bk["y"] + bk["height"] / 2)
