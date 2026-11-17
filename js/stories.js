@@ -212,21 +212,13 @@ const STORIES={
    {o:'Moððe word fræt. Me þæt þuhte\nwrætlicu wyrd, þa ic þæt wundor gefrægn,',l:'ang',e:'The riddle as it was written, in Old English, about 970.'},
    {o:'þæt se wyrm forswealg wera gied sumes,\nþeof in þystro, þrymfæstne cwide',l:'ang'},
    {o:'ond þæs strangan staþol. Stælgiest ne wæs\nwihte þy gleawra, þe he þam wordum swealg.',l:'ang'}]}, // Old English: Krapp and Dobbie, ASPR 3 (1936), p. 205, as on The Riddle Ages
-  {t:'Humpty Dumpty',by:'Mother Goose, 1700s and 1800s',src:'Earliest known printing 1797 (Samuel Arnold, Juvenile Amusements, per the Opies) and 1810 (Gammer Gurton’s Garland), both with other endings; the king’s horses and men from the 1840s, this wording as in Yale Songs (1882); the Opies say it may have begun as a riddle, and W. C. Richards heard it as one with the answer “an egg” (1844)',p:[
-   'People used to tell this old rhyme as a riddle. Can you guess?',
-   'Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall;',
-   'All the king’s horses and all the king’s men\nCouldn’t put Humpty together again.',
-   'Who is Humpty Dumpty?',
-   '…',
-   'An egg!']},
   {t:'Kitendawili!',by:'told in Swahili, East Africa',src:'Swahili riddles open with the call "Kitendawili!" and the answer "Tega!"; "Nyumba yangu haina mlango" (my house has no door): yai, an egg',p:[
    'In East Africa, a Swahili riddle starts with a call and an answer.',
    'The riddler calls out, “Kitendawili!” A riddle!',
    'Everyone answers, “Tega!” Set it!',
    {o:'Nyumba yangu haina mlango.',l:'sw',e:'My house has no door. What is it?'}, // Steere, Swahili Tales (1870), Vitendawili 1: “Nyumba yangu kubwa, haina mlango. — Yayi.”; this short modern form, Kamusi ya Vitendawili 836
    '…',
-   'An egg! Yai.',
-   'Humpty Dumpty, it turns out, has cousins all over the world.']}],
+   'An egg! Yai.']}],
  proverbs:[
   {t:'Slowly, Slowly',by:'sayings in Swahili, Spanish and Hindi',src:'Swahili: "Pole pole ndio mwendo", "Haba na haba hujaza kibaba"; Spanish: "Poco a poco se va lejos"; Hindi: "Boond boond se ghada bharta hai"',p:[
    'Pole pole ndio mwendo.\nSlowly, slowly is the way to go.\n— Swahili',

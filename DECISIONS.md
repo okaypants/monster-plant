@@ -8,6 +8,10 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
 - **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
 
+### Humpty Dumpty is out of the Riddles book (Nov 17)
+
+- Jackie: "OMG humpty dumpty is one of the things - what terrible". The nursery rhyme is gone from Riddles, and the Swahili riddle no longer ends with a line about it. Riddles keeps the Sphinx, the Old English riddle and the Swahili one. **Why:** the books are for clever older kids through adults, not nursery material.
+
 ### The Song book: true stories of real songs, with the record to play (Nov 17)
 
 - Jackie on the old Songs and lullabies book ("Twinkle, Twinkle", Tennyson, Tagore): "very unfun", written for small children of the early 1900s, "not like smart clever funny older kids through adult adults". All three reads are gone.
