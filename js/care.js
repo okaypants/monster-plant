@@ -36,12 +36,12 @@ const TRAIT_AT=5; // servings to grow a trait
 /* THE BOOKS (Jackie, Nov 15): twelve, each nudging a monster a little (ge: sweet + / spooky -, lc: tidy + / wiggly -). What's inside is in
    js/stories.js; where each can be found is BOOK_ZONES below (four at a time, by where you tap). */
 const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02},
- {id:'songs',name:'Song book',ge:.06,lc:.02},{id:'stars',name:'The star book',ge:0,lc:-.03},{id:'riddles',name:'Riddles',ge:0,lc:-.06},{id:'proverbs',name:'Proverbs',ge:.02,lc:.06},
+ {id:'songs',name:'Song book',ge:.06,lc:.02},{id:'stars',name:'The star book',ge:0,lc:-.03},{id:'riddles',name:'Cats',ge:0,lc:-.06},{id:'proverbs',name:'Proverbs',ge:.02,lc:.06},
  {id:'letters',name:'Letters and diaries',ge:.05,lc:.02},{id:'recipes',name:'Recipes',ge:.03,lc:.05},{id:'ghost',name:'Ghost stories',ge:-.06,lc:-.02},{id:'field',name:'Field guide',ge:0,lc:.04}];
 const BOOK_BY=id=>BOOKS.find(b=>b.id===id);
 // what a monster does while listening, the caption when a read begins
 const BOOK_SAY={fairy:'listens to the fairy tale, very still.',almanac:'nods along to Sloth’s Almanac.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.',
- songs:'sways along to the song.',stars:'gazes up, dreamy, at the star book.',riddles:'scrunches up its face at the riddle.',proverbs:'nods slowly at the old sayings.',
+ songs:'sways along to the song.',stars:'gazes up, dreamy, at the star book.',riddles:'listens closely to the book about cats.',proverbs:'nods slowly at the old sayings.',
  letters:'listens to the old letter, cozy.',recipes:'smacks its lips at the recipe.',ghost:'shivers happily at the ghost story.',field:'peers closely at the field guide.'};
 const READ_POT={fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'},READ_AT=10; // a pot after 10 reads of one of the first four books (Jackie, Nov 15); the new books count their reads from zero, no reward yet
 function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('basket');if(st.stage<4){sfx('purr');burst('heart',b.x+b.w*.1,b.y-20,1);return;}

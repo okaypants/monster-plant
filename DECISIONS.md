@@ -8,6 +8,13 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
 - **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
 
+### Cats replaces Riddles (Nov 17)
+
+- Jackie: "Replace riddles with something else entirely, maybe more nonfiction of some kind -- fun facts", then "fun facts related to something specific -- a book", and for the subject: "Cats but like all cat history and facts not just japan turkey etc". A first try at a grab bag of trivia (wombats, Venus, Cleopatra) was dropped before it was saved.
+- The Riddles book is now **Cats**, nine short chapters: how cats moved in with people, the cry hidden in a purr, the meow and the slow blink, the Old Irish poem Pangur Bán (in Old Irish with the 1903 English), a Dutch scribe's Latin curse on the cat that peed on his book, the Hermitage's palace cats, why orange cats are boys, silver vine, and Thailand's cat-book poems. Each chapter's source is noted in the file.
+- It keeps its place on the shelves. Its cover is still the keyhole with a question mark until Jackie draws a cat cover.
+- **Why:** one subject, told with real and uncommon facts, reads like a book you'd actually pick up.
+
 ### Humpty Dumpty is out of the Riddles book (Nov 17)
 
 - Jackie: "OMG humpty dumpty is one of the things - what terrible". The nursery rhyme is gone from Riddles, and the Swahili riddle no longer ends with a line about it. Riddles keeps the Sphinx, the Old English riddle and the Swahili one. **Why:** the books are for clever older kids through adults, not nursery material.

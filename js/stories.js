@@ -190,35 +190,74 @@ const STORIES={
    'Find the two stars at the end of the cup, and follow the line they make.',
    'They point to the North Star, which hardly moves all night.',
    'For hundreds of years, travelers have found north this way.']}],
+ /* CATS (Jackie, Nov 17: "replace riddles with something else entirely, maybe more nonfiction", "fun facts related to something
+    specific -- a book", "cats but like all cat history and facts"). One subject, like a real nonfiction book. Every read is true,
+    told in plain words, and src says where to check it. Old texts are in their original language, copied from the printed
+    source named beside them. The book keeps the id 'riddles' so old saves and its place on the shelves still work. */
  riddles:[
-  {t:'The Riddle of the Sphinx',by:'told in ancient Greece',src:'The riddle of the Sphinx on Mount Phicium near Thebes, from the story of Oedipus (Apollodorus, Library 3.5.8, where it is four-footed, two-footed and three-footed; morning, noon and evening are the later, familiar wording)',p:[
-   'Long ago in Greece, a sphinx sat on a mountain outside the city of Thebes.',
-   'It asked everyone who came by the same riddle.',
-   'What walks on four legs in the morning,',
-   'on two legs at noon,',
-   'and on three legs in the evening?',
-   '…',
-   'A person!',
-   'A baby crawls on hands and knees. A grown-up walks on two feet.',
-   'And an old one walks with a cane.']},
-  {t:'A Riddle in Old English',by:'retold from the Exeter Book, England, about 970',src:'Exeter Book Riddle 47 (Krapp-Dobbie numbering), the book-moth: a moth that ate words; answer, a moth or bookworm',p:[
-   'More than a thousand years ago, someone in England wrote down this riddle.',
-   'A creature ate words. It swallowed a song, in the dark.',
-   'It gobbled up a glorious poem, and the strong page it stood on.',
-   'But it was not one bit wiser for all the words it ate.',
-   'What was it?',
-   '…',
-   'A moth! A little bookworm, nibbling the pages.',
-   {o:'Moððe word fræt. Me þæt þuhte\nwrætlicu wyrd, þa ic þæt wundor gefrægn,',l:'ang',e:'The riddle as it was written, in Old English, about 970.'},
-   {o:'þæt se wyrm forswealg wera gied sumes,\nþeof in þystro, þrymfæstne cwide',l:'ang'},
-   {o:'ond þæs strangan staþol. Stælgiest ne wæs\nwihte þy gleawra, þe he þam wordum swealg.',l:'ang'}]}, // Old English: Krapp and Dobbie, ASPR 3 (1936), p. 205, as on The Riddle Ages
-  {t:'Kitendawili!',by:'told in Swahili, East Africa',src:'Swahili riddles open with the call "Kitendawili!" and the answer "Tega!"; "Nyumba yangu haina mlango" (my house has no door): yai, an egg',p:[
-   'In East Africa, a Swahili riddle starts with a call and an answer.',
-   'The riddler calls out, “Kitendawili!” A riddle!',
-   'Everyone answers, “Tega!” Set it!',
-   {o:'Nyumba yangu haina mlango.',l:'sw',e:'My house has no door. What is it?'}, // Steere, Swahili Tales (1870), Vitendawili 1: “Nyumba yangu kubwa, haina mlango. — Yayi.”; this short modern form, Kamusi ya Vitendawili 836
-   '…',
-   'An egg! Yai.']}],
+  {t:'How Cats Moved In',by:'Cats, chapter 1',src:'Driscoll et al., Science 2007 (all domestic cats descend from Felis lybica, Near East, about 10,000 years ago); Vigne et al., Science 2004 (cat buried with a human at Shillourokambos, Cyprus, about 9,500 years ago); Ottoni et al., Nature Ecology & Evolution 2017 (spread by ship; an Egyptian lineage at the Viking-age port of Ralswiek).',p:[
+   'Nobody tamed the cat. Cats moved in by themselves.',
+   'About ten thousand years ago, people in the Middle East began storing grain. The grain brought mice, and the mice brought wildcats.',
+   'The bold ones stayed. Every house cat alive comes from that one kind of small desert wildcat.',
+   'On Cyprus, someone was buried beside a cat 9,500 years ago. No cats are native to the island, so that cat came by boat.',
+   'Cats kept taking boats. Sailors wanted them for the rats.',
+   'A cat from an Egyptian family line has been dug up at a Viking port on the Baltic Sea.']},
+  {t:'The Hidden Cry',by:'Cats, chapter 2',src:'McComb et al., Current Biology 2009 ("The cry embedded within the purr"): solicitation purrs carry a high-frequency voiced component (about 220-520 Hz) that people rate as more urgent. Cats also purr when injured or frightened.',p:[
+   'A purr does not always mean a cat is happy. Cats also purr when they are hurt or scared.',
+   'They have a special purr for breakfast.',
+   'When a cat wants food, it tucks a small, high cry inside the low rumble.',
+   'The cry is pitched close to a human baby’s.',
+   'In tests, people who had never owned a cat still found that purr harder to ignore.',
+   'The cat has worked out the one sound you can’t sleep through.']},
+  {t:'A Word Just for You',by:'Cats, chapter 3',src:'Adult cats rarely meow at one another; meowing is directed mostly at people (Bradshaw, Cat Sense, 2013; Yeon et al. 2011 on feral versus house cats). Slow blinking: Humphrey et al., Scientific Reports 2020.',p:[
+   'Grown cats almost never meow at each other.',
+   'Kittens meow for their mothers, then grow out of it. Cats who live wild stay mostly quiet.',
+   'The meow is kept for people. Each cat and its person end up with their own set of meows.',
+   'Cats have a slower way to say something friendly. They narrow their eyes and blink, very slowly.',
+   'In 2020 scientists tested it. Cats blinked back at people who slow-blinked at them, and walked up to them more often.',
+   'Try it on a cat you know.']},
+  {t:'Pangur Bán',by:'an Irish monk, about the year 850',src:'Old Irish poem of about the 9th century in the Reichenau Primer (St. Paul im Lavanttal, Cod. 86b/1, f. 1v); text and translation in Stokes and Strachan, Thesaurus Palaeohibernicus vol. 2 (1903), p. 293.',p:[
+   'About 1,200 years ago, an Irish monk at an abbey in what is now Germany wrote a poem in the corner of his notebook.',
+   'It was about his white cat, Pangur.',
+   {o:'Messe ocus Pangur Bán,\ncechtar nathar fria saindan',l:'sga',e:'I and Pangur Bán, each of us two at his special art:'},
+   {o:'bíth a menmasam fri seilgg,\nmu menma céin im saincheirdd.',l:'sga',e:'his mind is at hunting, my own mind is in my special craft.'},
+   'The cat hunts mice. The monk hunts the meaning of hard words. Neither gets in the other’s way.',
+   'It is the oldest poem we have that someone wrote about their own pet.']}, // Old Irish as printed in Stokes and Strachan, Thesaurus Palaeohibernicus vol. 2 (1903), p. 293, verse 1 (from Wikisource's proofread page); the English is their translation, same page, without "(mice)". Reichenau Primer, St. Paul im Lavanttal, Cod. 86b/1.
+  {t:'The Scribe’s Curse',by:'a scribe in Deventer, about 1420',src:'Cologne, Historisches Archiv, G.B. quarto 249, f. 68r (the Deventer scribe, about 1420); Dubrovnik State Archives, Lettere e commissioni di Levante vol. 13, 1445, found by Emir O. Filipović in 2011.',p:[
+   'Before printing, every book was written by hand. Cats lived in the writing rooms to keep mice off the pages.',
+   'In 1445, in Dubrovnik, a cat stepped in the ink and walked across an open book. The four paw prints are still there.',
+   'A scribe in the Dutch town of Deventer had it worse. A cat peed on his book in the night.',
+   'He drew a cat on the ruined page and wrote a curse beside it, in Latin.',
+   {o:'Confundatur pessimus cattus qui minxit super librum istum in nocte Daventrie.',l:'la',e:'Curses on the wicked cat that peed on this book in the night at Deventer.'},
+   {o:'Et cavendum valde ne permittantur libri aperti per noctem ubi cattie venire possunt.',l:'la',e:'And take great care not to leave books open at night where cats can get at them.'}]}, // Latin as transcribed by Thijs Porck, "Paws, Pee and Mice: Cats among Medieval Manuscripts" (medievalfragments, 2013); English from the Latin
+  {t:'The Palace Cats',by:'Cats, chapter 6',src:'Hermitage cats: decree of Empress Elizabeth, 1745, ordering cats from Kazan for the Winter Palace; several dozen cats live in the museum basement today, with their own press secretary and an annual day in their honor.',p:[
+   'In 1745 the Winter Palace in Saint Petersburg was full of mice.',
+   'Empress Elizabeth of Russia sent an order to Kazan, a city famous for its mousers. She wanted its best cats.',
+   'Their descendants never left. The palace is now the Hermitage, one of the biggest art museums in the world.',
+   'A few dozen cats live in its basement, on duty against mice.',
+   'They have their own kitchen, a small hospital and a press secretary.',
+   'The cats are not allowed in the galleries upstairs.']},
+  {t:'Why Orange Cats Are Boys',by:'Cats, chapter 7',src:'The orange gene is on the X chromosome: roughly 80% of orange cats are male, and calico and tortoiseshell cats are almost always female (X inactivation). The mutation itself, a deletion near ARHGAP36, was identified in 2025 (Kaelin et al.; Toh et al., Current Biology).',p:[
+   'About four out of five orange cats are male.',
+   'A cat with patches of orange and black is almost always female.',
+   'The reason is where the orange gene sits. It is on the X chromosome.',
+   'A male has one X. If it carries orange, he is orange all over.',
+   'A female has two. In each patch of her skin, one X is switched off at random, so she can be orange here and black there.',
+   'People knew the pattern for a hundred years. The gene itself was only found in 2025.']},
+  {t:'Silver Vine',by:'Cats, chapter 8',src:'About a third of cats do not respond to catnip (inherited); most of those respond to silver vine, Actinidia polygama, matatabi in Japan (Bol et al., BMC Veterinary Research 2017). Rubbing transfers nepetalactol to the fur and repels Aedes albopictus mosquitoes (Uenoyama et al., Science Advances 2021).',p:[
+   'About one cat in three does not care about catnip. It runs in families.',
+   'Most of those cats go wild for a different plant, silver vine. In Japan it is called matatabi, and cats have been given it for centuries.',
+   'For a long time nobody knew why cats roll in these plants.',
+   'In 2021 scientists in Japan found a reason. The leaves hold a chemical that mosquitoes hate.',
+   'A cat that has rubbed its face and head in the leaves gets far fewer bites.',
+   'So the rolling is fun, and it is also bug spray.']},
+  {t:'The Cat-Book Poems',by:'Cats, chapter 9',src:'Tamra Maew (ตำราแมว), Thai folding-book manuscripts believed to go back to the Ayutthaya period, most surviving copies 19th century: painted cats with verses, typically seventeen auspicious kinds and sometimes six inauspicious ones; includes the wichianmat (Siamese) and the korat.',p:[
+   'In old Thailand there were books made only to describe cats.',
+   'They were long folded books of dark paper, painted by hand, with a poem beside each cat.',
+   'Each poem says what the cat looks like and what luck it brings its owner.',
+   'There are seventeen lucky kinds. One is pale with a dark face, ears, feet and tail. We call it the Siamese.',
+   'Another is silver-gray all over with green eyes, and is said to bring rain.',
+   'Some copies add six unlucky kinds at the back, as a warning.']}],
  proverbs:[
   {t:'Slowly, Slowly',by:'sayings in Swahili, Spanish and Hindi',src:'Swahili: "Pole pole ndio mwendo", "Haba na haba hujaza kibaba"; Spanish: "Poco a poco se va lejos"; Hindi: "Boond boond se ghada bharta hai"',p:[
    'Pole pole ndio mwendo.\nSlowly, slowly is the way to go.\n— Swahili',
