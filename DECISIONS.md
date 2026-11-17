@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The journal's hand is only on the last page (Nov 17)
+
+- Jackie: "the hand in the journal is covering some text". The carafe hand (left- or right-handed) sat in the bottom corner of every right-hand page, and a full page's words ran down under it. It is now only on the last page, Keep it safe, which is the inside of the back cover where it was first meant to be. That page keeps its bottom strip clear for the hand, and its tip sits a little closer to the words above. **Why:** every other page keeps its full room for words, and the hand never sits on any.
+- Tried first and dropped: keeping the hand on every page and holding the bottom strip of every right-hand page clear. That pushed an ordinary adult's Quirks onto a second spread.
+
 ### Tarot: the reading under the cards, a new Celtic Cross page, details in the zoom (Nov 16)
 
 - Jackie: "I would rather have the reading under the spread", with each card's name written beneath it "and then its role (the past, etc.) in parenthesis". Once a card is turned, its name, its place in parentheses and its meaning are under it: "The Star (the past)", then the meaning. The card of the day has just its name ("it doesn't need to say today because it's the card of the day").

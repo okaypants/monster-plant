@@ -115,9 +115,11 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  const arrow=(side,to)=>{const a=document.createElement('button');a.type='button';a.className='jarrow '+side;a.setAttribute('aria-label',side==='jprev'?'Back':'Next');a.appendChild(pix(side==='jprev'?'left':'right',3));
   a.addEventListener('click',e=>{e.stopPropagation();jTurn(jPage,to);});(side==='jprev'?L:R).appendChild(a);};
  if(jSub>0)arrow('jprev',jSub-1);if(jSub<subs.length-1)arrow('jnext',jSub+1);
- // inside the back cover: which hand carries the carafe (tap to flip)
- const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
- hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);
+ // inside the back cover (the last page, Keep it safe): which hand carries the carafe (tap to flip). Only there, and that page keeps
+ // its bottom strip clear for it (.jback), so the hand never sits on a page's words (Jackie, Nov 17)
+ R.classList.toggle('jback',jPage==='safe');
+ if(jPage==='safe'){const hand=document.createElement('button');hand.type='button';hand.className='jhand';hand.setAttribute('aria-label',st.leftHand?'Left-handed':'Right-handed');hand.appendChild(pix('hand',3,!!st.leftHand));
+ hand.addEventListener('click',e=>{e.stopPropagation();st.leftHand=!st.leftHand;sfx('tick');save();renderJournal();});R.appendChild(hand);}
  // Sloth's note, tucked in until you say yes
  if(st.slothJournal&&slothReady()){const n=document.createElement('button');n.type='button';n.className='jslothnote';n.setAttribute('aria-label','A note from Sloth, PhD');n.appendChild(imgPic(ITEM_ART.envelope,46,31));
   n.addEventListener('click',e=>{e.stopPropagation();slothCard();});R.appendChild(n);}

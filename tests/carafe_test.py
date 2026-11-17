@@ -61,7 +61,9 @@ async def main():
 
             for hand in ("right", "left"):
                 if hand == "left":  # the journal setting
-                    await pg.evaluate("()=>openJournal()")
+                    await pg.evaluate("()=>openJournal('safe')")  # the last page, inside the back cover
+                    check(await pg.evaluate("()=>{jPage='p'+st.id;renderJournal();const n=document.querySelectorAll('.jhand').length;jPage='safe';renderJournal();return n}") == 0, f"{name}: the hand should only be on the last page")
+                    check(await pg.evaluate("()=>{const h=document.querySelector('.jhand').getBoundingClientRect();return [...document.querySelectorAll('.jr .ksnote,.jr .kstip,.jr .jlab')].every(e=>e.getBoundingClientRect().bottom<=h.top)}"), f"{name}: words on the last page reach the hand")
                     await pg.locator(".jhand").tap()  # the tiny hand inside the journal's back cover
                     await pg.evaluate("()=>__step(.2)")
                     check(await pg.evaluate("()=>st.leftHand===true"), f"{name}: the left-handed setting didn't save")
