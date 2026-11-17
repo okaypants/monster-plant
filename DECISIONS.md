@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot box: sleek cream (Nov 16)
+
+- From the color options, Jackie picked the cream reading panel as closest, and wants "a sleeker look": not purple or blue, and not warm colors, which "read old guy castle and stuff". (Jackie plans to move the main room away from a lot of its warm colors too, redrawing it on the iPad.)
+- The box is now a clean cream cloth with a white reading panel, near-black text and outlines, and only two accents: magenta (card names, the chosen spread, the numbers) and green (where the card sits in the spread).
+- The card back matches: cream with a thin black frame, a magenta crescent and small magenta, green and black stars (no more blue field).
+
 ### Tarot cards: brighter and recentered (Nov 16)
 
 - Jackie likes the cards but asked to "brighten and recenter the card images a little so they're all consistent and maybe slightly more modern feeling." All 78 were made again from the 1909 scans: cropped right at each card's printed black frame (no strip of old paper, so every card sits the same way), white-balanced so the yellowed paper reads as clean white, with brighter, fuller colors. Smith's pictures themselves are unchanged.

@@ -132,7 +132,8 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .rname span{white-space:normal;min-height:2.5em;display:flex;align-items:center;justify-content:center} /* what it plays: up to two lines */
 .rname em{color:var(--ts-rust)}
 /* the moon box's tarot (js/tarot.js): a velvet cloth, the deck, three cards, and a card read big */
-.tarot{overflow:hidden;--tcloth:#3b1f45;--tpanel:#2a1532;--ttext:#FFF4E0;--taccent:#E2B04A;--tsub:#d9b8e8;--tquote:#f0dcc0;--tbtn:#FFF4E0;--tbtnink:#5B3A2E;--ton:#E2B04A;--tonink:#3A2406;--tedge:#5B3A2E}
+/* sleek cream (Jackie, Nov 16: not purple or blue, not warm "old guy castle" colors): cream cloth, white panel, near-black ink, magenta and green only as accents */
+.tarot{overflow:hidden;--tcloth:#fbf7ef;--tpanel:#ffffff;--ttext:#1d1a18;--taccent:#c4155c;--tsub:#16795a;--tquote:#5d5753;--tbtn:#ffffff;--tbtnink:#1d1a18;--ton:#c4155c;--tonink:#ffffff;--tedge:#1d1a18}
 .tarot .tsb::before{background:var(--tedge);box-shadow:var(--ts-sx) var(--ts-sy) 0 var(--tedge)}.tarot button.tsb{--bg:var(--tbtn);color:var(--tbtnink)}
 .tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px}
 .tarot .tx{position:absolute;left:10px;top:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;z-index:3;padding:0}
