@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The opening screens are a night sky with a growing seed (Nov 17)
+
+- Jackie, on the loading screen and the turn-your-phone screen: "I don't like this brown opening page (very bland and American girl)".
+- Both screens are now the night outside the room: dark plum, a seed growing in its checkered pot (the six seedling pictures, swapped every half second), "Monster Plant" in the monsters' green, cream words with no paper card, and a few square stars, some of which blink. The sprout emoji is gone.
+- This is the one place words sit straight on the dark with no paper card. The cards inside the game keep the paper look.
+- Nothing fades; the seed and the stars are frame swaps, and they hold still if the phone asks for less motion.
+- **Why:** a brown page with a cream card says nothing about the game. The seed in its pot is the game's own picture, and it matches the app icon.
+
 ### No bar under the opening screens (Nov 17)
 
 - Jackie, with two phone pictures of the loading screen and the turn-your-phone screen: "I don't like ... the weird bar at the bottom".
