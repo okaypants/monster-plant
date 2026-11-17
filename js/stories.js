@@ -12,7 +12,7 @@
      src  for facts and folklore: where to check it (never shown in the game)
    A page can also be {o, l, e} (Jackie, Nov 16): o = the words in their original script, l = the language, e = the English.
    Only where a real source text exists, copied exactly; the comment by the read says where it is from.
-   A page can also be a song page {w, n, e}: see THE SONG BOOK below.
+   A read can carry rec, a real record to play: see THE SONG BOOK below.
    "from" in a title means it's a part of a longer piece. The open book shows two pages at a time; the title is the first page. */
 const STORIES={
  fairy:[
@@ -115,43 +115,57 @@ const STORIES={
    'Adder’s fork and blind-worm’s sting,\nLizard’s leg and howlet’s wing,',
    'For a charm of powerful trouble,\nLike a hell-broth boil and bubble.',
    'Double, double toil and trouble;\nFire burn, and cauldron bubble.']}],
- /* THE SONG BOOK (Jackie, Nov 17): real songs you can play. A song page is {w, n, e}:
-      w  the words, with each chord in [brackets] right before the syllable it lands on; it is drawn above that syllable
-      n  the tune for that page: NOTE:beats, in order (C4 is middle C, r is a rest); bpm on the read is beats a minute
-      e  what the words mean in English, small, for a song in another language
-    The Play button plays the tune from the open pages to the end and turns the pages in time (js/care.js).
-    Every song is traditional or was published before 1931, words and tune. */
+ /* THE SONG BOOK (Jackie, Nov 17): the true story of a real song, told in plain words, and the song itself. Every one is a record
+    in the crates (the same library of old free 78s the radio and the sampler use), so the open book has a Play the record
+    button that streams it (js/care.js). rec = {id: the record at archive.org, f: its sound file, by: who plays it and the year}.
+    Only songs with a record there, published 101 or more years ago, go in this book. */
  songs:[
-  {t:'Daisy Bell',by:'Harry Dacre, 1892',bpm:168,src:'Words and tune: Harry Dacre, 1892 (public domain). The computer: Bell Labs, 1961 (Kelly, Lochbaum and Mathews).',p:[
-   'In 1961 a computer at Bell Labs sang this song. It was the first time a computer had ever sung.',
-   {w:'[G]Daisy, Daisy,\n[C]give me your answer, [G]do.',n:'D5:3 B4:3 G4:3 D4:3 E4:1 F#4:1 G4:1 E4:2 G4:1 D4:6'},
-   {w:'[D7]I’m half [G]crazy,\nall for the [A7]love of [D7]you.',n:'A4:3 D5:3 B4:3 G4:3 E4:1 F#4:1 G4:1 A4:2 B4:1 A4:5'},
-   {w:'It [D7]won’t be a stylish [G]marriage,\nI [C]can’t afford a [G]carriage,',n:'B4:1 C5:1 B4:1 A4:1 D5:2 B4:1 A4:1 G4:4 A4:1 B4:2 G4:1 E4:2 G4:1 E4:1 D4:4'},
-   {w:'but [G]you’ll look [D7]sweet\nup[G]on the [D7]seat',n:'D4:1 G4:2 B4:1 A4:2 D4:1 G4:2 B4:1 A4:1'},
-   {w:'of a [G]bicycle\n[D7]built for [G]two.',n:'B4:1 C5:1 D5:1 B4:1 G4:1 A4:2 D4:1 G4:6'}]},
-  {t:'La Cucaracha',by:'sung in Mexico',bpm:132,src:'Traditional Spanish-language folk song, known in Mexico since the 1800s; many verses date from the Mexican Revolution (1910s). This is the common chorus.',p:[
-   'People in Mexico have made up new verses to this tune for more than a hundred years. The chorus is about a cockroach that can’t walk.',
-   {w:'La cuca[F]racha,\nla cucaracha,',e:'The cockroach, the cockroach',n:'C4:.5 C4:.5 C4:.5 F4:1.5 A4:1 C4:.5 C4:.5 C4:.5 F4:1.5 A4:1'},
-   {w:'ya no puede cami[C7]nar.',e:'can’t walk any more.',n:'F4:.5 F4:.5 E4:.5 E4:.5 D4:.5 D4:.5 C4:3.5'},
-   {w:'Porque no [C7]tiene,\nporque le falta,',e:'Because it doesn’t have, because it’s missing',n:'C4:.5 C4:.5 C4:.5 E4:1.5 G4:1 C4:.5 C4:.5 C4:.5 E4:1.5 G4:1'},
-   {w:'las dos patitas de a[F]trás.',e:'its two little back legs.',n:'C5:.5 D5:.5 C5:.5 A#4:.5 A4:.5 G4:.5 F4:3.5'}]},
-  {t:'Drunken Sailor',by:'a sea shanty, early 1800s',bpm:184,src:'Traditional shanty, in print by the 1830s-1840s; a walk-away ("stamp and go") shanty.',p:[
-   'Sailors sang this while the whole crew walked down the deck pulling one rope. The beat kept their feet in step.',
-   {w:'[Dm]What shall we do with a drunken sailor?\n[C]What shall we do with a drunken sailor?',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:1 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
-   {w:'[Dm]What shall we do with a drunken sailor,\n[C]early in the [Dm]morning?',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'},
-   {w:'[Dm]Way, hay, and up she rises,\n[C]way, hay, and up she rises,',n:'A4:2 A4:1.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:2 G4:1.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
-   {w:'[Dm]way, hay, and up she rises,\n[C]early in the [Dm]morning.',n:'A4:2 A4:1.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'},
-   {w:'[Dm]Put him in a longboat till he’s sober,\n[C]put him in a longboat till he’s sober,',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:1 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
-   {w:'[Dm]put him in a longboat till he’s sober,\n[C]early in the [Dm]morning.',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'}]},
-  {t:'Sakura, Sakura',by:'sung in Japan',bpm:96,src:'Traditional Edo-period melody; these words were printed in the Tokyo Academy of Music koto collection (Sokyokushu), 1888.',p:[
-   'This is a beginner’s tune for the koto, a long Japanese harp. A Tokyo music school printed these words in 1888.',
-   {w:'[Am]Sakura, sakura,',e:'Cherry blossoms, cherry blossoms,',n:'A4:1 A4:1 B4:2 A4:1 A4:1 B4:2'},
-   {w:'[Am]yayoi no [Dm]sora wa,',e:'across the spring sky,',n:'A4:1 B4:1 C5:1 B4:1 A4:1 B4:.5 A4:.5 F4:2'},
-   {w:'[Am]miwatasu [E]kagiri,',e:'as far as you can see.',n:'E4:1 C4:1 E4:1 F4:1 E4:1 E4:.5 C4:.5 B3:2'},
-   {w:'[Am]kasumi ka [Dm]kumo ka,',e:'Is it mist, or is it clouds?',n:'A4:1 B4:1 C5:1 B4:1 A4:1 B4:.5 A4:.5 F4:2'},
-   {w:'[Am]nioi zo [E]izuru.',e:'Their scent drifts out.',n:'E4:1 C4:1 E4:1 F4:1 E4:1 E4:.5 C4:.5 B3:2'},
-   {w:'[Am]Izaya, izaya,',e:'Come now, come now,',n:'A4:1 A4:1 B4:2 A4:1 A4:1 B4:2'},
-   {w:'[Dm]mi ni yu[E]kan.',e:'let’s go and see.',n:'E4:1 F4:1 B4:.5 A4:.5 F4:1 E4:4'}]}],
+  {t:'Yes! We Have No Bananas',by:'Frank Silver and Irving Cohn, 1923',rec:{id:'78_yes-we-have-no-bananas_billy-west-frank-silver-and-irving-cohn_gbia0099334a',f:'Yes! We Have No Bananas - Billy West - Frank Silver and Irving Cohn.mp3',by:'Billy West, 1923'},
+   src:'Written by Frank Silver and Irving Cohn for the revue Make It Snappy; number one in the US for five weeks in 1923. Silver said the line came from a Greek fruit seller on Long Island. Sung by Belfast dock workers on strike in 1932.',p:[
+   'In 1923 this was the biggest song in America for five weeks.',
+   'One of its writers said he got the title from a fruit seller on Long Island.',
+   'The man started every answer with “yes”, even when the answer was no.',
+   'So when he ran out of bananas, that is what he said.',
+   'The shop in the song has beans, onions, cabbages and scallions. It has every kind of fruit except the one you asked for.',
+   'Nine years later, workers on strike in Belfast marched to it. It was the one song both sides of the city knew.']},
+  {t:'Ain’t We Got Fun',by:'Richard Whiting, Raymond Egan and Gus Kahn, 1921',rec:{id:'78_aint-we-got-fun_billy-jones-kahn-egan-whiting_gbia0332266a',f:'AIN\'T WE GOT FUN - BILLY JONES - Kahn - Egan.mp3',by:'Billy Jones, 1921'},
+   src:'Music Richard A. Whiting, words Raymond B. Egan and Gus Kahn, 1921. Played by Klipspringer in The Great Gatsby (1925), chapter 5.',p:[
+   'This is a cheerful song about having no money at all.',
+   'The rent is not paid. The landlord is at the door. The couple in the song are having a lovely time anyway.',
+   'It came out in 1921, when a lot of people were broke and tired of being sad about it.',
+   'Four years later it turned up in a famous novel, The Great Gatsby.',
+   'A house guest plays it on the piano in a millionaire’s mansion.']},
+  {t:'St. Louis Blues',by:'W. C. Handy, 1914',rec:{id:'78_st-louis-blues_lieut-jim-europes-369th-u-s-inf-hell-fighters-band-handy_gbia0298608b',f:'ST. LOUIS BLUES - Lieut. JIM EUROPE\'S 369th U. S. Inf. ("Hell Fighters") Band.mp3',by:'the 369th Infantry “Hell Fighters” Band, 1919'},
+   src:'W. C. Handy, 1914; in Father of the Blues (1941) he says the line came from a woman he heard in St. Louis in 1892. The 369th Infantry Regiment band under James Reese Europe played in France in 1918 and recorded for Pathé in March 1919.',p:[
+   'W. C. Handy wrote this in 1914. It became one of the most recorded songs there is.',
+   'Years before, broke and sleeping outdoors in St. Louis, he heard a woman talking to herself in the street.',
+   'She said her man had a heart like a rock cast in the sea.',
+   'Handy never forgot it, and he put it in the song.',
+   'The band on this record were soldiers. They were a Black regiment from New York who fought in France in 1918.',
+   'Their band played for French towns that had never heard music like it. They made this record a few weeks after coming home.']},
+  {t:'Aloha ʻOe',by:'Liliʻuokalani, 1878',rec:{id:'78_aloha-oe-farewell-to-thee_royal-hawaiian-troubadours_gbia0301530a',f:'ALOHA OE. (Farewell to Thee.) - Royal Hawaiian Troubadours..mp3',by:'the Royal Hawaiian Troubadours, 1904'},
+   src:'Written in 1878 by Princess Liliʻuokalani (queen 1891-1893, the last monarch of the Hawaiian Kingdom) after a visit to Maunawili ranch on Oʻahu, where she saw a farewell embrace. Aloha ʻoe = farewell to you.',p:[
+   'A princess wrote this song on a horseback ride home.',
+   'In 1878 Liliʻuokalani visited a ranch on the island of Oʻahu.',
+   'As her party left, she saw two people hug goodbye at the gate.',
+   'She hummed a tune all the way back over the mountains, and the song was finished soon after.',
+   'The title means “farewell to you”.',
+   'She became queen of Hawaiʻi in 1891. She was its last monarch, and she wrote more than a hundred songs.']},
+  {t:'Cielito Lindo',by:'Quirino Mendoza y Cortés, Mexico, 1882',rec:{id:'edison-60038_01_9582',f:'cusb_ed_60038_01_9582_0a.mp3',by:'María Luisa Escobar, 1924'},
+   src:'Written in 1882 by Quirino Mendoza y Cortés. Chorus: "Ay, ay, ay, ay, canta y no llores" (sing and don’t cry). Sung by Mexico supporters at football matches.',p:[
+   'If you have heard a stadium full of people sing “ay, ay, ay, ay”, you have heard this song.',
+   'A Mexican songwriter wrote it in 1882.',
+   'The title is a pet name. It means something like “lovely little sky”, or “sweetheart”.',
+   'The chorus says to sing and not cry, because singing cheers up the heart.',
+   'Mexico’s football fans sing it when their team is winning. They also sing it when their team is losing.']},
+  {t:'ʻO Sole Mio',by:'Giovanni Capurro and Eduardo di Capua, Naples, 1898',rec:{id:'78_o-sole-mio-my-sunshine_enrico-caruso-g-capurro-e-di-capua_gbia0566091a',f:'O sole mio (My Sunshine) - Enrico Caruso.mp3',by:'Enrico Caruso'},
+   src:'Words Giovanni Capurro, music Eduardo di Capua, 1898, in Neapolitan; di Capua wrote the tune while on tour in Odessa. The 1920 Antwerp Olympics story is widely told. Recorded by Enrico Caruso in 1916.',p:[
+   'This is a song about the sun in Naples, in the south of Italy.',
+   'The man who wrote the tune was not in Naples at the time. He was on tour in Odessa, by the Black Sea, far from home.',
+   'The words are in Neapolitan, the language of Naples. The title means “my sun”.',
+   'The story goes that at the 1920 Olympics the band could not find the music for Italy’s anthem.',
+   'So they played this instead, and the crowd sang along.',
+   'The singer on this record is Enrico Caruso, who grew up in Naples.']}],
  stars:[
   {t:'The Weaver and the Cowherd',by:'told in China, Japan and Korea',src:'Qixi (China), Tanabata (Japan), Chilseok (Korea), the 7th day of the 7th month; Vega (Zhinü, Orihime) and Altair (Niulang, Hikoboshi) on either side of the Milky Way; the magpie bridge (crows and magpies in Korea, Ojakgyo); the traditional date is lunar, and most of Japan now keeps July 7; wishes on paper strips (tanzaku) hung on bamboo',p:[
    'On summer nights, look for two bright stars, one on each side of the Milky Way.',

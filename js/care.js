@@ -213,37 +213,27 @@ function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if
 /* A page can carry the words in their original script (Jackie, Nov 16): {o: the original, l: its language code, e: the English}.
    The original sits on top, in its own script, only where a real source text exists (js/stories.js says where it is from). */
 function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));if(!pg)return;if(typeof pg==='string'){el.textContent=pg;return;}
- if(pg.w){songPage(el,pg);return;}
  if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.textContent=pg.o;box.appendChild(o);}if(pg.e){const e=document.createElement('span');e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);return;}
  const t=document.createElement('b');t.textContent=pg.t;el.appendChild(t);if(pg.by){const by=document.createElement('span');by.className='sby';by.textContent=pg.by;el.appendChild(by);}}
-/* THE SONG BOOK (Jackie, Nov 17): a song page shows each chord above the syllable it lands on, and a Play button on the book
-   plays the tune in time, from the open pages to the end, turning the pages as it goes. Tap it again (or turn a page, or close
-   the book) to stop. The tune is a soft plucked tone on the game's quiet sound bus; the radio pauses while it plays and comes back.
-   The words and notes are in js/stories.js. */
-const NOTE_AT={C:0,D:2,E:4,F:5,G:7,A:9,B:11};let song=null; // the tune that's playing: {timer, osc:[]}
-function songNotes(pg){if(!pg||!pg.n)return [];return pg.n.trim().split(/\s+/).map(x=>{const [nm,b]=x.split(':'),m=/^([A-G])(#|b)?(\d)$/.exec(nm);
-  return {f:m?440*Math.pow(2,(NOTE_AT[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0)+12*(+m[3]+1)-69)/12):0,b:+b||1};});}
-function isSong(s){return !!(s&&s.p.some(x=>x&&x.n));}
-function songPage(el,pg){const box=document.createElement('span');box.className='sbi ssong';
- for(const ln of pg.w.split('\n')){const L=document.createElement('span');L.className='sline';
-  for(const part of ln.split(/(?=\[)/)){const m=/^\[([^\]]+)\](.*)$/.exec(part),sp=document.createElement('span');sp.className='sch';
-   if(m){const c=document.createElement('i');c.textContent=m[1];sp.appendChild(c);sp.appendChild(document.createTextNode(m[2]));}else sp.textContent=part;L.appendChild(sp);}
-  box.appendChild(L);}
- if(pg.e){const e=document.createElement('span');e.className='smean';e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);}
-function songButton(r){let b=storyEl.querySelector('.splay');if(!isSong(r.s)){if(b)b.remove();return;}
+/* THE SONG BOOK (Jackie, Nov 17): a read about a real song carries its record from the crates (rec, js/stories.js). The open
+   book then has a Play the record button: it streams the old record, and a caption says who is playing. Tap it again or close
+   the book to stop; it keeps playing while you turn the pages. The radio pauses while it plays and comes back after.
+   (Tried first and dropped, Jackie: "that looks bad": chords over the words and a tune played by the game.) */
+let song=null; // the record that's playing: {el, s}
+function isSong(s){return !!(s&&s.rec);}
+function songButton(r){let b=storyEl.querySelector('.splay');if(!isSong(r.s)){if(b)b.remove();if(song)songStop();return;}
+ if(song&&song.s!==r.s)songStop(); // flipped back to another read
  if(!b){b=document.createElement('button');b.type='button';b.className='splay tsb';storyEl.appendChild(b);
   b.addEventListener('click',e=>{e.stopPropagation();if(song)songStop();else songPlay();});}
- b.textContent=song?'Stop':'Play the tune';}
-function songStop(){if(!song)return;clearTimeout(song.timer);for(const o of song.osc)try{o.stop();}catch(e){}song=null;radioHold(false);
- if(storyEl){const b=storyEl.querySelector('.splay');if(b)b.textContent='Play the tune';}}
-// plays the two open pages, then turns to the next two and goes on, to the end of the song
-function songPlay(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r||!isSong(r.s))return;if(!AC)audioInit();if(!AC)return;if(AC.state==='suspended')AC.resume();
- radioHold(true);song={timer:0,osc:[]};const me=song,beat=60/(r.s.bpm||120),P=readPages(r.s);
- const spread=()=>{if(song!==me||!storyEl)return;let t=AC.currentTime+.06,len=0;
-  for(const pg of [P[r.page],P[r.page+1]])for(const n of songNotes(pg)){const d=n.b*beat;if(n.f){me.osc.push(tone(t+len,Math.max(.22,d*.95),'triangle',n.f,0,.16,.01));me.osc.push(tone(t+len,Math.max(.2,d*.6),'sine',n.f*2,0,.04,.01));}len+=d;}
-  me.timer=setTimeout(()=>{if(song!==me)return;me.osc.length=0;if(r.page+2>=P.length){songStop();return;}r.page+=2;showStory();spread();},len*1000);};
- spread();songButton(r);}
-function turnStory(){if(!storyEl||storyEl.dataset.turning)return;songStop();const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
+ b.textContent=song?'Stop':'Play the record';}
+function songStop(){if(!song)return;const a=song.el;song=null;a.onended=a.onerror=null;try{a.pause();a.removeAttribute('src');a.load();}catch(e){}radioHold(false);
+ if(storyEl){const b=storyEl.querySelector('.splay');if(b)b.textContent='Play the record';}}
+function songPlay(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r||!isSong(r.s))return;const rec=r.s.rec;radioHold(true);
+ const a=new Audio();a.setAttribute('playsinline','');a.volume=.8;a.src='https://archive.org/download/'+encodeURIComponent(rec.id)+'/'+rec.f.split('/').map(encodeURIComponent).join('/');
+ song={el:a,s:r.s};const me=song,fail=()=>{if(song!==me)return;songStop();tell('The record wouldn’t play. It needs the internet.',{kind:'info'});};
+ a.onended=()=>{if(song===me)songStop();};a.onerror=fail;const p=a.play();if(p&&p.catch)p.catch(fail);
+ tell('Playing “'+r.s.t+'”, '+rec.by+'.',{kind:'info'});songButton(r);}
+function turnStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
  if(r.page+2>=readPages(r.s).length)return closeStory();sfx('page');if(tsCalm()){r.page+=2;showStory();return;} // reduce motion: the next pages just appearstoryEl.dataset.turning=1;
  const f=document.createElement('div');f.className='sturn sturn1 jstep';storyEl.querySelector('.scover').appendChild(f); // the right page lifts
  setTimeout(()=>{f.className='sturn sturn2 jstep';},90); // and lands on the left
@@ -251,7 +241,7 @@ function turnStory(){if(!storyEl||storyEl.dataset.turning)return;songStop();cons
 /* Flipping back (Jackie, Nov 15): tap the left page. It turns back two pages (the same 2-frame flip, the other way); from the title
    page it goes back to the read before this one in the same book, opened at its title. At the very first read there's nothing
    before, so nothing happens. */
-function backStory(){if(!storyEl||storyEl.dataset.turning)return;songStop();const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
+function backStory(){if(!storyEl||storyEl.dataset.turning)return;const id=+storyEl.dataset.id,r=READ.get(id);if(!r)return closeStory();
  let to=null;if(r.page>=2)to={page:r.page-2};else{const s=prevRead(r.bk.id,r.s);if(s)to={page:0,s};}
  if(!to){sfx('tick');return;}const go=()=>{Object.assign(r,to);showStory();};sfx('page');if(tsCalm()){go();return;}storyEl.dataset.turning=1;
  const f=document.createElement('div');f.className='sturn sturn2 jstep';storyEl.querySelector('.scover').appendChild(f); // the left page lifts

@@ -8,14 +8,15 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
 - **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
 
-### The Songs book is a song book you can play (Nov 17)
+### The Song book: true stories of real songs, with the record to play (Nov 17)
 
 - Jackie on the old Songs and lullabies book ("Twinkle, Twinkle", Tennyson, Tagore): "very unfun", written for small children of the early 1900s, "not like smart clever funny older kids through adult adults". All three reads are gone.
-- Jackie: "a song book should be more useful if we had one", with "chords that are above the respective words and maybe if you press play a little tune will kind of play along it in the appropriate timing". So it is now the **Song book**: each song opens with one true thing about it, then the words with each chord above the syllable it lands on. A **Play the tune** button on the book plays the melody in time from the open pages to the end and turns the pages as it goes. Tap it again, turn a page or close the book to stop. The radio pauses while the tune plays.
-- The first four songs, picked for older kids through adults and free to use (traditional, or words and tune published before 1931): Daisy Bell (1892, the first song a computer sang), La Cucaracha (Mexico, in Spanish with the English under it), Drunken Sailor (a sea shanty) and Sakura, Sakura (Japan, with the English under it).
-- Not everything free to use is old: facts, recipes, customs and folklore told in our own words can be about anything. That is the plan for the other books Jackie finds dull, which are still to be gone through one by one. Fairy tales stay "if they are actually juicy or cool in some way".
+- First try, dropped the same day: chords above the words and a tune the game played itself. Jackie: "Nevermind on the songbook - that looks bad. But maybe if there's an example in the crates you could have the option to play a sample."
+- So each read is now the true story of a real song in plain words, like the mint tea recipe, and every song is one that has a record in the crates (the library of old free 78s the radio and the sampler use). The open book has a **Play the record** button that streams it, and a caption says who is playing. It keeps playing while you turn the pages; tap again or close the book to stop. The radio pauses meanwhile.
+- The first six: Yes! We Have No Bananas (Billy West, 1923), Ain't We Got Fun (Billy Jones, 1921), St. Louis Blues (the 369th Infantry "Hell Fighters" Band, 1919), Aloha ʻOe (the Royal Hawaiian Troubadours, 1904), Cielito Lindo (María Luisa Escobar, 1924) and ʻO Sole Mio (Enrico Caruso).
+- Not everything free to use is old: facts, recipes, customs and folklore told in our own words can be about anything. That is the plan for the other books Jackie finds dull, still to be gone through one by one. Fairy tales stay "if they are actually juicy or cool in some way".
 - Dropped: tabs for the Kalimbasizer (Jackie's kalimba synth game): "let's forget" it.
-- **Why:** a book in this room should be something a clever ten-year-old or an adult would want to open twice, and a song you can play is more use than a poem to read.
+- **Why:** a book in this room should be something a clever ten-year-old or an adult would want to open twice, and hearing the real hundred-year-old record beats reading about it.
 
 ### The journal's hand is only on the last page (Nov 17)
 

@@ -114,11 +114,6 @@
 .story .stitle{flex-direction:column;align-items:center;justify-content:center;gap:.5em;text-align:center} /* the title page is centered (Jackie, Nov 15); the reading pages stay left-aligned */.story .stitle b{font-weight:800;color:var(--ts-rust);font-size:1.15em;line-height:1.2}
 .story .sbi{display:block;min-width:0;width:100%} /* a page with its original script: the original, then the English, stacked */
 .story .sorig{display:block;color:var(--ts-rust);font-weight:700;line-height:1.3;margin-bottom:.4em} /* the words in their original script, above the English (Jackie, Nov 16) */
-.story .ssong{white-space:normal}
-.story .sline{display:block;line-height:2.25}
-.story .sch{position:relative;white-space:pre-wrap}
-.story .sch i{position:absolute;left:0;top:-1.05em;line-height:1;font-style:normal;font-weight:800;font-size:max(14px,.8em);color:var(--ts-rust);white-space:nowrap} /* the chord, above the syllable it lands on */
-.story .smean{display:block;font-size:max(14px,.8em);line-height:1.25;margin-top:.35em;opacity:.8} /* what the words mean */
 .story .splay{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);font:inherit;font-weight:800;font-size:max(14px,.8em);padding:.3em .9em;cursor:pointer;white-space:nowrap;--bg:var(--ts-sage)}
 .story .sby{font-size:max(14px,.8em);line-height:1.25}
 .story .sturn{background:var(--ts-paper);outline-color:var(--ts-ink)}
