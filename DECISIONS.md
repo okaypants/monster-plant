@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot readings ask no question (Nov 17)
+
+- Jackie: "For the tarots, I don't want them to be question related if at all possible."
+- The deck no longer says "Think of a question" or "Think about your day". It says "Tap the deck to shuffle it." The line that reads the spread no longer mentions "the question", and the Celtic Cross places no longer speak of "the matter".
+- **Why:** a reading is about you and the day, with nothing to ask first.
+
 ### The Home Screen line says "to keep your progress saved" (Nov 17)
 
 - Jackie, on the line under the loading screen: "I think it should say 'to keep your progress saved' or something more direct like that".

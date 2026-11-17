@@ -9,7 +9,7 @@
                        what crosses you, crowns you, is beneath you, behind you, before you) and four in a column beside it
                        (yourself, your house, your hopes or fears, what will come). Waite's "him" is "you" here; his
                        Significator (a card picked to stand for the one asking) is left out, as most readers do today.
-   A reading: think of a question, tap the deck to shuffle, cut it into three piles and pick one, then turn the cards over one
+   A reading (no question is asked; Jackie, Nov 17: "I don't want them to be question related"): tap the deck to shuffle, cut it into three piles and pick one, then turn the cards over one
    by one. About one in three comes up reversed (upside down), which changes its meaning, as in Waite's book. Once a card is
    turned, its name, its place in the spread in parentheses and its meaning are written under it ("The Star (the past)"); the
    Celtic Cross shows a small map of the cross and one card at a time beside it. Tap a turned card for the zoom: the card big,
@@ -26,13 +26,13 @@ const SPREADS={
   one:{name:'Card of the day',next:'A new card of the day comes tomorrow.',pos:[{t:'Today',in:'Today'}]},
   three:{name:'Three cards',next:'A new three-card reading comes tomorrow.',pos:[{t:'The past',in:'In the past'},{t:'The present',in:'Right now'},{t:'The future',in:'Coming up'}]},
   cross:{name:'Celtic Cross',next:'A new Celtic Cross comes tomorrow.',pos:[
-    {t:'What covers you',in:'What covers you, the mood around the whole matter'},
+    {t:'What covers you',in:'What covers you, the mood around you right now'},
     {t:'What crosses you',in:'What crosses you, what stands in the way'},
-    {t:'What crowns you',in:'What crowns you, the best that can come of it'},
-    {t:'What is beneath you',in:'What is beneath you, what it rests on'},
+    {t:'What crowns you',in:'What crowns you, the best that can come'},
+    {t:'What is beneath you',in:'What is beneath you, what all of this rests on'},
     {t:'What is behind you',in:'What is behind you, what is passing away'},
     {t:'What is before you',in:'What is before you, what comes soon'},
-    {t:'Yourself',in:'Yourself, where you stand in it'},
+    {t:'Yourself',in:'Yourself, where you stand'},
     {t:'Your house',in:'Your house, the people and places around you'},
     {t:'Your hopes or fears',in:'Your hopes or fears'},
     {t:'What will come',in:'What will come, how it all turns out'}]}};
@@ -62,12 +62,12 @@ function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';
   const c=document.createElement('button');c.type='button';c.className='tsb tspick tscharts'+(tr.k==='charts'?' on':'');c.dataset.k='charts';c.textContent='Charts'; // birth charts and horoscopes (js/charts.js)
   c.addEventListener('click',e=>{e.stopPropagation();if(tr.k==='charts'||tr.step==='shuffling')return;sfx('tick');tarotStart('charts')});p.appendChild(c)}
 function tarotStart(k){tarotPick=k;if(k==='charts'){chartsShow();return}const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
-// 1. the deck, waiting for a question
+// 1. the deck, waiting (no question is asked: Jackie, Nov 17)
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
   const d=document.createElement('button');d.type='button';d.className='tdeck';d.setAttribute('aria-label','Shuffle the deck');
   for(let i=0;i<4;i++){const b=tBack();b.style.setProperty('--i',i);d.appendChild(b)}
   d.addEventListener('click',e=>{e.stopPropagation();tarotShuffle(d)});st0.appendChild(d);
-  tSay(k==='one'?'Think about your day. Then tap the deck to shuffle it.':'Think of a question. Then tap the deck to shuffle it.')}
+  tSay('Tap the deck to shuffle it.')}
 // 2. shuffle (78 cards, each maybe reversed), then cut into three piles
 function tarotShuffle(d){if(tr.step!=='deck')return;tr.step='shuffling';sfx('paper');
   const ids=TAROT.map((c,i)=>i);for(let i=ids.length-1;i>0;i--){const j=tarotRand(i+1);[ids[i],ids[j]]=[ids[j],ids[i]]}
@@ -134,7 +134,7 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
   const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0],rev=C.filter(x=>x.rev).length;let t='';
   const suitIs=k=>SUIT[k].n+', the suit of '+SUIT[k].m;
   if(n===1){const x=C[0];t=x.c.id[0]==='M'?'This is one of the 22 Major Arcana, the most important cards in the deck.':'This card is from '+suitIs(x.c.id[0])+'.';if(x.rev)t+=' It came up reversed, which changes its meaning.'}
-  else{t+=maj===n?'All of these cards are Major Arcana, which suggests the question is about something important.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which suggests the question is about something important.':maj===1?'One of these cards is Major Arcana.':maj>1?maj+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which suggests an everyday matter.';
+  else{t+=maj===n?'All of these cards are Major Arcana, which marks an important time.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which marks an important time.':maj===1?'One of these cards is Major Arcana.':maj>1?maj+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which points to everyday things.';
     if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Most of the '+(maj?'others':'cards')+' are '+suitIs(top[0])+'.';
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
   tr.sum=t;tSay((again?'This is today’s reading. ':'')+t+(n===1?' Tap the card for more about it.':' Tap a card for more about it.')+' '+SPREADS[tr.k].next);
