@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### What a tarot card's page holds (Nov 17)
+
+- Jackie: "each individual card should include the Waite deal; the interpretation or other potential meanings; and then any other cool details about the card itself or how it can be read that is special to it."
+- A card's page now reads, in order: the plain meaning; **A. E. Waite, 1910** (his own words for the card as it came up, quoted from The Pictorial Key to the Tarot); **Readers today** (how most readers read it now, which is often different, such as Death as the end of a chapter); what it would mean the other way up; **How to read it** for court cards and Aces; **Special to this card** for 30 cards (the High Priestess's half-hidden scroll, the Chariot with no reins, the loose ropes on the Eight of Swords, the Tree of Life on the Ten of Pentacles); then the picture, the deck, the astrology and the artist as before.
+- This brings Waite's wording back. On Nov 16 Jackie had it taken out when it sat behind its own button; now it is one part of the page.
+- "Readers today" and "Special to this card" were written for the game from common knowledge of the deck and are in js/tarotread.js.
+- **Why:** one plain line per card was thin. The page should give the source, the other ways to take it, and the things only that card has.
+
 ### The reading summed up under the spread (Nov 17)
 
 - Jackie: "I want a summary of the reading in the spread page (that you can expand if it's too long)".

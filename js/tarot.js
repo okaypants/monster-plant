@@ -15,8 +15,9 @@
    Celtic Cross shows a small map of the cross and one card at a time beside it. Tap a turned card for the zoom: the card big,
    with the details for the curious (js/tarotlore.js). Once all are turned, the reading is summed up under the spread (Jackie, Nov 17): each card's short meaning in its
    place, then the traditional count (how many Major Arcana, which suit leads, whether several are reversed). It shows three
-   lines at most; "Read all of it" opens the whole summary with every card listed. (Waite's own 1910 wording was shown one tap away at
-   first; Jackie had it taken out; it stays in js/tarotdata.js as the record of where each meaning comes from.)
+   lines at most; "Read all of it" opens the whole summary with every card listed. The card's page (Jackie, Nov 17) has, in order: the plain meaning; Waite's own 1910
+   words for it; how readers read it today; what it would mean the other way up; for court cards and Aces, how that kind of
+   card is read; anything special to that one card; then the picture, the deck, the astrology and the artist.
    ONCE A DAY (Jackie: "you should not be able to re-do it in the same calendar day", by the phone's clock): each spread can be
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
    opening the box again that day shows the same cards face up to read again; a new one comes tomorrow.
@@ -166,6 +167,16 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   const h=document.createElement('div');h.className='tname';h.textContent=tarotTitle(i);
   const m=document.createElement('div');m.className='tmean';m.textContent=tarotMean(i);txt.append(h,m);
   if(tr.k!=='one'){const w=document.createElement('div');w.className='tlore';w.textContent=s.in.replace(/^[^,]*, /,'This place in the spread shows ')+(s.in.includes(',')?'.':'');if(s.in.includes(','))txt.appendChild(w)}
+  // Waite's own words (1910), how readers read it today, and what it would mean the other way up (Jackie, Nov 17)
+  const say=(k,v,cls)=>{const d=document.createElement('div');d.className='tlore'+(cls?' '+cls:'');const b=document.createElement('b');b.textContent=k+' ';d.append(b,document.createTextNode(v));txt.appendChild(d)};
+  const w=x.rev?x.c.wr:x.c.wu;
+  if(w)say('A. E. Waite, 1910.','“'+w+'”','twaite');else say('A. E. Waite, 1910.','Waite gives no reversed meaning for this card. Upright he writes “'+x.c.wu+'”','twaite');
+  if(TAROT_M[x.c.id])say('Readers today.',TAROT_M[x.c.id]+(x.rev?' That is how they read it upright. Reversed, many take the same thing as blocked, delayed or overdone.':''),'tmodern');
+  say(x.rev?'If it were upright.':'If it were reversed.',x.rev?x.c.u:x.c.r,'tother');
+  const num=+x.c.id.slice(1);
+  if(x.c.id[0]!=='M'&&num>=11)say('How to read it.','A court card can stand for a real person in your life or for a side of yourself. '+(num===11?'Pages are also read as messages and news.':num===12?'Knights are also read as something arriving or leaving.':'Queens and Kings are also read as people with some say over you.'),'thow');
+  if(x.c.id[0]!=='M'&&num===1)say('How to read it.','An Ace is the root of its suit. Readers take it as a seed or a first chance.','thow');
+  if(TAROT_X[x.c.id])say('Special to this card.',TAROT_X[x.c.id],'tspecial');
   for(const [k,v] of tarotLore(x.c)){const d=document.createElement('div');d.className='tlore';const b=document.createElement('b');b.textContent=k+'. ';d.append(b,document.createTextNode(v));txt.appendChild(d)}
   const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
   r.append(big,txt,back);r.addEventListener('click',e=>e.stopPropagation());
