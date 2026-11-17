@@ -170,6 +170,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `care.js` | Watering, treats, books, petting |
   | `cat.js` | The cat: naps, walks, trust, petting |
   | `moon.js` | The moon in the night window: tonight's real phase, drawn over the painted moon (`moonAge`, `moonLit`, `moonName`) |
+  | `tarotread.js` | Each tarot card's short meaning, used to sum up a whole spread in a few sentences |
   | `tarotlore.js` | The details in the tarot zoom: each card's picture, astrology and how it was made |
   | `tarot.js`, `tarotdata.js` | The moon box's tarot: shuffle, cut, three cards, reading; the 78 cards' meanings (plain words and Waite's). Pictures in `tarot/` |
   | `sky.js`, `charts.js` | The real sky (sun, moon, planets, rising sign) and the birth charts, daily horoscopes and pairings in the moon box. World cities in `data/cities.json` |

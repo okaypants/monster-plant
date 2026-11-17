@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The reading summed up under the spread (Nov 17)
+
+- Jackie: "I want a summary of the reading in the spread page (that you can expand if it's too long)".
+- Once every card is turned, a few sentences under the spread put each card's short meaning in its place ("This reading moves from big plans in the past, through a truce now, toward hope."), followed by the traditional count of Major Arcana, the leading suit and reversals. The Celtic Cross gets a sentence for each pair of places.
+- It shows three lines at most (two on a phone). When it doesn't fit, a "Read all of it" button opens the whole summary with every card and its meaning listed underneath.
+- Each card has a short meaning for this, upright and reversed (js/tarotread.js), cut down from the plain meanings that come from Waite.
+- **Why:** the cards were explained one at a time, and nothing said what the spread adds up to.
+
 ### Tarot readings ask no question (Nov 17)
 
 - Jackie: "For the tarots, I don't want them to be question related if at all possible."

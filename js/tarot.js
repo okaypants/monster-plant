@@ -13,8 +13,9 @@
    by one. About one in three comes up reversed (upside down), which changes its meaning, as in Waite's book. Once a card is
    turned, its name, its place in the spread in parentheses and its meaning are written under it ("The Star (the past)"); the
    Celtic Cross shows a small map of the cross and one card at a time beside it. Tap a turned card for the zoom: the card big,
-   with the details for the curious (js/tarotlore.js). Once all are turned, a line reads the spread the traditional way (how
-   many Major Arcana, which suit leads, whether several are reversed). (Waite's own 1910 wording was shown one tap away at
+   with the details for the curious (js/tarotlore.js). Once all are turned, the reading is summed up under the spread (Jackie, Nov 17): each card's short meaning in its
+   place, then the traditional count (how many Major Arcana, which suit leads, whether several are reversed). It shows three
+   lines at most; "Read all of it" opens the whole summary with every card listed. (Waite's own 1910 wording was shown one tap away at
    first; Jackie had it taken out; it stays in js/tarotdata.js as the record of where each meaning comes from.)
    ONCE A DAY (Jackie: "you should not be able to re-do it in the same calendar day", by the phone's clock): each spread can be
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
@@ -134,11 +135,28 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
   const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0],rev=C.filter(x=>x.rev).length;let t='';
   const suitIs=k=>SUIT[k].n+', the suit of '+SUIT[k].m;
   if(n===1){const x=C[0];t=x.c.id[0]==='M'?'This is one of the 22 Major Arcana, the most important cards in the deck.':'This card is from '+suitIs(x.c.id[0])+'.';if(x.rev)t+=' It came up reversed, which changes its meaning.'}
-  else{t+=maj===n?'All of these cards are Major Arcana, which marks an important time.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which marks an important time.':maj===1?'One of these cards is Major Arcana.':maj>1?maj+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which points to everyday things.';
+  else{t+=maj===n?'All of these cards are Major Arcana, which marks an important time.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which marks an important time.':maj===1?'One of these cards is Major Arcana.':maj>1?['','','Two','Three','Four','Five','Six','Seven','Eight','Nine'][maj]+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which points to everyday things.';
     if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Most of the '+(maj?'others':'cards')+' are '+suitIs(top[0])+'.';
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
-  tr.sum=t;tSay((again?'This is today’s reading. ':'')+t+(n===1?' Tap the card for more about it.':' Tap a card for more about it.')+' '+SPREADS[tr.k].next);
+  tr.pat=t;tr.story=tarotStory();tr.sum=tr.story+' '+t;tarotSumShow(again);
   tarotTabs()}
+// the reading in a few sentences: each card's short meaning (js/tarotread.js) put in its place in the spread
+function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1:0]);
+  if(tr.k==='one')return 'Today is about '+k[0]+'.';
+  if(tr.k==='three')return 'This reading moves from '+k[0]+' in the past, through '+k[1]+' now, toward '+k[2]+'.';
+  return 'You are surrounded by '+k[0]+', with '+k[1]+' standing in the way. The best you can hope for is '+k[2]+', and all of it rests on '+k[3]+'. You are leaving behind '+k[4]+' and heading toward '+k[5]+'. You meet this with '+k[6]+', and the people and places around you bring '+k[7]+'. Your hopes or fears are about '+k[8]+'. It ends in '+k[9]+'.'}
+// under the spread: the summary (three lines at most; "Read all of it" opens the whole thing when it doesn't fit), then a small note
+function tarotSumShow(again){const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
+  const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it.':'Tap a card for more about it.')+' '+SPREADS[tr.k].next));
+  s.append(sp,note);
+  if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tsb tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(b)}}
+function tarotSumOpen(){const old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
+  const r=document.createElement('div');r.className='tread tsb tsumfull';const txt=document.createElement('div');txt.className='ttext';
+  const add=(cls,t,bold)=>{const d=document.createElement('div');d.className=cls;if(bold){const b=document.createElement('b');b.textContent=bold+' ';d.appendChild(b)}d.appendChild(document.createTextNode(t));txt.appendChild(d)};
+  add('tname',SPREADS[tr.k].name);add('tmean',tr.story);add('tlore',tr.pat);
+  tr.cards.forEach((x,i)=>add('tlore',tarotMean(i),tarotTitle(i)+'.'));
+  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
+  r.append(txt,back);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
 // 4. the zoom: the card big, with its meaning and the details for the curious (js/tarotlore.js): what is in the picture,
 // its place in the deck, its sign or planet in the old system, and how it was made
 function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
