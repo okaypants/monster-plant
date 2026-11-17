@@ -62,21 +62,18 @@
 .tsscreen .opts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 .screen:not(.journal) .tsscreen button{font:inherit;font-size:18px;font-weight:800;padding:9px 22px 10px;min-width:150px;cursor:pointer;transition:none;transform:none}
 /* OPENING SCREENS (Jackie, Nov 17: the brown page with a paper card was "very bland"): the loading screen and the turn-your-phone
-   screen are the night outside the room. Dark plum (the page's own color), a seed growing in its pot by frame swaps, the name
+   screen are the night outside the room. Dark plum (the page's own color), a small sprout in its pot (still; Jackie, Nov 17), the name
    in the monsters' green, cream words with no card, and a few square stars, some of which blink. No fades. */
 #rot,#loading{color:#fdebc9}
 .open{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .open h1{margin:0;font-size:36px;font-weight:800;line-height:1.1;color:#c8d145;text-shadow:3px 3px 0 #4a2a4f}
 .open p{margin:0;font-size:18px;font-weight:700}
 #loading .kshint{color:#b9aee0}
-.osprout{position:relative;width:121px;height:154px}
-.osprout img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;visibility:hidden;animation:osp 3s step-end infinite}
-.osprout img:nth-child(2){animation-delay:.5s}.osprout img:nth-child(3){animation-delay:1s}.osprout img:nth-child(4){animation-delay:1.5s}.osprout img:nth-child(5){animation-delay:2s}.osprout img:nth-child(6){animation-delay:2.5s}
-@keyframes osp{0%{visibility:visible}16.6%{visibility:hidden}}
+.osprout{display:block;width:73px;height:93px;image-rendering:pixelated}
 .ostars{position:absolute;left:0;top:0;width:3px;height:3px;box-shadow:6vw 12vh 0 1px #fdebc9,17vw 29vh 0 0 #fdebc9,9vw 72vh 0 1px #6c61a4,21vw 90vh 0 1px #fdebc9,83vw 8vh 0 0 #fdebc9,93vw 24vh 0 1px #6c61a4,79vw 31vh 0 1px #fdebc9,88vw 69vh 0 0 #fdebc9,95vw 86vh 0 1px #6c61a4,74vw 93vh 0 1px #fdebc9,38vw 5vh 0 0 #fdebc9,57vw 95vh 0 1px #6c61a4}
 .ostars.o2{box-shadow:13vw 20vh 0 1px #fdebc9,4vw 84vh 0 0 #fdebc9,26vw 7vh 0 1px #6c61a4,90vw 14vh 0 1px #fdebc9,90vw 93vh 0 0 #fdebc9,66vw 4vh 0 1px #6c61a4,30vw 95vh 0 1px #fdebc9,97vw 34vh 0 0 #fdebc9;animation:ost 2.4s step-end infinite}
 @keyframes ost{0%{visibility:visible}70%{visibility:hidden}}
-@media (prefers-reduced-motion:reduce){.osprout img,.ostars.o2{animation:none}.osprout img:nth-child(5){visibility:visible}}
+@media (prefers-reduced-motion:reduce){.ostars.o2{animation:none}}
 
 /* name tags: the monster's tint, name color and symbol */
 #nameTags{gap:9px}

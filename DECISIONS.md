@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The opening sprout is smaller and holds still (Nov 17)
+
+- Jackie, on the new loading screen: "looks nicer but maybe a smaller plant with no animation".
+- The pot is one still picture (the small sprout) at 73 pixels wide, down from 121, on both opening screens. It no longer grows. The stars still blink.
+- **Why:** the growing plant was too big and too busy for a screen you see for a second.
+
 ### The opening screens are a night sky with a growing seed (Nov 17)
 
 - Jackie, on the loading screen and the turn-your-phone screen: "I don't like this brown opening page (very bland and American girl)".
