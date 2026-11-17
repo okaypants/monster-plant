@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Songs book is a song book you can play (Nov 17)
+
+- Jackie on the old Songs and lullabies book ("Twinkle, Twinkle", Tennyson, Tagore): "very unfun", written for small children of the early 1900s, "not like smart clever funny older kids through adult adults". All three reads are gone.
+- Jackie: "a song book should be more useful if we had one", with "chords that are above the respective words and maybe if you press play a little tune will kind of play along it in the appropriate timing". So it is now the **Song book**: each song opens with one true thing about it, then the words with each chord above the syllable it lands on. A **Play the tune** button on the book plays the melody in time from the open pages to the end and turns the pages as it goes. Tap it again, turn a page or close the book to stop. The radio pauses while the tune plays.
+- The first four songs, picked for older kids through adults and free to use (traditional, or words and tune published before 1931): Daisy Bell (1892, the first song a computer sang), La Cucaracha (Mexico, in Spanish with the English under it), Drunken Sailor (a sea shanty) and Sakura, Sakura (Japan, with the English under it).
+- Not everything free to use is old: facts, recipes, customs and folklore told in our own words can be about anything. That is the plan for the other books Jackie finds dull, which are still to be gone through one by one. Fairy tales stay "if they are actually juicy or cool in some way".
+- Dropped: tabs for the Kalimbasizer (Jackie's kalimba synth game): "let's forget" it.
+- **Why:** a book in this room should be something a clever ten-year-old or an adult would want to open twice, and a song you can play is more use than a poem to read.
+
 ### The journal's hand is only on the last page (Nov 17)
 
 - Jackie: "the hand in the journal is covering some text". The carafe hand (left- or right-handed) sat in the bottom corner of every right-hand page, and a full page's words ran down under it. It is now only on the last page, Keep it safe, which is the inside of the back cover where it was first meant to be. That page keeps its bottom strip clear for the hand, and its tip sits a little closer to the words above. **Why:** every other page keeps its full room for words, and the hand never sits on any.

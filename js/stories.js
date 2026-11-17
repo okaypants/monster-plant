@@ -12,6 +12,7 @@
      src  for facts and folklore: where to check it (never shown in the game)
    A page can also be {o, l, e} (Jackie, Nov 16): o = the words in their original script, l = the language, e = the English.
    Only where a real source text exists, copied exactly; the comment by the read says where it is from.
+   A page can also be a song page {w, n, e}: see THE SONG BOOK below.
    "from" in a title means it's a part of a longer piece. The open book shows two pages at a time; the title is the first page. */
 const STORIES={
  fairy:[
@@ -114,29 +115,43 @@ const STORIES={
    'Adder’s fork and blind-worm’s sting,\nLizard’s leg and howlet’s wing,',
    'For a charm of powerful trouble,\nLike a hell-broth boil and bubble.',
    'Double, double toil and trouble;\nFire burn, and cauldron bubble.']}],
+ /* THE SONG BOOK (Jackie, Nov 17): real songs you can play. A song page is {w, n, e}:
+      w  the words, with each chord in [brackets] right before the syllable it lands on; it is drawn above that syllable
+      n  the tune for that page: NOTE:beats, in order (C4 is middle C, r is a rest); bpm on the read is beats a minute
+      e  what the words mean in English, small, for a song in another language
+    The Play button plays the tune from the open pages to the end and turns the pages in time (js/care.js).
+    Every song is traditional or was published before 1931, words and tune. */
  songs:[
-  {t:'from The Star',by:'Jane Taylor, 1806',p:[
-   'Twinkle, twinkle, little star,\nHow I wonder what you are!',
-   'Up above the world so high,\nLike a diamond in the sky.',
-   'When the blazing sun is gone,\nWhen he nothing shines upon,',
-   'Then you show your little light,\nTwinkle, twinkle, all the night.',
-   'Then the trav’ller in the dark,\nThanks you for your tiny spark,',
-   'He could not see which way to go,\nIf you did not twinkle so.']},
-  {t:'from Sweet and Low',by:'Alfred Tennyson, 1850',p:[
-   'Sweet and low, sweet and low,\nWind of the western sea,',
-   'Low, low, breathe and blow,\nWind of the western sea!',
-   'Over the rolling waters go,\nCome from the dying moon, and blow,',
-   'Blow him again to me;\nWhile my little one, while my pretty one, sleeps.']},
-  {t:'from The Source',by:'Rabindranath Tagore, 1913',p:[
-   'The sleep that flits on baby’s eyes—does anybody know from where it comes?',
-   'Yes, there is a rumour that it has its dwelling where,',
-   'in the fairy village among shadows of the forest dimly lit with glow-worms,',
-   'there hang two shy buds of enchantment.',
-   'From there it comes to kiss baby’s eyes.',
-   {o:'খোকার চোখে যে ঘুম আসে\n    সকল তাপ-নাশা—',l:'bn',e:'Tagore first wrote it in Bengali, as “Khoka” (1903).'},
-   {o:'জান কি কেউ কোথা হ’তে যে\n    করে সে যাওয়া-আসা?',l:'bn'},
-   {o:'শুনেছি রূপকথার গাঁয়ে\nজোনাকি-জ্বলা বনের ছায়ে\nদুলিছে দুটি পারুল কুঁড়ি\n    তাহারি মাঝে বাসা;—',l:'bn'},
-   {o:'        সেখান হ’তে খোকার চোখে\n            করে সে যাওয়া-আসা',l:'bn'}]}], // Bengali: শিশু, as printed in কাব্যগ্রন্থ (অষ্টম খণ্ড), from Bengali Wikisource (proofread); The Source is the same English as Song Offerings 61, whose Bengali is this poem
+  {t:'Daisy Bell',by:'Harry Dacre, 1892',bpm:168,src:'Words and tune: Harry Dacre, 1892 (public domain). The computer: Bell Labs, 1961 (Kelly, Lochbaum and Mathews).',p:[
+   'In 1961 a computer at Bell Labs sang this song. It was the first time a computer had ever sung.',
+   {w:'[G]Daisy, Daisy,\n[C]give me your answer, [G]do.',n:'D5:3 B4:3 G4:3 D4:3 E4:1 F#4:1 G4:1 E4:2 G4:1 D4:6'},
+   {w:'[D7]I’m half [G]crazy,\nall for the [A7]love of [D7]you.',n:'A4:3 D5:3 B4:3 G4:3 E4:1 F#4:1 G4:1 A4:2 B4:1 A4:5'},
+   {w:'It [D7]won’t be a stylish [G]marriage,\nI [C]can’t afford a [G]carriage,',n:'B4:1 C5:1 B4:1 A4:1 D5:2 B4:1 A4:1 G4:4 A4:1 B4:2 G4:1 E4:2 G4:1 E4:1 D4:4'},
+   {w:'but [G]you’ll look [D7]sweet\nup[G]on the [D7]seat',n:'D4:1 G4:2 B4:1 A4:2 D4:1 G4:2 B4:1 A4:1'},
+   {w:'of a [G]bicycle\n[D7]built for [G]two.',n:'B4:1 C5:1 D5:1 B4:1 G4:1 A4:2 D4:1 G4:6'}]},
+  {t:'La Cucaracha',by:'sung in Mexico',bpm:132,src:'Traditional Spanish-language folk song, known in Mexico since the 1800s; many verses date from the Mexican Revolution (1910s). This is the common chorus.',p:[
+   'People in Mexico have made up new verses to this tune for more than a hundred years. The chorus is about a cockroach that can’t walk.',
+   {w:'La cuca[F]racha,\nla cucaracha,',e:'The cockroach, the cockroach',n:'C4:.5 C4:.5 C4:.5 F4:1.5 A4:1 C4:.5 C4:.5 C4:.5 F4:1.5 A4:1'},
+   {w:'ya no puede cami[C7]nar.',e:'can’t walk any more.',n:'F4:.5 F4:.5 E4:.5 E4:.5 D4:.5 D4:.5 C4:3.5'},
+   {w:'Porque no [C7]tiene,\nporque le falta,',e:'Because it doesn’t have, because it’s missing',n:'C4:.5 C4:.5 C4:.5 E4:1.5 G4:1 C4:.5 C4:.5 C4:.5 E4:1.5 G4:1'},
+   {w:'las dos patitas de a[F]trás.',e:'its two little back legs.',n:'C5:.5 D5:.5 C5:.5 A#4:.5 A4:.5 G4:.5 F4:3.5'}]},
+  {t:'Drunken Sailor',by:'a sea shanty, early 1800s',bpm:184,src:'Traditional shanty, in print by the 1830s-1840s; a walk-away ("stamp and go") shanty.',p:[
+   'Sailors sang this while the whole crew walked down the deck pulling one rope. The beat kept their feet in step.',
+   {w:'[Dm]What shall we do with a drunken sailor?\n[C]What shall we do with a drunken sailor?',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:1 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
+   {w:'[Dm]What shall we do with a drunken sailor,\n[C]early in the [Dm]morning?',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'},
+   {w:'[Dm]Way, hay, and up she rises,\n[C]way, hay, and up she rises,',n:'A4:2 A4:1.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:2 G4:1.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
+   {w:'[Dm]way, hay, and up she rises,\n[C]early in the [Dm]morning.',n:'A4:2 A4:1.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'},
+   {w:'[Dm]Put him in a longboat till he’s sober,\n[C]put him in a longboat till he’s sober,',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 D4:1 F4:1 A4:1 G4:1 G4:.5 G4:.5 G4:1 G4:.5 G4:.5 G4:1 C4:1 E4:1 G4:1'},
+   {w:'[Dm]put him in a longboat till he’s sober,\n[C]early in the [Dm]morning.',n:'A4:1 A4:.5 A4:.5 A4:1 A4:.5 A4:.5 A4:1 B4:1 C5:1 D5:1 C5:1 A4:1 G4:1 E4:1 D4:2 D4:2'}]},
+  {t:'Sakura, Sakura',by:'sung in Japan',bpm:96,src:'Traditional Edo-period melody; these words were printed in the Tokyo Academy of Music koto collection (Sokyokushu), 1888.',p:[
+   'This is a beginner’s tune for the koto, a long Japanese harp. A Tokyo music school printed these words in 1888.',
+   {w:'[Am]Sakura, sakura,',e:'Cherry blossoms, cherry blossoms,',n:'A4:1 A4:1 B4:2 A4:1 A4:1 B4:2'},
+   {w:'[Am]yayoi no [Dm]sora wa,',e:'across the spring sky,',n:'A4:1 B4:1 C5:1 B4:1 A4:1 B4:.5 A4:.5 F4:2'},
+   {w:'[Am]miwatasu [E]kagiri,',e:'as far as you can see.',n:'E4:1 C4:1 E4:1 F4:1 E4:1 E4:.5 C4:.5 B3:2'},
+   {w:'[Am]kasumi ka [Dm]kumo ka,',e:'Is it mist, or is it clouds?',n:'A4:1 B4:1 C5:1 B4:1 A4:1 B4:.5 A4:.5 F4:2'},
+   {w:'[Am]nioi zo [E]izuru.',e:'Their scent drifts out.',n:'E4:1 C4:1 E4:1 F4:1 E4:1 E4:.5 C4:.5 B3:2'},
+   {w:'[Am]Izaya, izaya,',e:'Come now, come now,',n:'A4:1 A4:1 B4:2 A4:1 A4:1 B4:2'},
+   {w:'[Dm]mi ni yu[E]kan.',e:'let’s go and see.',n:'E4:1 F4:1 B4:.5 A4:.5 F4:1 E4:4'}]}],
  stars:[
   {t:'The Weaver and the Cowherd',by:'told in China, Japan and Korea',src:'Qixi (China), Tanabata (Japan), Chilseok (Korea), the 7th day of the 7th month; Vega (Zhinü, Orihime) and Altair (Niulang, Hikoboshi) on either side of the Milky Way; the magpie bridge (crows and magpies in Korea, Ojakgyo); the traditional date is lunar, and most of Japan now keeps July 7; wishes on paper strips (tanzaku) hung on bamboo',p:[
    'On summer nights, look for two bright stars, one on each side of the Milky Way.',

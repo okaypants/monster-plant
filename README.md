@@ -114,6 +114,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/perspective_shots.py` puts a seedling, a kid, a teen, an adult and the cat at every spot and lines them up at the same scale in `tests/screenshots/perspective/every_spot.png`, plus two kids asleep (armchair and book stack) and the debug Depth lines view. It checks that everything follows one depth curve, that a teen is 1.45x a kid and an adult 1.9x at every depth, and that the two sleeping kids are the same size.
 
+`python3 tests/songbook_test.py` opens every song in the Song book on a phone-size screen. It checks the song data (a chord on a syllable on every page, every note readable), that chords sit above their words and the pages fit, that Play the tune sounds every note, turns the pages to the end and stops, that tapping again, turning a page or closing the book stops it, that the radio pauses and comes back, and that other books have no Play button.
+
 `python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed (switched with the tiny hand inside the journal's back cover). It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
 
 `python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
@@ -177,7 +179,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
   | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the book stack |
-  | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file |
+  | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file. The Song book's songs are here too: words with chords in [brackets] and the tune as notes; `care.js` draws the chords above the words and plays the tune |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
   | `journal.js` | The desk-drawer journal: a keepsake book with ribbons (a page per plant, one for the cat), page turns, charms, the carafe-hand icon, the growth row and line, today in words (wording in `GROW_WORDS` / `DAY_WORDS`, js/names.js) |
   | `input.js` | Taps, drags, and what each spot in the room does |
