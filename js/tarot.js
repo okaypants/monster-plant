@@ -55,8 +55,10 @@ function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');retu
 // the three spread buttons along the top; each shows today's reading if it's been done
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';
   for(const [k,s] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tspick'+(k===tr.k?' on':'');b.dataset.k=k;
-    b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}}
-function tarotStart(k){tarotPick=k;const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
+    b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}
+  const c=document.createElement('button');c.type='button';c.className='tsb tspick tscharts'+(tr.k==='charts'?' on':'');c.dataset.k='charts';c.textContent='Charts'; // birth charts and horoscopes (js/charts.js)
+  c.addEventListener('click',e=>{e.stopPropagation();if(tr.k==='charts'||tr.step==='shuffling')return;sfx('tick');tarotStart('charts')});p.appendChild(c)}
+function tarotStart(k){tarotPick=k;if(k==='charts'){chartsShow();return}const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
 // 1. the deck, waiting for a question
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
   const d=document.createElement('button');d.type='button';d.className='tdeck';d.setAttribute('aria-label','Shuffle the deck');

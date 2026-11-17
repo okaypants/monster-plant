@@ -239,7 +239,7 @@ function growTick(dt){if(st.stage<0||st.stage>=8||growReady())return;st.timer=Ma
  if(st.stage<1&&st.timer>=GROW_FOR[st.stage]){const t=stageUp();tell(t,{kind:'important',who:st.id});}}
 // one age up, right now; returns what to say. The sound and the bigger body are the proof.
 function stageUp(){st.stage=NEXT[st.stage]??8;st.timer=0;st.walk=null;const W=()=>who();
- if(st.stage===1){sfx('soil');return 'A sprout!';}
+ if(st.stage===1){if(!st.bornAt)st.bornAt=Date.now();sfx('soil');return 'A sprout!';} // the sprouting minute is its birth moment (birth charts, js/charts.js)
  sfx('chime');sfx('boing');
  if(st.stage===4){const had=!!st.name;if(!had)st.name=makeName(st);return had?W()+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.';}
  if(st.stage===6){earnPot('drip');return W()+' is a teen now!';}

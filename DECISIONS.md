@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Birth charts and daily horoscopes for everyone (Nov 16)
+
+- Jackie: "birth charts and connected horoscopes for everyone who participates (Tofu, plant(s), you)". Your birth place is where you were born ("isn't birth chart birth place?"), and any city in the world can be picked; Jackie went with my picks for the rest: a built-in world city list you search by typing, a clean list layout (not a round chart), daily lines in the moon box.
+- **Where:** a **Charts** button in the moon box beside the three spreads. Along the left: You, the cat, and each monster that has sprouted. Each chart: when they were born, the big three (sun, moon, rising) up top, **Today** (what the real sky is doing to their chart), **Together** (today with each of the others, and how their charts fit for good), and **The whole chart** (the sun, moon, rising, Mercury, Venus, Mars, Jupiter and Saturn, with retrogrades, each with one plain line).
+- **Birth moments:** a monster's is the minute it sprouted (kept from now on; monsters from before get an estimate from their age, marked "about"); the cat's is when it first came into the room (an estimate for older games); yours is the birthday you enter, with a birth time and the city you were born in if you know them (time and city give your rising sign and an exact moon; without a time, if the moon changed signs that day, it says so). The cat and the monsters were born where you play, worked out from the phone's time zone. Birth times use the real time-zone rules of that place and date, daylight saving included.
+- **The sky is real:** worked out on the phone with Paul Schlyter's method, checked against published positions (within a tenth of a degree for 1 Jan 2000), sign changes, the equinox, a full moon and a Mercury retrograde. **The meanings are tradition**, and the page says so: "The planets' places are real astronomy. What they mean is old tradition."
+- **Cities:** the 34,216 cities with more than 15,000 people, from GeoNames (CC BY 4.0, data/CREDITS.md), loaded only when the charts open. Your birthday stays on the phone (and in the backup file).
+- Everyone is said by name; no he or she.
+
 ### Tarot box: sleek cream (Nov 16)
 
 - From the color options, Jackie picked the cream reading panel as closest, and wants "a sleeker look": not purple or blue, and not warm colors, which "read old guy castle and stuff". (Jackie plans to move the main room away from a lot of its warm colors too, redrawing it on the iPad.)

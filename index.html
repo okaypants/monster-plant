@@ -160,7 +160,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tname{font-size:22px;font-weight:800;color:var(--taccent)}.twhere{font-size:15px;font-weight:800;color:var(--tsub)}
 .tmean{font-size:19px;font-weight:700;line-height:1.35}.tquote{font-size:15px;font-weight:600;font-style:italic;line-height:1.4;color:var(--tquote)}
 .twaite,.tback{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;align-self:flex-start}
-@media (max-height:520px){.tarot .tbox{padding:10px 12px 8px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
+@media (max-height:520px){.tarot .tspick{font-size:14px;padding:4px 9px 5px}.chname{font-size:18px}.chs{font-size:15px}.tarot .tbox{padding:10px 12px 8px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
 @media (prefers-reduced-motion:reduce){.tdeck.tshuf .tcard{animation:none}}
 /* the three spreads along the top; the Celtic Cross: a cross of six (the second card laid across the first) and a column of four */
 .tpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 46px}
@@ -173,6 +173,22 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tnum{position:absolute;left:-4px;top:-4px;min-width:16px;height:16px;border-radius:8px;background:var(--ton);color:var(--tonink);font-size:12px;font-weight:800;line-height:16px;text-align:center;pointer-events:none;z-index:2}
 .tcross .ts1 .tnum{left:auto;right:-6px;top:auto;bottom:-6px}
 .tone .tcard{height:min(44vh,250px)}
+/* birth charts (js/charts.js): the people along the left, a chart card that scrolls */
+.chwrap{display:flex;gap:14px;width:100%;height:100%;min-height:0;align-items:stretch}
+.chpeople{display:flex;flex-direction:column;gap:8px;flex:none;width:min(150px,24%);overflow:auto;padding:4px 2px}
+.chp{font:inherit;font-size:15px;font-weight:800;padding:6px 10px 7px;cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tarot .chp.on{--bg:var(--ton);color:var(--tonink)}
+.chcard{flex:1;min-width:0;overflow:auto;text-align:left;padding:2px 8px 10px 2px;display:flex;flex-direction:column;gap:6px}
+.chname{font-size:21px;font-weight:800;color:var(--taccent)}.chborn{font-size:14px;font-weight:700;color:var(--tquote)}
+.chbig{display:flex;gap:10px;margin:4px 0}.chb{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;border:2px solid var(--tedge);border-radius:12px;padding:6px 4px;background:var(--tpanel)}
+.chg{font-size:16px;font-weight:800;color:var(--tsub)}.chs{font-size:16px;font-weight:800;white-space:nowrap}.chl{font-size:13px;font-weight:700;color:var(--tquote)}
+.chh{font-size:15px;font-weight:800;color:var(--tsub);margin-top:6px;text-transform:uppercase;letter-spacing:.04em}
+.chtoday{font-size:17px;font-weight:700;line-height:1.35}.chtog,.chrow{font-size:15px;font-weight:600;line-height:1.35}.chtog b,.chrow b{font-weight:800}
+.chnote{font-size:14px;font-weight:600;color:var(--tquote);font-style:italic}.chnote:empty{display:none}
+.chf{display:flex;flex-direction:column;gap:3px;font-size:14px;font-weight:800;color:var(--tsub)}
+.chf input{font:inherit;font-size:16px;font-weight:700;color:var(--ttext);background:var(--tpanel);border:2px solid var(--tedge);border-radius:10px;padding:6px 10px;max-width:320px}
+.chsug{display:flex;flex-direction:column;gap:2px;max-width:340px}.chpick{font:inherit;font-size:15px;font-weight:700;text-align:left;background:var(--tpanel);color:var(--ttext);border:1px solid var(--tedge);border-radius:8px;padding:5px 9px;cursor:pointer}
+.chbtns{margin-top:6px}.chsave,.chedit{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;align-self:flex-start}
+.tarot .tpick{padding:0 46px}
 /* treat tray (Jackie, Nov 4): a cream pill beside the SNACKS cabinet, seven thumb-sized treats, no words */
 .ttray{position:absolute;z-index:45;pointer-events:auto;display:flex;gap:2px;padding:4px 10px;background:#fff4e2;border:2px solid #e8c9a8;border-radius:999px;box-shadow:0 3px 0 #d9b08c;touch-action:none;user-select:none;-webkit-user-select:none}
 .ttreat{width:46px;height:46px;border:none;background:none;padding:2px;margin:0;cursor:grab;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-touch-callout:none}
@@ -245,6 +261,7 @@ body.testing #testBadge{display:block}
 <script src="js/stories.js"></script>
 <script src="js/room.js"></script>
 <script src="js/moon.js"></script>
+<script src="js/sky.js"></script>
 <script src="js/light.js"></script>
 <script src="js/plants.js"></script>
 <script src="js/paw.js"></script>
@@ -259,6 +276,7 @@ body.testing #testBadge{display:block}
 <script src="js/keepsafe.js"></script>
 <script src="js/tarotdata.js"></script>
 <script src="js/tarot.js"></script>
+<script src="js/charts.js"></script>
 <script src="js/sampler.js"></script>
 <script src="js/input.js"></script>
 <script src="js/start.js"></script>
