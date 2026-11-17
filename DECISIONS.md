@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot cards: brighter and recentered (Nov 16)
+
+- Jackie likes the cards but asked to "brighten and recenter the card images a little so they're all consistent and maybe slightly more modern feeling." All 78 were made again from the 1909 scans: cropped right at each card's printed black frame (no strip of old paper, so every card sits the same way), white-balanced so the yellowed paper reads as clean white, with brighter, fuller colors. Smith's pictures themselves are unchanged.
+- The box's colors (purple velvet, brass and cream) are going: Jackie found them "so muddy and old fashioned", and doesn't want purple or blue ("they feel very western anglo"). Its colors now live in one set of settings so a new scheme is a single swap.
+
 ### Tarot: all three spreads, once a day each (Nov 16)
 
 - Jackie asked for all three kinds of reading, and: **"you should not be able to re-do it in the same calendar day"**, by the phone's clock.
