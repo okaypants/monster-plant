@@ -18,12 +18,12 @@ const SWAP_MS=150; // one frame of a rock, sway or swing
 let sLeaves=[],sLeafNext=0,sRock=0,sSway=0;const leafCv=document.createElement('canvas');leafCv.width=GLASS_W;leafCv.height=GLASS_H;const leafG=leafCv.getContext('2d');leafG.imageSmoothingEnabled=false;
 
 /* ---------- autumn: leaves drifting past the window ---------- */
-// one leaf at a time (two at most), every 5-12 s; it falls straight down in whole pixels and sways side to side
+// one leaf at a time (two at most), every 5-12 s; it drifts slowly down in whole pixels (13-20 px a second, slowed for Jackie, Nov 17) and sways gently side to side
 function drawFallingLeaves(tk){const now=performance.now();
  if(seasonNow()!=='autumn'||tk==='night'||st.curtain==='closed'&&curK>.98||tsCalm()||!ok(GLASS)){sLeaves=[];sLeafNext=0;return;}
  if(!sLeafNext)sLeafNext=now+rnd(1,4)*1000;
  if(now>=sLeafNext&&sLeaves.length<2){const im=LEAVES[Math.floor(Math.random()*LEAVES.length)];
-  sLeaves.push({im,x:rnd(10,GLASS_W-40),y:-40,vy:rnd(26,40),a:rnd(6,14),w:rnd(1.4,2.4),ph:rnd(0,6.28)});sLeafNext=now+rnd(5,12)*1000;}
+  sLeaves.push({im,x:rnd(10,GLASS_W-40),y:-40,vy:rnd(13,20),a:rnd(6,14),w:rnd(.8,1.3),ph:rnd(0,6.28)});sLeafNext=now+rnd(5,12)*1000;}
  if(!sLeaves.length)return;
  leafG.clearRect(0,0,GLASS_W,GLASS_H);
  for(const L of sLeaves){L.y+=L.vy*dtDraw;L.ph+=L.w*dtDraw;if(!ok(L.im))continue;

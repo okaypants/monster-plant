@@ -78,6 +78,10 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - **The spread (picked for Jackie):** the classic three cards, **the past, the present, the future**. Think of a question, tap the deck to shuffle, cut it into three piles and pick one, then turn the three cards over one by one. About one card in three comes up **reversed** (upside down), as in Waite's book. Tap a card to read it; once all three are up, a line reads the spread the traditional way (how many Major Arcana, which suit leads, whether several are reversed). New reading starts again.
 - The pictures load only when the box opens and when a card is dealt, so the game starts no slower. Nothing is saved.
 
+### The falling leaves are slower (Nov 17)
+
+- Jackie asked to slow down the autumn leaves. They now fall at about half the speed (13-20 pixels a second instead of 26-40, about half a minute to cross the window) and sway side to side more slowly. How often a new leaf comes is the same (every 5-12 seconds, two at most).
+
 ### The pumpkin's eyes are closed (Nov 16)
 
 - Jackie didn't like how the pumpkin looked with its eyes open, so it now has sleepy closed eyes. In the three day frames each eye arc is turned upside down in place, using its own pixels. Only the eyes changed, with Jackie's OK. The mouth, rock frames and sizes are the same as before (`tools/pumpkin_eyes.py`).
