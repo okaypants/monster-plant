@@ -162,7 +162,7 @@ const READ=new Map(),BOOK_HOP=.6; // id -> {bk,from,page}; flights: closed books
 const bookHops=[];
 function openBooks(ids=BOOK_ZONES[0].books){sfx('paper');if(btrayEl&&btrayEl.dataset.ids!==ids.join())closeBookTray();if(!btrayEl){btrayEl=document.createElement('div');btrayEl.className='ttray btray tsb';btrayEl.dataset.ids=ids.join();
   for(const bk of ids.map(BOOK_BY)){const b=document.createElement('button');b.type='button';b.className='ttreat tbook';b.dataset.id=bk.id;b.setAttribute('aria-label',bk.name);
-   const c=bookPix(bk.id,3);c.className='jpix';b.appendChild(c);
+   const c=bookPix(bk.id,3);c.className='jpix';b.appendChild(c);const nm=document.createElement('span');nm.className='tbname';nm.textContent=bk.name;b.appendChild(nm); // what kind of book it is, under its cover (Jackie, Nov 17)
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabBook(bk,e);});btrayEl.appendChild(b);}
   btrayEl.addEventListener('pointerdown',e=>e.stopPropagation());btrayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(btrayEl);}
  placeBookTray();bookDrag.trayT=performance.now();}
@@ -197,6 +197,7 @@ function startReading(id,bk,from){closeStory(true);
   READ.set(id,{bk,from,page:0,s:nextRead(bk.id)});st.listen=2;});
  storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
  storyEl.innerHTML='<div class="scover jstep"><div class="spage jstep sl"></div><div class="spage jstep sr"></div></div>';
+ {const tag=document.createElement('div');tag.className='sbook tsb';tag.textContent=bk.name;storyEl.appendChild(tag);} // which book is open, on a tab at its top left corner
  storyEl.addEventListener('pointerdown',e=>e.stopPropagation());storyEl.addEventListener('click',e=>{e.stopPropagation();const b=storyEl.getBoundingClientRect();if((e.clientX||e.clientY)&&e.clientX<b.left+b.width/2)backStory();else turnStory();}); // the left page flips back, the right page on
  ui.appendChild(storyEl);placeStory();showStory();if(from)zoomStory(from);}
 // it zooms open from the book you tapped: three quick steps (small, bigger, full), no smooth scaling

@@ -8,6 +8,10 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Each cover is cut from the sheet at 42 x 60 pixels (books/, the sheet is kept there too) and replaces the small drawn book with a three-pixel emblem. It shows in the tray of four books, on the book in your hand (twice the size), on the book hopping home and as the journal's favorite story.
 - **Why:** twelve books with a tiny emblem each were hard to tell apart; a picture says what kind of book it is at a glance.
 
+### The book's name under its cover and on the open book (Nov 17)
+
+- Jackie: "I would kind of like to know what kind of book I'm reading/choosing". In the tray of four books, each cover has its book's name under it. The open book has its name on a tab at its top left corner, on every page. **Why:** a picture alone doesn't say "Letters and diaries".
+
 ### Cats replaces Riddles (Nov 17)
 
 - Jackie: "Replace riddles with something else entirely, maybe more nonfiction of some kind -- fun facts", then "fun facts related to something specific -- a book", and for the subject: "Cats but like all cat history and facts not just japan turkey etc". A first try at a grab bag of trivia (wombats, Venus, Cleopatra) was dropped before it was saved.
