@@ -1,6 +1,6 @@
 'use strict';
 /* THE MOON BOX: A TAROT READING (Jackie, Nov 16). Tap the little box with the moon on the right-hand bookcase and it opens
-   over the room: a velvet cloth and a real deck, the Rider-Waite-Smith tarot (Pamela Colman Smith's pictures, 1909, made into
+   over the room on a menu of what is inside (tarot, charts; Nov 17). The tarot: a velvet cloth and a real deck, the Rider-Waite-Smith tarot (Pamela Colman Smith's pictures, 1909, made into
    the room's pixel style), with meanings in plain words written from A. E. Waite's own (1910; js/tarotdata.js).
    Three spreads, picked on the cloth:
      Card of the day   one card.
@@ -52,18 +52,34 @@ function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl.innerHTML='<div class="tbox tsb tspop"><button type="button" class="tsb tx" aria-label="Close">×</button><div class="tpick"></div><div class="tstage"></div><div class="tsay"></div></div>';
   tarotEl.addEventListener('click',e=>{if(e.target===tarotEl)closeTarot()});
   tarotEl.querySelector('.tx').addEventListener('click',e=>{e.stopPropagation();closeTarot()});
-  ui.appendChild(tarotEl);tarotStart(tarotPick)}
+  ui.appendChild(tarotEl);tarotMenu()}
+// THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
+// choices, each a big button with a picture, its name and one line. "Moon box" at the left of the top row comes back here.
+const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'}];
+function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmicon';
+  if(k==='tarot'){const b=tarotImg('back');d.appendChild(b)}
+  else if(k==='charts'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☉';d.appendChild(g)}
+  else if(typeof ichingIcon==='function')d.appendChild(ichingIcon());
+  return d}
+function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySelector('.tpick').innerHTML='';const st0=tStage();st0.innerHTML='';
+  const old=tarotEl.querySelector('.tread');if(old)old.remove();
+  const m=document.createElement('div');m.className='tmenu';
+  for(const it of BOX_MENU){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=it.k;
+    const n=document.createElement('b');n.textContent=it.n;const d=document.createElement('span');d.className='tmd';d.textContent=it.d;b.append(tarotMenuIcon(it.k),n,d);
+    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotStart(tarotPick);else if(it.k==='charts')tarotStart('charts');else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
+  st0.appendChild(m);tSay('')}
 function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
 function tSay(t){const s=tarotEl&&tarotEl.querySelector('.tsay');if(s)s.textContent=t}
 function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');return b}
-// the three spread buttons along the top; each shows today's reading if it's been done
+// the top row: "Moon box" (back to the menu), then the three spread buttons while in the tarot; each shows today's reading if it's been done
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';
+  const h=document.createElement('button');h.type='button';h.className='tsb tspick thome';h.dataset.k='menu';h.textContent='‹ Moon box';
+  h.addEventListener('click',e=>{e.stopPropagation();if(tr.step==='shuffling')return;sfx('tick');tarotMenu()});p.appendChild(h);
+  if(!SPREADS[tr.k])return;
   for(const [k,s] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tspick'+(k===tr.k?' on':'');b.dataset.k=k;
-    b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}
-  const c=document.createElement('button');c.type='button';c.className='tsb tspick tscharts'+(tr.k==='charts'?' on':'');c.dataset.k='charts';c.textContent='Charts'; // birth charts and horoscopes (js/charts.js)
-  c.addEventListener('click',e=>{e.stopPropagation();if(tr.k==='charts'||tr.step==='shuffling')return;sfx('tick');tarotStart('charts')});p.appendChild(c)}
-function tarotStart(k){tarotPick=k;if(k==='charts'){chartsShow();return}const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
+    b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}}
+function tarotStart(k){if(k==='charts'){chartsShow();return}tarotPick=k;const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
 // 1. the deck, waiting (no question is asked: Jackie, Nov 17)
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
   const d=document.createElement('button');d.type='button';d.className='tdeck';d.setAttribute('aria-label','Shuffle the deck');

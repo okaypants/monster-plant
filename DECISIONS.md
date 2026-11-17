@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon box opens on a menu (Nov 17)
+
+- Jackie: "Maybe when you open the box you can select from tarot, charts, or I Ching".
+- Tapping the box now shows one big button for each thing inside, with a small picture, its name and one line. "‹ Moon box" at the left of the top row goes back to the menu from anywhere. Charts is no longer a fourth tab next to the tarot spreads.
+- **Why:** charts sat in a row of tarot spreads as if it were one of them, and a third kind of reading needs somewhere to go.
+
 ### What a tarot card's page holds (Nov 17)
 
 - Jackie: "each individual card should include the Waite deal; the interpretation or other potential meanings; and then any other cool details about the card itself or how it can be read that is special to it."
