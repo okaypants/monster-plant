@@ -159,6 +159,17 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .twaite,.tback{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;align-self:flex-start;color:var(--ts-ink)}
 @media (max-height:520px){.tarot .tbox{padding:10px 12px 8px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
 @media (prefers-reduced-motion:reduce){.tdeck.tshuf .tcard{animation:none}}
+/* the three spreads along the top; the Celtic Cross: a cross of six (the second card laid across the first) and a column of four */
+.tpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 46px}
+.tspick{font:inherit;font-size:15px;font-weight:800;padding:5px 12px 6px;cursor:pointer;color:var(--ts-ink)}.tspick.on{--bg:var(--ts-brass)}
+.tspread.tcross{--ch:min(15vh,104px);display:grid;gap:0 4px;grid-template-columns:repeat(3,calc(var(--ch)*72/124 + 6px)) 16px calc(var(--ch)*72/124);grid-template-rows:repeat(8,calc(var(--ch)/2 + 2px));align-items:center;justify-items:center}
+.tcross .tcard{height:var(--ch)}.tcross .tslot{position:relative;gap:0}
+.tcross .ts0{grid-area:4/2/6/3}.tcross .ts1{grid-area:4/2/6/3;z-index:1}.tcross .ts1 .tflip{rotate:90deg}
+.tcross .ts2{grid-area:2/2/4/3}.tcross .ts3{grid-area:6/2/8/3}.tcross .ts4{grid-area:4/1/6/2}.tcross .ts5{grid-area:4/3/6/4}
+.tcross .ts6{grid-area:7/5/9/6}.tcross .ts7{grid-area:5/5/7/6}.tcross .ts8{grid-area:3/5/5/6}.tcross .ts9{grid-area:1/5/3/6}
+.tnum{position:absolute;left:-4px;top:-4px;min-width:16px;height:16px;border-radius:8px;background:var(--ts-brass);color:var(--ts-brassink);font-size:12px;font-weight:800;line-height:16px;text-align:center;pointer-events:none;z-index:2}
+.tcross .ts1 .tnum{left:auto;right:-6px;top:auto;bottom:-6px}
+.tone .tcard{height:min(44vh,250px)}
 /* treat tray (Jackie, Nov 4): a cream pill beside the SNACKS cabinet, seven thumb-sized treats, no words */
 .ttray{position:absolute;z-index:45;pointer-events:auto;display:flex;gap:2px;padding:4px 10px;background:#fff4e2;border:2px solid #e8c9a8;border-radius:999px;box-shadow:0 3px 0 #d9b08c;touch-action:none;user-select:none;-webkit-user-select:none}
 .ttreat{width:46px;height:46px;border:none;background:none;padding:2px;margin:0;cursor:grab;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-touch-callout:none}

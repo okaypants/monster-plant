@@ -4,7 +4,9 @@ Run from the repository root:  python3 tests/tarot_test.py
 On a phone held sideways: tapping the moon box on the right bookcase opens the deck; tapping the deck shuffles it; it
 splits into three piles to cut; three cards are dealt face down as the past, the present and the future; each turns over
 when tapped (reversed ones upside down); once all three are up a line reads the spread; tapping a card reads it, with
-Waite's own words a tap away; New reading starts again; the close button and tapping outside close it.
+Waite's own words a tap away. Each spread (card of the day, three cards, the Celtic Cross laid out as Waite gives it) can be
+read once a calendar day: opening the box again shows today's cards face up, and the next day the deck is back. The close
+button and tapping outside close it.
 Also checks the deck: 78 different cards, every picture present and the same size, every card with plain meanings and
 Waite's words (only the Two of Cups has no reversed meaning in Waite), and over many shuffles every card turns up and
 about a third come up reversed. Pictures go to tests/screenshots/tarot/. Exit code 1 if a check fails.
@@ -39,6 +41,7 @@ async def main():
         errs = []
         pg.on("pageerror", lambda e: errs.append(str(e)))
         await pg.goto(f"http://localhost:{PORT}/index.html", wait_until="load")
+        await pg.evaluate("()=>localStorage.removeItem('mp-tarot')")
         d = await pg.evaluate("()=>({n:TAROT.length,ids:new Set(TAROT.map(c=>c.id)).size,plain:TAROT.every(c=>c.u&&c.r&&c.n),waite:TAROT.filter(c=>!c.wu||!c.wr).map(c=>c.id)})")
         check(d["n"] == 78 and d["ids"] == 78, f"the deck should be 78 different cards {d}")
         check(d["plain"], "every card should have plain meanings, upright and reversed")
@@ -73,7 +76,7 @@ async def main():
         faces = await pg.evaluate("()=>[...document.querySelectorAll('.tflip img')].map(i=>i.src.split('/').pop()+(i.classList.contains('trev')?' R':''))")
         check(all(not f.startswith("back") for f in faces) and faces[1].endswith(" R"), f"all three should be turned, the reversed one upside down: {faces}")
         say = await pg.evaluate("()=>document.querySelector('.tsay').textContent")
-        check("Major Arcana" in say and "New reading" in say, f"the spread should be read as a whole: {say}")
+        check("Major Arcana" in say and "comes tomorrow" in say, f"the spread should be read as a whole, and say a new one comes tomorrow: {say}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "3_spread.png"))
         await pg.locator(".tflip").nth(1).click()
@@ -87,8 +90,43 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "4_read.png"))
         await pg.click(".tback")
         check(await pg.evaluate("()=>!document.querySelector('.tread')"), "back to the spread")
-        await pg.click(".tagain")
-        check(await pg.evaluate("()=>!!document.querySelector('.tdeck')"), "New reading should bring the deck back")
+        # once a day: the same three come back face up, no deck; the button is ticked
+        await pg.click(".tarot .tx")
+        await pg.mouse.click(x, y)
+        again = await pg.evaluate("()=>({deck:!!document.querySelector('.tdeck'),cards:tr&&tr.cards.map(x=>x.c.id),up:[...document.querySelectorAll('.tflip img')].every(i=>!i.src.endsWith('back.png')),tick:document.querySelector('.tspick[data-k=three]').textContent})")
+        check(not again["deck"] and again["cards"] == three and again["up"] and "✓" in again["tick"], f"the same day, the box should show today's three cards face up, no deck {again} {three}")
+        # card of the day: one card
+        await pg.click(".tspick[data-k=one]")
+        await pg.click(".tdeck")
+        await pg.evaluate("()=>__step(1.2)")
+        await pg.locator(".tpile").nth(0).click()
+        check(await pg.locator(".tflip").count() == 1, "card of the day should deal one card")
+        await pg.locator(".tflip").nth(0).click()
+        await pg.evaluate("()=>{__step(.4);capClear()}")
+        await pg.screenshot(path=os.path.join(OUT, "5_card_of_the_day.png"))
+        # the Celtic Cross: ten cards, the second laid across the first, four in a column
+        await pg.click(".tspick[data-k=cross]")
+        await pg.click(".tdeck")
+        await pg.evaluate("()=>__step(1.2)")
+        await pg.locator(".tpile").nth(2).click()
+        check(await pg.locator(".tflip").count() == 10, "the Celtic Cross should deal ten cards")
+        for i in range(10):
+            await pg.locator(".tflip").nth(i).click(force=True)
+            await pg.evaluate("()=>__step(.4)")
+        geo = await pg.evaluate("""()=>{const r=i=>document.querySelector('.tcross .ts'+i+' .tflip').getBoundingClientRect(),c=i=>{const b=r(i);return [b.left+b.width/2,b.top+b.height/2,b.width,b.height]};return [0,1,2,3,4,5,6,7,8,9].map(c)}""")
+        g = geo
+        check(abs(g[0][0] - g[1][0]) < 3 and abs(g[0][1] - g[1][1]) < 3 and g[1][2] > g[1][3], f"card 2 should lie across card 1 {g[0]} {g[1]}")
+        check(g[2][1] < g[0][1] < g[3][1] and g[4][0] < g[0][0] < g[5][0], "cards 3 and 4 above and below, 5 and 6 left and right")
+        check(all(g[k][0] > g[5][0] for k in (6, 7, 8, 9)) and g[6][1] > g[7][1] > g[8][1] > g[9][1], "cards 7 to 10 in a column on the right, rising")
+        read_where = await pg.evaluate("()=>{tarotRead(9);return document.querySelector('.twhere').textContent}")
+        check(read_where.startswith("10. What will come"), f"the tenth card is what will come: {read_where}")
+        await pg.evaluate("()=>{document.querySelector('.tread').remove();capClear()}")
+        await pg.screenshot(path=os.path.join(OUT, "6_celtic_cross.png"))
+        # the next day, a new reading
+        await pg.evaluate("()=>{const s=JSON.parse(localStorage.getItem(TAROT_KEY));s.day='2000-01-01';localStorage.setItem(TAROT_KEY,JSON.stringify(s))}")
+        await pg.click(".tarot .tx")
+        await pg.mouse.click(x, y)
+        check(await pg.evaluate("()=>!!document.querySelector('.tdeck')&&!document.querySelector('.tspick[data-k=three]').textContent.includes('✓')"), "on a new day, the deck should be back")
         await pg.click(".tarot .tx")
         check(await pg.evaluate("()=>!tarotEl"), "the close button should close the box")
         await pg.mouse.click(x, y)

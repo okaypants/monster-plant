@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tarot: all three spreads, once a day each (Nov 16)
+
+- Jackie asked for all three kinds of reading, and: **"you should not be able to re-do it in the same calendar day"**, by the phone's clock.
+- **Three spreads,** picked with buttons along the top of the cloth: **Card of the day** (one card), **Three cards** (past, present, future) and the **Celtic Cross** (ten cards), laid out as Waite gives it in *The Pictorial Key* (1910): six in a cross, with the second card laid across the first (what covers you, what crosses you, what crowns you, what is beneath you, what is behind you, what is before you), and four rising in a column beside it (yourself, your house, your hopes or fears, what will come). Waite wrote "him"; the game says "you". His Significator (a card picked to stand for the one asking) is left out, as most readers do today.
+- **Once a day per spread:** once the cards are dealt, that spread is done for the calendar day (the phone's own date). Opening the box again shows today's cards face up to read again, the spread's button has a ✓, and the line ends "A new … comes tomorrow." The next day the deck is back. Kept on the phone (`mp-tarot`, just today's cards).
+- New reading is gone (the other spreads are the buttons along the top).
+
 ### The moon box: a real tarot reading (Nov 16)
 
 - Jackie wanted the moon box on the right bookcase to be an oracle that feels "super good and useful and involved and super simple and cool", "the best toy ever that you like from 10-50"; no wheel (it would echo the orrery above the desk); then **"an actual tarot deck… based on an actual real deck we can do an actual reading with"**, and **"stick with tarot. I think u can pick a spread."**
