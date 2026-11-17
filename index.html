@@ -22,7 +22,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#19101b;color:#fdebc9;align-items:center;justify-content:center;text-align:center;font-size:22px;padding:30px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
 /* LOADING SCREEN (Jackie, Nov 10): covers everything until the room's pictures are all in. The dots are a frame swap (no fades). */
-#loading{position:fixed;inset:0;z-index:98;background:#3A241A;display:flex;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}
+#loading{position:fixed;inset:0;z-index:98;background:#19101b;/* the page's own color, so no strip shows under it on a phone (Jackie, Nov 17) */display:flex;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}
 #loading h1{font-size:25px;font-weight:700;margin:0}#loading p{margin:0;font-size:18px}
 #loading .ldots i{font-style:normal;animation:ld1 1.2s step-end infinite}#loading .ldots i:nth-child(2){animation-name:ld2}#loading .ldots i:nth-child(3){animation-name:ld3}
 @keyframes ld1{0%{visibility:hidden}25%{visibility:visible}}@keyframes ld2{0%{visibility:hidden}50%{visibility:visible}}@keyframes ld3{0%{visibility:hidden}75%{visibility:visible}}

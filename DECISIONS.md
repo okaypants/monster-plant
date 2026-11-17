@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No bar under the opening screens (Nov 17)
+
+- Jackie, with two phone pictures of the loading screen and the turn-your-phone screen: "I don't like ... the weird bar at the bottom".
+- The bar was the page itself showing. On an iPhone the screen is a little taller than the area a full-page cover can fill, and the two covers were brown while the page behind them is dark plum. Both covers are now the page's color (#19101b), so there is no edge to see.
+- **Why:** a strip of another color along the bottom looks like a mistake.
+
 ### Illustrated book covers (Nov 17)
 
 - Jackie: "we need to make illustrative book covers", and made a sheet of twelve (one picture per book on a cream card with a colored border: a cottage under a flower, Sloth's paw with a sprig, a fish in a hat in a teacup, an eye in thorns, a moon with a music note, a constellation, a keyhole with a question-mark key, a tree with a bird, an envelope with a paw seal, a steaming pot, a ghost with a candle, a leaf with a beetle and a mushroom).
