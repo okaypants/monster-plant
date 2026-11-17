@@ -8,7 +8,9 @@ const alphaCache=new Map();function alphaAt(im,u,v){let a=alphaCache.get(im.src)
 // tap only on the plant's painted pixels (with a little slack), so things peeking out behind it stay clickable
 function onPlantPx(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();if(!b.img||!ok(b.img))return onPlant(x,y);const sx=b.img.naturalWidth/b.w,sy=b.img.naturalHeight/b.h;for(const[dx,dy]of[[0,0],[10,0],[-10,0],[0,10],[0,-10]])if(alphaAt(b.img,(x+dx-b.x)*sx,(y+dy-b.y)*sy)>40)return true;return false;}
 function onPlant(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();return x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=baseY()+4;}
-cv.addEventListener('mousemove',e=>{[mx,my]=toGame(e);cv.style.cursor=held.tool?'none':'pointer';});
+// over a book you can open, the cursor is a magnifying glass (Jackie, Nov 17); the same checks, in the same order, as the tap below
+function overBook(x,y){return st.started&&st.stage>=0&&!held.tool&&!st.night&&!onPlantPx(x,y)&&!sillHit(x,y)&&!catHit(x,y)&&!inR(x,y,DRAWERS)&&!inR(x,y,MOONBOX)&&onBookshelf(x,y);}
+cv.addEventListener('mousemove',e=>{[mx,my]=toGame(e);cv.style.cursor=held.tool?'none':overBook(mx,my)?'zoom-in':'pointer';});
 cv.addEventListener('mouseleave',()=>{mx=my=-99;});
 function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hk=box==='can'?holdK(x,y):1,hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y,hk):box?onPlant(x,y):onPlantPx(x,y));
  let best=-2,by=-1;eachPlant(i=>{if(hit()&&baseY()>by){by=baseY();best=i;}});if(best>=0){swapIn(best);ACT=st.id;}}

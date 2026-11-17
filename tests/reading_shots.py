@@ -31,6 +31,12 @@ async def main():
         await pg.evaluate("()=>{__step(3);capClear();}")
         g2s = "([x,y])=>{const r=cv.getBoundingClientRect();return [r.left+x*S,r.top+y*S];}"
         x, y = await pg.evaluate(g2s, [100, 190])
+        await pg.mouse.move(x, y)
+        if await pg.evaluate("()=>cv.style.cursor") != "zoom-in":
+            fails.append("over a book the cursor should be a magnifying glass")
+        await pg.mouse.move(x + 420, y + 150)
+        if await pg.evaluate("()=>cv.style.cursor") == "zoom-in":
+            fails.append("away from the books the cursor shouldn't be a magnifying glass")
         await pg.mouse.click(x, y)
         await pg.evaluate("()=>__step(.1)")
         if await pg.locator(".btray .tbook").count() != 4:
