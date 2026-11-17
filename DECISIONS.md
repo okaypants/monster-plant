@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Home Screen line says "to keep your progress saved" (Nov 17)
+
+- Jackie, on the line under the loading screen: "I think it should say 'to keep your progress saved' or something more direct like that".
+- Every version of the line (iPhone, Android, desktop) now ends "to keep your progress saved" in place of "to keep your room safe".
+- **Why:** it says plainly what is at stake.
+
 ### The opening sprout is smaller and holds still (Nov 17)
 
 - Jackie, on the new loading screen: "looks nicer but maybe a smaller plant with no animation".

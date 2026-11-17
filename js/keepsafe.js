@@ -71,11 +71,11 @@ let ksInstall=null; // Chrome and Edge offer to install the game; kept, so our o
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();ksInstall=e;ksHintShow()});
 addEventListener('appinstalled',()=>{ksInstall=null;document.querySelectorAll('.kshint').forEach(h=>h.remove())});
 function ksHowTo(){if(HOMESCREEN)return '';const ua=navigator.userAgent;
-  if(IPHONE||IPAD)return 'Playing in a browser? Tap Share, then Add to Home Screen, and play from that icon to keep your room safe.';
-  if(ANDROID)return ksInstall?'Playing in a browser? Add the game to your Home screen and play from that icon to keep your room safe.':'Playing in a browser? Tap ⋮, then Add to Home screen, and play from that icon to keep your room safe.';
-  if(ksInstall)return 'Playing in a browser? Install the game and play it from its own window to keep your room safe.';
-  if(/Edg\//.test(ua)||/Chrome\//.test(ua))return 'Playing in a browser? Install the game with the install button in the address bar to keep your room safe.';
-  if(/Safari\//.test(ua)&&/Macintosh/.test(ua))return 'Playing in a browser? In Safari, choose File, then Add to Dock to keep your room safe.';
+  if(IPHONE||IPAD)return 'Playing in a browser? Tap Share, then Add to Home Screen, and play from that icon to keep your progress saved.';
+  if(ANDROID)return ksInstall?'Playing in a browser? Add the game to your Home screen and play from that icon to keep your progress saved.':'Playing in a browser? Tap ⋮, then Add to Home screen, and play from that icon to keep your room safe.';
+  if(ksInstall)return 'Playing in a browser? Install the game and play it from its own window to keep your progress saved.';
+  if(/Edg\//.test(ua)||/Chrome\//.test(ua))return 'Playing in a browser? Install the game with the install button in the address bar to keep your progress saved.';
+  if(/Safari\//.test(ua)&&/Macintosh/.test(ua))return 'Playing in a browser? In Safari, choose File, then Add to Dock to keep your progress saved.';
   return '';}
 // the little line (and, where the browser can, a button that does it); put into a loading or start screen's card
 function ksHint(card){if(!card)return;const old=card.querySelector('.kshint');if(old)old.remove();const t=ksHowTo();if(!t)return;
