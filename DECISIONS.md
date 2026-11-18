@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The lidded jar holds coins (Nov 17)
+
+- Jackie, going over the room's containers: "I think lidded jar should be coins".
+- The jar on the left bookcase now spills gold coins (a gold square with a dark rim and one bright pixel) where it spilled colored buttons.
+- **Why:** Jackie's pick for what is in the jar.
+
 ### Everything you can touch in the room does something of its own (Nov 17)
 
 - Jackie: "everything in the room, other than like surfaces and things like shelves and stuff, that is touchable or clickable, is interactive in some way. So if it's like a container, it needs to be filled with stuff that we can fuck with. Otherwise, we need to replace it if that's just too much. So like the snail moving doesn't really work because of how it is inside of the bookshelf ... Not everything has to be super involved. It can just be like a little micro interaction, kind of like the leaves".

@@ -1,7 +1,7 @@
 """Everything you can touch in the room does something of its own (js/fidgets.js, fidgetDo).
 
 Run from the repository root:  python3 tests/doodad_test.py
-Taps each doodad on a phone held sideways and checks its own small thing happens: buttons from the jar, notes from the
+Taps each doodad on a phone held sideways and checks its own small thing happens: coins from the jar, notes from the
 music box, the journal's Keep it safe page from the lockbox, a record from the crate, a butterfly, the moon, the sun's sign,
 hearts, petals, drops, the snail trundling sideways (never up into the shelf), and the stool and desk chair wobbling.
 Pictures go to tests/screenshots/doodads/. Exit code 1 if a check fails.
@@ -39,18 +39,18 @@ async def main():
         check(all(n in names for n in ["crate", "stool", "deskchair"]), f"the crate, the stool and the desk chair should be touchable: {names}")
         own = await pg.evaluate("()=>FP.filter(p=>!p.does&&!p.scoot&&!p.puff).map(p=>p.n)")
         check(set(own) <= {"pillow", "drum", "radio", "bookstack", "petbed", "cratebook", "moonbox", "stool", "deskchair"}, f"only furniture and things with their own app or books should be bounce-only: {own}")
-        for n, kind in [("box1", "big"), ("box2", "note"), ("butterflies", "fly"), ("catpic", "heart"), ("flowerpic", "petal"), ("glass", None)]:
+        for n, kind in [("box1", "coin"), ("box2", "note"), ("butterflies", "fly"), ("catpic", "heart"), ("flowerpic", "petal"), ("glass", None)]:
             await pg.evaluate(TAP, n)
             bits = await pg.evaluate("(k)=>fBits.filter(b=>!k||b[k]).length", kind)
             check(bits >= 1, f"tapping {n} should send out its own little things, got {bits}")
             await pg.evaluate("()=>__step(.25)")
             await pg.screenshot(path=os.path.join(OUT, n + ".png"), clip=await pg.evaluate("(n)=>{const p=FP.find(p=>p.n===n),r=cv.getBoundingClientRect();return {x:r.left+(p.x-90)*S,y:r.top+Math.max(0,p.y-110)*S,width:(p.w+180)*S,height:(p.h+200)*S}}", n))
             await pg.evaluate("()=>__step(4)")
-        # buttons land on the shelf and stay on it for a while
+        # coins land on the shelf and stay on it for a while
         await pg.evaluate(TAP, "box1")
         await pg.evaluate("()=>__step(1.2)")
         r = await pg.evaluate("()=>{const p=FP.find(p=>p.n==='box1');return fBits.every(b=>b.y<=p.y+p.h-9)}")
-        check(r, "the buttons should bounce on the shelf, not fall through it")
+        check(r, "the coins should bounce on the shelf, not fall through it")
         for n, want in [("moonpanel", "tonight"), ("armillary", "The sun is in ")]:
             await pg.evaluate(TAP, n)
             await pg.evaluate("()=>__step(.3)")

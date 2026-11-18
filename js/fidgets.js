@@ -17,7 +17,7 @@ const FP=[
  {n:'bookstack',x:898,y:622,w:156,h:140,k:.16,d:.14,kick:{vy:4}},
  {n:'petbed',x:1478,y:782,w:186,h:136,k:.16,d:.16,kick:{vy:5}},
  {n:'cratebook',x:282,y:612,w:116,h:46,k:.18,d:.12,kick:{vy:-5}},
- {n:'box1',x:98,y:466,w:86,h:76,k:.2,d:.1,kick:{vy:-4},does:'buttons'},
+ {n:'box1',x:98,y:466,w:86,h:76,k:.2,d:.1,kick:{vy:-4},does:'coins'},
  {n:'lockbox',x:22,y:672,w:96,h:66,k:.2,d:.1,kick:{vy:-4},does:'safe'},
  {n:'box2',x:1072,y:292,w:82,h:70,k:.2,d:.1,kick:{vy:-4},does:'music'},
  {n:'moonbox',x:1492,y:412,w:102,h:76,k:.2,d:.1,kick:{vy:-4}},
@@ -57,7 +57,7 @@ function fidgetPoke(x,y){
    that we can fuck with ... Not everything has to be super involved. It can just be like a little micro interaction").
    Beyond its bounce or swing, each of these has one small thing that is its own, made of code-drawn pixels and whole-pixel
    moves (no new room art):
-     the lidded jar on the left bookcase   buttons spill out and bounce along the shelf
+     the lidded jar on the left bookcase   gold coins spill out and bounce along the shelf
      the red box on the trinket shelf      a music box: a short tune, with notes floating up
      the lockbox                           opens the journal at Keep it safe (its lock ribbon)
      the milk crate                        holds the records: a tap puts the next one on the radio
@@ -69,12 +69,12 @@ function fidgetPoke(x,y){
      the glass                             drops of water jump
      the wind-up snail                     trundles along its shelf and back (it used to hop up into the shelf above)
    The stool and the desk chair wobble like the other furniture. */
-const BUTTON_COLORS=['#e98aa8','#6c61a4','#c8d145','#fdebc9','#e2b04a','#16795a'];
+const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17: "I think lidded jar should be coins")
 const TUNES=[[0,2,4,7,4,2,0],[7,4,2,0,2,4,7,9],[0,4,7,9,7,4,0],[4,2,0,2,4,4,4],[9,7,4,2,0,2,4]]; // steps of a major scale, five small tunes
 function musicBox(){if(!AC)audioInit();if(!AC)return;const tune=TUNES[Math.floor(Math.random()*TUNES.length)],t0=AC.currentTime+.03;
  tune.forEach((st2,i)=>{try{tone(t0+i*.19,.5,'triangle',523.25*Math.pow(2,st2/12),0,.07,.005)}catch(e){}});}
 function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.length>160)fBits.shift();};
- if(p.does==='buttons'){for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(110,170),c:BUTTON_COLORS[Math.floor(Math.random()*BUTTON_COLORS.length)],big:true,fl:p.y+p.h-10});sfx('pop');}
+ if(p.does==='coins'){for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(110,170),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:p.y+p.h-10});sfx('pop');}
  else if(p.does==='music'){musicBox();for(let i=0;i<4;i++)add({x:cx+rnd(-24,20),y:p.y-4-i*6,vx:rnd(-.5,.5),vy:rnd(-1.5,-.9),g:0,sway:true,life:70+i*14,c:i%2?'#c4155c':'#4a2a4f',note:true});}
  else if(p.does==='safe'){if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
  else if(p.does==='record'){if(typeof radioOn==='function'){if(!radio.on){radio.band='crates';radioOn(true);tell('You put a record from the crate on the radio.',{kind:'info',key:'crateRec'});}else if(radio.band!=='crates')radioBand('crates');else radioStep(1);}}
@@ -129,7 +129,8 @@ function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round
   if(b.fly){const up=Math.floor(b.life/7)%2;g.fillRect(x-2*U,y+(up?-U:0),2*U,2*U);g.fillRect(x+U,y+(up?-U:0),2*U,2*U);g.fillStyle='#4a2a4f';g.fillRect(x,y-U,U,3*U);continue;} // a butterfly: two wings that flap by a frame swap
   if(b.note){g.fillRect(x,y,2*U,2*U);g.fillRect(x+U,y-3*U,U,4*U);g.fillRect(x+U,y-3*U,3*U,U);continue;} // a music note
   if(b.heart){g.fillRect(x,y,U,U);g.fillRect(x+2*U,y,U,U);g.fillRect(x-U,y+U,5*U,U);g.fillRect(x,y+2*U,3*U,U);g.fillRect(x+U,y+3*U,U,U);continue;}
-  if(b.big&&b.fl!=null||b.petal||b.drop){g.fillRect(x,y,2*U,2*U);continue;}
+  if(b.coin){g.fillStyle='#341839';g.fillRect(x,y-2*U,3*U,5*U);g.fillRect(x-U,y-U,5*U,3*U);g.fillStyle=b.c;g.fillRect(x,y-U,3*U,3*U);g.fillStyle='#ffffff';g.fillRect(x,y-U,U,U);g.fillStyle='#c9952f';g.fillRect(x+2*U,y+U,U,U);continue;} // a coin: a gold square with a dark rim and one bright pixel
+  if(b.petal||b.drop){g.fillRect(x,y,2*U,2*U);continue;}
   const s2=b.big?6:3;g.fillRect(Math.round(b.x),Math.round(b.y),s2,s2);}}
 
 /* ---------- IDLE WIGGLE (Jackie, Nov 3; RULES.md 10) ----------

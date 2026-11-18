@@ -84,7 +84,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
-`python3 tests/doodad_test.py` taps every doodad in the room and checks its own small thing happens (buttons from the jar, a tune from the music box, the journal from the lockbox, a record from the crate, a butterfly, the moon, the sun's sign, hearts, petals, drops, the snail trundling sideways); saved to `tests/screenshots/doodads/`.
+`python3 tests/doodad_test.py` taps every doodad in the room and checks its own small thing happens (coins from the jar, a tune from the music box, the journal from the lockbox, a record from the crate, a butterfly, the moon, the sun's sign, hearts, petals, drops, the snail trundling sideways); saved to `tests/screenshots/doodads/`.
 
 `python3 tests/start_over_test.py` starts over and checks the new seedling's journal opens on every one of its spreads with no error.
 
