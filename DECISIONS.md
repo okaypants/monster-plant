@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No book note on every hexagram (Nov 17)
+
+- Jackie: "The book note at the end of every I Ching thing is also redundant".
+- The line "The I Ching, or Book of Changes, was put together in China about 3,000 years ago..." is gone from the hexagram pages.
+- **Why:** the same sentence on all 64 pages is noise.
+
 ### No artist note on every card (Nov 17)
 
 - Jackie: "The artist note is redundant at the end of every single tarot card".

@@ -81,7 +81,7 @@ async def main():
         await pg.click(".ipick[data-w='0']")
         page = await pg.evaluate("()=>{const P=ichingPair(ich.lines),h=P.first;return {t:document.querySelector('.iread').innerText,jz:h.jz,je:h.je,l3:h.lz[2],e5:h.le[4]}}")
         t = page["t"]
-        check(all(k in t for k in ["The two halves.", "The original.", "James Legge, 1882.", "How to read it.", "The third line, changing.", "The fifth line, changing.", "The book."]) and page["jz"] in t and page["je"] in t and page["l3"] in t and page["e5"] in t and "The second line" not in t, f"the hexagram's page should have the original, Legge's words and the two changing lines: {t!r}")
+        check(all(k in t for k in ["The two halves.", "The original.", "James Legge, 1882.", "How to read it.", "The third line, changing.", "The fifth line, changing."]) and "The book." not in t and page["jz"] in t and page["je"] in t and page["l3"] in t and page["e5"] in t and "The second line" not in t, f"the hexagram's page should have the original, Legge's words and the two changing lines: {t!r}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "4_page.png"))
         await pg.click(".tbk")
