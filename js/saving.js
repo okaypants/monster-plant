@@ -2,7 +2,7 @@
 /* Saving: the save (st), shared room keys (GLOBAL), swapping plants in and out, loading old saves. */
 /* ---------- state ---------- */
 const KEY='mp-proto-v2';
-function fresh(){return {started:false,species:0,stage:-1,timer:0,day:1,dayT:0,night:false,curtain:'open',needs:{thirst:0,hunger:0,attention:0},light:0,lightBad:0,lightState:'ok',ge:0,lc:0,pref:['sun','shade','night'][Math.floor(Math.random()*3)],eye:Math.floor(Math.random()*16),parch:0,credit:0,met:{},over:0,overType:'',nap:0,listen:0,pets:[],hunch:0,hint:{thirst:0,hunger:0,attention:0,light:0},taught:{},speed:2,mode:'visit',hints:'auto',youUsed:-9,archive:[]};}
+function fresh(){return {id:1,/* every plant has an id from the start: Start over used to leave the new seed without one until the next reload, which broke its journal (Jackie, Nov 17) */started:false,species:0,stage:-1,timer:0,day:1,dayT:0,night:false,curtain:'open',needs:{thirst:0,hunger:0,attention:0},light:0,lightBad:0,lightState:'ok',ge:0,lc:0,pref:['sun','shade','night'][Math.floor(Math.random()*3)],eye:Math.floor(Math.random()*16),parch:0,credit:0,met:{},over:0,overType:'',nap:0,listen:0,pets:[],hunch:0,hint:{thirst:0,hunger:0,attention:0,light:0},taught:{},speed:2,mode:'visit',hints:'auto',youUsed:-9,archive:[]};}
 let st=fresh();
 // MORE THAN ONE PLANT (Jackie, Nov 3): 'st' always holds the ACTIVE plant's fields + shared room state; the other plants wait in st.others.
 // eachPlant() swaps each one in, so every existing plant function just works on whichever plant is swapped in.

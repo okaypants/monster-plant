@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A seedling's journal after Start over (Nov 17)
+
+- Jackie, with a picture of a blank journal and an error ("undefined is not an object (evaluating 'q.id')"): "This happens when I open a seedlings journal".
+- Start over made the new seed without an id, and it only got one the next time the game was loaded. Until then its journal broke whenever it opened on a relationship spread (the book remembers which spread it was last on). Every plant now has an id from the moment it is made, and the journal falls back to the main page if a spread is about someone who isn't in the room.
+- **Why:** it was a bug.
+
 ### "It's golden hour" only in golden hour (Nov 17)
 
 - Jackie: "The game said 'get out your cameras it's golden hour!' when I started the game over but it's not".

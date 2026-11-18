@@ -107,7 +107,7 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';R.appendChild(jdiv('jday',[],dayWords())); // today in words, top corner of every page (not the Files: those are keepsakes)
  
  const main=(l,r)=>{if(jPage==='cat')catPages(l,r);else if(jPage==='world')worldPages(l,r);else if(jPage==='safe')keepPages(l,r);else withPlant(+jPage.slice(1),()=>plantPages(l,r));};
- const subs=withMore(relSpreads(jPage),jPage);if(jSub>=subs.length)jSub=0;const sp=subs[jSub];
+ const subs=withMore(relSpreads(jPage),jPage);if(jSub>=subs.length)jSub=0;if(subs[jSub].q!=null&&!raw(subs[jSub].q))jSub=0; /* a spread about someone who isn't here: show the main page, never a blank book */const sp=subs[jSub];
  if(sp.k==='main'){main(L,R);if(spill(R,jPage)){renderJournal();return;}}
  else if(sp.k==='more')morePages(L,R,main,jPage);
  else relPages(L,R,sp);
