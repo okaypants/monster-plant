@@ -83,11 +83,14 @@ function together(p1,p2,now){const c1=chartOf(p1),c2=chartOf(p2);if(!c1||!c2)ret
   return {today,always}}
 /* ---------- the CHARTS page in the moon box ---------- */
 let chartSel='cat';
-function chartsShow(){tr={k:'charts',step:'charts',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='<div class="chwrap"><div class="chpeople"></div><div class="chcard"></div></div>';tSay('');
-  const sayEl=tarotEl.querySelector('.tsay');sayEl.textContent='Loading the sky…';
-  citiesLoad().catch(()=>{}).finally(()=>{if(!tarotEl||tr.k!=='charts')return;sayEl.textContent='These charts use the real positions of the planets and the traditional astrological meanings.';chartsDraw()})}
+function chartsShow(){tr={k:'charts',step:'charts',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='<div class="chwrap"><div class="chcard"></div></div>';tSay('');
+  // FEWER BOXES (Jackie, Nov 17: "too many buttons ... the charts page (with the sun moon boxes plus the selection menu)"): the people
+  // are plain names along the top row, the picked one filled in; sun, moon and rising are one plain row with no boxes; the
+  // note about where the charts come from is the last line of the chart, not a strip along the bottom
+  const pk=tarotEl.querySelector('.tpick');pk.innerHTML='<div class="chpeople"></div>';tStage().querySelector('.chcard').textContent='Loading the sky…';
+  citiesLoad().catch(()=>{}).finally(()=>{if(!tarotEl||tr.k!=='charts')return;chartsDraw()})}
 function chartsDraw(){const P=chartPeople(),pe=tarotEl.querySelector('.chpeople');pe.innerHTML='';if(!P.find(p=>p.k===chartSel))chartSel=P[0].k;
-  for(const p of P){const b=document.createElement('button');b.type='button';b.className='tsb chp'+(p.k===chartSel?' on':'');b.textContent=p.name;
+  for(const p of P){const b=document.createElement('button');b.type='button';b.className='chp'+(p.k===chartSel?' on':'');b.textContent=p.name;
     b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');chartSel=p.k;chartsDraw()});pe.appendChild(b)}
   const p=P.find(p=>p.k===chartSel),card=tarotEl.querySelector('.chcard');card.innerHTML='';card.scrollTop=0;
   if(p.k==='you'&&!p.t){chartForm(card);return}
@@ -106,7 +109,8 @@ function chartsDraw(){const P=chartPeople(),pe=tarotEl.querySelector('.chpeople'
   add('chh','The whole chart');
   for(const b of ['sun','moon','asc','mercury','venus','mars','jupiter','saturn']){const s=c[b];if(!s)continue;const d=add('chrow','');
     const h=document.createElement('b');h.textContent=BODY_GLYPH[b]+' '+BODY_NAME[b]+' in '+s.name+(s.rx?' (retrograde)':'')+'. ';d.append(h,document.createTextNode(chartLine(p,b,c)))}
-  if(p.k==='you'){const e=document.createElement('button');e.type='button';e.className='tsb chedit';e.textContent='Change my birth details';e.addEventListener('click',ev=>{ev.stopPropagation();chartForm(card)});card.appendChild(e)}}
+  if(p.k==='you'){const e=document.createElement('button');e.type='button';e.className='tmore chedit';e.textContent='Change my birth details';e.addEventListener('click',ev=>{ev.stopPropagation();chartForm(card)});card.appendChild(e)}
+  add('chnote','These charts use the real positions of the planets and the traditional astrological meanings.')}
 // your birth details: a date, a time if you know it, and the city you were born in
 function chartForm(card){card.innerHTML='';const y=st.you||{};let city=y.place||null;
   card.innerHTML='<div class="chname">Your birth chart</div><div class="chnote">Your birthday stays on this phone (and in your backup file), nowhere else.</div>'+

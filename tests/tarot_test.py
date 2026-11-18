@@ -92,7 +92,7 @@ async def main():
         under = await pg.evaluate("()=>[...document.querySelectorAll('.tthree .tslot')].map((s,i)=>[s.querySelector('.tlab').textContent,tr.cards[i].c.n+(tr.cards[i].rev?', reversed':''),s.querySelector('.tmn').textContent,tarotMean(i)])")
         check([u[0] for u in under] == [under[0][1] + " (the past)", under[1][1] + " (the present)", under[2][1] + " (the future)"] and under[1][1].endswith(", reversed") and all(u[2] == u[3] for u in under), f"under each card: its name, its place in parentheses, its meaning: {under}")
         say = await pg.evaluate("()=>document.querySelector('.tsay').textContent")
-        check("Major Arcana" in say and "comes tomorrow" in say, f"the spread should be read as a whole, and say a new one comes tomorrow: {say}")
+        check("Major Arcana" in say, f"the spread should be read as a whole: {say}")
         ks = await pg.evaluate("()=>tr.cards.map(x=>TAROT_K[x.c.id][x.rev?1:0])")
         summ = await pg.evaluate("()=>document.querySelector('.tsay .tsumtx').textContent")
         check(summ.startswith("For your work, this reading moves from " + ks[0] + " in the past, through " + ks[1] + " now, toward " + ks[2] + ".") and "question" not in say, f"the summary should put each card's short meaning in its place, with no mention of a question: {summ}")

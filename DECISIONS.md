@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Charts with fewer boxes, and space between everything (Nov 17)
+
+- Jackie: "Make sure there's space between all items. Some pages have too many buttons like the Celtic cross and the charts page (with the sun moon boxes plus the selection menu)".
+- **Charts:** the people (You, the cat, each monster) are plain names along the top row with the picked one filled in, where they used to be a column of outlined bubbles down the left. Sun, moon and rising are one plain row with no boxes. "Change my birth details" is a link. The line about where the charts come from is the last line of the chart, so nothing runs along the bottom.
+- **Space:** the top row is as tall as the close and back buttons, so nothing below starts beside them. The picture-and-words group can no longer squeeze up into the top row; on a phone the three cards are a little smaller to make room. The small note under a spread is shorter ("Tap a card for more about it."); the line about tomorrow's reading is on the whole-summary page.
+- **Why:** the same as the entry below. Fewer outlines, and room around each thing.
+
 ### Fewer buttons in the moon box (Nov 17)
 
 - Jackie: "Some pages have too many buttons like the Celtic cross".
