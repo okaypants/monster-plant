@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Readings don't accuse or frighten (Nov 17)
+
+- Jackie: "We don't want the readings to imply anything too negative iykwim lies and betrayal etc".
+- 22 of the tarot's plain meanings were reworded so that none speaks of lies, tricks, betrayal, cruelty, greed or people who can't be trusted. "Lies and two-faced behavior" is now "Mixed messages and a hard choice"; "Cruelty and bad intentions" is "Harshness and being too strict"; "Tricks and broken promises" is "Plans that fall through". The short meanings used in the summary changed to match, and the Celtic Cross summary says "At its best this brings" and "It leads toward".
+- Hard cards still read as hard (heartbreak, a loss, a low point). They describe a feeling or a situation and don't point at a person.
+- Waite's own 1910 words on a card's page are unchanged, since they are a quotation under his name. Some of them are harsh.
+- **Why:** a reading that tells someone they are being lied to or betrayed can land badly, and this is a cozy game.
+
 ### The I Ching is the third thing in the moon box (Nov 17)
 
 - Jackie: "Maybe when you open the box you can select from tarot, charts, or I Ching - then let's work on I Ching".

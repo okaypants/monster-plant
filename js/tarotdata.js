@@ -1,7 +1,7 @@
 'use strict';
 /* The tarot deck (js/tarot.js): the 78 cards of the Rider-Waite-Smith deck, pictures by Pamela Colman Smith, published 1909,
    both public domain. id: the picture in tarot/; n: its name; u, r: what it means upright and reversed, in plain words written
-   for the game from Waite's meanings (plain phrases, no clipped colon-and-semicolon style: Jackie, Nov 16); wu, wr: Waite's own words, from The Pictorial Key to the Tarot (1910, public domain),
+   for the game from Waite's meanings (plain phrases, no clipped colon-and-semicolon style: Jackie, Nov 16; and nothing that accuses anyone of lying, betrayal or cruelty: Jackie, Nov 17, so the harshest of Waite's meanings are given as mixed messages, harshness, plans that fall through); wu, wr: Waite's own words, from The Pictorial Key to the Tarot (1910, public domain),
    kept as the record of where each meaning comes from, not shown in the game (wr is null where Waite gives no reversed meaning). Waite's Major Arcana numbers: Strength 8, Justice 11. */
 const TAROT=[
 {
@@ -56,7 +56,7 @@ const TAROT=[
 "id": "M06",
 "n": "The Lovers",
 "u": "Attraction, love and difficulties overcome.",
-"r": "A plan that fails and choices that are muddled.",
+"r": "A plan that needs rethinking and choices that are muddled.",
 "wu": "Attraction, love, beauty, trials overcome.",
 "wr": "Failure, foolish designs. Another account speaks of marriage frustrated and contrarieties of all kinds."
 },
@@ -79,7 +79,7 @@ const TAROT=[
 {
 "id": "M09",
 "n": "The Hermit",
-"u": "Caution and careful thought. Watch out for tricks.",
+"u": "Caution and careful thought. Take your time.",
 "r": "Hiding away and being too cautious.",
 "wu": "Prudence, circumspection; also and especially treason, dissimulation, roguery, corruption.",
 "wr": "Concealment, disguise, policy, fear, unreasoned caution."
@@ -151,7 +151,7 @@ const TAROT=[
 {
 "id": "M18",
 "n": "The Moon",
-"u": "Things are hidden, so be careful whom you trust.",
+"u": "Not everything can be seen yet, so go slowly.",
 "r": "Changing moods and small mix-ups.",
 "wu": "Hidden enemies, danger, calumny, darkness, terror, deception, occult forces, error.",
 "wr": "Instability, inconstancy, silence, lesser degrees of deception and error."
@@ -216,7 +216,7 @@ const TAROT=[
 "id": "W05",
 "n": "Five of Wands",
 "u": "Play fights and tough competition.",
-"r": "Disputes, tricks and contradictions.",
+"r": "Arguments and mixed signals.",
 "wu": "Imitation, as, for example, sham fight, but also the strenuous competition and struggle of the search after riches and fortune. In this sense it connects with the battle of life. Hence some attributions say that it is a card of gold, gain, opulence.",
 "wr": "Litigation, disputes, trickery, contradiction."
 },
@@ -248,7 +248,7 @@ const TAROT=[
 "id": "W09",
 "n": "Nine of Wands",
 "u": "Strength when challenged, and standing firm.",
-"r": "Obstacles and bad luck.",
+"r": "Obstacles and a rough patch.",
 "wu": "The card signifies strength in opposition. If attacked, the person will meet an onslaught boldly; and his build shews that he may prove a formidable antagonist. With this main significance there are all its possible adjuncts—delay, suspension, adjournment.",
 "wr": "Obstacles, adversity, calamity."
 },
@@ -264,7 +264,7 @@ const TAROT=[
 "id": "W11",
 "n": "Page of Wands",
 "u": "Good news from a faithful messenger.",
-"r": "Gossip, bad news or unsteady plans.",
+"r": "Rumors and unsteady plans.",
 "wu": "Dark young man, faithful, a lover, an envoy, a postman. Beside a man, he will bear favourable testimony concerning him. A dangerous rival, if followed by the Page of Cups. Has the chief qualities of his suit. He may signify family intelligence.",
 "wr": "Anecdotes, announcements, evil news. Also indecision and the instability which accompanies it."
 },
@@ -368,7 +368,7 @@ const TAROT=[
 "id": "C10",
 "n": "Ten of Cups",
 "u": "Lasting happiness with the people you love.",
-"r": "An unsettled heart and anger.",
+"r": "An unsettled heart and a short temper.",
 "wu": "Contentment, repose of the entire heart; the perfection of that state; also perfection of human love and friendship; if with several picture-cards, a person who is taking charge of the Querent's interests; also the town, village or country inhabited by the Querent.",
 "wr": "Repose of the false heart, indignation, violence."
 },
@@ -376,7 +376,7 @@ const TAROT=[
 "id": "C11",
 "n": "Page of Cups",
 "u": "A thoughtful messenger, news and quiet study.",
-"r": "A crush, or some trickery.",
+"r": "A crush, or a bit of flattery.",
 "wu": "Fair young man, one impelled to render service and with whom the Querent will be connected; a studious youth; news, message; application, reflection, meditation; also these things directed to business.",
 "wr": "Taste, inclination, attachment, seduction, deception, artifice."
 },
@@ -384,7 +384,7 @@ const TAROT=[
 "id": "C12",
 "n": "Knight of Cups",
 "u": "An invitation or an offer arriving.",
-"r": "Sweet talk that turns out to be a trick.",
+"r": "Sweet talk that deserves a second look.",
 "wu": "Arrival, approach—sometimes that of a messenger; advances, proposition, demeanour, invitation, incitement.",
 "wr": "Trickery, artifice, subtlety, swindling, duplicity, fraud."
 },
@@ -392,7 +392,7 @@ const TAROT=[
 "id": "C13",
 "n": "Queen of Cups",
 "u": "Loving wisdom and good intuition.",
-"r": "Someone who cannot be fully trusted.",
+"r": "Mixed feelings, and a reason to look twice.",
 "wu": "Good, fair woman; honest, devoted woman, who will do service to the Querent; loving intelligence, and hence the gift of vision; success, happiness, pleasure; also wisdom, virtue; a perfect spouse and a good mother.",
 "wr": "The accounts vary; good woman; otherwise, distinguished woman but one not to be trusted; perverse woman; vice, dishonour, depravity."
 },
@@ -400,7 +400,7 @@ const TAROT=[
 "id": "C14",
 "n": "King of Cups",
 "u": "Fairness, responsibility, kindness, art and learning.",
-"r": "Dishonesty and big losses.",
+"r": "Unfairness and a setback.",
 "wu": "Fair man, man of business, law, or divinity; responsible, disposed to oblige the Querent; also equity, art and science, including those who profess science, law and art; creative intelligence.",
 "wr": "Dishonest, double-dealing man; roguery, exaction, injustice, vice, scandal, pillage, considerable loss."
 },
@@ -408,7 +408,7 @@ const TAROT=[
 "id": "S01",
 "n": "Ace of Swords",
 "u": "Great force and triumph, in love or in anger.",
-"r": "The same force, with bad results.",
+"r": "The same force, pushed too far.",
 "wu": "Triumph, the excessive degree in everything, conquest, triumph of force. It is a card of great force, in love as well as in hatred. The crown may carry a much higher significance than comes usually within the sphere of fortune-telling.",
 "wr": "The same, but the results are disastrous; another account says—conception, childbirth, augmentation, multiplicity."
 },
@@ -416,7 +416,7 @@ const TAROT=[
 "id": "S02",
 "n": "Two of Swords",
 "u": "A truce, with balance, courage and friendship.",
-"r": "Lies and two-faced behavior.",
+"r": "Mixed messages and a hard choice.",
 "wu": "Conformity and the equipoise which it suggests, courage, friendship, concord in a state of arms; another reading gives tenderness, affection, intimacy. The suggestion of harmony and other favourable readings must be considered in a qualified manner, as Swords generally are not symbolical of beneficent forces in human affairs.",
 "wr": "Imposture, falsehood, duplicity, disloyalty."
 },
@@ -463,7 +463,7 @@ const TAROT=[
 {
 "id": "S08",
 "n": "Eight of Swords",
-"u": "Feeling trapped, with bad news or blame.",
+"u": "Feeling trapped or stuck.",
 "r": "Trouble and surprises that nobody planned.",
 "wu": "Bad news, violent chagrin, crisis, censure, power in trammels, conflict, calumny; also sickness.",
 "wr": "Disquiet, difficulty, opposition, accident, treachery; what is unforeseen; fatality."
@@ -479,7 +479,7 @@ const TAROT=[
 {
 "id": "S10",
 "n": "Ten of Swords",
-"u": "Pain and sadness, at their worst point.",
+"u": "Sadness at its lowest point, with better days after it.",
 "r": "Some success that will not last.",
 "wu": "Whatsoever is intimated by the design; also pain, affliction, tears, sadness, desolation. It is not especially a card of violent death.",
 "wr": "Advantage, profit, success, favour, but none of these are permanent; also power and authority."
@@ -504,7 +504,7 @@ const TAROT=[
 "id": "S13",
 "n": "Queen of Swords",
 "u": "Sadness, absence and going without.",
-"r": "Spite and narrow-mindedness.",
+"r": "Sharp words and a narrow view.",
 "wu": "Widowhood, female sadness and embarrassment, absence, sterility, mourning, privation, separation.",
 "wr": "Malice, bigotry, artifice, prudery, bale, deceit."
 },
@@ -512,7 +512,7 @@ const TAROT=[
 "id": "S14",
 "n": "King of Swords",
 "u": "Judgment, command and sharp thinking.",
-"r": "Cruelty and bad intentions.",
+"r": "Harshness and being too strict.",
 "wu": "Whatsoever arises out of the idea of judgment and all its connexions—power, command, authority, militant intelligence, law, offices of the crown, and so forth.",
 "wr": "Cruelty, perversity, barbarity, perfidy, evil intention."
 },
@@ -552,7 +552,7 @@ const TAROT=[
 "id": "P05",
 "n": "Five of Pentacles",
 "u": "Hard times and money trouble.",
-"r": "Chaos, with things falling apart.",
+"r": "Disorder, and things that need putting back together.",
 "wu": "The card foretells material trouble above all, whether in the form illustrated—that is, destitution—or otherwise. For some cartomancists, it is a card of love and lovers—wife, husband, friend, mistress; also concordance, affinities. These alternatives cannot be harmonized.",
 "wr": "Disorder, chaos, ruin, discord, profligacy."
 },
@@ -576,7 +576,7 @@ const TAROT=[
 "id": "P08",
 "n": "Eight of Pentacles",
 "u": "Work, skill and learning a trade.",
-"r": "Empty ambition and greed.",
+"r": "Ambition without a purpose.",
 "wu": "Work, employment, commission, craftsmanship, skill in craft and business, perhaps in the preparatory stage.",
 "wr": "Voided ambition, vanity, cupidity, exaction, usury. It may also signify the possession of skill, in the sense of the ingenious mind turned to cunning and intrigue."
 },
@@ -584,7 +584,7 @@ const TAROT=[
 "id": "P09",
 "n": "Nine of Pentacles",
 "u": "Safety, success and good judgment.",
-"r": "Tricks and broken promises.",
+"r": "Plans that fall through.",
 "wu": "Prudence, safety, success, accomplishment, certitude, discernment.",
 "wr": "Roguery, deception, voided project, bad faith."
 },
@@ -616,7 +616,7 @@ const TAROT=[
 "id": "P13",
 "n": "Queen of Pentacles",
 "u": "Generosity, comfort and security.",
-"r": "Suspicion and fear.",
+"r": "Doubt and worry.",
 "wu": "Opulence, generosity, magnificence, security, liberty.",
 "wr": "Evil, suspicion, suspense, fear, mistrust."
 },
@@ -624,7 +624,7 @@ const TAROT=[
 "id": "P14",
 "n": "King of Pentacles",
 "u": "Business sense and steady success.",
-"r": "Weakness and things going wrong.",
+"r": "Shaky footing and a need for care.",
 "wu": "Valour, realizing intelligence, business and normal intellectual aptitude, sometimes mathematical gifts and attainments of this kind; success in these paths.",
 "wr": "Vice, weakness, ugliness, perversity, corruption, peril."
 }

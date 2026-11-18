@@ -161,7 +161,7 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
 function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1:0]);
   if(tr.k==='one')return 'Today is about '+k[0]+'.';
   if(tr.k==='three')return 'This reading moves from '+k[0]+' in the past, through '+k[1]+' now, toward '+k[2]+'.';
-  return 'You are surrounded by '+k[0]+', with '+k[1]+' standing in the way. The best you can hope for is '+k[2]+', and all of it rests on '+k[3]+'. You are leaving behind '+k[4]+' and heading toward '+k[5]+'. You meet this with '+k[6]+', and the people and places around you bring '+k[7]+'. Your hopes or fears are about '+k[8]+'. It ends in '+k[9]+'.'}
+  return 'You are surrounded by '+k[0]+', with '+k[1]+' standing in the way. At its best this brings '+k[2]+', and all of it rests on '+k[3]+'. You are leaving behind '+k[4]+' and heading toward '+k[5]+'. You meet this with '+k[6]+', and the people and places around you bring '+k[7]+'. Your hopes or fears are about '+k[8]+'. It leads toward '+k[9]+'.'}
 // under the spread: the summary (three lines at most; "Read all of it" opens the whole thing when it doesn't fit), then a small note
 function tarotSumShow(again){const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
   const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it.':'Tap a card for more about it.')+' '+SPREADS[tr.k].next));
