@@ -125,7 +125,9 @@ function tarotMean(i){const x=tr.cards[i];return (x.rev?TAROT_MR[x.c.id]:TAROT_M
 // lay the spread out: face down (a new reading) or face up (today's, opened again). One card and three cards: each card
 // with its name, place and meaning written beneath it once it's turned. The Celtic Cross: the ten cards as a small map of
 // the cross on the left, and on the right the card you're on, larger, with its name, place and meaning (ten cards with
-// their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway).
+// their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway). The three
+// parts are the same height and sit in three columns (Jackie, Nov 17: "beautifully balanced"): the map, the card, the words;
+// once all ten are turned the reading's summary is at the foot of the words column.
 function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';tBoxMode();const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
   S.pos.forEach((s,i)=>{const slot=document.createElement('div');slot.className='tslot ts'+i;
     const btn=document.createElement('button');btn.type='button';btn.className='tflip';
@@ -153,8 +155,11 @@ function tarotFocus(i){tr.focus=i;const f=tarotEl.querySelector('.tfocus');if(!f
   if(next>=0){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent='Turn card '+(next+1);
     nb.addEventListener('click',e=>{e.stopPropagation();const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn)tarotFlip(next,btn)});txt.appendChild(nb)}
   else if(i>=0){const row=document.createElement('div');row.className='tfnav';
-    for(const [d,label] of [[-1,'Previous card'],[1,'Next card']]){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent=label;
+    for(const [d,label] of [[-1,'‹ Previous'],[1,'Next ›']]){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent=label;
       nb.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotFocus((i+d+10)%10)});row.appendChild(nb)}txt.appendChild(row)}
+  if(tr.sum&&next<0){const b=document.createElement('div');b.className='tfsum';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
+    const note=document.createElement('div');note.className='tnote';
+    const mb=document.createElement('button');mb.type='button';mb.className='tsb tmore';mb.textContent='Read all of it';mb.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(mb);b.append(sp,note);txt.appendChild(b)}
   f.appendChild(txt)}
 function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
   const show=()=>{tarotFace(i,btn,true);if(tr.k==='cross')tarotFocus(i);if(tr.open.every(Boolean))tarotSum();else tSay(tr.k==='cross'?'':'Turn the next card.')};
@@ -182,7 +187,7 @@ function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1
   if(tr.k==='three')return 'This reading moves from '+k[0]+' in the past, through '+k[1]+' now, toward '+k[2]+'.';
   return 'You are surrounded by '+k[0]+', with '+k[1]+' standing in the way. At its best this brings '+k[2]+', and all of it rests on '+k[3]+'. You are leaving behind '+k[4]+' and heading toward '+k[5]+'. You meet this with '+k[6]+', and the people and places around you bring '+k[7]+'. Your hopes or fears are about '+k[8]+'. It leads toward '+k[9]+'.'}
 // under the spread: the summary (three lines at most; "Read all of it" opens the whole thing when it doesn't fit), then a small note
-function tarotSumShow(again){const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
+function tarotSumShow(again){tr.again=!!again;if(tr.k==='cross'){tSay('');tarotFocus(tr.focus>=0?tr.focus:0);return}const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
   const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it.':'Tap a card for more about it.')+' '+SPREADS[tr.k].next));
   s.append(sp,note);
   if(tr.k==='one'){const h=document.createElement('div');h.className='tlab';h.textContent=tarotTitle(0);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(0);sp.textContent=tr.pat;s.prepend(h,m)}
@@ -191,7 +196,7 @@ function tarotSumOpen(){const old=tarotEl.querySelector('.tread');if(old)old.rem
   const r=document.createElement('div');r.className='tread tsb tsumfull';const txt=document.createElement('div');txt.className='ttext';
   const add=(cls,t,bold)=>{const d=document.createElement('div');d.className=cls;if(bold){const b=document.createElement('b');b.textContent=bold+' ';d.appendChild(b)}d.appendChild(document.createTextNode(t));txt.appendChild(d)};
   add('tname',SPREADS[tr.k].name);add('tmean',tr.story);add('tlore',tr.pat);
-  tr.cards.forEach((x,i)=>add('tlore',tarotMean(i),tarotTitle(i)+'.'));
+  tr.cards.forEach((x,i)=>add('tlore',tarotMean(i),tarotTitle(i)+'.'));add('tlore',SPREADS[tr.k].next);
   const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
   r.append(txt,back);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
 // 4. the zoom: the card big, with its meaning and the details for the curious (js/tarotlore.js): what is in the picture,

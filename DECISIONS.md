@@ -7,6 +7,9 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Jackie, with a picture of the card of the day (a small card near the top, its meaning under it, then a wide gap, then the reading pinned to the bottom): "I really dislike this spacing and similar please review".
 - **Every screen in the box:** the picture and its words are now one group, 12 pixels apart, in the middle of the box, with the empty room split evenly above and below. Nothing sits alone at the bottom. This covers the menu, the deck, the cut, the three cards, the coins and the hexagrams. The Celtic Cross and the charts still fill the height.
 - **Card of the day:** the card is large on the left (about two thirds of the box's height), and beside it are its name, its meaning, the line about its suit and the small note. The meaning is no longer said twice.
+- **Celtic Cross** (Jackie, the same day: "The Celtic cross is also bad. Should you rethink how every one is formatted? They should be beautifully balanced"): three columns of the same height, evenly spaced: the map of the ten cards, the card you are on, and its words. The map's cards are about a third bigger than before. Once all ten are turned, the summary sits at the foot of the words column under a thin line, with "Read all of it". Nothing runs along the bottom of the box.
+- **A card's or hexagram's page:** the picture now sits clear of the close button, which used to cover its corner.
+- The two rules for every screen in the box: one picture goes on the left with its words on the right (card of the day, Celtic Cross, a card's page); a row of pictures is centered with its words centered under it (the menu, the deck, three cards, the hexagrams).
 - **Why:** words far from the thing they describe, with a hole in between, look unfinished.
 
 ### The moon box's words keep off the edges (Nov 17)
