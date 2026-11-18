@@ -134,9 +134,20 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 /* sleek cream (Jackie, Nov 16: not purple or blue, not warm "old guy castle" colors): cream cloth, white panel, near-black ink, magenta and green only as accents */
 .tarot{z-index:51;/* above the game's speech bubbles, name tags and the two corner buttons, which used to cover the edges of the box (Jackie, Nov 17) */overflow:hidden;--tcloth:#fbf7ef;--tpanel:#ffffff;--ttext:#1d1a18;--taccent:#c4155c;--tsub:#16795a;--tquote:#5d5753;--tbtn:#ffffff;--tbtnink:#1d1a18;--ton:#c4155c;--tonink:#ffffff;--tedge:#1d1a18}
 .tarot .tsb::before{background:var(--tedge);box-shadow:var(--ts-sx) var(--ts-sy) 0 var(--tedge)}.tarot button.tsb{--bg:var(--tbtn);color:var(--tbtnink)}
-.tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 30px;/* the words at the bottom sit clear of the edge (Jackie, Nov 17) */display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px}
+.tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 30px;/* the words at the bottom sit clear of the edge (Jackie, Nov 17) */display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px}
 .tarot .tx{position:absolute;left:10px;top:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;z-index:3;padding:0}
-.tstage{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
+/* SPACING (Jackie, Nov 17: "I really dislike this spacing"): the top row stays at the top; the picture and its words are one
+   group, 12px apart, in the middle of what is left, with the empty room split evenly above and below. Nothing is pinned
+   to the bottom on its own. The Celtic Cross and the charts fill the height (.tfull). */
+.tstage{flex:0 1 auto;margin-top:auto;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
+.tstage.tfull{flex:1;margin-top:0}.tsay{margin-bottom:auto}.tstage.tfull+.tsay{margin-bottom:0}.tsay:empty{min-height:0!important}
+/* card of the day: the card large on the left, and beside it its name, its meaning, the rest of the reading and the small note */
+.tarot .tbox.tone1{display:grid;grid-template-columns:auto minmax(0,430px);grid-template-rows:auto minmax(0,1fr);justify-content:center;align-items:center;column-gap:min(5vw,36px);row-gap:10px}
+.tbox.tone1 .tpick{grid-column:1/3}.tbox.tone1 .tstage{width:auto;margin:0}.tbox.tone1 .tone .tcard{height:min(62vh,340px)}
+.tbox.tone1 .tslot>.tlab,.tbox.tone1 .tslot>.tmn{display:none}
+.tbox.tone1 .tsay{margin:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;gap:8px;max-width:none}
+.tbox.tone1 .tsay .tlab{font-size:22px;text-align:left}.tbox.tone1 .tsay .tmn{font-size:18px;font-weight:700;text-align:left;line-height:1.35}
+.tbox.tone1 .tsumtx{flex-basis:auto;font-size:15px;font-weight:600;-webkit-line-clamp:6}.tbox.tone1 .tnote{flex-basis:auto;justify-content:flex-start}
 .tsay{font-size:17px;font-weight:700;line-height:1.35;text-align:center;max-width:620px;min-height:2.6em;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px}
 .tcard{display:block;height:min(36vh,210px);aspect-ratio:72/124;image-rendering:pixelated;image-rendering:crisp-edges;-webkit-user-drag:none;user-select:none}
 .tcard.trev,.tbig.trev{transform:rotate(180deg)}
@@ -227,7 +238,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tlore{font-size:15px;font-weight:600;line-height:1.35}.tlore.twaite{color:var(--tquote);font-style:italic}.tlore.twaite b{font-style:normal}.tlore b{font-weight:800;color:var(--tsub)}
 .tarot .tread .tback{position:absolute;right:12px;top:10px;align-self:auto}
 .tarot .tread .ttext{padding-right:74px;padding-bottom:16px}
-@media (max-height:520px){.tthree .tcard{height:min(30vh,190px)}.tone .tcard{height:min(38vh,230px)}.tmn{font-size:14px}.tfbig .tcard{height:min(52vh,300px)}}
+@media (max-height:520px){.tthree .tcard{height:min(28vh,190px)}.tspread.tthree{margin-top:4px}.tone .tcard{height:min(38vh,230px)}.tbox.tone1 .tone .tcard{height:min(64vh,340px)}.tbox.tone1 .tsay .tlab{font-size:19px}.tbox.tone1 .tsay .tmn{font-size:16px}.tmn{font-size:14px}.tfbig .tcard{height:min(52vh,300px)}}
 /* birth charts (js/charts.js): the people along the left, a chart card that scrolls */
 .chwrap{display:flex;gap:14px;width:100%;height:100%;min-height:0;align-items:stretch}
 .chpeople{display:flex;flex-direction:column;gap:8px;flex:none;width:min(150px,24%);overflow:auto;padding:4px 2px}

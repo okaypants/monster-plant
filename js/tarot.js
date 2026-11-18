@@ -69,7 +69,7 @@ function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmi
   else if(k==='charts'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☉';d.appendChild(g)}
   else if(typeof ichingIcon==='function')d.appendChild(ichingIcon());
   return d}
-function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySelector('.tpick').innerHTML='';const st0=tStage();st0.innerHTML='';
+function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySelector('.tpick').innerHTML='';tBoxMode();const st0=tStage();st0.innerHTML='';
   const old=tarotEl.querySelector('.tread');if(old)old.remove();
   const m=document.createElement('div');m.className='tmenu';
   for(const it of BOX_MENU){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=it.k;
@@ -81,7 +81,11 @@ function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
 function tSay(t){const s=tarotEl&&tarotEl.querySelector('.tsay');if(s)s.textContent=t}
 function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');return b}
 // the top row: "Moon box" (back to the menu), then the three spread buttons while in the tarot; each shows today's reading if it's been done
-function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';
+// which layout the box is in (Jackie, Nov 17: no big empty gaps): the card of the day sits large beside its words ('tone1');
+// the Celtic Cross and the charts fill the whole height ('tfull'); everything else is one group in the middle of the box
+function tBoxMode(){if(!tarotEl||!tr)return;const b=tarotEl.querySelector('.tbox'),st=tStage();b.classList.toggle('tone1',tr.k==='one'&&tr.cards.length>0);
+  st.classList.toggle('tfull',tr.k==='charts'||(tr.k==='cross'&&tr.cards.length>0))}
+function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBoxMode();
   const h=document.createElement('button');h.type='button';h.className='tsb tspick thome';h.dataset.k='menu';h.textContent='‹ Moon box';
   h.addEventListener('click',e=>{e.stopPropagation();if(tr.step==='shuffling')return;sfx('tick');tarotMenu()});p.appendChild(h);
   if(!SPREADS[tr.k])return;
@@ -122,7 +126,7 @@ function tarotMean(i){const x=tr.cards[i];return (x.rev?TAROT_MR[x.c.id]:TAROT_M
 // with its name, place and meaning written beneath it once it's turned. The Celtic Cross: the ten cards as a small map of
 // the cross on the left, and on the right the card you're on, larger, with its name, place and meaning (ten cards with
 // their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway).
-function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
+function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';tBoxMode();const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
   S.pos.forEach((s,i)=>{const slot=document.createElement('div');slot.className='tslot ts'+i;
     const btn=document.createElement('button');btn.type='button';btn.className='tflip';
     btn.addEventListener('click',e=>{e.stopPropagation();if(!tr.open[i])tarotFlip(i,btn);else if(k==='cross'&&tr.focus!==i)tarotFocus(i);else tarotRead(i)});
@@ -181,6 +185,7 @@ function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1
 function tarotSumShow(again){const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
   const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it.':'Tap a card for more about it.')+' '+SPREADS[tr.k].next));
   s.append(sp,note);
+  if(tr.k==='one'){const h=document.createElement('div');h.className='tlab';h.textContent=tarotTitle(0);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(0);sp.textContent=tr.pat;s.prepend(h,m)}
   if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tsb tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(b)}}
 function tarotSumOpen(){const old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
   const r=document.createElement('div');r.className='tread tsb tsumfull';const txt=document.createElement('div');txt.className='ttext';

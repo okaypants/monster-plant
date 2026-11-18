@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon box's spacing: one group in the middle (Nov 17)
+
+- Jackie, with a picture of the card of the day (a small card near the top, its meaning under it, then a wide gap, then the reading pinned to the bottom): "I really dislike this spacing and similar please review".
+- **Every screen in the box:** the picture and its words are now one group, 12 pixels apart, in the middle of the box, with the empty room split evenly above and below. Nothing sits alone at the bottom. This covers the menu, the deck, the cut, the three cards, the coins and the hexagrams. The Celtic Cross and the charts still fill the height.
+- **Card of the day:** the card is large on the left (about two thirds of the box's height), and beside it are its name, its meaning, the line about its suit and the small note. The meaning is no longer said twice.
+- **Why:** words far from the thing they describe, with a hole in between, look unfinished.
+
 ### The moon box's words keep off the edges (Nov 17)
 
 - Jackie: "Move the writing at the bottom up - it's not good when text hugs the bottom edge, or the top center edge where message bubbles from the game obscure anything behind it".
