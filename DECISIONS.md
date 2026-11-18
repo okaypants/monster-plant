@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon box's words keep off the edges (Nov 17)
+
+- Jackie: "Move the writing at the bottom up - it's not good when text hugs the bottom edge, or the top center edge where message bubbles from the game obscure anything behind it".
+- The line of words at the bottom of the box now sits 30 pixels above the edge (22 on a phone), up from 14 (8).
+- The box is drawn above the game's speech bubbles and name tags, so a bubble at the top center or a name tag at the bottom left can no longer cover what is in the box. The full screen and debug buttons in the top right corner are also behind it while it is open, since the full screen button sat on top of the Celtic Cross tab.
+- **Why:** words against an edge look cramped, and words under a bubble can't be read.
+
 ### A tarot reading can be about one part of life (Nov 17)
 
 - Jackie, asked what a reading should be pointed at, chose an area of life picked before shuffling, "but use more scrutiny in choosing categories just 1 per category and maybe no love".

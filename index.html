@@ -132,9 +132,9 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .rname em{color:var(--ts-rust)}
 /* the moon box's tarot (js/tarot.js): a velvet cloth, the deck, three cards, and a card read big */
 /* sleek cream (Jackie, Nov 16: not purple or blue, not warm "old guy castle" colors): cream cloth, white panel, near-black ink, magenta and green only as accents */
-.tarot{overflow:hidden;--tcloth:#fbf7ef;--tpanel:#ffffff;--ttext:#1d1a18;--taccent:#c4155c;--tsub:#16795a;--tquote:#5d5753;--tbtn:#ffffff;--tbtnink:#1d1a18;--ton:#c4155c;--tonink:#ffffff;--tedge:#1d1a18}
+.tarot{z-index:51;/* above the game's speech bubbles, name tags and the two corner buttons, which used to cover the edges of the box (Jackie, Nov 17) */overflow:hidden;--tcloth:#fbf7ef;--tpanel:#ffffff;--ttext:#1d1a18;--taccent:#c4155c;--tsub:#16795a;--tquote:#5d5753;--tbtn:#ffffff;--tbtnink:#1d1a18;--ton:#c4155c;--tonink:#ffffff;--tedge:#1d1a18}
 .tarot .tsb::before{background:var(--tedge);box-shadow:var(--ts-sx) var(--ts-sy) 0 var(--tedge)}.tarot button.tsb{--bg:var(--tbtn);color:var(--tbtnink)}
-.tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px}
+.tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 30px;/* the words at the bottom sit clear of the edge (Jackie, Nov 17) */display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px}
 .tarot .tx{position:absolute;left:10px;top:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;z-index:3;padding:0}
 .tstage{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
 .tsay{font-size:17px;font-weight:700;line-height:1.35;text-align:center;max-width:620px;min-height:2.6em;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px}
@@ -159,7 +159,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tname{font-size:22px;font-weight:800;color:var(--taccent)}.twhere{font-size:15px;font-weight:800;color:var(--tsub)}
 .tmean{font-size:19px;font-weight:700;line-height:1.35}
 .tback{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;align-self:flex-start}
-@media (max-height:520px){.tarot .tspick{font-size:14px;padding:4px 9px 5px}.chname{font-size:18px}.chs{font-size:15px}.tarot .tbox{padding:10px 12px 8px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
+@media (max-height:520px){.tarot .tspick{font-size:14px;padding:4px 9px 5px}.chname{font-size:18px}.chs{font-size:15px}.tarot .tbox{padding:10px 12px 22px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
 @media (prefers-reduced-motion:reduce){.tdeck.tshuf .tcard{animation:none}}
 /* the three spreads along the top; the Celtic Cross: a cross of six (the second card laid across the first) and a column of four */
 .tpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 46px}
@@ -226,7 +226,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 /* the zoom's details */
 .tlore{font-size:15px;font-weight:600;line-height:1.35}.tlore.twaite{color:var(--tquote);font-style:italic}.tlore.twaite b{font-style:normal}.tlore b{font-weight:800;color:var(--tsub)}
 .tarot .tread .tback{position:absolute;right:12px;top:10px;align-self:auto}
-.tarot .tread .ttext{padding-right:74px}
+.tarot .tread .ttext{padding-right:74px;padding-bottom:16px}
 @media (max-height:520px){.tthree .tcard{height:min(30vh,190px)}.tone .tcard{height:min(38vh,230px)}.tmn{font-size:14px}.tfbig .tcard{height:min(52vh,300px)}}
 /* birth charts (js/charts.js): the people along the left, a chart card that scrolls */
 .chwrap{display:flex;gap:14px;width:100%;height:100%;min-height:0;align-items:stretch}
