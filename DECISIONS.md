@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The I Ching is the third thing in the moon box (Nov 17)
+
+- Jackie: "Maybe when you open the box you can select from tarot, charts, or I Ching - then let's work on I Ching".
+- **How it works:** the traditional coin method. Toss three coins six times. The side with writing counts 2 and the plain side counts 3, so each toss adds up to 6, 7, 8 or 9 and draws one line from the bottom up (7 solid, 8 broken, 9 solid and changing, 6 broken and changing). Six lines make one of the 64 hexagrams. Changing lines flip to make a second hexagram, which is where things are heading. No question is asked. One reading a day, kept until tomorrow, like the tarot.
+- **What it shows:** the hexagram with its Chinese name, how it is said and a short English name; its meaning in plain words; a few sentences under it that sum up the reading. A hexagram's page has its two halves (fire below, mountain above), the Judgment in the original Chinese, James Legge's 1882 English for it, and for each changing line the original line with Legge's English.
+- **Where the words come from:** the Chinese is from Chinese Wikisource. Legge's hexagrams 1 to 32 are from English Wikisource, which is proofread. Wikisource stops there, so 33 to 64 come from two scans of the 1882 book on the Internet Archive, compared with each other and tidied by hand; a scanning slip may remain. The plain meanings and English names were written for the game from the Judgments.
+- **Left for later:** the yarrow-stalk method, the commentaries (the Ten Wings), and plain-word versions of the 384 line texts. Legge's line texts can be grim in places (noses cut off, concubines), since that is what the book says.
+- **Why:** Jackie asked for it by name. It is a real method with real rules and its original text, and it needs no art beyond lines and coins.
+
 ### The moon box opens on a menu (Nov 17)
 
 - Jackie: "Maybe when you open the box you can select from tarot, charts, or I Ching".

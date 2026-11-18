@@ -1,6 +1,6 @@
 'use strict';
 /* THE MOON BOX: A TAROT READING (Jackie, Nov 16). Tap the little box with the moon on the right-hand bookcase and it opens
-   over the room on a menu of what is inside (tarot, charts; Nov 17). The tarot: a velvet cloth and a real deck, the Rider-Waite-Smith tarot (Pamela Colman Smith's pictures, 1909, made into
+   over the room on a menu of what is inside (tarot, charts, the I Ching in js/iching.js; Nov 17). The tarot: a velvet cloth and a real deck, the Rider-Waite-Smith tarot (Pamela Colman Smith's pictures, 1909, made into
    the room's pixel style), with meanings in plain words written from A. E. Waite's own (1910; js/tarotdata.js).
    Three spreads, picked on the cloth:
      Card of the day   one card.
@@ -55,7 +55,7 @@ function openTarot(){if(tarotEl)return;sfx('tick');
   ui.appendChild(tarotEl);tarotMenu()}
 // THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
 // choices, each a big button with a picture, its name and one line. "Moon box" at the left of the top row comes back here.
-const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'}];
+const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'}];
 function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmicon';
   if(k==='tarot'){const b=tarotImg('back');d.appendChild(b)}
   else if(k==='charts'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☉';d.appendChild(g)}
