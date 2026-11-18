@@ -73,7 +73,7 @@ function ichingResult(){const P=ichingPair(ich.lines),st0=tStage();st0.innerHTML
   ich.turn=P.second?(nums.length===6?'All six lines are':nums.length===1?'Line '+nums[0]+' is':'Lines '+list(nums)+' are')+' changing, so it turns into '+P.second.en+'. '+P.second.m:'No lines are changing, so this one hexagram is the whole reading.';
   const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=ich.story+' '+ich.turn;
   const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((ich.again?'This is today’s reading. ':'')+'Tap a hexagram for more about it. A new one comes tomorrow.'));s.append(sp,note);
-  if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tsb tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();ichingRead(-1)});note.appendChild(b)}}
+  if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();ichingRead(-1)});note.appendChild(b)}}
 // a page: the whole summary (w = -1), the hexagram thrown (0) or the one it turns into (1)
 function ichingRead(w){const P=ichingPair(ich.lines),old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
   const r=document.createElement('div');r.className='tread tsb'+(w<0?' tsumfull':' iread');const txt=document.createElement('div');txt.className='ttext';

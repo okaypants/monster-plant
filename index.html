@@ -227,12 +227,12 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 @media (prefers-reduced-motion:reduce){.icoin.ispin{animation:none}}
 /* what the reading is about: five small buttons under the deck (Jackie, Nov 17) */
 .tdeckcol{display:flex;flex-direction:column;align-items:center;gap:12px}.ttopics{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.ttopic{font:inherit;font-size:15px;font-weight:800;padding:5px 12px 6px;cursor:pointer}.tarot .ttopic.on{--bg:var(--tsub);color:#fff}
-@media (max-height:520px){.tdeckcol{gap:8px}.tdeckcol .tcard{height:min(38vh,210px)}.tdeckcol .tdeck{height:calc(min(38vh,210px) + 18px);width:calc(min(38vh,210px)*72/124 + 18px)}.ttopic{font-size:14px;padding:4px 10px 5px}}
+.ttopic{font:inherit;font-size:15px;font-weight:800;padding:7px 13px;cursor:pointer;background:none;border:none;border-radius:999px;color:var(--ttext)}.tarot .ttopic.on{background:var(--tsub);color:#fff}
+@media (max-height:520px){.tdeckcol{gap:8px}.tdeckcol .tcard{height:min(38vh,210px)}.tdeckcol .tdeck{height:calc(min(38vh,210px) + 18px);width:calc(min(38vh,210px)*72/124 + 18px)}.ttopic{font-size:14px;padding:6px 11px}}
 /* the reading summed up under the spread (Jackie, Nov 17): three lines at most, with a button that opens all of it */
 .tsumtx{flex-basis:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .tnote{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--tquote)}
-.tmore{font:inherit;font-size:14px;font-weight:800;padding:4px 12px 5px;cursor:pointer}
+.tmore{font:inherit;font-size:14px;font-weight:800;padding:6px 2px;cursor:pointer;background:none;border:none;color:var(--taccent);text-decoration:underline;text-underline-offset:3px} /* a link, not another bubble (Jackie, Nov 17) */
 .tarot .tread.tsumfull .ttext{align-self:stretch}
 @media (max-height:520px){.tsumtx{-webkit-line-clamp:2}}
 .tnext{font:inherit;font-size:14px;font-weight:800;padding:5px 12px 6px;cursor:pointer;margin-top:2px}.tfnav{display:flex;gap:8px;flex-wrap:wrap}

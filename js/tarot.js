@@ -99,7 +99,7 @@ function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],op
   for(let i=0;i<4;i++){const b=tBack();b.style.setProperty('--i',i);d.appendChild(b)}
   d.addEventListener('click',e=>{e.stopPropagation();tarotShuffle(d)});
   tr.topic=TOPICS[tarotTopic]?tarotTopic:'all';const col=document.createElement('div');col.className='tdeckcol';const row=document.createElement('div');row.className='ttopics';
-  for(const [id,T] of Object.entries(TOPICS)){const b=document.createElement('button');b.type='button';b.className='tsb ttopic'+(id===tr.topic?' on':'');b.dataset.t=id;b.textContent=T.n;
+  for(const [id,T] of Object.entries(TOPICS)){const b=document.createElement('button');b.type='button';b.className='ttopic'+(id===tr.topic?' on':'');b.dataset.t=id;b.textContent=T.n;
     b.addEventListener('click',e=>{e.stopPropagation();if(tr.step!=='deck')return;sfx('tick');tarotTopic=tr.topic=id;row.querySelectorAll('.ttopic').forEach(x=>x.classList.toggle('on',x===b))});row.appendChild(b)}
   col.append(d,row);st0.appendChild(col);
   tSay('Pick what the reading is about. Then tap the deck to shuffle it.')}
@@ -128,7 +128,9 @@ function tarotMean(i){const x=tr.cards[i];return (x.rev?TAROT_MR[x.c.id]:TAROT_M
 // the cross on the left, and on the right the card you're on, larger, with its name, place and meaning (ten cards with
 // their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway). The three
 // parts are the same height and sit in three columns (Jackie, Nov 17: "beautifully balanced"): the map, the card, the words;
-// once all ten are turned the reading's summary is at the foot of the words column.
+// once all ten are turned the reading's summary is at the foot of the words column. FEWER BUTTONS (Jackie, Nov 17: "Some pages have
+// too many buttons like the Celtic cross"): no Previous and Next, since tapping a card on the map shows it; "Read all of it"
+// is a plain underlined link everywhere; the five things a reading can be about are plain words, with the picked one filled in.
 function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';tBoxMode();const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
   S.pos.forEach((s,i)=>{const slot=document.createElement('div');slot.className='tslot ts'+i;
     const btn=document.createElement('button');btn.type='button';btn.className='tflip';
@@ -155,12 +157,9 @@ function tarotFocus(i){tr.focus=i;const f=tarotEl.querySelector('.tfocus');if(!f
   else{const m=document.createElement('div');m.className='tmn';m.textContent='Ten cards are laid out in the shape of a cross with a column beside it. Turn them over in order from 1 to 10.';txt.appendChild(m)}
   if(next>=0){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent='Turn card '+(next+1);
     nb.addEventListener('click',e=>{e.stopPropagation();const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn)tarotFlip(next,btn)});txt.appendChild(nb)}
-  else if(i>=0){const row=document.createElement('div');row.className='tfnav';
-    for(const [d,label] of [[-1,'‹ Previous'],[1,'Next ›']]){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent=label;
-      nb.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotFocus((i+d+10)%10)});row.appendChild(nb)}txt.appendChild(row)}
   if(tr.sum&&next<0){const b=document.createElement('div');b.className='tfsum';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
-    const note=document.createElement('div');note.className='tnote';
-    const mb=document.createElement('button');mb.type='button';mb.className='tsb tmore';mb.textContent='Read all of it';mb.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(mb);b.append(sp,note);txt.appendChild(b)}
+    const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode('Tap any card in the cross to read it.'));
+    const mb=document.createElement('button');mb.type='button';mb.className='tmore';mb.textContent='Read all of it';mb.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(mb);b.append(sp,note);txt.appendChild(b)}
   f.appendChild(txt)}
 function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
   const show=()=>{tarotFace(i,btn,true);if(tr.k==='cross')tarotFocus(i);if(tr.open.every(Boolean))tarotSum();else tSay(tr.k==='cross'?'':'Turn the next card.')};
@@ -192,7 +191,7 @@ function tarotSumShow(again){tr.again=!!again;if(tr.k==='cross'){tSay('');tarotF
   const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it.':'Tap a card for more about it.')+' '+SPREADS[tr.k].next));
   s.append(sp,note);
   if(tr.k==='one'){const h=document.createElement('div');h.className='tlab';h.textContent=tarotTitle(0);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(0);sp.textContent=tr.pat;s.prepend(h,m)}
-  if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tsb tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(b)}}
+  if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(b)}}
 function tarotSumOpen(){const old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
   const r=document.createElement('div');r.className='tread tsb tsumfull';const txt=document.createElement('div');txt.className='ttext';
   const add=(cls,t,bold)=>{const d=document.createElement('div');d.className=cls;if(bold){const b=document.createElement('b');b.textContent=bold+' ';d.appendChild(b)}d.appendChild(document.createTextNode(t));txt.appendChild(d)};

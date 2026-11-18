@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Fewer buttons in the moon box (Nov 17)
+
+- Jackie: "Some pages have too many buttons like the Celtic cross".
+- **Celtic Cross:** Previous and Next are gone. Tapping a card on the map shows it, and a short line says so. That leaves the close and back buttons, the three spreads, and one link.
+- **"Read all of it"** is a plain underlined link on every screen, where it used to be an outlined bubble.
+- **What the reading is about** (Everything, Work, People, Mind, Home) is five plain words under the deck with the picked one filled in green, where it used to be five outlined bubbles.
+- **Why:** when everything is an outlined bubble, nothing stands out and the page looks busy.
+
 ### One square back button beside the close button (Nov 17)
 
 - Jackie: "there should be a back button more similar to the x button not like a bubble menu".
