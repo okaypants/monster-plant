@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Harsh quotations are left out (Nov 17)
+
+- Asked whether Waite's and Legge's harsh quotes should be hidden too, Jackie chose to hide them.
+- **Tarot:** a card's page leaves out Waite's 1910 words when they speak of death, lies, cruelty, illness, enemies, ruin and the like (about a third of the upright cards and nearly half of the reversed ones). The plain meaning, "Readers today" and the rest of the page stay. Nothing marks the gap.
+- **I Ching:** Legge's English is left out for a few Judgments (43 and 44) and for the rough changing lines (noses cut off, concubines, blood, prisoners). The original Chinese still shows, with one line saying the English is left out. Legge's "there will be evil" stays, since it is his way of saying bad luck.
+- The quotes are picked by a list of words (TAROT_HARSH in js/tarot.js, ICH_HARSH in js/iching.js), so the list can be made longer or shorter.
+- **Why:** the same reason as softening the readings. An old author's bluntness shouldn't land on someone in a cozy game.
+
 ### Readings don't accuse or frighten (Nov 17)
 
 - Jackie: "We don't want the readings to imply anything too negative iykwim lies and betrayal etc".

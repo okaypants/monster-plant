@@ -95,6 +95,15 @@ async def main():
         await pg.click(".tmitem[data-k=iching]")
         await pg.wait_for_selector(".ipick")
         check(await pg.evaluate("()=>!document.querySelector('.itoss')&&ich.lines.join()==='7,8,9,8,6,7'&&document.querySelector('.tnote').textContent.includes('today’s reading')"), "the same day, the box should show today's hexagram again")
+        # a rough line (38, line 3: a nose cut off) and a rough Judgment (44): Legge's words are left out, the Chinese stays
+        await pg.evaluate("()=>{localStorage.setItem('mp-iching',JSON.stringify({day:tarotToday(),lines:[7,7,6,7,8,7]}));tarotMenu()}")
+        await pg.click(".tmitem[data-k=iching]")
+        await pg.wait_for_selector(".ipick")
+        await pg.click(".ipick[data-w='0']")
+        rough = await pg.evaluate("()=>{const t=document.querySelector('.iread').innerText,h=ichingPair(ich.lines).first;return [h.k,t.includes(h.lz[2]),t.includes('nose'),t.includes('its English is left out'),t.includes('James Legge, 1882.')]}")
+        check(rough == [38, True, False, True, True], f"a rough line should show its Chinese without Legge's words: {rough}")
+        await pg.click(".iread .tback")
+        check(await pg.evaluate("()=>ICH_HARSH.test(ICH[43].je)&&!ICH_HARSH.test(ICH[9].je)&&ICH.filter(h=>ICH_HARSH.test(h.je)).length<6"), "only a few Judgments should be left out (44 is one, 10 is not)")
         # no changing lines: one hexagram
         await pg.evaluate("()=>{localStorage.setItem('mp-iching',JSON.stringify({day:tarotToday(),lines:[7,7,7,7,7,7]}));tarotMenu()}")
         await pg.click(".tmitem[data-k=iching]")

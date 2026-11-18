@@ -21,6 +21,9 @@
    ONCE A DAY, like the tarot: today's six tosses are kept (localStorage 'mp-iching') and shown again until tomorrow. */
 const ICHING_KEY='mp-iching';
 const TRIGRAM={'111':'heaven','000':'earth','100':'thunder','010':'water','001':'mountain','011':'wind','101':'fire','110':'lake'};
+// Legge's words are left off a page where they are rough (noses cut off, concubines, blood, prisoners, "a female who is bold"):
+// Jackie, Nov 17. The original Chinese still shows. His "there will be evil" stays; it is how he says bad luck (凶).
+const ICH_HARSH=/\b(nose|noses|buttocks|concubine|blood|bloody|kill\w*|slay\w*|slain|death|die|dies|dying|dead|corpse\w*|robbers?|criminal|culprit\w*|punish\w*|branded|cut off|cutting off|shaving|wounded|wounds|captive\w*|prison\w*|fetter\w*|cangue|ghosts|pregnant|female|widow\w*|perish\w*|destroy\w*)\b/i;
 const ICH_ORD=['first','second','third','fourth','fifth','top'];
 let ICH=null,ichP=null,ich=null;
 function ichingLoad(){return ichP||(ichP=fetch('data/iching.json').then(r=>r.json()).then(j=>{ICH=j;return j}).catch(e=>{ichP=null;throw e}))}
@@ -83,10 +86,10 @@ function ichingRead(w){const P=ichingPair(ich.lines),old=tarotEl.querySelector('
     add('tname',ichingName(h)+', '+h.en);add('tmean',h.m);
     add('tlore',lo===up?cap(lo)+' doubled. The lower three lines and the upper three are the same.':cap(lo)+' below and '+up+' above. Each half of a hexagram is one of eight three-line figures.','The two halves.');
     add('tlore','','The original.',h.jz);
-    add('tlore twaite','“'+h.je+'”','James Legge, 1882.');
+    if(!ICH_HARSH.test(h.je))add('tlore twaite','“'+h.je+'”','James Legge, 1882.');
     if(!w&&P.chg.length){add('tlore','This hexagram is how things stand. The changing lines show what is moving, and the second hexagram shows where it is heading.','How to read it.');
       if(P.chg.length===6&&h.xz)add('tlore twaite','“'+h.xe+'”','All six lines changing.',h.xz);
-      for(const i of P.chg)add('tlore twaite','“'+h.le[i]+'”','The '+ICH_ORD[i]+' line, changing.',h.lz[i])}
+      for(const i of P.chg){if(ICH_HARSH.test(h.le[i]))add('tlore','This line is a rough one in the old book, so its English is left out.','The '+ICH_ORD[i]+' line, changing.',h.lz[i]);else add('tlore twaite','“'+h.le[i]+'”','The '+ICH_ORD[i]+' line, changing.',h.lz[i])}}
     else if(!w)add('tlore','No lines are changing, so this hexagram is the whole reading.','How to read it.');
     else add('tlore','This is what the first hexagram turns into once its changing lines flip. It shows where things are heading.','How to read it.');
     add('tlore','The I Ching, or Book of Changes, was put together in China about 3,000 years ago. Tossing coins for it is at least a thousand years old.','The book.')}

@@ -16,13 +16,16 @@
    with the details for the curious (js/tarotlore.js). Once all are turned, the reading is summed up under the spread (Jackie, Nov 17): each card's short meaning in its
    place, then the traditional count (how many Major Arcana, which suit leads, whether several are reversed). It shows three
    lines at most; "Read all of it" opens the whole summary with every card listed. The card's page (Jackie, Nov 17) has, in order: the plain meaning; Waite's own 1910
-   words for it; how readers read it today; what it would mean the other way up; for court cards and Aces, how that kind of
+   words for it (left out where they are harsh, see TAROT_HARSH); how readers read it today; what it would mean the other way up; for court cards and Aces, how that kind of
    card is read; anything special to that one card; then the picture, the deck, the astrology and the artist.
    ONCE A DAY (Jackie: "you should not be able to re-do it in the same calendar day", by the phone's clock): each spread can be
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
    opening the box again that day shows the same cards face up to read again; a new one comes tomorrow.
    The pictures load only when the box is opened (the back) and when cards are dealt, so the game starts no slower. */
 const MOONBOX={x:1492,y:412,w:102,h:76}; // the same box as the 'moonbox' fidget in js/fidgets.js
+// Waite's words are left off a card's page when they speak of death, lies, cruelty, illness, enemies and the like (Jackie, Nov 17:
+// "We don't want the readings to imply anything too negative"); the plain meaning and the rest of the page stay
+const TAROT_HARSH=/\b(lie|lies|lying|falsehood|false|deceit\w*|decept\w*|decei\w*|treach\w*|disloyal\w*|perfid\w*|betray\w*|cruel\w*|evil|vice|deprav\w*|dishonou?r\w*|scandal|roguery|pillage|death|mortality|destruction|ruin|perdition|perish|disease|sickness|mental|madness|mania|delirium|frenzy|intoxication|violence|malice|bigotry|infidelity|seduction|perver\w*|corruption|disgrace|widowhood|sterility|imposture|duplicity|slander|enem\w*|war|hatred|wrath|calamity|disaster|catastrophe|snares|imprison\w*|usury|virility|sexes|concubine|artifice|trickery|fraud|theft|thief|rogue|spy|spying|chagrin|mortification|suffering|bale|prudery|misery|desolation|affliction|poverty|destitution|profligacy|debauch\w*|voluptuous\w*|fatality|downfall)\b/i;
 const TAROT_REV=.35,TAROT_KEY='mp-tarot'; // the chance a card comes up reversed; where today's readings are kept
 const SPREADS={
   one:{name:'Card of the day',next:'A new card of the day comes tomorrow.',pos:[{t:'Today',in:'Today'}]},
@@ -186,7 +189,8 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   // Waite's own words (1910), how readers read it today, and what it would mean the other way up (Jackie, Nov 17)
   const say=(k,v,cls)=>{const d=document.createElement('div');d.className='tlore'+(cls?' '+cls:'');const b=document.createElement('b');b.textContent=k+' ';d.append(b,document.createTextNode(v));txt.appendChild(d)};
   const w=x.rev?x.c.wr:x.c.wu;
-  if(w)say('A. E. Waite, 1910.','“'+w+'”','twaite');else say('A. E. Waite, 1910.','Waite gives no reversed meaning for this card. Upright he writes “'+x.c.wu+'”','twaite');
+  if(TAROT_HARSH.test(w||x.c.wu)){} // his harsher passages are left out (Jackie, Nov 17)
+  else if(w)say('A. E. Waite, 1910.','“'+w+'”','twaite');else say('A. E. Waite, 1910.','Waite gives no reversed meaning for this card. Upright he writes “'+x.c.wu+'”','twaite');
   if(TAROT_M[x.c.id])say('Readers today.',TAROT_M[x.c.id]+(x.rev?' That is how they read it upright. Reversed, many take the same thing as blocked, delayed or overdone.':''),'tmodern');
   say(x.rev?'If it were upright.':'If it were reversed.',x.rev?x.c.u:x.c.r,'tother');
   const num=+x.c.id.slice(1);
