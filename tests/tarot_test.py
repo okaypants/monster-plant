@@ -62,7 +62,7 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "0_menu.png"))
         await pg.click(".tmitem[data-k=charts]")
         check(await pg.evaluate("()=>!!document.querySelector('.chwrap')"), "Charts on the menu should open the charts")
-        await pg.click(".tspick.thome")
+        await pg.click(".tbk")
         check(await pg.evaluate("()=>!!document.querySelector('.tmenu')&&!document.querySelector('.chwrap')"), "Moon box in the top row should go back to the menu")
         await pg.click(".tmitem[data-k=tarot]")
         check(await pg.evaluate("()=>!!tarotEl&&!!document.querySelector('.tdeck')"), "Tarot on the menu should open the deck")
@@ -112,8 +112,9 @@ async def main():
         check(await pg.evaluate("()=>TAROT.every(c=>TAROT_M[c.id]&&c.wu)&&Object.keys(TAROT_X).every(k=>TAROT.some(c=>c.id===k))"), "every card needs Waite's words and a reading for today")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "4_read.png"))
-        await pg.click(".tback")
+        await pg.click(".tbk")
         check(await pg.evaluate("()=>!document.querySelector('.tread')"), "back to the spread")
+        check(await pg.evaluate("()=>!!document.querySelector('.tspread')&&!document.querySelector('.tmenu')&&!document.querySelector('.tbk').hidden"), "the back button should close a card's page first, not leave the spread")
         # once a day: the same three come back face up, no deck; the button is ticked
         await pg.click(".tarot .tx")
         await pg.mouse.click(x, y)
@@ -165,7 +166,7 @@ async def main():
         check(full.startswith("Celtic Cross") and "ou are surrounded by" in full and all(n in full for n in names), f"the whole summary should list all ten cards: {full[:200]}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "6b_summary.png"))
-        await pg.click(".tsumfull .tback")
+        await pg.click(".tbk")
         # the next day, a new reading
         await pg.evaluate("()=>{const s=JSON.parse(localStorage.getItem(TAROT_KEY));s.day='2000-01-01';localStorage.setItem(TAROT_KEY,JSON.stringify(s))}")
         await pg.click(".tarot .tx")

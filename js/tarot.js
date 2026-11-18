@@ -57,12 +57,15 @@ function tarotDone(k){const d=tarotLog().done[k];return d?d.map(([id,rev])=>({c:
 function tarotKeep(k,cards,topic){const s=tarotLog();s.done[k]=cards.map(x=>[x.c.id,x.rev?1:0]);s.topic=s.topic||{};s.topic[k]=topic||'all';try{localStorage.setItem(TAROT_KEY,JSON.stringify(s))}catch(e){}}
 function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl=document.createElement('div');tarotEl.className='screen tarot';
-  tarotEl.innerHTML='<div class="tbox tsb tspop"><button type="button" class="tsb tx" aria-label="Close">×</button><div class="tpick"></div><div class="tstage"></div><div class="tsay"></div></div>';
+  tarotEl.innerHTML='<div class="tbox tsb tspop"><button type="button" class="tsb tx" aria-label="Close">×</button><button type="button" class="tsb tbk" aria-label="Back">‹</button><div class="tpick"></div><div class="tstage"></div><div class="tsay"></div></div>';
   tarotEl.addEventListener('click',e=>{if(e.target===tarotEl)closeTarot()});
   tarotEl.querySelector('.tx').addEventListener('click',e=>{e.stopPropagation();closeTarot()});
+  // BACK (Jackie, Nov 17: "a back button more similar to the x button not like a bubble menu"): a square button beside the close
+  // button. It closes a card's or hexagram's page if one is open; otherwise it goes back to the box's menu. Hidden on the menu.
+  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');tarotMenu()});
   ui.appendChild(tarotEl);tarotMenu()}
 // THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
-// choices, each a big button with a picture, its name and one line. "Moon box" at the left of the top row comes back here.
+// choices, each a big button with a picture, its name and one line. The back button beside the close button comes back here.
 const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'}];
 function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmicon';
   if(k==='tarot'){const b=tarotImg('back');d.appendChild(b)}
@@ -80,14 +83,12 @@ function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
 function tSay(t){const s=tarotEl&&tarotEl.querySelector('.tsay');if(s)s.textContent=t}
 function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');return b}
-// the top row: "Moon box" (back to the menu), then the three spread buttons while in the tarot; each shows today's reading if it's been done
+// the top row: the three spread buttons while in the tarot (the back button beside the close button goes to the menu); each shows today's reading if it's been done
 // which layout the box is in (Jackie, Nov 17: no big empty gaps): the card of the day sits large beside its words ('tone1');
 // the Celtic Cross and the charts fill the whole height ('tfull'); everything else is one group in the middle of the box
-function tBoxMode(){if(!tarotEl||!tr)return;const b=tarotEl.querySelector('.tbox'),st=tStage();b.classList.toggle('tone1',tr.k==='one'&&tr.cards.length>0);
+function tBoxMode(){if(!tarotEl||!tr)return;const b=tarotEl.querySelector('.tbox'),st=tStage();tarotEl.querySelector('.tbk').hidden=tr.k==='menu';b.classList.toggle('tone1',tr.k==='one'&&tr.cards.length>0);
   st.classList.toggle('tfull',tr.k==='charts'||(tr.k==='cross'&&tr.cards.length>0))}
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBoxMode();
-  const h=document.createElement('button');h.type='button';h.className='tsb tspick thome';h.dataset.k='menu';h.textContent='‹ Moon box';
-  h.addEventListener('click',e=>{e.stopPropagation();if(tr.step==='shuffling')return;sfx('tick');tarotMenu()});p.appendChild(h);
   if(!SPREADS[tr.k])return;
   for(const [k,s] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tspick'+(k===tr.k?' on':'');b.dataset.k=k;
     b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}}
@@ -197,8 +198,7 @@ function tarotSumOpen(){const old=tarotEl.querySelector('.tread');if(old)old.rem
   const add=(cls,t,bold)=>{const d=document.createElement('div');d.className=cls;if(bold){const b=document.createElement('b');b.textContent=bold+' ';d.appendChild(b)}d.appendChild(document.createTextNode(t));txt.appendChild(d)};
   add('tname',SPREADS[tr.k].name);add('tmean',tr.story);add('tlore',tr.pat);
   tr.cards.forEach((x,i)=>add('tlore',tarotMean(i),tarotTitle(i)+'.'));add('tlore',SPREADS[tr.k].next);
-  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
-  r.append(txt,back);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
+  r.append(txt);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
 // 4. the zoom: the card big, with its meaning and the details for the curious (js/tarotlore.js): what is in the picture,
 // its place in the deck, its sign or planet in the old system, and how it was made
 function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');
@@ -219,6 +219,5 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   if(x.c.id[0]!=='M'&&num===1)say('How to read it.','An Ace is the root of its suit. Readers take it as a seed or a first chance.','thow');
   if(TAROT_X[x.c.id])say('Special to this card.',TAROT_X[x.c.id],'tspecial');
   for(const [k,v] of tarotLore(x.c)){const d=document.createElement('div');d.className='tlore';const b=document.createElement('b');b.textContent=k+'. ';d.append(b,document.createTextNode(v));txt.appendChild(d)}
-  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
-  r.append(big,txt,back);r.addEventListener('click',e=>e.stopPropagation());
+  r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
   tarotEl.querySelector('.tbox').appendChild(r)}

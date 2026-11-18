@@ -135,7 +135,8 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tarot{z-index:51;/* above the game's speech bubbles, name tags and the two corner buttons, which used to cover the edges of the box (Jackie, Nov 17) */overflow:hidden;--tcloth:#fbf7ef;--tpanel:#ffffff;--ttext:#1d1a18;--taccent:#c4155c;--tsub:#16795a;--tquote:#5d5753;--tbtn:#ffffff;--tbtnink:#1d1a18;--ton:#c4155c;--tonink:#ffffff;--tedge:#1d1a18}
 .tarot .tsb::before{background:var(--tedge);box-shadow:var(--ts-sx) var(--ts-sy) 0 var(--tedge)}.tarot button.tsb{--bg:var(--tbtn);color:var(--tbtnink)}
 .tarot .tbox{position:relative;--bg:var(--tcloth);color:var(--ttext);width:min(760px,100%);height:min(560px,100%);flex:none;box-sizing:border-box;padding:16px 18px 30px;/* the words at the bottom sit clear of the edge (Jackie, Nov 17) */display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px}
-.tarot .tx{position:absolute;left:10px;top:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;z-index:3;padding:0}
+.tarot .tx,.tarot .tbk{position:absolute;left:10px;top:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;z-index:3;padding:0}
+.tarot .tbk{left:58px;font-size:36px;line-height:1;padding-bottom:6px}.tarot .tbk[hidden]{display:none}
 /* SPACING (Jackie, Nov 17: "I really dislike this spacing"): the top row stays at the top; the picture and its words are one
    group, 12px apart, in the middle of what is left, with the empty room split evenly above and below. Nothing is pinned
    to the bottom on its own. The Celtic Cross and the charts fill the height (.tfull). */
@@ -164,7 +165,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tlab{font-size:15px;font-weight:800;color:var(--taccent);white-space:nowrap}
 .tflip.tturn .tcard{scale:.15 1}.tflip.tturn2 .tcard{scale:.6 1}
 .tagain{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;color:var(--ts-ink)}
-.tarot .tread{position:absolute;inset:10px;--bg:var(--tpanel);display:flex;gap:18px;align-items:center;padding:14px 18px 14px 62px;/* clear of the close button, which used to sit on the picture's corner */box-sizing:border-box;z-index:2;color:var(--ttext)}
+.tarot .tread{position:absolute;inset:10px;--bg:var(--tpanel);display:flex;gap:18px;align-items:center;padding:14px 18px 14px 110px;/* clear of the close and back buttons */box-sizing:border-box;z-index:2;color:var(--ttext)}
 .tbig{height:100%;max-height:440px;aspect-ratio:72/124;image-rendering:pixelated;image-rendering:crisp-edges;flex:none}
 .ttext{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;overflow:auto;max-height:100%;text-align:left}
 .tname{font-size:22px;font-weight:800;color:var(--taccent)}.twhere{font-size:15px;font-weight:800;color:var(--tsub)}
@@ -173,7 +174,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 @media (max-height:520px){.tarot .tspick{font-size:14px;padding:4px 9px 5px}.chname{font-size:18px}.chs{font-size:15px}.tarot .tbox{padding:10px 12px 22px}.tsay{font-size:15px}.tcard{height:min(46vh,210px)}.tdeck{height:calc(min(46vh,210px) + 18px);width:calc(min(46vh,210px)*72/124 + 18px)}.tpile{height:calc(min(46vh,210px) + 10px);width:calc(min(46vh,210px)*72/124 + 12px)}.tname{font-size:19px}.tmean{font-size:16px}}
 @media (prefers-reduced-motion:reduce){.tdeck.tshuf .tcard{animation:none}}
 /* the three spreads along the top; the Celtic Cross: a cross of six (the second card laid across the first) and a column of four */
-.tpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 46px}
+.tpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 98px;min-height:34px}
 .tspick{font:inherit;font-size:15px;font-weight:800;padding:5px 12px 6px;cursor:pointer}.tarot .tspick.on{--bg:var(--ton);color:var(--tonink)}
 .tspread.tcross{--ch:min(15vh,104px);display:grid;gap:0 4px;grid-template-columns:repeat(3,calc(var(--ch)*72/124 + 6px)) 16px calc(var(--ch)*72/124);grid-template-rows:repeat(8,calc(var(--ch)/2 + 2px));align-items:center;justify-items:center}
 .tcross .tcard{height:var(--ch)}.tcross .tslot{position:relative;gap:0}
@@ -221,7 +222,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .izh{font-size:26px;font-weight:700;line-height:1.1}.iname{font-size:16px;font-weight:800;color:var(--taccent)}
 .iarrow{font-size:30px;font-weight:800;color:var(--tsub)}
 .iorig{font-size:18px;font-weight:700;font-style:normal;color:var(--ttext)}
-.tarot .tread.iread{gap:26px}.tarot .tread.iread .ihex{margin-left:10px}
+.tarot .tread.iread{gap:26px}.tarot .tread.iread .ihex{margin-left:0}
 @media (max-height:520px){.ihex{--il:10px}.icoin{width:56px;height:56px}.izh{font-size:22px}.iname{font-size:15px}}
 @media (prefers-reduced-motion:reduce){.icoin.ispin{animation:none}}
 /* what the reading is about: five small buttons under the deck (Jackie, Nov 17) */
@@ -238,7 +239,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 /* the zoom's details */
 .tlore{font-size:15px;font-weight:600;line-height:1.35}.tlore.twaite{color:var(--tquote);font-style:italic}.tlore.twaite b{font-style:normal}.tlore b{font-weight:800;color:var(--tsub)}
 .tarot .tread .tback{position:absolute;right:12px;top:10px;align-self:auto}
-.tarot .tread .ttext{padding-right:74px;padding-bottom:16px}
+.tarot .tread .ttext{padding-right:8px;padding-bottom:16px}
 @media (max-height:520px){.tthree .tcard{height:min(28vh,190px)}.tspread.tthree{margin-top:4px}.tone .tcard{height:min(38vh,230px)}.tbox.tone1 .tone .tcard{height:min(64vh,340px)}.tbox.tone1 .tsay .tlab{font-size:19px}.tbox.tone1 .tsay .tmn{font-size:16px}.tmn{font-size:14px}.tcrosswrap{--H:min(70vh,440px)}.tfsum .tsumtx{-webkit-line-clamp:2}.tfsum{margin-top:2px;padding-top:8px}.tftext{gap:6px}.tfocus .tlab{font-size:15px}}
 /* birth charts (js/charts.js): the people along the left, a chart card that scrolls */
 .chwrap{display:flex;gap:14px;width:100%;height:100%;min-height:0;align-items:stretch}

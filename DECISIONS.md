@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### One square back button beside the close button (Nov 17)
+
+- Jackie: "there should be a back button more similar to the x button not like a bubble menu".
+- The "‹ Moon box" pill in the tab row and the "Back" pill on a card's or hexagram's page are gone. A square ‹ button, the same size and look as the × button, sits right beside it. It closes a page if one is open; otherwise it goes back to the box's menu. It is hidden on the menu itself.
+- **Why:** going back is the same kind of control as closing, so it should look like one, and the tab row is now only the three spreads.
+
 ### The moon box's spacing: one group in the middle (Nov 17)
 
 - Jackie, with a picture of the card of the day (a small card near the top, its meaning under it, then a wide gap, then the reading pinned to the bottom): "I really dislike this spacing and similar please review".

@@ -84,11 +84,11 @@ async def main():
         check(all(k in t for k in ["The two halves.", "The original.", "James Legge, 1882.", "How to read it.", "The third line, changing.", "The fifth line, changing.", "The book."]) and page["jz"] in t and page["je"] in t and page["l3"] in t and page["e5"] in t and "The second line" not in t, f"the hexagram's page should have the original, Legge's words and the two changing lines: {t!r}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "4_page.png"))
-        await pg.click(".iread .tback")
+        await pg.click(".tbk")
         await pg.click(".ipick[data-w='1']")
         t2 = await pg.evaluate("()=>document.querySelector('.iread').innerText")
         check("turns into" in t2 and "changing." not in t2, f"the second hexagram's page should say what it is, with no changing lines: {t2!r}")
-        await pg.click(".iread .tback")
+        await pg.click(".tbk")
         # the same day: the same reading, no coins
         await pg.click(".tarot .tx")
         await pg.mouse.click(x, y)
@@ -102,7 +102,7 @@ async def main():
         await pg.click(".ipick[data-w='0']")
         rough = await pg.evaluate("()=>{const t=document.querySelector('.iread').innerText,h=ichingPair(ich.lines).first;return [h.k,t.includes(h.lz[2]),t.includes('nose'),t.includes('its English is left out'),t.includes('James Legge, 1882.')]}")
         check(rough == [38, True, False, True, True], f"a rough line should show its Chinese without Legge's words: {rough}")
-        await pg.click(".iread .tback")
+        await pg.click(".tbk")
         check(await pg.evaluate("()=>ICH_HARSH.test(ICH[43].je)&&!ICH_HARSH.test(ICH[9].je)&&ICH.filter(h=>ICH_HARSH.test(h.je)).length<6"), "only a few Judgments should be left out (44 is one, 10 is not)")
         # no changing lines: one hexagram
         await pg.evaluate("()=>{localStorage.setItem('mp-iching',JSON.stringify({day:tarotToday(),lines:[7,7,7,7,7,7]}));tarotMenu()}")
@@ -115,7 +115,7 @@ async def main():
         await pg.wait_for_selector(".ipick")
         await pg.click(".ipick[data-w='0']")
         check(await pg.evaluate("()=>{const t=document.querySelector('.iread').innerText;return t.includes('All six lines changing.')&&t.includes(ICH[0].xz)&&document.querySelectorAll('.iname')[1].textContent==='2. Kūn, Earth'}"), "six changing solid lines should turn Heaven into Earth and show the text for that")
-        await pg.click(".iread .tback")
+        await pg.click(".tbk")
         # the next day: the coins are back
         await pg.evaluate("()=>{const s=JSON.parse(localStorage.getItem('mp-iching'));s.day='2000-01-01';localStorage.setItem('mp-iching',JSON.stringify(s));tarotMenu()}")
         await pg.click(".tmitem[data-k=iching]")

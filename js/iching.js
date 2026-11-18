@@ -93,5 +93,4 @@ function ichingRead(w){const P=ichingPair(ich.lines),old=tarotEl.querySelector('
     else if(!w)add('tlore','No lines are changing, so this hexagram is the whole reading.','How to read it.');
     else add('tlore','This is what the first hexagram turns into once its changing lines flip. It shows where things are heading.','How to read it.');
     add('tlore','The I Ching, or Book of Changes, was put together in China about 3,000 years ago. Tossing coins for it is at least a thousand years old.','The book.')}
-  const back=document.createElement('button');back.type='button';back.className='tsb tback';back.textContent='Back';back.addEventListener('click',e=>{e.stopPropagation();sfx('tick');r.remove()});
-  r.append(txt,back);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
+  r.append(txt);r.addEventListener('click',e=>e.stopPropagation());tarotEl.querySelector('.tbox').appendChild(r)}
