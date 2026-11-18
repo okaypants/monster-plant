@@ -51,7 +51,7 @@ function ichingDraw(faces){const st0=tStage();st0.innerHTML='';const row=documen
   for(let i=0;i<3;i++)coins.appendChild(ichingCoin(faces?faces[i]:0));
   const b=document.createElement('button');b.type='button';b.className='tsb itoss';b.textContent=ich.lines.length?'Toss again ('+(ich.lines.length+1)+' of 6)':'Toss the coins';
   b.addEventListener('click',e=>{e.stopPropagation();ichingToss()});side.append(coins,b);row.append(fig,side);st0.appendChild(row);
-  if(!ich.lines.length)tSay('Toss three coins six times. Each toss draws one line, from the bottom up.')}
+  if(!ich.lines.length)tSayNote('Toss three coins six times. Each toss draws one line, from the bottom up.','The I Ching, or Book of Changes, was put together in China about 3,000 years ago. Tossing coins for it is at least a thousand years old.')}
 // one toss: three coins, each 2 (writing) or 3 (plain); faces can be given (tests)
 function ichingToss(faces){if(!ich||ich.busy||ich.lines.length>=6)return;sfx('paper');const f=faces||[0,1,2].map(()=>tarotRand(2)?3:2),sum=f[0]+f[1]+f[2];ich.busy=true;
   const land=()=>{if(!tarotEl||!tr||tr.k!=='iching')return;ich.busy=false;ich.lines.push(sum);sfx('tick');

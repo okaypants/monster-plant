@@ -68,6 +68,7 @@ async def main():
         spreads = await pg.evaluate("()=>[...document.querySelectorAll('.tspreads .tmitem')].map(b=>b.dataset.k)")
         check(spreads == ["one", "three", "cross"] and not await pg.evaluate("()=>!!document.querySelector('.tdeck')||!!document.querySelector('.tspick')"), f"Tarot on the menu should open the three spreads to choose from: {spreads}")
         await pg.evaluate("()=>capClear()")
+        check("Pamela Colman Smith" in await pg.evaluate("()=>document.querySelector('.tsay').textContent"), "the artist should be named once, on the screen of spreads")
         await pg.screenshot(path=os.path.join(OUT, "0b_spreads.png"))
         await pg.click(".tmitem[data-k=three]")
         check(await pg.evaluate("()=>!!tarotEl&&!!document.querySelector('.tdeck')&&!document.querySelector('.tspick')"), "choosing Three cards should open the deck, with no other spreads in the top row")

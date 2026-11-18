@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The artist and the book are each named once (Nov 17)
+
+- Jackie, after both notes came off the pages: "Yeah find a single place for that and the iching".
+- The tarot's artist (Pamela Colman Smith, London, 1909, her initials in a corner of each picture) is a small line under the three spreads on the choose-a-spread screen.
+- The I Ching's age (about 3,000 years, coins for at least a thousand) is a small line under the coins before the first toss.
+- **Why:** each is worth saying once, at the door, and not on every page.
+
 ### No book note on every hexagram (Nov 17)
 
 - Jackie: "The book note at the end of every I Ching thing is also redundant".

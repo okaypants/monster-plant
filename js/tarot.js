@@ -82,6 +82,9 @@ function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySel
 function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
 function tSay(t){const s=tarotEl&&tarotEl.querySelector('.tsay');if(s)s.textContent=t}
+// a line of words with a smaller note under it (the one place the tarot's artist and the I Ching's age are told: Jackie, Nov 17)
+function tSayNote(t,note){const s=tarotEl&&tarotEl.querySelector('.tsay');if(!s)return;s.innerHTML='';if(t){const m=document.createElement('span');m.className='tsaymain';m.textContent=t;s.appendChild(m)}
+  const n=document.createElement('div');n.className='tnote';n.textContent=note;s.appendChild(n)}
 function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');return b}
 // which layout the box is in (Jackie, Nov 17: no big empty gaps): the card of the day sits large beside its words ('tone1');
 // the Celtic Cross and the charts fill the whole height ('tfull'); everything else is one group in the middle of the box
@@ -98,7 +101,7 @@ function tarotChoose(){tr={k:'spreads',step:'spreads',cards:[],open:[]};tarotTab
   for(const [k,S] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=k;
     const n=document.createElement('b');n.textContent=S.name+(tarotDone(k)?' ✓':'');const d=document.createElement('span');d.className='tmd';d.textContent=SPREAD_SAY[k];b.append(tarotSpreadIcon(k),n,d);
     b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotStart(k)});m.appendChild(b)}
-  st0.appendChild(m);tSay('')}
+  st0.appendChild(m);tSayNote('','Pamela Colman Smith drew all 78 cards in London in 1909. Her initials are in a corner of each picture.')}
 // the top row. In the Celtic Cross it steps through the ten cards: "Turn card 3" while they are being turned, then Previous
 // card and Next card. Everywhere else in the tarot it is empty (the charts put their people there, js/charts.js).
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBoxMode();

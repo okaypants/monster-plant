@@ -55,7 +55,7 @@ async def main():
         await pg.wait_for_selector(".itoss")
         check(await pg.locator(".icoin").count() == 3 and await pg.locator(".imain .iline.iempty").count() == 6, "the I Ching should open on three coins and six empty lines")
         say = await pg.evaluate("()=>document.querySelector('.tsay').textContent")
-        check("question" not in say.lower() and "six times" in say, f"it should say how to toss, with no question asked: {say}")
+        check("question" not in say.lower() and "six times" in say and "3,000 years ago" in say, f"it should say how to toss, with no question asked: {say}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "1_coins.png"))
         # a real tap, then five tosses with the faces chosen: 7, then 8 9 8 6 7 -> 1 0 1 0 0 1, lines 3 and 5 changing
