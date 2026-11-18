@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The tarot leans on the modern reading, with Waite underneath (Nov 17)
+
+- Jackie, after Waite's harsh quotes were hidden: "I mean it can includes Waite's wording but the overall reading should lean toward modern interpretation."
+- The meaning under each card, at the top of its page and in the summary is now how readers read the card today, upright or reversed (js/tarotread.js). A reversed card is read the modern way, as the upright meaning blocked, turned inward, overdone or ending, so the Ten of Swords reversed is "Recovery, and the worst being over."
+- Waite's 1910 words are back on every card's page, harsh ones included, followed by "Waite in plain words". This replaces the hiding of his quotes in the entry below. The I Ching still leaves out Legge's rough lines.
+- **Why:** Waite's meanings are the source, but many are odd or bleak to a reader now. The modern reading is the one people know and it is kinder.
+
 ### Harsh quotations are left out (Nov 17)
 
 - Asked whether Waite's and Legge's harsh quotes should be hidden too, Jackie chose to hide them.
