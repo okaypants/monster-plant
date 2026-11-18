@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Everything you can touch in the room does something of its own (Nov 17)
+
+- Jackie: "everything in the room, other than like surfaces and things like shelves and stuff, that is touchable or clickable, is interactive in some way. So if it's like a container, it needs to be filled with stuff that we can fuck with. Otherwise, we need to replace it if that's just too much. So like the snail moving doesn't really work because of how it is inside of the bookshelf ... Not everything has to be super involved. It can just be like a little micro interaction, kind of like the leaves".
+- **Already real** (unchanged): window and curtains, both lamps, the armchair, the carafe, SNACKS, every book, the sampler, the radio, the moon box, the desk drawers (files), the snow globe, the vines and the shelf plant, the ammonite's dust, the cat and the windowsill.
+- **Containers, now with something in them:** the lidded jar on the left bookcase spills buttons that bounce along its shelf. The red box on the trinket shelf is a music box that plays one of five short tunes with notes floating up. The lockbox opens the journal at Keep it safe. The milk crate holds the records, so a tap puts the next one on the radio.
+- **Things that only bounced or swung, now with one thing of their own:** the butterfly frame lets a butterfly out; the moon panel says what tonight's real moon is; the armillary says which sign the sun is in; the cat's picture gives hearts; the flower painting drops petals; the glass throws drops.
+- **Things that did nothing:** the stool and the desk chair now wobble.
+- **The snail** no longer hops up into the shelf above. It trundles a short way along its own shelf and back, further if you wind it more than once. It has not been replaced: a replacement needs new room art in every light.
+- **Still bounce-only on purpose:** the pillow, the pet bed and the book stack (furniture the cat and monsters use, and the stack's books open the reading tray).
+- All of it is code-drawn pixels on the room art's own grid and whole-pixel moves, with no new art.
+- **Why:** a thing you can tap and get nothing from feels broken, and a box should have something in it.
+
 ### A birthday can't be in the future (Nov 17)
 
 - Jackie: "When filling out my birth year it lets me pick the future".
