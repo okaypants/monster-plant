@@ -103,5 +103,4 @@ function tarotLore(c,now){const L=TAROT_LORE[c.id]||{},out=[],maj=c.id[0]==='M',
   out.push(['In astrology',sky]);
   if(L.n)out.push(['About this card',L.n]);
   else if(!maj&&num>=2&&num<=10)out.push(['About this card','Before this deck, most number cards showed only a pattern of '+SUIT[c.id[0]].n.toLowerCase()+'. Smith gave every number card a full scene.']);
-  out.push(['The artist','Pamela Colman Smith drew all 78 cards in London in 1909. Her initials are in a corner of each picture.']);
   return out}

@@ -110,7 +110,7 @@ async def main():
         read = await pg.evaluate("()=>document.querySelector('.tread').innerText")
         want = await pg.evaluate("()=>[tr.cards[1].c.n,TAROT_MR[tr.cards[1].c.id]]")
         check(read.startswith(want[0] + ", reversed (the present)") and want[1] in read, f"the zoom starts with the card and its place: {read!r} {want}")
-        check(all(k in read for k in ["In the picture.", "In the deck.", "In astrology.", "The artist."]), f"the zoom should have the card's details: {read!r}")
+        check(all(k in read for k in ["In the picture.", "In the deck.", "In astrology."]) and "The artist." not in read, f"the zoom should have the card's details, without the artist note on every card: {read!r}")
         parts = await pg.evaluate("()=>{const c=tr.cards[1].c;return [c.wr||c.wu,TAROT_MR[c.id],c.r,TAROT_M[c.id]]}")
         check("A. E. Waite, 1910." in read and parts[0] in read and "Waite in plain words." in read and parts[2] in read and "If it were upright." in read and parts[3] in read, f"the card's page should have Waite's own words, the same in plain words and the upright meaning: {read!r}")
         check(await pg.evaluate("()=>TAROT.every(c=>TAROT_MR[c.id]&&TAROT_M[c.id])&&tarotMean(1)===TAROT_MR[tr.cards[1].c.id]&&tarotMean(0)===(tr.cards[0].rev?TAROT_MR:TAROT_M)[tr.cards[0].c.id]"), "the meaning under a card should be the modern reading, upright or reversed")

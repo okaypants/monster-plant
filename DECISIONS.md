@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No artist note on every card (Nov 17)
+
+- Jackie: "The artist note is redundant at the end of every single tarot card".
+- The line "Pamela Colman Smith drew all 78 cards in London in 1909..." is gone from the card pages. She is still credited in the README and in the code.
+- **Why:** the same sentence on all 78 pages is noise.
+
 ### Choose a spread on its own screen; the Celtic Cross's top row steps through its cards (Nov 17)
 
 - Jackie: "Actually the top menu in Celtic cross should be next or previous card - there should be no other tarot spreads in that menu since ppl can go back".
