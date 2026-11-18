@@ -62,7 +62,7 @@ function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl.querySelector('.tx').addEventListener('click',e=>{e.stopPropagation();closeTarot()});
   // BACK (Jackie, Nov 17: "a back button more similar to the x button not like a bubble menu"): a square button beside the close
   // button. It closes a card's or hexagram's page if one is open; otherwise it goes back to the box's menu. Hidden on the menu.
-  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');tarotMenu()});
+  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');if(SPREADS[tr.k])tarotChoose();else tarotMenu()});
   ui.appendChild(tarotEl);tarotMenu()}
 // THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
 // choices, each a big button with a picture, its name and one line. The back button beside the close button comes back here.
@@ -77,21 +77,34 @@ function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySel
   const m=document.createElement('div');m.className='tmenu';
   for(const it of BOX_MENU){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=it.k;
     const n=document.createElement('b');n.textContent=it.n;const d=document.createElement('span');d.className='tmd';d.textContent=it.d;b.append(tarotMenuIcon(it.k),n,d);
-    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotStart(tarotPick);else if(it.k==='charts')tarotStart('charts');else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
+    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotChoose();else if(it.k==='charts')tarotStart('charts');else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
   st0.appendChild(m);tSay('')}
 function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
 function tSay(t){const s=tarotEl&&tarotEl.querySelector('.tsay');if(s)s.textContent=t}
 function tBack(cls){const b=tarotImg('back');b.className='tcard '+(cls||'');return b}
-// the top row: the three spread buttons while in the tarot (the back button beside the close button goes to the menu); each shows today's reading if it's been done
 // which layout the box is in (Jackie, Nov 17: no big empty gaps): the card of the day sits large beside its words ('tone1');
 // the Celtic Cross and the charts fill the whole height ('tfull'); everything else is one group in the middle of the box
 function tBoxMode(){if(!tarotEl||!tr)return;const b=tarotEl.querySelector('.tbox'),st=tStage();tarotEl.querySelector('.tbk').hidden=tr.k==='menu';b.classList.toggle('tone1',tr.k==='one'&&tr.cards.length>0);
   st.classList.toggle('tfull',tr.k==='charts'||(tr.k==='cross'&&tr.cards.length>0))}
+// CHOOSE A SPREAD (Jackie, Nov 17: "there should be no other tarot spreads in that menu since ppl can go back"): Tarot on the
+// box's menu opens this screen of three big buttons, one for each spread, ticked if it's been read today. The back button
+// comes back here from a spread, and goes from here to the box's menu.
+const SPREAD_SAY={one:'One card for today.',three:'The past, the present and the future.',cross:'Ten cards, the full reading.'};
+function tarotSpreadIcon(k){const d=document.createElement('div');d.className='tmicon tmi'+k;const n=k==='one'?1:k==='three'?3:10;
+  for(let i=0;i<n;i++){const c=document.createElement('i');c.className='tmc tmc'+i;d.appendChild(c)}return d}
+function tarotChoose(){tr={k:'spreads',step:'spreads',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='';const old=tarotEl.querySelector('.tread');if(old)old.remove();
+  const m=document.createElement('div');m.className='tmenu tspreads';
+  for(const [k,S] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=k;
+    const n=document.createElement('b');n.textContent=S.name+(tarotDone(k)?' ✓':'');const d=document.createElement('span');d.className='tmd';d.textContent=SPREAD_SAY[k];b.append(tarotSpreadIcon(k),n,d);
+    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotStart(k)});m.appendChild(b)}
+  st0.appendChild(m);tSay('')}
+// the top row. In the Celtic Cross it steps through the ten cards: "Turn card 3" while they are being turned, then Previous
+// card and Next card. Everywhere else in the tarot it is empty (the charts put their people there, js/charts.js).
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBoxMode();
-  if(!SPREADS[tr.k])return;
-  for(const [k,s] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tspick'+(k===tr.k?' on':'');b.dataset.k=k;
-    b.textContent=s.name+(tarotDone(k)?' ✓':'');b.addEventListener('click',e=>{e.stopPropagation();if(k===tr.k||(tr.step==='shuffling'))return;sfx('tick');tarotStart(k)});p.appendChild(b)}}
+  if(tr.k!=='cross'||!tr.cards.length)return;const next=tr.open.indexOf(false),mk=(label,fn)=>{const b=document.createElement('button');b.type='button';b.className='tsb tspick tnext';b.textContent=label;b.addEventListener('click',e=>{e.stopPropagation();fn()});p.appendChild(b)};
+  if(next>=0)mk('Turn card '+(next+1),()=>{const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn&&!tr.open[next])tarotFlip(next,btn)});
+  else for(const [d,label] of [[-1,'‹ Previous card'],[1,'Next card ›']])mk(label,()=>{sfx('tick');tarotFocus(((tr.focus<0?0:tr.focus)+d+10)%10)})}
 function tarotStart(k){if(k==='charts'){chartsShow();return}tarotPick=k;const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
 // 1. the deck, waiting (no question is asked: Jackie, Nov 17)
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
@@ -129,7 +142,7 @@ function tarotMean(i){const x=tr.cards[i];return (x.rev?TAROT_MR[x.c.id]:TAROT_M
 // their readings don't fit side by side on a phone, and a reader goes through them one at a time anyway). The three
 // parts are the same height and sit in three columns (Jackie, Nov 17: "beautifully balanced"): the map, the card, the words;
 // once all ten are turned the reading's summary is at the foot of the words column. FEWER BUTTONS (Jackie, Nov 17: "Some pages have
-// too many buttons like the Celtic cross"): no Previous and Next, since tapping a card on the map shows it; "Read all of it"
+// too many buttons like the Celtic cross"): Previous card and Next card are the top row (tarotTabs), and tapping a card on the map shows it too; "Read all of it"
 // is a plain underlined link everywhere; the five things a reading can be about are plain words, with the picked one filled in.
 function tarotLay(up){const k=tr.k,S=SPREADS[k],st0=tStage();st0.innerHTML='';tBoxMode();const row=document.createElement('div');row.className='tspread t'+k;tr.focus=-1;
   S.pos.forEach((s,i)=>{const slot=document.createElement('div');slot.className='tslot ts'+i;
@@ -155,10 +168,9 @@ function tarotFocus(i){tr.focus=i;const f=tarotEl.querySelector('.tfocus');if(!f
     const h=document.createElement('div');h.className='tlab';h.textContent=(i+1)+'. '+tarotTitle(i);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(i);
     txt.append(h,m);const pin=SPREADS.cross.pos[i].in;if(pin.includes(',')){const w=document.createElement('div');w.className='tfwhere';w.textContent=pin.replace(/^[^,]*, /,'This place shows ')+'.';txt.appendChild(w)}}
   else{const m=document.createElement('div');m.className='tmn';m.textContent='Ten cards are laid out in the shape of a cross with a column beside it. Turn them over in order from 1 to 10.';txt.appendChild(m)}
-  if(next>=0){const nb=document.createElement('button');nb.type='button';nb.className='tsb tnext';nb.textContent='Turn card '+(next+1);
-    nb.addEventListener('click',e=>{e.stopPropagation();const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn)tarotFlip(next,btn)});txt.appendChild(nb)}
+  tarotTabs();
   if(tr.sum&&next<0){const b=document.createElement('div');b.className='tfsum';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
-    const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode('Tap any card in the cross to read it.'));
+    const note=document.createElement('div');note.className='tnote';
     const mb=document.createElement('button');mb.type='button';mb.className='tmore';mb.textContent='Read all of it';mb.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(mb);b.append(sp,note);txt.appendChild(b)}
   f.appendChild(txt)}
 function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
@@ -178,7 +190,7 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
   const T=TOPICS[tr.topic]||TOPICS.all;
   if(T.s){const mine=C.filter(x=>x.c.id[0]===T.s).map(x=>x.c.n),sn=SUIT[T.s].n,join=a=>a.length===1?a[0]:a.slice(0,-1).join(', ')+' and '+a[a.length-1];
-    t+=n===1?(mine.length?' '+sn+' are the suit that speaks most about '+T.of+'.':''):mine.length?' '+join(mine.map(m=>m.replace(/^The /,'the ').replace(/^(\w+ of )/,'the $1')))+' '+(mine.length===1?'is':'are')+' from '+sn+', the suit that speaks most about '+T.of+', so look there first.':' None of the cards are '+sn+', the suit that speaks most about '+T.of+'.'}
+    const cap1=w=>w[0].toUpperCase()+w.slice(1);t+=n===1?(mine.length?' '+sn+' are the suit that speaks most about '+T.of+'.':''):mine.length?' '+cap1(join(mine.map(m=>m.replace(/^The /,'the ').replace(/^(\w+ of )/,'the $1'))))+' '+(mine.length===1?'is':'are')+' from '+sn+', the suit that speaks most about '+T.of+', so look there first.':' None of the cards are '+sn+', the suit that speaks most about '+T.of+'.'}
   tr.pat=t.trim();const st=tarotStory();tr.story=T.lead?T.lead+st[0].toLowerCase()+st.slice(1):st;tr.sum=tr.story+' '+tr.pat;tarotSumShow(again);
   tarotTabs()}
 // the reading in a few sentences: each card's short meaning (js/tarotread.js) put in its place in the spread

@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Choose a spread on its own screen; the Celtic Cross's top row steps through its cards (Nov 17)
+
+- Jackie: "Actually the top menu in Celtic cross should be next or previous card - there should be no other tarot spreads in that menu since ppl can go back".
+- Tarot on the box's menu now opens a screen with three big buttons (Card of the day, Three cards, Celtic Cross), each with a small drawing of how it is laid and a tick if it has been read today. The row of spread tabs at the top of every tarot screen is gone.
+- The back button goes one step at a time: a card's page, then the spread, then the three spreads, then the box's menu.
+- In the Celtic Cross the top row is "Turn card 3" while the cards are being turned, then "‹ Previous card" and "Next card ›". The other spreads have an empty top row.
+- This puts Previous and Next back after the entry below took them out of the words column. They are the only buttons in that row now.
+- **Why:** the top row should be about the screen you are on. Switching spreads is a step back, and the back button does that.
+
 ### Charts with fewer boxes, and space between everything (Nov 17)
 
 - Jackie: "Make sure there's space between all items. Some pages have too many buttons like the Celtic cross and the charts page (with the sun moon boxes plus the selection menu)".

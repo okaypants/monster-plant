@@ -230,6 +230,16 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tdeckcol{display:flex;flex-direction:column;align-items:center;gap:12px}.ttopics{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .ttopic{font:inherit;font-size:15px;font-weight:800;padding:7px 13px;cursor:pointer;background:none;border:none;border-radius:999px;color:var(--ttext)}.tarot .ttopic.on{background:var(--tsub);color:#fff}
 @media (max-height:520px){.tdeckcol{gap:8px}.tdeckcol .tcard{height:min(38vh,210px)}.tdeckcol .tdeck{height:calc(min(38vh,210px) + 18px);width:calc(min(38vh,210px)*72/124 + 18px)}.ttopic{font-size:14px;padding:6px 11px}}
+/* choosing a spread: little outlined cards drawn as the spread is laid (one, three in a row, the cross and its column) */
+.tmc{position:absolute;box-sizing:border-box;width:20px;height:34px;border:2px solid var(--tedge);border-radius:3px;background:var(--tpanel)}
+.tmicon.tmione,.tmicon.tmithree,.tmicon.tmicross{position:relative;width:118px;height:min(30vh,120px)}
+.tmione .tmc{width:44px;height:76px;left:37px;top:calc(50% - 38px)}
+.tmithree .tmc{width:30px;height:52px;top:calc(50% - 26px)}.tmithree .tmc0{left:5px}.tmithree .tmc1{left:44px}.tmithree .tmc2{left:83px}
+.tmicross .tmc{width:15px;height:26px}
+.tmicross .tmc0{left:33px;top:calc(50% - 13px)}.tmicross .tmc1{left:27px;top:calc(50% - 8px);width:26px;height:15px;background:var(--taccent)}.tmicross .tmc2{left:33px;top:calc(50% - 44px)}.tmicross .tmc3{left:33px;top:calc(50% + 18px)}
+.tmicross .tmc4{left:10px;top:calc(50% - 13px)}.tmicross .tmc5{left:56px;top:calc(50% - 13px)}
+.tmicross .tmc6{left:92px;top:calc(50% + 31px)}.tmicross .tmc7{left:92px;top:calc(50% + 2px)}.tmicross .tmc8{left:92px;top:calc(50% - 27px)}.tmicross .tmc9{left:92px;top:calc(50% - 56px)}
+@media (max-height:520px){.tmicross .tmc{width:12px;height:20px}.tmicross .tmc1{width:20px;height:12px;left:29px;top:calc(50% - 6px)}.tmicross .tmc0{top:calc(50% - 10px)}.tmicross .tmc2{top:calc(50% - 34px)}.tmicross .tmc3{top:calc(50% + 14px)}.tmicross .tmc4,.tmicross .tmc5{top:calc(50% - 10px)}.tmicross .tmc6{top:calc(50% + 24px)}.tmicross .tmc7{top:calc(50% + 2px)}.tmicross .tmc8{top:calc(50% - 20px)}.tmicross .tmc9{top:calc(50% - 42px)}}
 /* the reading summed up under the spread (Jackie, Nov 17): three lines at most, with a button that opens all of it */
 .tsumtx{flex-basis:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .tnote{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--tquote)}
