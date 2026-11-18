@@ -212,6 +212,10 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .tarot .tread.iread{gap:26px}.tarot .tread.iread .ihex{margin-left:46px}
 @media (max-height:520px){.ihex{--il:10px}.icoin{width:56px;height:56px}.izh{font-size:22px}.iname{font-size:15px}}
 @media (prefers-reduced-motion:reduce){.icoin.ispin{animation:none}}
+/* what the reading is about: five small buttons under the deck (Jackie, Nov 17) */
+.tdeckcol{display:flex;flex-direction:column;align-items:center;gap:12px}.ttopics{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.ttopic{font:inherit;font-size:15px;font-weight:800;padding:5px 12px 6px;cursor:pointer}.tarot .ttopic.on{--bg:var(--tsub);color:#fff}
+@media (max-height:520px){.tdeckcol{gap:8px}.tdeckcol .tcard{height:min(38vh,210px)}.tdeckcol .tdeck{height:calc(min(38vh,210px) + 18px);width:calc(min(38vh,210px)*72/124 + 18px)}.ttopic{font-size:14px;padding:4px 10px 5px}}
 /* the reading summed up under the spread (Jackie, Nov 17): three lines at most, with a button that opens all of it */
 .tsumtx{flex-basis:100%;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .tnote{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--tquote)}

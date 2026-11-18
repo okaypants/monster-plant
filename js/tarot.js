@@ -39,14 +39,22 @@ const SPREADS={
     {t:'Your hopes or fears',in:'Your hopes or fears'},
     {t:'What will come',in:'What will come, how it all turns out'}]}};
 const SUIT={W:{n:'Wands',m:'energy, work and new ventures'},C:{n:'Cups',m:'feelings, love and friendship'},S:{n:'Swords',m:'thoughts, troubles and hard choices'},P:{n:'Pentacles',m:'money, home and everyday things'}};
-let tarotEl=null,tr=null,tarotPick='three';
+// WHAT THE READING IS ABOUT (Jackie, Nov 17: a focal point, "just 1 per category and maybe no love"). No question is asked;
+// before shuffling you may pick one part of life. There are four, one for each suit of the deck, since each suit already
+// speaks for one part of life: Wands for work (what you make and do), Cups for people (the ones in your life), Swords for
+// the mind (thoughts, worries, decisions), Pentacles for home (the place, money and everyday things). "Everything" is no
+// focus at all. The pick opens the summary ("For your work, ...") and the cards of its suit are pointed out as the ones
+// that speak most directly to it, which is how readers use the suits.
+const TOPICS={all:{n:'Everything'},work:{n:'Work',s:'W',lead:'For your work, ',of:'work'},people:{n:'People',s:'C',lead:'With the people in your life, ',of:'the people in your life'},
+  mind:{n:'Mind',s:'S',lead:'In your own mind, ',of:'the mind'},home:{n:'Home',s:'P',lead:'At home, ',of:'home'}};
+let tarotEl=null,tr=null,tarotPick='three',tarotTopic='all';
 function tarotImg(id){const i=new Image();i.src='tarot/'+id+'.png';i.alt='';i.draggable=false;return i}
 function tarotRand(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
 // today, by the phone's own calendar
 function tarotToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function tarotLog(){try{const s=JSON.parse(localStorage.getItem(TAROT_KEY)||'{}');return s.day===tarotToday()?s:{day:tarotToday(),done:{}}}catch(e){return {day:tarotToday(),done:{}}}}
 function tarotDone(k){const d=tarotLog().done[k];return d?d.map(([id,rev])=>({c:TAROT.find(c=>c.id===id),rev:!!rev})).filter(x=>x.c):null}
-function tarotKeep(k,cards){const s=tarotLog();s.done[k]=cards.map(x=>[x.c.id,x.rev?1:0]);try{localStorage.setItem(TAROT_KEY,JSON.stringify(s))}catch(e){}}
+function tarotKeep(k,cards,topic){const s=tarotLog();s.done[k]=cards.map(x=>[x.c.id,x.rev?1:0]);s.topic=s.topic||{};s.topic[k]=topic||'all';try{localStorage.setItem(TAROT_KEY,JSON.stringify(s))}catch(e){}}
 function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl=document.createElement('div');tarotEl.className='screen tarot';
   tarotEl.innerHTML='<div class="tbox tsb tspop"><button type="button" class="tsb tx" aria-label="Close">×</button><div class="tpick"></div><div class="tstage"></div><div class="tsay"></div></div>';
@@ -84,8 +92,12 @@ function tarotStart(k){if(k==='charts'){chartsShow();return}tarotPick=k;const do
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
   const d=document.createElement('button');d.type='button';d.className='tdeck';d.setAttribute('aria-label','Shuffle the deck');
   for(let i=0;i<4;i++){const b=tBack();b.style.setProperty('--i',i);d.appendChild(b)}
-  d.addEventListener('click',e=>{e.stopPropagation();tarotShuffle(d)});st0.appendChild(d);
-  tSay('Tap the deck to shuffle it.')}
+  d.addEventListener('click',e=>{e.stopPropagation();tarotShuffle(d)});
+  tr.topic=TOPICS[tarotTopic]?tarotTopic:'all';const col=document.createElement('div');col.className='tdeckcol';const row=document.createElement('div');row.className='ttopics';
+  for(const [id,T] of Object.entries(TOPICS)){const b=document.createElement('button');b.type='button';b.className='tsb ttopic'+(id===tr.topic?' on':'');b.dataset.t=id;b.textContent=T.n;
+    b.addEventListener('click',e=>{e.stopPropagation();if(tr.step!=='deck')return;sfx('tick');tarotTopic=tr.topic=id;row.querySelectorAll('.ttopic').forEach(x=>x.classList.toggle('on',x===b))});row.appendChild(b)}
+  col.append(d,row);st0.appendChild(col);
+  tSay('Pick what the reading is about. Then tap the deck to shuffle it.')}
 // 2. shuffle (78 cards, each maybe reversed), then cut into three piles
 function tarotShuffle(d){if(tr.step!=='deck')return;tr.step='shuffling';sfx('paper');
   const ids=TAROT.map((c,i)=>i);for(let i=ids.length-1;i>0;i--){const j=tarotRand(i+1);[ids[i],ids[j]]=[ids[j],ids[i]]}
@@ -100,7 +112,7 @@ function tarotCut(){tr.step='cut';const st0=tStage();st0.innerHTML='';const row=
 function tarotDeal(p){if(tr.step!=='cut')return;tr.step='dealt';sfx('paper');const n=tr.deck.length,a=Math.floor(n/3),b=Math.floor(2*n/3);
   const piles=[tr.deck.slice(0,a),tr.deck.slice(a,b),tr.deck.slice(b)];tr.deck=piles[p].concat(piles[(p+1)%3],piles[(p+2)%3]); // the chosen pile goes on top
   tr.cards=tr.deck.slice(0,SPREADS[tr.k].pos.length);tr.cards.forEach(x=>{const i=new Image();i.src='tarot/'+x.c.id+'.png'}); // fetch the faces now
-  tarotKeep(tr.k,tr.cards);tarotLay(false);tSay(tr.cards.length===1?'Tap the card to turn it over.':'Tap each card to turn it over.')}
+  tarotKeep(tr.k,tr.cards,tr.topic);tarotLay(false);tSay(tr.cards.length===1?'Tap the card to turn it over.':'Tap each card to turn it over.')}
 // what's written under a card: its name, then its place in the spread in parentheses ("The Star (the past)"); the card of
 // the day has no place to name (Jackie, Nov 16)
 function tarotRole(i){if(tr.k==='one')return '';const t=SPREADS[tr.k].pos[i].t;return t[0].toLowerCase()+t.slice(1)}
@@ -145,7 +157,7 @@ function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
   if(tsCalm()){show();return}
   btn.classList.add('tturn');setTimeout(()=>{show();btn.classList.remove('tturn');btn.classList.add('tturn2');setTimeout(()=>btn.classList.remove('tturn2'),120)},120)} // a stepped turn: narrow, then the face
 // today's reading, opened again: the same cards, face up
-function tarotShow(k,cards){tr={k,step:'shown',cards,open:cards.map(()=>true)};tarotTabs();tarotLay(true);tarotSum(true)}
+function tarotShow(k,cards){const tp=(tarotLog().topic||{})[k];tr={k,step:'shown',cards,open:cards.map(()=>true),topic:TOPICS[tp]?tp:'all'};tarotTabs();tarotLay(true);tarotSum(true)}
 // the spread as a whole, the traditional way: big cards and the leading suit
 function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==='M').length,cnt={};
   for(const x of C)if(x.c.id[0]!=='M')cnt[x.c.id[0]]=(cnt[x.c.id[0]]||0)+1;
@@ -155,7 +167,10 @@ function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==
   else{t+=maj===n?'All of these cards are Major Arcana, which marks an important time.':maj>=Math.max(2,n*.4)?'Several of these cards are Major Arcana, which marks an important time.':maj===1?'One of these cards is Major Arcana.':maj>1?['','','Two','Three','Four','Five','Six','Seven','Eight','Nine'][maj]+' of these cards are Major Arcana.':'None of these cards are Major Arcana, which points to everyday things.';
     if(top&&top[1]>=Math.max(2,Math.ceil(n*.3)))t+=' Most of the '+(maj?'others':'cards')+' are '+suitIs(top[0])+'.';
     if(rev>=Math.max(2,Math.ceil(n*.4)))t+=' Several cards are reversed, which can mean delays or confusion.'}
-  tr.pat=t;tr.story=tarotStory();tr.sum=tr.story+' '+t;tarotSumShow(again);
+  const T=TOPICS[tr.topic]||TOPICS.all;
+  if(T.s){const mine=C.filter(x=>x.c.id[0]===T.s).map(x=>x.c.n),sn=SUIT[T.s].n,join=a=>a.length===1?a[0]:a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+    t+=n===1?(mine.length?' '+sn+' are the suit that speaks most about '+T.of+'.':''):mine.length?' '+join(mine.map(m=>m.replace(/^The /,'the ').replace(/^(\w+ of )/,'the $1')))+' '+(mine.length===1?'is':'are')+' from '+sn+', the suit that speaks most about '+T.of+', so look there first.':' None of the cards are '+sn+', the suit that speaks most about '+T.of+'.'}
+  tr.pat=t.trim();const st=tarotStory();tr.story=T.lead?T.lead+st[0].toLowerCase()+st.slice(1):st;tr.sum=tr.story+' '+tr.pat;tarotSumShow(again);
   tarotTabs()}
 // the reading in a few sentences: each card's short meaning (js/tarotread.js) put in its place in the spread
 function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1:0]);

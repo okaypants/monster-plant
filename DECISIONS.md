@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A tarot reading can be about one part of life (Nov 17)
+
+- Jackie, asked what a reading should be pointed at, chose an area of life picked before shuffling, "but use more scrutiny in choosing categories just 1 per category and maybe no love".
+- Under the deck are five one-word buttons: **Everything, Work, People, Mind, Home.** Everything is picked to begin with and means no focus. There is no Love.
+- The four come from the deck itself, one per suit, so they don't overlap and nothing is made up: Wands for work (what you make and do), Cups for people, Swords for the mind (thoughts, worries, decisions), Pentacles for home (the place, money, everyday things).
+- The pick opens the summary ("For your work, this reading moves from ...") and the cards of its suit are pointed out as the ones to look at first, or it says none came up. It is kept with the day's reading.
+- **Why:** a reading with nothing to aim at feels vague, and Jackie doesn't want a question. Tying each area to a suit is how readers already use the suits.
+
 ### The tarot leans on the modern reading, with Waite underneath (Nov 17)
 
 - Jackie, after Waite's harsh quotes were hidden: "I mean it can includes Waite's wording but the overall reading should lean toward modern interpretation."
