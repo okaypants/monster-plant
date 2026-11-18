@@ -118,10 +118,13 @@ function chartForm(card){card.innerHTML='';const y=st.you||{};let city=y.place||
     '<label class="chf">City you were born in<input type="text" class="chcity" autocomplete="off" placeholder="Start typing…"></label><div class="chsug"></div>'+
     '<div class="chbtns"><button type="button" class="tsb chsave">Show my chart</button></div>';
   const D=card.querySelector('.chdate'),T=card.querySelector('.chtime'),C=card.querySelector('.chcity'),S=card.querySelector('.chsug');
-  D.value=y.date||'';T.value=y.time||'';C.value=city?cityLabel(city):'';D.max=new Date().toISOString().slice(0,10);
+  D.value=y.date||'';T.value=y.time||'';C.value=city?cityLabel(city):'';const today=tarotToday();D.max=today;D.min='1900-01-01'; // the phone's own date picker doesn't always obey these (iPhone lets you scroll past today), so the date is checked again below
+  const warn=document.createElement('div');warn.className='chnote chwarn';card.querySelector('.chbtns').before(warn);
+  const okDate=()=>{const v=D.value;warn.textContent=!v?'':v>today?'That day hasn’t happened yet. Pick your birthday.':v<D.min?'Pick a year from 1900 on.':'';return !!v&&!warn.textContent};
+  D.addEventListener('change',okDate);D.addEventListener('input',okDate);
   for(const el of [D,T,C])['click','pointerdown','keydown'].forEach(ev=>el.addEventListener(ev,e=>e.stopPropagation()));
   C.addEventListener('input',()=>{city=null;S.innerHTML='';const go=()=>{for(const m of citySearch(C.value)){const b=document.createElement('button');b.type='button';b.className='chpick';b.textContent=cityLabel(m);
       b.addEventListener('click',e=>{e.stopPropagation();city={n:m.n,lat:m.lat,lon:m.lon,tz:m.tz,country:m.country,region:m.region};C.value=cityLabel(m);S.innerHTML=''});S.appendChild(b)}};
     if(CITIES)go();else citiesLoad().then(go).catch(()=>{})});
-  card.querySelector('.chsave').addEventListener('click',e=>{e.stopPropagation();if(!D.value){D.focus();return}sfx('tick');
+  card.querySelector('.chsave').addEventListener('click',e=>{e.stopPropagation();if(!D.value){D.focus();return}if(!okDate()){sfx('tick');return}sfx('tick');
     st.you={date:D.value,time:T.value||null,place:city};save();chartSel='you';chartsDraw()})}

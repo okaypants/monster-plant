@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A birthday can't be in the future (Nov 17)
+
+- Jackie: "When filling out my birth year it lets me pick the future".
+- The form already told the phone that today is the latest date, but an iPhone's date wheel doesn't obey that. The date is now checked when it changes and again on "Show my chart". A future date is not saved, and a line under the form says "That day hasn't happened yet. Pick your birthday." Years before 1900 are refused the same way.
+- **Why:** a chart for a day that hasn't happened is nonsense.
+
 ### A seedling's journal after Start over (Nov 17)
 
 - Jackie, with a picture of a blank journal and an error ("undefined is not an object (evaluating 'q.id')"): "This happens when I open a seedlings journal".
