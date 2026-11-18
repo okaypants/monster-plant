@@ -60,8 +60,10 @@ async def main():
                  ((2026, 5, 20, 14, 0), "midday", "day")]
         for when, ph, room in times:
             await pg.evaluate(AT, list(when))
-            await pg.evaluate("()=>{st.lastMorning=lastRise();__step(.2);}")  # just the time, no new morning here
+            await pg.evaluate("()=>{st.lastMorning=lastRise();st.goldenSaid=null;st.taught={};capClear();__step(.2);}")  # just the time, no new morning here
             r = await now()
+            said = await pg.evaluate("()=>st.goldenSaid===st.day")
+            check(said == (ph == "golden hour"), f"{when}: 'it's golden hour' should be said in golden hour and at no other time ({ph}), said={said}")
             label = f"{when[1]+1}-{when[2]} {when[3]:02d}:{when[4]:02d}"
             check(r["phase"] == ph and r["room"] == room, f"{label}: expected {ph}/{room}, got {r}")
             await pg.screenshot(path=os.path.join(SHOTS, f"{label.replace(':', '')}_{ph.replace(' ', '_')}.png"))

@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### "It's golden hour" only in golden hour (Nov 17)
+
+- Jackie: "The game said 'get out your cameras it's golden hour!' when I started the game over but it's not".
+- The line was said the first time each day that the clock was past the start of golden hour, which also covered dusk, the night and the hours before sunrise. A game started in the evening or at night said it at once. It is now said only during golden hour itself, the hour and a half before sunset.
+- **Why:** it was a bug. The line should be true when it is said.
+
 ### The artist and the book are each named once (Nov 17)
 
 - Jackie, after both notes came off the pages: "Yeah find a single place for that and the iching".

@@ -257,7 +257,7 @@ function plantUpdate(dt){const sp=gameSpeed();quirkMotion(dt);
  growTick(dt); // growing goes on while it sleeps
  if(st.night)return;
  if(!(grow&&grow.id===st.id)){scootTick(dt);quirkTick(dt);} /* mid grow-up it stays put */if(Math.random()<dt*.2)titleCheck();
- if(st.dayT>=.5&&st.goldenSaid!==st.day){st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
+ if(phase(st.dayT)==='golden hour'&&st.goldenSaid!==st.day){ /* only in golden hour itself: it used to say so at dusk, at night and before sunrise too (Jackie, Nov 17) */st.goldenSaid=st.day;tell('Get out your cameras, it\'s golden hour.',{kind:'teach',key:'golden'});}
  const k=dt*sp/60;
  st.needs.thirst=clamp(st.needs.thirst+k*.11/3*(st.glare===2?2:1),0,1); // a third as fast as the calm-down rate (Jackie, Nov 4): at normal speed, gray starts after ~6 min, thirsty ~8 min, fully gray ~12 min; only the little-flame case dries it twice as fast
  if(st.needs.thirst>=.95)st.wasParched=1;if(st.wasParched&&st.needs.thirst<.1&&st.stage>=4){st.wasParched=0;earnPot('kintsugi');}
