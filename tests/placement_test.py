@@ -92,7 +92,7 @@ async def main():
         # 2. a teen from the rug onto the milk crate
         await load([{"id": 1, "stage": 6, "species": 2, "free": {"x": 1000, "y": 900}}])
         check((await where(1))["spot"] == "free", "a teen should start on the floor")
-        await drag(1, (338, 639))
+        await drag(1, (336, 660))
         w = await where(1)
         check(w["spot"] == "crate", f"a teen dragged onto the crate didn't sit there: {w}")
         await shot("teen_on_the_crate.png")
@@ -103,12 +103,12 @@ async def main():
 
         # 3. an adult onto the book stack: too big, it lands on the floor
         await load([{"id": 1, "stage": 8, "species": 0, "free": {"x": 1250, "y": 900}}])
-        await drag(1, (978, 652))
+        await drag(1, (832, 800))
         w = await where(1)
         check(w["spot"] == "free" and w["perch"] is None, f"an adult got onto the book stack: {w}")
 
         # 4. an adult into the armchair: sits there awake
-        await drag(1, (628, 656))
+        await drag(1, (610, 656))
         w = await where(1)
         check(w["spot"] == "chair" and w["inChair"] and w["nap"] <= 0 and w["chairId"] == 1, f"an adult dragged into the armchair isn't sitting there awake: {w}")
         await pg.evaluate("()=>__step(2)")
@@ -124,7 +124,7 @@ async def main():
                     {"id": 2, "stage": 6, "species": 2, "free": {"x": 1200, "y": 900}}])
         w1 = await where(1)
         check(w1["inChair"], f"the napping kid isn't in the armchair: {w1}")
-        await drag(2, (628, 656))
+        await drag(2, (610, 656))
         w2, w1 = await where(2), await where(1)
         check(w2["spot"] == "free" and w1["inChair"], f"the teen displaced the napping kid: teen {w2}, kid {w1}")
 
@@ -132,11 +132,11 @@ async def main():
         await load([{"id": 1, "stage": 4, "species": 6, "place": {"baby": "crate"}},
                     {"id": 2, "stage": 6, "species": 2, "free": {"x": 1200, "y": 900}}])
         check((await where(1))["spot"] == "crate", "the kid should be on the crate")
-        await drag(2, (338, 639))
+        await drag(2, (336, 660))
         w2 = await where(2)
         check(w2["spot"] != "crate", f"two plants on the crate: {w2}")
         # but the book stack is free
-        await drag(2, (978, 652))
+        await drag(2, (832, 800))
         check((await where(2))["spot"] == "books", "a teen dragged onto the free book stack didn't sit there")
         await no_overlap("after the crate / book stack drops")
 
@@ -147,11 +147,11 @@ async def main():
                     {"id": 4, "stage": 4, "species": 9, "place": {"baby": "crate"}, "nap": 999}])
         await no_overlap("the starting room")
         check((await where(4))["inChair"], "kid 4 should be napping in the armchair")
-        await drag(3, (978, 652))  # the book stack: kid 1 is there
+        await drag(3, (832, 800))  # the book stack: kid 1 is there
         w = await where(3)
         check(w["spot"] != "books", f"dropped onto the occupied book stack: {w}")
         await no_overlap("teen dropped on the occupied book stack")
-        await drag(3, (628, 656))  # the armchair: kid 4 naps there
+        await drag(3, (610, 656))  # the armchair: kid 4 naps there
         w = await where(3)
         check(w["spot"] != "chair" and not w["inChair"], f"dropped into the armchair while a kid naps there: {w}")
         await no_overlap("teen dropped on the armchair with a napper")

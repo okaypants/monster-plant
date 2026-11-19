@@ -17,7 +17,7 @@ OUT = os.path.join(SHOTS, "carafe")
 BASE = "s.dayT=.3;s.mode='actions';s.curtain='open';s.giftSeed=1;s.others=[];s.pref='shade';s.needs={thirst:.7,hunger:0,attention:0};"
 PLANTS = {
     "kid": BASE + "s.stage=4;s.species=7;s.place={baby:'books'};",
-    "adult": BASE + "s.stage=8;s.species=3;s.free={x:1100,y:900};",
+    "adult": BASE + "s.stage=8;s.species=3;s.free={x:1340,y:900};",
 }
 SPY = "()=>{if(window._spy)return;window._spy=1;const o=drawCarried;drawCarried=function(...a){window._dc={src:a[0]&&a[0].src.split('/').pop(),x:a[1],y:a[2],flip:!!a[4]};return o.apply(this,a);};}"
 # a finger position that puts the stream's end on the plant, a third of the way down
@@ -56,7 +56,7 @@ async def main():
                 return await pg.evaluate("()=>window._dc")
 
             async def pick_up():
-                await tap(830, 550)  # the carafe on the stool
+                await tap(982, 600)  # the cup under the water cooler's taps
                 check(await pg.evaluate("()=>held.tool") == "can", f"{name}: tapping the carafe didn't pick it up")
 
             for hand in ("right", "left"):
@@ -75,8 +75,8 @@ async def main():
 
                 # away from the plant: the tilt frame, up and to the thumb-free side of the finger; it faces the way it moved
                 await pick_up()
-                dc = await hold_at(400, 300)  # moved left from the stool
-                check(dc and dc["src"] == "carafe_tilt.png", f"{name}/{hand}: not the tilt frame away from the plant: {dc}")
+                dc = await hold_at(400, 300)  # moved left from the water cooler
+                check(dc and dc["src"] == "carry_cup_tilt.png", f"{name}/{hand}: not the tilt frame away from the plant: {dc}")
                 check(dc and dc["flip"], f"{name}/{hand}: moving left, it should face left (mirrored): {dc}")
                 check(dc and dc["y"] < 300 and ((dc["x"] < 400) if hand == "right" else (dc["x"] > 400)),
                       f"{name}/{hand}: carafe not up and to the {'left' if hand == 'right' else 'right'} of the finger: {dc}")
@@ -97,7 +97,7 @@ async def main():
                 dc = await hold_at(aim["x"], aim["y"])
                 if not dc:
                     fails.append(f"{name}/{hand}: nothing carried"); break
-                check(dc and dc["src"] == "carafe_pour.png" and dc["flip"] == mirrored, f"{name}/{hand}: not the {'mirrored ' if mirrored else ''}pour frame over the plant: {dc}")
+                check(dc and dc["src"] == "carry_cup_pour.png" and dc["flip"] == mirrored, f"{name}/{hand}: not the {'mirrored ' if mirrored else ''}pour frame over the plant: {dc}")
                 sp = await pg.evaluate(f"()=>pourPoint({aim['x']},{aim['y']},holdK({aim['x']},{aim['y']}))")
                 check((sp["x"] < dc["x"]) if mirrored else (sp["x"] > dc["x"]), f"{name}/{hand}: the spout is on the wrong side ({sp} vs carafe {dc})")
                 await pg.wait_for_timeout(300)
