@@ -67,13 +67,13 @@ function fidgetPoke(x,y){
    runs back and forth along the floor until it winds down, its key turning all the way (two frames). It stays where it stopped
    until you tap it, which puts it back on its shelf; its cubby is empty while it is out. Whole pixels, frame swaps only.
    Not saved: it is always home when the game opens. */
-const TOY_HOME={x:97,y:438},TOY_FLOOR=806,TOY_L=110,TOY_R=1400,TOY_V=95,TOY_RUN=18,TOY_WIND=1.2,TOY_SWAP=.16;
+const TOY_HOME={x:97,y:438},TOY_FLOOR=812,TOY_L=120,TOY_R=1390,TOY_V=95,TOY_RUN=18,TOY_WIND=1.2,TOY_SWAP=.16;
 const toy={home:true,ph:'home',x:TOY_HOME.x,y:TOY_HOME.y,t:0,dir:1,left:0};
 function toyFrame(){return Math.floor(toy.t/TOY_SWAP)%2?2:1;}
-function toyPic(){return !toy.home?null:toy.ph==='wind'?'toy_r'+toyFrame():'toy';} // in its cubby: as painted, or its key turning while it is wound
+function toyPic(){return !toy.home?null:toy.ph==='wind'?'toy_h'+toyFrame():'toy_h1';} // in its cubby (Jackie, Nov 18: the toy cats from her own sheet, not the one painted into the room); its key turns while it is wound
 function toyWind(){if(toy.ph!=='home')return;toy.ph='wind';toy.t=0;fplay('toy_wind');}
 function toyStep(dt){if(toy.ph==='home'||toy.ph==='stopped')return;const f0=toyFrame();toy.t+=dt;if(toyFrame()!==f0&&toy.ph!=='wind')sfx('tick');
- if(toy.ph==='wind'){if(toyFrame()!==f0)sfx('tick');if(toy.t>=TOY_WIND){toy.ph='down';toy.home=false;toy.x=TOY_HOME.x;toy.y=TOY_HOME.y+30;toy.t=0;}}
+ if(toy.ph==='wind'){if(toyFrame()!==f0)sfx('tick');if(toy.t>=TOY_WIND){toy.ph='down';toy.home=false;toy.x=TOY_HOME.x+12;toy.y=TOY_HOME.y+60;toy.t=0;}}
  else if(toy.ph==='down'){toy.y+=TOY_V*dt;if(toy.y>=TOY_FLOOR){toy.y=TOY_FLOOR;toy.ph='run';toy.dir=1;toy.left=TOY_RUN;}}
  else if(toy.ph==='run'){toy.x+=toy.dir*TOY_V*dt;toy.left-=dt;if(toy.x>=TOY_R){toy.x=TOY_R;toy.dir=-1;}else if(toy.x<=TOY_L){toy.x=TOY_L;toy.dir=1;}
   if(toy.left<=0){toy.ph='stopped';tell('The wind-up cat has run down. Tap it to put it back on its shelf.',{kind:'info',key:'toyDown'});}}}

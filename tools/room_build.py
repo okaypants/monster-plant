@@ -8,7 +8,7 @@
 
 Writes into the repo root:
   room2.png        the room, window panes see-through, the wind-up cat's cubby empty
-  obj_*.png        the few things that are their own pictures (the wind-up cat cut from the room, the cup, the changing faces)
+  obj_*.png        the few things that are their own pictures (the wind-up cat's frames, the cup, the changing faces)
   carry_cup_*.png  the cup as it is carried
   curtains2.png    the closed curtains (a stand-in until they are drawn)
   sash2.png        the bars of the window's bottom row, for when it slides up
@@ -54,7 +54,6 @@ def build_room():
     back=np.isin(lab,list(edge))
     toy=np.dstack([reg,np.where(back,0,255)]).astype(np.uint8)
     ys,xs=np.where(toy[...,3]>0);toy=toy[ys.min():ys.max()+1,xs.min():xs.max()+1]
-    Image.fromarray(toy,'RGBA').save(os.path.join(ROOT,'obj_toy.png'),optimize=True)
     meta={'toy':[int(x0+xs.min()),int(y0+ys.min()),int(toy.shape[1]),int(toy.shape[0])]}
     a[y0:y1,x0:x1]=bg
     out=np.dstack([a.astype(np.uint8),alpha]);Image.fromarray(out,'RGBA').save(os.path.join(ROOT,'room2.png'),optimize=True)
@@ -65,7 +64,8 @@ def build_room():
 CUTS={'trunk_open':(1,465,286,254,207,.42),
  'ball2':(2,273,62,149,177,.46),'ball3':(2,486,62,150,177,.46),'ball4':(2,697,62,150,177,.46),'ball5':(2,908,62,150,177,.46),
  'moon1':(2,58,298,177,169,.56),'moon2':(2,285,298,178,169,.56),'moon3':(2,505,298,178,169,.56),'moon4':(2,727,298,178,168,.56),'moon5':(2,948,298,178,169,.56),
- 'toy_r1':(2,41,516,170,153,.5),'toy_r2':(2,253,514,169,155,.5),'toy_l1':(2,448,516,169,153,.5),'toy_l2':(2,648,514,169,155,.5),'toy_d1':(2,880,514,105,160,.5),'toy_d2':(2,1070,516,106,158,.5),
+ 'toy_h1':(2,41,516,170,153,.56),'toy_h2':(2,253,514,169,155,.56), # in its cubby: as big as the cubby allows
+ 'toy_r1':(2,41,516,170,153,.82),'toy_r2':(2,253,514,169,155,.82),'toy_l1':(2,448,516,169,153,.82),'toy_l2':(2,648,514,169,155,.82),'toy_d1':(2,880,514,105,160,.82),'toy_d2':(2,1070,516,106,158,.82), # out of it: bigger (Jackie, Nov 18)
  'cup':(2,1221,305,135,151,.3),'coin':(2,681,735,147,150,.14)}
 def cut(sheet,x,y,w,h,sc,pad=6):
     a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,200)

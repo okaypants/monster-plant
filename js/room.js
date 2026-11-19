@@ -5,12 +5,12 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'toy toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
-/* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (cut
-   out of the room so its cubby can be empty), the cup you carry, and the faces that change: the moon dial's phase, the crystal
+const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+/* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (the one
+   painted into the room is taken out, so its cubby can be empty, and the toy cats from Jackie's sheet are used), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'toy',x:97,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
+const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
  {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
