@@ -46,7 +46,7 @@ async def main():
             await pg.evaluate(SAVE % extra)
             await pg.reload(wait_until="load")
             await pg.click(".screen button")
-            await pg.evaluate("()=>{__step(10);capClear();CAP.log.length=0;const c=CAT_SPOTS.bed;Object.assign(cat,{spot:'bed',x:c.x,y:c.y,sc:c.sc,state:'sleep',pose:'curl',nap:9999,path:null});}")
+            await pg.evaluate("()=>{SEASON_OVERRIDE='summer';__step(10);capClear();CAP.log.length=0;const c=CAT_SPOTS.bed;Object.assign(cat,{spot:'bed',x:c.x,y:c.y,sc:c.sc,state:'sleep',pose:'curl',nap:9999,path:null});}")
 
         async def shot(name):
             c = await pg.evaluate("(c)=>{const r=cv.getBoundingClientRect();return {x:r.left+c.x*S,y:r.top+c.y*S,width:c.width*S,height:c.height*S};}", CLIP)
@@ -62,10 +62,10 @@ async def main():
         ups = [s["up"] for s in allsteps]
         opening = [s for s in allsteps if s["t"] < 1]
         check(opening and all(s.get("none") for s in opening), "the paw should wait until the window is open")
-        check(all(isinstance(u, int) for u in ups) and max(ups) == 100, f"the sash should rise one row (100 px) in whole pixels: {ups[:12]}")
-        check(all(s["up"] == 100 for s in steps if 1 <= s["t"] <= 7), "the sash should stay up while the paw is in")
+        check(all(isinstance(u, int) for u in ups) and max(ups) == 89, f"the sash should rise one row (89 px) in whole pixels: {ups[:12]}")
+        check(all(s["up"] == 89 for s in steps if 1 <= s["t"] <= 7), "the sash should stay up while the paw is in")
         check(ups[:10] == sorted(ups[:10]) and ups[-8:] == sorted(ups[-8:], reverse=True), f"the sash should slide up, then down: {ups[:10]} … {ups[-8:]}")
-        check(all(s["R"] - s["pic"] < 572 for s in steps if s["up"] == 100 and s["R"] - s["pic"] < 572) and all(s["up"] == 100 for s in steps if s["R"] - s["pic"] < 572),
+        check(all(s["R"] - s["pic"] < 566 for s in steps if s["up"] == 89 and s["R"] - s["pic"] < 566) and all(s["up"] == 89 for s in steps if s["R"] - s["pic"] < 566),
               "the paw should only be in the room while the window is open")
         check(steps and all(isinstance(s["R"], int) and float(s["y"]).is_integer() for s in steps), "the paw should only move in whole pixels")
         ins = [s for s in steps if 1 <= s["t"] < 4]

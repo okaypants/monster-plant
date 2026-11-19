@@ -132,7 +132,7 @@ addEventListener('resize',()=>setTimeout(placeTray,50));
 const BOOK_ZONES=[
  {x:4,y:140,w:208,h:86,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row */,{x:4,y:246,w:134,h:86,books:['songs','stars','letters','field']},
  {x:4,y:354,w:46,h:84,books:['riddles','proverbs','recipes','ghost']},{x:4,y:456,w:88,h:90,books:['fairy','songs','ghost','stars']},{x:4,y:558,w:200,h:88,books:['almanac','field','recipes','letters']},
- {x:138,y:664,w:72,h:76,books:['stars','riddles','proverbs','ghost']}/* beside the lockbox */,
+ {x:138,y:664,w:72,h:76,books:['stars','riddles','grimoire','ghost']}/* beside the lockbox */,
  {x:1482,y:316,w:158,h:78,books:['nonsense','riddles','songs','proverbs']}/* right bookcase, the full row */,
  {x:1482,y:498,w:60,h:64,books:['letters','proverbs','almanac','fairy']},{x:1546,y:498,w:92,h:64,books:['field','recipes','grimoire','nonsense']}]; // a monster or the cat sitting there is tapped first
 function bookZone(x,y){return BOOK_ZONES.find(r=>inR(x,y,r))||null;}

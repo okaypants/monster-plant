@@ -82,11 +82,14 @@ function dbgPaw(){if(!st.pawWait){const A=allRaw().find(q=>q.stage>=8&&!q.goDest
 const SASH_PIC=img('sash2.png'),SASH={x:316,y:423,w:256,h:81,rise:89}; // sash2.png: the bars of the bottom row only (tools/room_build.py); it rises one row of panes
 let sashKey='',sashBar=null,sashGap=null;
 function sashUp(){if(!paw)return 0;const t=paw.t,O=PAW_OPEN,e=paw.end;return Math.round(SASH.rise*clamp(Math.min(t,e-t)/O,0,1));}
-// the gap is the view outside with no bars; the bars are the lit room's own, moved up. Both are cut to the sash's shape, so the curtains and armchair in front never change
-function sashBuild(rm){const mk=()=>{const c=document.createElement('canvas');c.width=SASH.w;c.height=SASH.h;return c;};
- sashBar=mk();let x=sashBar.getContext('2d');x.drawImage(rm,SASH.x,SASH.y,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);
- sashGap=mk();x=sashGap.getContext('2d');x.drawImage(cv,SASH.x,SASH.y-SASH.rise,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.fillStyle=SKY[timeKey()];x.fillRect(0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);}
+// the gap is the view outside with no bars (taken from the canvas each frame before the room is drawn over it, so a drifting leaf
+// or the moon shows through); the bars are the lit room's own, moved up. Both are cut to the sash's shape, so the curtains and the
+// armchair in front never change
+const sashCv=()=>{const c=document.createElement('canvas');c.width=SASH.w;c.height=SASH.h;return c;};
+function sashGrab(){if(!sashUp()||!ok(SASH_PIC))return;sashGap=sashGap||sashCv();const x=sashGap.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,SASH.w,SASH.h);
+ x.drawImage(cv,SASH.x,SASH.y,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);} // called in draw() once the view is on the canvas, before the room
+function sashBuild(rm){sashBar=sashCv();const x=sashBar.getContext('2d');x.drawImage(rm,SASH.x,SASH.y,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);}
 // called in draw() right after the room, before anything stands in front of it
-function drawSash(key,rm){const up=sashUp();if(!up||!rm||!ok(SASH_PIC)){sashKey='';return;}
+function drawSash(key,rm){const up=sashUp();if(!up||!rm||!ok(SASH_PIC)||!sashGap){sashKey='';return;}
  const k=key+seasonNow();if(k!==sashKey||!sashBar){sashBuild(rm);sashKey=k;}
  g.save();pawClip();g.imageSmoothingEnabled=false;g.drawImage(sashGap,SASH.x,SASH.y);g.drawImage(sashBar,SASH.x,SASH.y-up);g.restore();}

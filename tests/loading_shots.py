@@ -11,7 +11,7 @@ from playwright.async_api import async_playwright
 from smoke_test import PORT, SHOTS, serve
 
 OUT = os.path.join(SHOTS, "loading")
-STATE = "()=>({cover:!!document.getElementById('loading'),title:!!document.querySelector('.screen'),left:LOAD_LEFT,room:ok(ROOMS.day),px:g.getImageData(835,471,1,1).data[3]})"
+STATE = "()=>({cover:!!document.getElementById('loading'),title:!!document.querySelector('.screen'),left:LOAD_LEFT,room:roomReady(),px:g.getImageData(835,471,1,1).data[3]})"
 
 
 async def main():
@@ -30,7 +30,7 @@ async def main():
             async def hold(route):
                 await gate.wait()
                 await route.continue_()
-            await pg.route("**/room_day.png", hold)
+            await pg.route("**/room2.png", hold)
             await pg.goto(f"http://localhost:{PORT}/index.html", wait_until="commit")
             await pg.wait_for_function("()=>typeof LOAD_GO!=='undefined'&&LOAD_GO")  # all the code has run
             left = -1

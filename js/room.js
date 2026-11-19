@@ -31,7 +31,7 @@ function sceneDay(){if(!roomReady())return null;const key=THINGS.map(t=>thingMov
    warmer, in three steps around it (bands, as the room's pixels are steps); its shade glows. Shut curtains dim the daytime a touch. */
 const GRADE={day:null,golden:'rgb(255,206,158)',night:'rgb(92,104,178)'},GRADE_SHUT={day:'rgb(226,220,208)',golden:'rgb(232,190,150)',night:'rgb(86,98,170)'};
 const LAMP_K={day:.0,golden:.55,night:1}; // how much a lamp's glow shows: nothing to add in daylight
-const GLOWS={lamp:{x:230,y:430,r:330,shade:[230,368,94,86]},desk:{x:1330,y:520,r:270,shade:[1318,446,50,44]},wall:{x:980,y:250,r:230,shade:[980,200,52,42]}}; // key = the lamp's on/off field in the save
+const GLOWS={lamp:{x:236,y:600,r:400,shade:[230,368,94,86]},desk:{x:1320,y:610,r:350,shade:[1318,446,50,44]},wall:{x:980,y:400,r:300,shade:[980,200,52,42]}}; // key = the lamp's on/off field in the save
 function lampsKey(){return LAMPS.map(p=>lampOn(p)?'1':'0').join('');}
 const litCvs=new Map();
 // any whole-room layer (the room itself, the closed curtains) lit for right now
@@ -39,7 +39,7 @@ function litLayer(name,src,srcKey){if(!src)return null;const tk=timeKey(),shut=s
  if(e&&e.key===key)return e.c;const c=e?e.c:mkCv(),x=c.getContext('2d');x.globalCompositeOperation='source-over';x.globalAlpha=1;x.clearRect(0,0,W,H);x.drawImage(src,0,0);
  const tint=(shut?GRADE_SHUT:GRADE)[tk];if(tint){x.globalCompositeOperation='multiply';x.fillStyle=tint;x.fillRect(0,0,W,H);}
  for(const p of LAMPS){if(!lampOn(p))continue;const G=GLOWS[p.key];if(!G)continue;const k=LAMP_K[tk];
-  if(k>0)for(const[rr,a]of[[1,.3],[.68,.38],[.4,.5]]){x.save();x.beginPath();x.ellipse(G.x,G.y,G.r*rr,G.r*rr*.82,0,0,Math.PI*2);x.clip();x.globalCompositeOperation='source-over';x.globalAlpha=a*k;x.drawImage(src,0,0);
+  if(k>0)for(const[rr,a]of[[1,.34],[.7,.42],[.42,.55]]){x.save();x.beginPath();x.ellipse(G.x,G.y,G.r*rr,G.r*rr,0,0,Math.PI*2);x.clip();x.globalCompositeOperation='source-over';x.globalAlpha=a*k;x.drawImage(src,0,0);
    x.globalCompositeOperation='multiply';x.globalAlpha=a*k*.5;x.fillStyle='rgb(255,232,190)';x.fillRect(G.x-G.r,G.y-G.r,G.r*2,G.r*2);x.restore();}
   const sm=name==='room'?shadeMask(p.key,src):null;if(sm){const[sx,sy,sw,sh]=G.shade;x.globalAlpha=1;x.globalCompositeOperation='source-over';x.drawImage(sm.day,sx-sw,sy-sh);
    x.globalCompositeOperation='lighter';x.globalAlpha=tk==='day'?.14:.24;x.drawImage(sm.warm,sx-sw,sy-sh);x.globalAlpha=1;}}
@@ -108,7 +108,7 @@ const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
    Scale falls in a straight line toward the horizon: 100% at the front of the rug (918), smallest at the back wall (748).
    HORIZON is set so the armchair (766) comes out at the 66% Jackie OK'd for plants asleep in it. Measured from room_day.png. */
 const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
-const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:800/* its own row of the floor */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
+const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:766/* sized like the armchair and the desk beside it, as the book stack was */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
 function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
 function spotDepth(k){return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
 /* NEVER SHARING A SPACE (Jackie, Nov 4): "I never want them sharing a space or on top of each other." A plant may only go where its sprite
@@ -164,6 +164,7 @@ function curtainOver(b){if(curK<.01)return;g.save();g.beginPath();g.rect(b.x-4,b
 let dtDraw=.016,lastDraw=performance.now();
 function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/1000);lastDraw=nowD;g.clearRect(0,0,W,H);const tk=timeKey(),lk=lampsKey(),shut=st.curtain==='closed'&&curK>.98;
  if(!shut){drawWindowView(tk);drawFallingLeaves(tk);} // the sky, tonight's moon, autumn leaves drifting past (js/seasonal.js): all behind the glass
+ if(st.started&&typeof sashGrab==='function')sashGrab(); // the view through the bottom row, before the room covers it (js/paw.js)
  const rm=sceneLit();if(rm)g.drawImage(rm,0,0);
  if(st.started&&typeof drawSash==='function')drawSash(tk+lk,rm); // the lower sash slides up for Sloth's paw (js/paw.js)
  fidgetDrawProps(rm);

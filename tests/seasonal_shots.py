@@ -1,10 +1,10 @@
-"""Seasonal items (Jackie, Nov 15): autumn leaves past the window, the pumpkin (autumn) and the tree (winter) on the book stack.
+"""Seasonal items (Jackie, Nov 15): autumn leaves past the window, the pumpkin (autumn) and the tree (winter) on the crate.
 
 Run from the repository root:  python3 tests/seasonal_shots.py
-Pictures to tests/screenshots/seasonal/ (plus sheet.png, the book stack and window up close).
+Pictures to tests/screenshots/seasonal/ (plus sheet.png, the crate and window up close).
 Checks: falling leaves show only through the glass (never on the bars, curtains or armchair), only in autumn and never at night;
 the pumpkin is out in autumn with the same face day and night, rocks when tapped and settles back; the tree is out in winter, sways and its
-ornaments swing when tapped; nothing seasonal in spring or summer; a plant on the book stack gets the stack (the item makes room);
+ornaments swing when tapped; nothing seasonal in spring or summer; a plant on the crate gets the stack (the item makes room);
 every frame is drawn on whole pixels. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -14,14 +14,14 @@ from smoke_test import PORT, SHOTS, VIRTUAL_TIME, serve
 OUT = os.path.join(SHOTS, "seasonal")
 SAVE = ("()=>{const s=fresh();Object.assign(s,{started:true,stage:8,species:3,id:1,day:3,dayT:.15,night:false,giftSeed:1,mode:'actions',curtain:'open',"
         "catTrust:.1,free:{x:1250,y:918},name:'Zib Wigglebottom'});localStorage.setItem(KEY,JSON.stringify(s));}")
-STACK = (850, 440, 1100, 680)  # the book stack and what sits on it, for close-ups
+STACK = (210, 420, 460, 690)  # the crate and what sits on it, for close-ups
 WINDOW = (300, 80, 590, 530)
 # draw the room twice without time passing: with the leaves, then without; return how many changed pixels fall outside the glass
 LEAF_CHECK = """()=>{sLeafNext=1e15;const L=[];for(let i=0;i<6;i++)L.push({im:LEAVES[i],x:10+i*38,y:30+i*60,vy:0,a:0,w:0,ph:0});sLeaves=L;
  draw();const a=g.getImageData(GLASS_AT.x,GLASS_AT.y,GLASS_W,GLASS_H).data;sLeaves=[];draw();const b=g.getImageData(GLASS_AT.x,GLASS_AT.y,GLASS_W,GLASS_H).data;
- const c=document.createElement('canvas');c.width=GLASS_W;c.height=GLASS_H;const x=c.getContext('2d');x.drawImage(GLASS,0,0);const m=x.getImageData(0,0,GLASS_W,GLASS_H).data;
- let inside=0,outside=0;for(let i=0;i<a.length;i+=4){if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]){if(m[i+3])inside++;else outside++;}}sLeafNext=0;return [inside,outside];}"""
-STACK_PX = "()=>Array.from(g.getImageData(910,430,124,225).data).filter((v,i)=>i%4!==3)"  # just the pumpkin or the tree
+ const c=document.createElement('canvas');c.width=GLASS_W;c.height=GLASS_H;const x=c.getContext('2d');x.drawImage(ROOM2,-GLASS_AT.x,-GLASS_AT.y);const m=x.getImageData(0,0,GLASS_W,GLASS_H).data;
+ let inside=0,outside=0;for(let i=0;i<a.length;i+=4){if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]){if(!m[i+3])inside++;else outside++;}}sLeafNext=0;return [inside,outside];}"""
+STACK_PX = "()=>Array.from(g.getImageData(274,438,124,225).data).filter((v,i)=>i%4!==3)"  # just the pumpkin or the tree
 
 
 def diff(a, b):
@@ -64,14 +64,14 @@ async def main():
 
         # autumn daytime: leaves fall through the glass only
         await at("autumn")
-        check(await pg.evaluate("()=>seasonItem()") == "pumpkin", "autumn: no pumpkin on the book stack")
+        check(await pg.evaluate("()=>seasonItem()") == "pumpkin", "autumn: no pumpkin on the crate")
         inside, outside = await pg.evaluate(LEAF_CHECK)
         check(inside > 500, f"autumn: the leaves barely show through the glass ({inside} px)")
         check(outside == 0, f"autumn: {outside} leaf pixels outside the glass (bars, curtains or armchair)")
         n = await pg.evaluate("()=>{let most=0;for(let i=0;i<240;i++){__step(.25);most=Math.max(most,sLeaves.length);}return most;}")
         check(1 <= n <= 2, f"autumn: {n} leaves at once in a minute (expected one or two)")
         await pg.evaluate("()=>{sLeaves=[{im:LEAVES[0],x:40,y:120,vy:0,a:0,w:0,ph:0},{im:LEAVES[2],x:150,y:260,vy:0,a:0,w:0,ph:0}];sLeafNext=1e15;__step(.05);}")
-        await shot("autumn_day", "Autumn day: the pumpkin on the book stack, leaves past the window")
+        await shot("autumn_day", "Autumn day: the pumpkin on the crate, leaves past the window")
         await pg.evaluate("()=>{sLeafNext=0;}")
         # the pumpkin rocks when tapped, then settles
         idle = await pg.evaluate(STACK_PX)
@@ -91,7 +91,7 @@ async def main():
         check(await pg.evaluate("()=>{const b=seasonBox();return !!b&&sRock<performance.now();}"), "pumpkin: not out at night")
         # winter: the tree; tap = sway + ornaments swing
         await at("winter")
-        check(await pg.evaluate("()=>seasonItem()") == "tree", "winter: no tree on the book stack")
+        check(await pg.evaluate("()=>seasonItem()") == "tree", "winter: no tree on the crate")
         await pg.evaluate("()=>__step(30,250)")
         check(await pg.evaluate("()=>sLeaves.length") == 0, "winter: leaves are falling")
         await shot("winter_day", "Winter day: the tree with its ornaments")
@@ -112,11 +112,11 @@ async def main():
             check(await pg.evaluate("()=>seasonItem()") is None, f"{s}: a seasonal item is out")
             await pg.evaluate("()=>__step(30,250)")
             check(await pg.evaluate("()=>sLeaves.length") == 0, f"{s}: leaves are falling")
-        # a kid on the book stack: the pumpkin makes room
-        await pg.evaluate("()=>{SEASON_OVERRIDE='autumn';st.stage=4;st.species=7;st.perch='books';st.place={baby:'books'};capClear();__step(2);capClear();__step(.05);}")
-        check(await pg.evaluate("()=>spotKey()") == "books", "the kid didn't get onto the book stack")
-        check(await pg.evaluate("()=>seasonItem()") is None, "a kid on the book stack and the pumpkin is still out")
-        await shot("kid_on_stack", "Autumn, a kid on the book stack: the pumpkin makes room")
+        # a kid on the crate: the pumpkin makes room
+        await pg.evaluate("()=>{SEASON_OVERRIDE='autumn';st.stage=4;st.species=7;st.perch='crate';st.place={baby:'crate'};capClear();__step(2);capClear();__step(.05);}")
+        check(await pg.evaluate("()=>spotKey()") == "crate", "the kid didn't get onto the crate")
+        check(await pg.evaluate("()=>seasonItem()") is None, "a kid on the crate and the pumpkin is still out")
+        await shot("kid_on_stack", "Autumn, a kid on the crate: the pumpkin makes room")
         fails += [f"page error: {e}" for e in errs]
         await b.close()
     try:

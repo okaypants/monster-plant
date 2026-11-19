@@ -61,7 +61,7 @@ async def main():
                 shots.append((f"{s}, curtains {cur}", path))
                 if cur == "open":
                     panes[s] = await pg.evaluate(PANE)
-                    check(await pg.evaluate("()=>{const w=WIN_SEASON.night[seasonNow()];return !!w&&ok(w);}"), f"{s}: no night window loaded")
+                    check(await pg.evaluate("()=>timeKey()==='night'&&!!SKY.night"), f"{s}: no night sky in the window")
                 else:
                     closed[s] = await pg.evaluate(PANE)
         for i, a in enumerate(SEASONS):
@@ -71,7 +71,7 @@ async def main():
         # golden hour and day: no night piece involved
         r = await pg.evaluate("()=>{SEASON_OVERRIDE='summer';st.night=false;st.dayT=.6;st.curtain='open';__step(2);return timeKey();}")
         check(r == "golden", f"expected golden hour, got {r}")
-        check(await pg.evaluate("()=>!WIN_SEASON.golden"), "golden hour should keep its own window")
+        check(await pg.evaluate("()=>SKY.golden!==SKY.night&&SKY.golden!==SKY.day"), "golden hour should keep its own sky")
         fails += [f"page error: {e}" for e in errs]
         await b.close()
     try:
