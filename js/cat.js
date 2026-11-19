@@ -5,13 +5,13 @@
 const CATF={};['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','walkL1','walkL2','yawn','belly','scratcher1','scratcher2',
  'leap_r','leap_l','playbow','pounce','stalk','groom1','groom2','stand_side','stand_front','annoyed','back'].forEach(n=>{CATF[n]=img('cat_'+n+'.png');CATF[n].catName=n;});
 // OLD CAT (Jackie, Nov 4: "I miss the old cat for now"): true draws the pre-redesign frames from old_cat/ at their own size (they were drawn at room scale).
-// The new cat's PNGs stay as they are; set OLD_CAT=false to bring him back. Poses only the new cat has borrow the nearest old frame,
-// walking left mirrors the old walk (as the old cat did), and there's no back-scratcher.
+// The new cat's PNGs stay as they are; set OLD_CAT=false to bring him back. Since Nov 18 the old cat has his own drawing for every pose
+// the new cat had except the back-scratcher; walking left mirrors his walk (as the old cat always did).
 const OLD_CAT=true;
-if(OLD_CAT){const OLD=['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn'];
+if(OLD_CAT){const OLD=['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn',
+  'stand_side','stalk','pounce','playbow','leap_r','leap_l','groom1','groom2','annoyed','back','belly','eat']; // the second row: Jackie's extra poses in the old cat's style (Nov 18; tools/tofu_cut.py)
  for(const n of OLD){CATF[n]=img('old_cat/cat_'+n+'.png');CATF[n].catName=n;CATF[n].old=true;}
- Object.assign(CATF,{walkL1:CATF.walk1,walkL2:CATF.walk2,belly:CATF.pet1,annoyed:CATF.sit1,back:CATF.sit1,groom1:CATF.sit1,groom2:CATF.sit2,
-  stand_side:CATF.walk1,stand_front:CATF.sit1,stalk:CATF.walk1,pounce:CATF.walk2,playbow:CATF.loaf1,leap_r:CATF.walk1,leap_l:CATF.walk1});}
+ Object.assign(CATF,{walkL1:CATF.walk1,walkL2:CATF.walk2,stand_front:CATF.sit1});} // walking left mirrors his walk; standing to face you is his sit
 // SIZE: one cat scale. The new cat is drawn smaller than the old one, so CAT_K brings him back to the old size in the room (old sit 218 px tall, new 168).
 // cat_poses.png (and the back-scratcher drawn to match it) is drawn bigger than cat_design.png (sit-blink 204 px vs sit 168), so its frames get POSES_K on top: every frame is the same cat size.
 // The side-asleep pair (cat_side_sheet.png, replacing the poses-sheet sleeper) is drawn about 2x bigger again; SIDE_K makes him exactly as tall as the sleeper he replaces (140 px on the poses sheet, 289 here).
