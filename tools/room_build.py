@@ -4,6 +4,8 @@
   filled.png  the room with every object painted in, lamps off (window panes and both frames flat magenta)
   sheet1.png  loose objects on magenta: only the trunk's open lid is used from it
   sheet2.png  loose objects on magenta: the crystal ball's mist, the moon dial's faces, the paper cup, the coin
+  bigpic.png  the picture in the big frame
+  curtains.png the curtains drawn closed, on magenta
   views.png   the view from the window in spring, summer, autumn and winter, side by side
   proto.png   an earlier picture, used only for the small frame's stand-in cat
 
@@ -11,7 +13,7 @@ Writes into the repo root:
   room2.png        the room, window panes see-through, the wind-up cat's cubby empty
   obj_*.png        the few things that are their own pictures (the wind-up cat's frames, the cup, the changing faces)
   carry_cup_*.png  the cup as it is carried
-  curtains2.png    the closed curtains (a stand-in until they are drawn)
+  curtains2.png    the closed curtains
   sash2.png        the bars of the window's bottom row, for when it slides up
 Run: python3 tools/room_build.py
 """
@@ -47,7 +49,9 @@ def build_room():
         hole=keep[s];h,w=hole.shape
         if w<180:
             cat=np.asarray(Image.fromarray(p.astype(np.uint8)).resize((w,h),Image.LANCZOS)).astype(np.int32);a[s][hole]=cat[hole]
-        else:a[s][hole]=np.array([36,34,74])
+        else: # the big frame: Jackie's tree (bigpic.png), sized to cover the opening
+            t=Image.open(os.path.join(SRC,'bigpic.png')).convert('RGB');k=max(w/t.width,h/t.height);t=t.resize((round(t.width*k),round(t.height*k)),Image.BOX)
+            ox,oy=(t.width-w)//2,(t.height-h)//2;a[s][hole]=np.asarray(t.crop((ox,oy,ox+w,oy+h))).astype(np.int32)[hole]
         alpha[s][hole]=255
     # the wind-up cat comes out of the picture: its cubby's back is one flat colour, so the gap is that colour
     x0,y0,x1,y1=TOY;reg=a[y0:y1,x0:x1];bg=np.median(reg[2:10,2:8].reshape(-1,3),0)
@@ -103,19 +107,24 @@ def build_carry(sh2):
     frame(35,236,130,False).save(os.path.join(ROOT,'carry_cup_tilt.png'),optimize=True)
     frame(105,262,112,True).save(os.path.join(ROOT,'carry_cup_pour.png'),optimize=True)
 def build_curtains(room):
-    """STAND-IN until the closed curtains are drawn (reports/Monster Plant art prompts.md, A1): plain cloth in the open curtains' own
-    colours, hung straight across the window. One whole-room layer; the lamp, the vine and the armchair stay in front of it."""
-    a=room[...,:3].astype(np.int32);out=np.zeros((H,W,4),np.uint8)
-    x0,x1,top,bot=250,640,132,552;ink=(26,20,48);cloth=(252,232,196);stripe=(240,160,104);band=(44,84,170)
-    out[top:bot,x0:x1,:3]=cloth;out[top:bot,x0:x1,3]=255
-    for x in range(x0+20,x1,30):out[top:bot,x:x+4,:3]=stripe
-    for y0 in (152,164,500,514):out[y0:y0+6,x0:x1,:3]=band
-    out[bot-5:bot,x0:x1,:3]=ink;out[top:bot,x0:x0+5,:3]=ink;out[top:bot,x1-5:x1,:3]=ink;out[top:bot,443:447,:3]=ink
+    """The closed curtains (curtains.png: Jackie's, on magenta, drawn with their rod). Only the cloth is used, since the rod is already
+    in the room; it is sized to hang from under the rod to just below the sill, across both open curtains. One whole-room layer;
+    the floor lamp, the vine and the armchair stay in front of it."""
+    a=room[...,:3].astype(np.int32);c=load('curtains.png');bg=magenta(c,200)
+    lab,n=nd.label(bg);edge=set(lab[0])|set(lab[-1])|set(lab[:,0])|set(lab[:,-1]);edge.discard(0);bg=nd.binary_dilation(np.isin(lab,list(edge)),iterations=1)
+    c=defringe(c,bg,2);fg=~bg;wide=fg.sum(1);rodrows=np.where(wide>=wide.max()*.96)[0] # the rod is the widest thing in the picture
+    top=int(rodrows.max())+1;top+=int(np.argmax(wide[top:]>wide[top:].max()*.9)) # the cloth starts under the rod, where it reaches its full width
+    bot=int(np.where(wide>0)[0].max())+1;xs=np.where(fg[top+20:bot-20].any(0))[0];l,r=int(xs.min()),int(xs.max())+1
+    cloth=np.dstack([c[top:bot,l:r],np.where(bg[top:bot,l:r],0,255)]).astype(np.uint8)
+    x0,x1,y0,y1=244,648,128,556
+    pm=cloth.astype(float);pm[...,:3]*=pm[...,3:]/255;sm=np.asarray(Image.fromarray(pm.astype(np.uint8),'RGBA').resize((x1-x0,y1-y0),Image.LANCZOS)).astype(float)
+    A=sm[...,3:];rgb=np.where(A>0,sm[...,:3]*255/np.maximum(A,1),0).clip(0,255);A=np.where(A>=128,255,0)
+    out=np.zeros((H,W,4),np.uint8);out[y0:y1,x0:x1]=np.dstack([rgb,A]).astype(np.uint8)
     yy,xx=np.mgrid[0:H,0:W]
     front=(((xx-230)/96.0)**2+((yy-368)/90.0)**2<=1)|((xx>=208)&(xx<=250)&(yy>=250)) # the floor lamp
     front|=(xx>=444)&(yy>=474+np.clip((490-xx)*1.3,0,70)) # the armchair's back
-    r,g,b2=a[...,0],a[...,1],a[...,2];leaf=((g>r+8)&(g>b2+40))&(xx<300)&(yy<340);front|=nd.binary_dilation(leaf,iterations=4) # the vine
-    out[front,3]=0
+    r_,g_,b_=a[...,0],a[...,1],a[...,2];leaf=((g_>r_+8)&(g_>b_+40))&(xx<300)&(yy<340);front|=nd.binary_dilation(leaf,iterations=4) # the vine
+    out[front&(room[...,3]>0),3]=0 # never a gap of bare window: where the glass is, the cloth always hangs
     Image.fromarray(out,'RGBA').save(os.path.join(ROOT,'curtains2.png'),optimize=True)
 def build_sash(room,panes):
     """The lower sash (the bottom row of panes): only its bars and rails, so it can slide up for Sloth's paw. Its pixels are the room's

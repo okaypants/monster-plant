@@ -69,7 +69,7 @@ function drawWindowView(tk){const s=seasonNow(),v=VIEWS_OUT[s];g.fillStyle=SKY[t
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
 let SEASON_OVERRIDE=null; // debug: force a season (window and seasonal items); null = from the calendar
 function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=nowDate().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
-const CURT_L=248,CURT_R=640,CURT_MID=441; // the closed curtains (curtains2.png, a whole-room layer): each side sweeps to the middle
+const CURT_L=244,CURT_R=648,CURT_MID=446; // the closed curtains (curtains2.png, a whole-room layer): each side sweeps to the middle
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
 // placement (Jackie): seedlings on the windowsill or desk; babies on the milk crate or book stack; grown plants on the floor. Drag the plant to move it.
