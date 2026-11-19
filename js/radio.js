@@ -10,7 +10,7 @@
      only for listening: it never goes into the sampler or the crates.
    Everything is streamed, never downloaded whole. The band and the station are remembered (localStorage 'mp-radio').
    Off when the game starts; quiet while the sampler is open. */
-const RADIO={x:1078,y:468,w:106,h:60}; // the same box as the 'radio' fidget in js/fidgets.js
+const RADIO={x:1073,y:478,w:124,h:64}; // the same box as the 'radio' fidget in js/fidgets.js
 const RADIO_VOL=.55,RADIO_MINE=.35; // how loud; the chance one of your songs is next (it comes after two records at the latest)
 const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'crates',wi:0,panel:null,hiss:null,pre:[null,null,null,null,null]};
 try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi;if(Array.isArray(r.pre))radio.pre=[0,1,2,3,4].map(k=>r.pre[k]||null)}catch(e){}

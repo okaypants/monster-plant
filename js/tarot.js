@@ -22,7 +22,7 @@
    read once per calendar day. The cards are kept (localStorage 'mp-tarot', today's date and today's cards per spread), so
    opening the box again that day shows the same cards face up to read again; a new one comes tomorrow.
    The pictures load only when the box is opened (the back) and when cards are dealt, so the game starts no slower. */
-const MOONBOX={x:1492,y:412,w:102,h:76}; // the same box as the 'moonbox' fidget in js/fidgets.js
+const MOONBOX={x:1502,y:408,w:120,h:72}; // the same box as the 'moonbox' fidget in js/fidgets.js
 const TAROT_REV=.35,TAROT_KEY='mp-tarot'; // the chance a card comes up reversed; where today's readings are kept
 const SPREADS={
   one:{name:'Card of the day',next:'A new card of the day comes tomorrow.',pos:[{t:'Today',in:'Today'}]},

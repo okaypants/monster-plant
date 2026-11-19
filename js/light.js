@@ -8,7 +8,7 @@
    Too bright (shade and night plants only, and only after a while): the sun patch at midday with the curtains open, or right under a lamp.
    The coming code lighting (base room + time-of-day grade + window patch + lamp glows) should draw from lightSources(), so the glow you see is the light a plant gets. */
 const WINDOW_LIGHT={x:450,y:700,reach:1000,patch:{x:470,y:852,rx:205,ry:66},sill:'sill'};
-const LAMPS=[{key:'lamp',name:'floor lamp',x:240,y:700,r:230},{key:'desk',name:'desk lamp',x:1300,y:540,r:220}]; // the milk crate sits in the floor lamp's circle, the desk in the desk lamp's
+const LAMPS=[{key:'lamp',name:'floor lamp',x:240,y:700,r:230},{key:'desk',name:'desk lamp',x:1300,y:540,r:220},{key:'wall',name:'wall lamp',x:930,y:520,r:210}]; // the milk crate sits in the floor lamp's circle, the desk in the desk lamp's
 const LAMP_CORE=.45; // inside this share of a lamp's circle = right under it
 const NEED={sun:.55,shade:.22,night:0}; // the least light each kind is happy with
 function lampOn(p){return st[p.key]!==false;}
@@ -41,11 +41,11 @@ function lightSources(t=st.dayT,open=st.curtain==='open'){const dl=daylight(t),p
    light may blend). FLOOR keeps faces and colours readable at night; SOFT keeps them a touch brighter than the walls. */
 const SPRITE_LIGHT={on:true,floor:.42,soft:.85};
 const LM=10; // the light map samples the room every 10 pixels
-let lmKey='',lmCur=null,lmRef=null;
+let lmKey='',lmCur=null,lmRef=null,lmRefKey='';
 function lmSample(src){const w=Math.ceil(W/LM),h=Math.ceil(H/LM),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
   x.imageSmoothingEnabled=true;x.drawImage(src,0,0,w,h);return x.getImageData(0,0,w,h).data;}
 // called by draw() once the room (lamps, curtains) is on the canvas and before anything stands in it
-function lightMapUpdate(key){if(!SPRITE_LIGHT.on)return;if(!lmRef){if(!ok(ROOMS.day))return;lmRef=lmSample(ROOMS.day);}
+function lightMapUpdate(key){if(!SPRITE_LIGHT.on)return;const dayNow=sceneDay();if(!dayNow)return;if(!lmRef||lmRefKey!==dayKey){lmRef=lmSample(dayNow);lmRefKey=dayKey;}
   if(key===lmKey&&lmCur)return;lmKey=key;try{lmCur=lmSample(cv);}catch(e){lmCur=null;}}
 const LIT_FULL={f:[1,1,1],key:'1,1,1',dim:false};
 // the tint for something whose feet are at x,y: the room just below and around its feet, now against daytime

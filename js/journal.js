@@ -7,7 +7,7 @@
    Close: tap outside the book or the little corner. Controls: charms (tap to wear, tap again to take off) and the tiny hand inside
    the back cover (which hand carries the carafe). Everything the old journal showed (day, checklist, bars, treat counts, log, pots)
    is still in the save; the numbers live in the debug drawer. */
-const DRAWERS={x:1062,y:560,w:118,h:180};
+const DRAWERS={x:1080,y:566,w:100,h:138};
 const JB={w:760,h:400,rib:46}; // the book's design size; scaled to fit the room
 const QUIRK_SHORT={moon:'Moon bouncer',bonk:'Bonks things',wander:'Wanders',tidy:'Tidy',usual:'Its usual',novel:'New treats',
  catfriend:'Cat buddy',share:'Shares joy',boo:'Spooky',dark:'Dark tastes',sweet:'Sweet tooth'};
@@ -304,7 +304,7 @@ function worldPages(L,R){L.appendChild(jdiv('jname',[],'Out in the world'));for(
    glows, blinks or bounces; it moves only with the drawers' idle wiggle. Lit like the wood around it: the drawer's color in the
    current room picture (time of day, lamps, curtains) against the daytime picture shades it, so it darkens at night and warms
    under the desk lamp. Tapping it is tapping the drawers: the files open. */
-const PLACARD={x:1089,y:569,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
+const PLACARD={x:1093,y:576,u:2}; // top-left of the sign and its pixel size: centered on the top drawer (face x 1084-1170, y 566-600), over its knob; its light is read from the plain bottom panel at 1097,704
 const PFONT={F:['######','##....','##....','#####.','##....','##....','##....','##....'],I:['####','.##.','.##.','.##.','.##.','.##.','.##.','####'],
  L:['##....','##....','##....','##....','##....','##....','##....','######'],E:['######','##....','##....','#####.','##....','##....','##....','######'],
  S:['.#####','##....','##....','.####.','....##','....##','....##','#####.']};
@@ -315,8 +315,8 @@ const PLATE=(()=>{const t='FILES',tw=[...t].reduce((n,ch)=>n+PFONT[ch][0].length
 const PCOL={o:TS.ink,h:TS.toffee,b:TS.brass,t:TS.brassInk}; // the text style's brass plate (Jackie, Nov 10): cocoa outline, toffee rim, brass face, dark brass letters
 let placardCv=null,placardKey='',placardRef=null;
 function panelAvg(src,sx,sy){const c=document.createElement('canvas');c.width=60;c.height=12;const x=c.getContext('2d');x.drawImage(src,sx,sy,60,12,0,0,60,12);const d=x.getImageData(0,0,60,12).data;let r=0,gg=0,b=0;for(let i=0;i<d.length;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];}const n=d.length/4;return [r/n,gg/n,b/n];}
-function drawPlacard(key){if(!ok(ROOMS.day))return;
- if(key!==placardKey){placardKey=key;placardRef=placardRef||panelAvg(ROOMS.day,1097,704);const cur=panelAvg(cv,1097,704);
+function drawPlacard(key){const dayNow=sceneDay();if(!dayNow)return;
+ if(key!==placardKey){placardKey=key;placardRef=placardRef||panelAvg(dayNow,1100,668);const cur=panelAvg(cv,1100,668);
   const f=[0,1,2].map(i=>clamp(cur[i]/Math.max(1,placardRef[i]),0,1)),u=PLACARD.u,c=document.createElement('canvas');c.width=PLATE[0].length*u;c.height=PLATE.length*u;const x=c.getContext('2d');
   PLATE.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch==='.')return;x.fillStyle=PCOL[ch];x.fillRect(i*u,j*u,u,u);}));
   x.globalCompositeOperation='multiply';x.fillStyle=`rgb(${Math.round(f[0]*255)},${Math.round(f[1]*255)},${Math.round(f[2]*255)})`;x.fillRect(0,0,c.width,c.height); // lit like the panel

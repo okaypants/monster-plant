@@ -1,47 +1,79 @@
 'use strict';
 /* Room: room pictures, seasons, curtains, lamps, light & time of day, spots, hotspots, and drawing each frame. */
-const room=img('room_day.png');
-// ROOM STATES (Jackie's 15-image package, each an edit of her default): whole-room swap per time of day + layered pieces
-const TIMES=['day','golden','night'],ROOMS={},LOFF={},CURTS={};
-for(const t of TIMES){ROOMS[t]=img('room_'+t+'.png');LOFF[t]={floor:img(t+'_floorlamp_off.png'),desk:img(t+'_desklamp_off.png')};CURTS[t]=img(t+'_curtains_closed.png');}
-const WIN_SEASON={day:{summer:img('day_window_summer.png'),spring:img('day_window_spring.png'),autumn:img('day_window_autumn.png'),winter:img('day_window_winter.png')},night:{spring:img('night_window_spring.png'),summer:img('night_window_summer.png'),autumn:img('night_window_autumn.png'),winter:img('night_window_winter.png')}}; // night windows for every season (Jackie, Nov 10): only the glass differs from the winter one
-const STOOL_EMPTY=img('stool_empty.png');
-/* The stool without the can is daytime art (Jackie, Nov 16: it showed as a light square at night and golden hour).
-   Lit like the room picture under it: every pixel the can never covered is taken straight from the room picture now;
-   the bits of stool the can hid get the room's tint there (its colour now against daytime). Made once per lighting. */
-let stoolKey='',stoolCv=null;
-function stoolEmpty(rm,key){if(!ok(STOOL_EMPTY))return null;if(!ok(rm)||!ok(ROOMS.day)||rm===ROOMS.day)return STOOL_EMPTY;if(key===stoolKey&&stoolCv)return stoolCv;
- const w=STOOL_EMPTY.naturalWidth,h=STOOL_EMPTY.naturalHeight,grab=src=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(src,765,488,w,h,0,0,w,h);return x.getImageData(0,0,w,h);};
- try{const se=grab(STOOL_EMPTY.__whole||(STOOL_EMPTY.__whole=(()=>{const c=document.createElement('canvas');c.width=765+w;c.height=488+h;c.getContext('2d').drawImage(STOOL_EMPTY,765,488);return c;})())),day=grab(ROOMS.day),now=grab(rm),
-   o=se.data,d=day.data,n=now.data,sum=[0,0,0],ref=[0,0,0],same=[];
-  for(let i=0;i<o.length;i+=4){const eq=Math.abs(o[i]-d[i])+Math.abs(o[i+1]-d[i+1])+Math.abs(o[i+2]-d[i+2])<24;same.push(eq);for(let q=0;q<3;q++){sum[q]+=n[i+q];ref[q]+=d[i+q];}}
-  const lut=new Map();for(let i=0,p=0;i<o.length;i+=4,p++)if(same[p]){const key=(d[i]>>4)<<8|(d[i+1]>>4)<<4|(d[i+2]>>4),e=lut.get(key)||[0,0,0,0];e[0]+=n[i];e[1]+=n[i+1];e[2]+=n[i+2];e[3]++;lut.set(key,e);}
-  const f=[0,1,2].map(q=>clamp(sum[q]/Math.max(1,ref[q]),0,1.2)),R=14,W1=w+1; // the hidden bits: the light of the room around them (sun streaks carry through)
-  const I=[0,1,2,3].map(()=>new Float64Array(W1*(h+1))); // running sums of now and daytime colour over the pixels the can never covered, and how many
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x,i=p*4,k=(y+1)*W1+x+1,v=same[p]?[n[i]+n[i+1]+n[i+2],d[i]+d[i+1]+d[i+2],1]:[0,0,0];
-   for(let q=0;q<3;q++)I[q][k]=v[q]+I[q][k-1]+I[q][k-W1]-I[q][k-W1-1];}
-  const box=(q,x,y)=>{const x0=Math.max(0,x-R),y0=Math.max(0,y-R),x1=Math.min(w,x+R+1),y1=Math.min(h,y+R+1);return I[q][y1*W1+x1]-I[q][y0*W1+x1]-I[q][y1*W1+x0]+I[q][y0*W1+x0];};
-  for(let y=0,p=0;y<h;y++)for(let x=0;x<w;x++,p++){const i=p*4;if(same[p]){o[i]=n[i];o[i+1]=n[i+1];o[i+2]=n[i+2];continue;}
-   const cnt=box(2,x,y),k=cnt>20?clamp(box(0,x,y)/Math.max(1,box(1,x,y)),0,1.2)/Math.max(.01,(f[0]+f[1]+f[2])/3):1; // brighter or darker than the patch as a whole, nearby
-   const b=lut.get((o[i]>>4)<<8|(o[i+1]>>4)<<4|(o[i+2]>>4)); // how this colour looks now elsewhere in the patch (the art's grading isn't one tint: the wall's diamonds darken more than the wall)
-   for(let q=0;q<3;q++)o[i+q]=Math.min(255,(b&&b[3]>=3?b[q]/b[3]:o[i+q]*f[q])*k);}
-  const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').putImageData(se,0,0);stoolCv=c;stoolKey=key;return c;}catch(e){return STOOL_EMPTY;}}
-// exact mixed-lamp rooms from Jackie (used instead of the soft cut-outs when present). key: time + '_' + floor(on/off) + desk(on/off)
-const MIX={golden_onoff:img('room_golden_floorOn_deskOff.png'),golden_offon:img('room_golden_floorOff_deskOn.png'),golden_offoff:img('room_golden_floorOff_deskOff.png'),day_c_onoff:img('room_day_closed_floorOn_deskOff.png'),day_c_offon:img('room_day_closed_floorOff_deskOn.png'),day_offoff:img('room_day_floorOff_deskOff.png'),golden_c_offoff:img('room_golden_closed_floorOff_deskOff.png')}; // _c_ = curtains closed
+/* THE ROOM (Jackie, Nov 18): one picture of the room, drawn once in daylight with every lamp off (room2.png; its window panes are
+   see-through). Each thing you can touch is its own picture (obj_*.png), placed on top. Golden hour, night, the lamps and shut
+   curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
+   same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
+const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
+const OBJ={};'toy cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+/* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (cut
+   out of the room so its cubby can be empty), the cup you carry, and the faces that change: the moon dial's phase, the crystal
+   ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
+   middle of its bottom edge rests. */
+const THINGS=[{n:'toy',x:97,y:438,pic:()=>toyHome()?'toy':null},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
+ {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null}];
+const thingBy=n=>THINGS.find(t=>t.n===n);
+// a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
+const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
+function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
+function toyHome(){return typeof toy==='undefined'||toy.home;} // the wind-up cat is in its cubby unless it has been wound and let out (js/fidgets.js)
+function moonDialPic(){const f=typeof moonAge==='function'?moonAge()/MOON_MONTH:0; // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
+ return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
+function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;return f>1?'ball'+f:null;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
+function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
+const roomReady=()=>ok(ROOM2);
+const mkCv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingEnabled=false;return c;};
+// the room in daylight with everything in its place: redrawn only when a thing changes its picture
+let dayCv=null,dayKey='';
+function sceneDay(){if(!roomReady())return null;const key=THINGS.map(t=>thingMoving(t.n)?'~':t.pic()||'-').join(',')+'|'+Object.values(OBJ).filter(ok).length;if(dayCv&&key===dayKey)return dayCv;
+ dayCv=dayCv||mkCv();dayKey=key;const x=dayCv.getContext('2d');x.clearRect(0,0,W,H);x.drawImage(ROOM2,0,0);
+ for(const t of THINGS){if(thingMoving(t.n))continue;const b=thingBox(t);if(b)x.drawImage(b.im,b.x,b.y);}dayCv.src='day|'+key;return dayCv;}
+/* THE LIGHT. Each time of day is one flat tint over the whole room. A lamp that is on gives back the daytime colours, a little
+   warmer, in three steps around it (bands, as the room's pixels are steps); its shade glows. Shut curtains dim the daytime a touch. */
+const GRADE={day:null,golden:'rgb(255,206,158)',night:'rgb(92,104,178)'},GRADE_SHUT={day:'rgb(226,220,208)',golden:'rgb(232,190,150)',night:'rgb(86,98,170)'};
+const LAMP_K={day:.0,golden:.55,night:1}; // how much a lamp's glow shows: nothing to add in daylight
+const GLOWS={lamp:{x:230,y:430,r:330,shade:[230,368,94,86]},desk:{x:1330,y:520,r:270,shade:[1318,446,50,44]},wall:{x:980,y:250,r:230,shade:[980,200,52,42]}}; // key = the lamp's on/off field in the save
+function lampsKey(){return LAMPS.map(p=>lampOn(p)?'1':'0').join('');}
+const litCvs=new Map();
+// any whole-room layer (the room itself, the closed curtains) lit for right now
+function litLayer(name,src,srcKey){if(!src)return null;const tk=timeKey(),shut=st.curtain==='closed'&&curK>.5,key=srcKey+'|'+tk+'|'+lampsKey()+'|'+(shut?1:0);let e=litCvs.get(name);
+ if(e&&e.key===key)return e.c;const c=e?e.c:mkCv(),x=c.getContext('2d');x.globalCompositeOperation='source-over';x.globalAlpha=1;x.clearRect(0,0,W,H);x.drawImage(src,0,0);
+ const tint=(shut?GRADE_SHUT:GRADE)[tk];if(tint){x.globalCompositeOperation='multiply';x.fillStyle=tint;x.fillRect(0,0,W,H);}
+ for(const p of LAMPS){if(!lampOn(p))continue;const G=GLOWS[p.key];if(!G)continue;const k=LAMP_K[tk];
+  if(k>0)for(const[rr,a]of[[1,.3],[.68,.38],[.4,.5]]){x.save();x.beginPath();x.ellipse(G.x,G.y,G.r*rr,G.r*rr*.82,0,0,Math.PI*2);x.clip();x.globalCompositeOperation='source-over';x.globalAlpha=a*k;x.drawImage(src,0,0);
+   x.globalCompositeOperation='multiply';x.globalAlpha=a*k*.5;x.fillStyle='rgb(255,232,190)';x.fillRect(G.x-G.r,G.y-G.r,G.r*2,G.r*2);x.restore();}
+  const sm=name==='room'?shadeMask(p.key,src):null;if(sm){const[sx,sy,sw,sh]=G.shade;x.globalAlpha=1;x.globalCompositeOperation='source-over';x.drawImage(sm.day,sx-sw,sy-sh);
+   x.globalCompositeOperation='lighter';x.globalAlpha=tk==='day'?.14:.24;x.drawImage(sm.warm,sx-sw,sy-sh);x.globalAlpha=1;}}
+ x.globalCompositeOperation='destination-in';x.globalAlpha=1;x.drawImage(src,0,0);x.globalCompositeOperation='source-over'; // only the layer's own pixels: the window panes stay see-through
+ c.src=name+'|'+key;litCvs.set(name,{key,c});return c;}
+// a lamp's shade alone (its pale pixels inside GLOWS.shade), in daylight colours and as a flat warm shape to brighten it with: made once per lamp
+const shadeMasks={};
+function shadeMask(k,src){if(shadeMasks[k])return shadeMasks[k];const[sx,sy,sw,sh]=GLOWS[k].shade,w=sw*2,h=sh*2,mk=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
+ const day=mk(),dx=day.getContext('2d');dx.drawImage(src,sx-sw,sy-sh,w,h,0,0,w,h);let d;try{d=dx.getImageData(0,0,w,h);}catch(e){return null;}const D=d.data;
+ for(let j=0;j<h;j++)for(let i=0;i<w;i++){const o=(j*w+i)*4,inE=((i-sw)/sw)**2+((j-sh)/sh)**2<=1,pale=D[o]>200&&D[o+1]>170&&D[o+2]>90;if(!(inE&&pale))D[o+3]=0;}
+ dx.putImageData(d,0,0);const warm=mk(),wx=warm.getContext('2d');wx.drawImage(day,0,0);wx.globalCompositeOperation='source-in';wx.fillStyle='rgb(255,214,140)';wx.fillRect(0,0,w,h);
+ return shadeMasks[k]={day,warm};}
+function sceneLit(){const d=sceneDay();return d?litLayer('room',d,dayKey):null;}
+/* THE WINDOW: the sky and what is outside are drawn first, the room goes over them, and the view shows through the panes. Until the
+   four season views are drawn the sky is a flat colour for the time of day, with a few stars at night and tonight's moon (js/moon.js). */
+const PANES={x:316,y:170,w:256,h:334},SKY={day:'#8fc8ee',golden:'#f0a25a',night:'#0b1640'};
+const STARS=[[20,30],[70,12],[120,60],[200,26],[232,90],[40,110],[150,140],[96,190],[214,180],[28,230],[180,250],[240,300],[60,290]];
+function drawWindowView(tk){g.fillStyle=SKY[tk];g.fillRect(PANES.x,PANES.y,PANES.w,PANES.h);
+ if(tk==='night'){g.fillStyle='#e8ecf6';for(const[sx,sy]of STARS)g.fillRect(PANES.x+sx,PANES.y+sy,4,4);drawMoon(tk,seasonNow());}}
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
 let SEASON_OVERRIDE=null; // debug: force a season (window and seasonal items); null = from the calendar
 function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=nowDate().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}
-const CURT_AT={x:244,y:30},CURT_L=248,CURT_R=668,CURT_MID=456; // closed curtains cut from Jackie's closed-curtain edit (fabric pixels only)
+const CURT_L=248,CURT_R=640,CURT_MID=441; // the closed curtains (curtains2.png, a whole-room layer): each side sweeps to the middle
 /* ---------- world ---------- */
 // spots in native room coordinates (base = where the pot bottom sits)
 // placement (Jackie): seedlings on the windowsill or desk; babies on the milk crate or book stack; grown plants on the floor. Drag the plant to move it.
 // SURFACE LINES (Nov 3, from the positioning audit): the row a pot's (or the cat's) lowest solid pixel rests on, read from the room art.
 // windowsill front edge, front of the desk top, front of the book on the milk crate, front of the top book's cover, the armchair seat, the cat bed's rim, the floor in front of the rug.
 // On the rug any y is floor (back 790 to front 918). Small per-species and per-frame fixes live in NUDGE (js/nudges.js).
-const SURFACE={sill:539/* the top of the windowsill ledge, its orange front edge (room art: frame band y 520-537, ledge front 540-565); 539 keeps the seedling pots steady between frames */,desk:536/* on the desktop, just behind its front edge (room art: back edge y 522, top surface 523-541, front apron 542-558) */,crate:639,books:652,chair:656,bed:888,floor:925};
-const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:338,y:SURFACE.crate},books:{x:978,y:SURFACE.books},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+const SURFACE={sill:530/* the windowsill ledge (room art: the orange ledge, y 508-535) */,desk:550/* on the desktop, just behind its front edge (room art: top y 535-562) */,crate:660/* the crate's flat top (y 628-668) */,books:800/* on the floor in front of the mini fridge; the key is still 'books' from when a book stack stood by the desk, so old saves keep their place */,chair:656,bed:888,floor:925};
+const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,y:SURFACE.crate},books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','rugR']};
-SPOT.chair={x:628,y:SURFACE.chair,name:'in the armchair'};
+SPOT.chair={x:610,y:SURFACE.chair,name:'in the armchair'};
 // WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big
 // for those and stand on the floor. Teens and adults can also sit in the armchair awake (any age can nap there). st.perch = the furniture, or null = the floor.
 const PERCH={kid:['crate','books','chair'],teen:['crate','books','chair'],adult:['chair']}; // Nov 7: kids may sit in the armchair too
@@ -77,7 +109,7 @@ const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
    Scale falls in a straight line toward the horizon: 100% at the front of the rug (918), smallest at the back wall (748).
    HORIZON is set so the armchair (766) comes out at the 66% Jackie OK'd for plants asleep in it. Measured from room_day.png. */
 const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
-const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:767/* book stack bottom */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
+const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:800/* its own row of the floor */,chair:766/* armchair feet */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
 function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
 function spotDepth(k){return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
 /* NEVER SHARING A SPACE (Jackie, Nov 4): "I never want them sharing a space or on top of each other." A plant may only go where its sprite
@@ -108,7 +140,9 @@ function spotLight(){return spotInfo(spotKey()).L;} // light zones live in light
 function nudgeSun(){if(st.night||clockLive())return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
-const CAN={x:772,y:494,w:118,h:110},JAR={x:1478,y:568,w:150,h:170},GUMMY={x:-99,y:-99,w:1,h:1},PEAT={x:-99,y:-99,w:1,h:1},LAMP={x:1272,y:390,w:150,h:140},FLOOR={x:145,y:255,w:155,h:570},SHELF={x:1474,y:318,w:170,h:84},CHAIR={x:445,y:455,w:300,h:300},WIN={x:300,y:80,w:290,h:450};
+const CAN={x:940,y:530,w:86,h:96}/* the cup under the water cooler's taps: pick it up to water */,COOLER={x:922,y:375,w:124,h:392},JAR={x:760,y:556,w:146,h:210}/* the mini fridge: all the treats */,GUMMY={x:-99,y:-99,w:1,h:1},PEAT={x:-99,y:-99,w:1,h:1},
+ LAMP={x:1268,y:400,w:176,h:148},FLOOR={x:138,y:255,w:186,h:198}/* the floor lamp's shade */,FLOOR_POLE={x:204,y:453,w:56,h:376},WALL_LAMP={x:926,y:156,w:108,h:168},SHELF={x:1480,y:314,w:160,h:80},CHAIR={x:445,y:470,w:312,h:296},WIN={x:250,y:100,w:400,h:410},
+ CUPBOARD={x:1484,y:582,w:158,h:156}/* the star door at the bottom of the right bookcase: Tofu's cupboard */;
 function drawCarafe(x,y){ // carried glass carafe (code stand-in until the carried version is drawn)
  g.save();g.translate(x,y);g.rotate(-.5);g.scale(1.6,1.6);const o=C.out;
  g.fillStyle=o;g.fillRect(-16,-46,32,10);g.fillRect(-26,-36,52,62);g.fillRect(-10,-58,20,14);
@@ -120,27 +154,24 @@ function drawCan(x,y,rot){g.save();g.translate(x+45,y+70);g.rotate(rot);g.transl
 function drawJar(x,y,lid){g.fillStyle=C.out;g.fillRect(x,y+16,60,64);g.fillStyle='#c8e0e8';g.fillRect(x+4,y+20,52,56);g.fillStyle=C.wine;g.fillRect(x+8,y+44,44,30);g.fillStyle=C.brick;g.fillRect(x+12,y+48,10,10);g.fillRect(x+30,y+56,8,8);g.fillStyle='#fff';g.fillRect(x+8,y+24,6,14);
  g.fillStyle=C.out;g.fillRect(x-4,y+2+lid,68,16);g.fillStyle=C.fl2;g.fillRect(x,y+6+lid,60,8);}
 let curK=0; // 0 open .. 1 closed, eased
-function drawCurtains(k){const CURT=CURTS[timeKey()];if(k<.01||!ok(CURT))return;const e=Math.round(k*12)/12; // eased; each side's leading edge sweeps to the middle like the fabric drawing shut
+function drawCurtains(k){if(k<.01||!ok(CURT2))return;const CURT=litLayer('curt',CURT2,'c');if(!CURT)return;const e=Math.round(k*12)/12; // eased; each side's leading edge sweeps to the middle like the fabric drawing shut
  const lw=(CURT_MID-CURT_L)*e,rw=(CURT_R-CURT_MID)*e;
- g.save();g.beginPath();g.rect(CURT_L-8,0,lw+8,H);g.rect(CURT_R-rw,0,rw+8,H);g.clip();g.drawImage(CURT,CURT_AT.x,CURT_AT.y);g.restore();}
+ g.save();g.beginPath();g.rect(CURT_L-8,0,lw+8,H);g.rect(CURT_R-rw,0,rw+8,H);g.clip();g.drawImage(CURT,0,0);g.restore();}
 /* BEHIND THE CURTAINS (Jackie, Nov 8): a seedling on the windowsill is hidden when the curtains are closed. The closed curtains hang
    down past the ledge, so the fabric sweeps over it as they close (whole curtain pixels, the same sweep as drawCurtains), and once
    they're shut it isn't drawn or tappable at all; tapping there works the curtains. Opening them shows it again. */
 function behindCurtain(){return st.stage>=0&&st.stage<4&&st.curtain==='closed'&&spotKey()==='sill'&&!(drag.on&&drag.id===st.id);}
 function curtainOver(b){if(curK<.01)return;g.save();g.beginPath();g.rect(b.x-4,b.y-4,b.w+8,b.h+8);g.clip();drawCurtains(curK);g.restore();}
 let dtDraw=.016,lastDraw=performance.now();
-function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/1000);lastDraw=nowD;g.clearRect(0,0,W,H);const tk=timeKey(),fOn=st.lamp!==false,dOn=st.desk!==false,lk=(fOn?'on':'off')+(dOn?'on':'off'),mxc=st.curtain==='closed'&&curK>.98?MIX[tk+'_c_'+lk]:null,exactC=!!(mxc&&ok(mxc)),mx2=exactC?mxc:MIX[tk+'_'+lk],exact=!!(mx2&&ok(mx2)),rm=exact?mx2:ROOMS[tk];if(ok(rm))g.drawImage(rm,0,0);else if(ok(room))g.drawImage(room,0,0);
- if(!exactC){const ws=(WIN_SEASON[tk]||{})[seasonNow()];if(ws&&ok(ws)){g.drawImage(ws,318,88);drawMoon(tk,seasonNow());}} // tonight's real moon phase (js/moon.js)
- drawFallingLeaves(tk); // autumn leaves drifting past the window, behind the glass (js/seasonal.js)
- if(st.started&&typeof drawSash==='function')drawSash(tk+lk+(exactC?'c':'')); // the lower sash slides up for Sloth's paw (js/paw.js)
- if(!exact&&st.lamp===false&&ok(LOFF[tk].floor))g.drawImage(LOFF[tk].floor,0,0);
- if(!exact&&st.desk===false&&ok(LOFF[tk].desk))g.drawImage(LOFF[tk].desk,831,0);
- if(held.tool==='can'){const se=stoolEmpty(rm,tk+'|'+lk+'|'+exact);if(se)g.drawImage(se,765,488);} // the stool without the can, lit like the room
+function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/1000);lastDraw=nowD;g.clearRect(0,0,W,H);const tk=timeKey(),lk=lampsKey(),shut=st.curtain==='closed'&&curK>.98;
+ if(!shut){drawWindowView(tk);drawFallingLeaves(tk);} // the sky, tonight's moon, autumn leaves drifting past (js/seasonal.js): all behind the glass
+ const rm=sceneLit();if(rm)g.drawImage(rm,0,0);
+ if(st.started&&typeof drawSash==='function')drawSash(tk+lk,rm); // the lower sash slides up for Sloth's paw (js/paw.js)
  fidgetDrawProps(rm);
  drawSeasonItem(); // the pumpkin (autumn) or the tree (winter) on the book stack (js/seasonal.js)
- drawPlacard(tk+'|'+lk+'|'+exact+'|'+exactC+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
- curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01&&!exactC)drawCurtains(curK);
- lightMapUpdate(tk+'|'+lk+'|'+exact+'|'+exactC+'|'+Math.round(curK*8)+'|'+seasonNow()); // what the room's light is now, for the monsters, the cat and the rest (js/light.js)
+ drawPlacard(tk+'|'+lk+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
+ curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01)drawCurtains(curK);
+ lightMapUpdate(tk+'|'+lk+'|'+Math.round(curK*8)+'|'+seasonNow()+'|'+dayKey); // what the room's light is now, for the monsters, the cat and the rest (js/light.js)
  
  const dl=daylight(st.dayT);
  if(lightMap&&st.started)drawLightMap(); // debug only: under the plants and cat
@@ -157,7 +188,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
 
   if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
   b=drawPlant();if(sill)curtainOver(b); // the fabric sweeping over it as the curtains close (or back as they open)
-  if(inChair()&&ok(rm))for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
+  if(inChair()&&rm)for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
   const cx=b.x+b.w/2,top=b.y;
   // each reaction has its own slot around the plant, outside its outline (Jackie: no overlaps, more space)
   const base=baseY(),M=34,vh=inChair()?b.h:Math.max(b.h,440),vt=base-vh; // small plants get a taller virtual box so slots never stack

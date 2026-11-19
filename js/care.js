@@ -1,6 +1,6 @@
 'use strict';
 /* Care: things you carry and use on a plant: the carafe, treats, books, and petting. */
-const CARRY={up:img('carafe_up.png'),tilt:img('carafe_tilt.png'),pour:img('carafe_pour.png')},TREAT_IMG={};['solar','peat','cotton','pizza','plants','fossil','blood'].forEach(k=>TREAT_IMG[k]=img('treat_'+k+'.png'));
+const CARRY={up:img('carry_cup_up.png'),tilt:img('carry_cup_tilt.png'),pour:img('carry_cup_pour.png')},TREAT_IMG={};['solar','peat','cotton','pizza','plants','fossil','blood'].forEach(k=>TREAT_IMG[k]=img('treat_'+k+'.png'));
 const CARRY_SC=.45; // carried items at the front of the room; over a plant they take that plant's depth (holdK, overK)
 function drawCarried(im,x,y,sc=CARRY_SC,flip){if(!ok(im))return;y+=(Math.floor(T*2)%2)*2;const w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);
  if(flip){g.save();g.translate(Math.round(x),0);g.scale(-1,1);g.drawImage(im,-Math.round(w/2),Math.round(y-h/2),w,h);g.restore();}else g.drawImage(im,Math.round(x-w/2),Math.round(y-h/2),w,h);} // flip = mirrored when drawn; the PNG never changes
@@ -127,14 +127,14 @@ addEventListener('resize',()=>setTimeout(placeTray,50));
    eyes open (kid, teen or adult); let go there and it reads in the room: an open book in front of it, a page flipping every
    moment (a 2-frame swap), a few tiny symbols from that book rising on whole pixels, for about 8 s. Then the book closes and
    hops back to the shelf. Let go anywhere else and the book just goes back to the tray. Same feel as the treat tray. */
-// tap areas: the rows of books on both bookcases, kept clear of the snail, the boxes, the floor lamp, the snow globe and SNACKS
+// tap areas: the rows of books on both bookcases, kept clear of the wind-up cat, the jar, the lockbox, the floor lamp, the crystal ball and the moon trunk
 // Each place holds its own four books (Jackie, Nov 15: only four at a time, depending on where you tap): every book can be found in three or four places.
 const BOOK_ZONES=[
- {x:6,y:150,w:208,h:72,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row */,{x:6,y:250,w:132,h:74,books:['songs','stars','letters','field']},
- {x:6,y:355,w:42,h:64,books:['riddles','proverbs','recipes','ghost']},{x:6,y:462,w:88,h:78,books:['fairy','songs','ghost','stars']},{x:6,y:580,w:132,h:74,books:['almanac','field','recipes','letters']},
- {x:1608,y:220,w:38,h:80,books:['grimoire','ghost','stars','riddles']}/* right bookcase */,{x:1476,y:322,w:170,h:74,books:['nonsense','riddles','songs','proverbs']}/* the shelf by the window */,
- {x:1606,y:410,w:38,h:72,books:['letters','proverbs','almanac','fairy']},{x:1474,y:505,w:152,h:48,books:['field','recipes','grimoire','nonsense']},
- {x:282,y:612,w:116,h:46,books:['recipes','field','songs','letters']}/* the book on the milk crate */,{x:898,y:622,w:156,h:140,books:['stars','riddles','proverbs','ghost']}/* the book stack by the desk */]; // a monster or the cat sitting there is tapped first
+ {x:4,y:140,w:208,h:86,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row */,{x:4,y:246,w:134,h:86,books:['songs','stars','letters','field']},
+ {x:4,y:354,w:46,h:84,books:['riddles','proverbs','recipes','ghost']},{x:4,y:456,w:88,h:90,books:['fairy','songs','ghost','stars']},{x:4,y:558,w:200,h:88,books:['almanac','field','recipes','letters']},
+ {x:138,y:664,w:72,h:76,books:['stars','riddles','proverbs','ghost']}/* beside the lockbox */,
+ {x:1482,y:316,w:158,h:78,books:['nonsense','riddles','songs','proverbs']}/* right bookcase, the full row */,
+ {x:1482,y:498,w:60,h:64,books:['letters','proverbs','almanac','fairy']},{x:1546,y:498,w:92,h:64,books:['field','recipes','grimoire','nonsense']}]; // a monster or the cat sitting there is tapped first
 function bookZone(x,y){return BOOK_ZONES.find(r=>inR(x,y,r))||null;}
 function onBookshelf(x,y){return !!bookZone(x,y);}
 const BOOK_LOOK={fairy:{c:C.coral,d:C.brick,e:['.y.','yyy','.y.']},almanac:{c:C.blue,d:C.navy,e:['yyy','y.y','yyy']},

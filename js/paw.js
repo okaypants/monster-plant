@@ -17,9 +17,9 @@
 const PAW_K=1/3; // nearest-neighbor
 const PAW_ART={envelope:img('sloth_paw_envelope.png'),seed:img('sloth_paw_seed.png'),empty:img('sloth_paw_empty.png')},ITEM_ART={envelope:img('envelope.png'),seed:img('seed_packet.png')};
 const PAW_HOLD={envelope:38,seed:29}; // where the held item's middle is, from the left of its paw picture (scaled)
-const SILL_ITEM={x:425,y:SURFACE.sill}; // the middle of the windowsill's open ledge, clear of the armchair
+const SILL_ITEM={x:410,y:SURFACE.sill}; // the middle of the windowsill's open ledge, clear of the armchair
 // the first x, row by row, of what's in front of the window on the right (the window's edge, then the armchair's outline): the paw is only seen left of it
-const PAW_EDGE=[[0,572],[450,534],[456,517],[462,503],[468,497],[474,486],[480,484],[486,479],[492,475],[498,474],[504,471]];
+const PAW_EDGE=[[0,566],[474,540],[478,505],[484,490],[492,480],[500,474],[512,470]];
 const PAW_IN=3,PAW_PAUSE=1,PAW_STEP=4,PAW_CALM=2,PAW_OPEN=1;
 const pawScaled=new Map();
 function pawPic(im){if(!ok(im))return null;let c=pawScaled.get(im);if(c)return c;c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*PAW_K);c.height=Math.round(im.naturalHeight*PAW_K);
@@ -76,31 +76,17 @@ function dbgPaw(){if(!st.pawWait){const A=allRaw().find(q=>q.stage>=8&&!q.goDest
 
 /* THE WINDOW OPENS FOR THE PAW (Jackie, Nov 14). The bottom row of panes is the lower sash: it slides up in front of the row above
    (whole pixels, straight line, 1 s), the paw reaches in through the gap, and it slides back down once the paw has gone.
-   Window piece coordinates (drawn at 318,88): the sash is rows SASH.top-SASH.bot, its glass SASH.glass by SASH.cols; it rises
-   SASH.rise, so its top rail lines up with the rail above the next row. Through the sash's glass you still see outside; through
-   the open gap too, with no bars: the gap is the bottom row's own view with the bars and edges filled in by mirroring the view
-   next to them. Behind the armchair nothing changes (pawClip). Taken from what's already drawn, so day, golden hour, every season
-   and the lamps all match. */
-const SASH={x:318,y:88,top:316,bot:431,glass:[334,425],cols:[[5,66],[85,160],[182,250]],x0:1,x1:254,rise:100};
+   The sash is the bottom row's bars (SASH, room coordinates); it rises SASH.rise, one row of panes. Through the open gap you see
+   outside with no bars. Behind the armchair and the curtains nothing changes. The bars are taken from the lit room, so day,
+   golden hour, night and the lamps all match. */
+const SASH_PIC=img('sash2.png'),SASH={x:316,y:423,w:256,h:81,rise:89}; // sash2.png: the bars of the bottom row only (tools/room_build.py); it rises one row of panes
 let sashKey='',sashBar=null,sashGap=null;
 function sashUp(){if(!paw)return 0;const t=paw.t,O=PAW_OPEN,e=paw.end;return Math.round(SASH.rise*clamp(Math.min(t,e-t)/O,0,1));}
-// the nearest glass coordinate to v within [a,b] sections, mirrored across the bar or edge between them
-function sashMirror(v,spans){for(const [a,b] of spans)if(v>=a&&v<=b)return v;let best=null,d=1e9;
- for(const [a,b] of spans){if(v<a&&a-v<d){d=a-v;best=Math.min(b,a+(a-v));}if(v>b&&v-b<d){d=v-b;best=Math.max(a,b-(v-b));}}return best;}
-function sashBuild(){const w=SASH.x1-SASH.x0,h=SASH.bot-SASH.top,X=SASH.x+SASH.x0,Y=SASH.y+SASH.top,src=g.getImageData(X,Y,w,h),d=src.data;
- const inGlass=(px,py)=>py>=SASH.glass[0]&&py<=SASH.glass[1]&&SASH.cols.some(([a,b])=>px>=a&&px<=b);
- const chairAt=(rx,ry)=>{let e=572;for(const [y0,ex] of PAW_EDGE)if(ry>=y0)e=ex;return rx>=e;};
- // the sash itself: its bars and edges, the glass left clear; what the armchair hides is filled from above (glass rows) or the left
- const bar=new ImageData(w,h),b=bar.data;
- for(let j=0;j<h;j++)for(let i=0;i<w;i++){const px=i+SASH.x0,py=j+SASH.top;if(inGlass(px,py))continue;let si=i,sj=j;
-  if(chairAt(X+i,Y+j)){if(py>=SASH.glass[0]&&py<=SASH.glass[1]+1){while(sj>0&&chairAt(X+si,Y+sj))sj--;}else{while(si>0&&chairAt(X+si,Y+sj))si--;}}
-  const o=(j*w+i)*4,s=(sj*w+si)*4;b[o]=d[s];b[o+1]=d[s+1];b[o+2]=d[s+2];b[o+3]=255;}
- // the open gap: the bottom row's view, bars and edges mirrored from the glass beside them
- const gy0=SASH.glass[0]-1,gh=SASH.bot-gy0,gap=new ImageData(w,gh),q=gap.data,cols=SASH.cols,rows=[SASH.glass];
- for(let j=0;j<gh;j++)for(let i=0;i<w;i++){const px=sashMirror(i+SASH.x0,cols),py=sashMirror(j+gy0,rows),o=(j*w+i)*4,s=((py-SASH.top)*w+(px-SASH.x0))*4;q[o]=d[s];q[o+1]=d[s+1];q[o+2]=d[s+2];q[o+3]=255;}
- const cv=(im)=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').putImageData(im,0,0);return c;};
- sashBar=cv(bar);sashGap=cv(gap);}
-// called in draw() right after the window, before anything stands in front of it
-function drawSash(key){const up=sashUp();if(!up){sashKey='';return;}
- const k=key+seasonNow();if(k!==sashKey||!sashBar){sashBuild();sashKey=k;}
- g.save();pawClip();g.imageSmoothingEnabled=false;g.drawImage(sashGap,SASH.x+SASH.x0,SASH.y+SASH.glass[0]-1);g.drawImage(sashBar,SASH.x+SASH.x0,SASH.y+SASH.top-up);g.restore();}
+// the gap is the view outside with no bars; the bars are the lit room's own, moved up. Both are cut to the sash's shape, so the curtains and armchair in front never change
+function sashBuild(rm){const mk=()=>{const c=document.createElement('canvas');c.width=SASH.w;c.height=SASH.h;return c;};
+ sashBar=mk();let x=sashBar.getContext('2d');x.drawImage(rm,SASH.x,SASH.y,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);
+ sashGap=mk();x=sashGap.getContext('2d');x.drawImage(cv,SASH.x,SASH.y-SASH.rise,SASH.w,SASH.h,0,0,SASH.w,SASH.h);x.fillStyle=SKY[timeKey()];x.fillRect(0,0,SASH.w,SASH.h);x.globalCompositeOperation='destination-in';x.drawImage(SASH_PIC,0,0);}
+// called in draw() right after the room, before anything stands in front of it
+function drawSash(key,rm){const up=sashUp();if(!up||!rm||!ok(SASH_PIC)){sashKey='';return;}
+ const k=key+seasonNow();if(k!==sashKey||!sashBar){sashBuild(rm);sashKey=k;}
+ g.save();pawClip();g.imageSmoothingEnabled=false;g.drawImage(sashGap,SASH.x,SASH.y);g.drawImage(sashBar,SASH.x,SASH.y-up);g.restore();}

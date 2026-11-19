@@ -1,26 +1,26 @@
 'use strict';
 /* Seasonal items (Jackie, Nov 15), cut from her season sheets (magenta keyed out only; tools/season_cut.py).
    Autumn: now and then a single leaf drifts down outside the window, seen only through the glass (window_glass.png, tools/window_glass.py),
-   in the daytime and at golden hour. The pumpkin sits on the book stack by the desk: tap it and it rocks. It wears the same face day and night
+   in the daytime and at golden hour. The pumpkin sits on the milk crate: tap it and it rocks. It wears the same face day and night
    (closed eyes, black mouth: Jackie, Nov 16; tools/pumpkin_eyes.py).
    Winter: the potted tree with its six ornaments sits there instead: tap it and it sways and the ornaments swing.
-   The leaf pile waits for an outdoor space. While a plant sits on the book stack the seasonal item makes room (it isn't drawn); the cat naps elsewhere while it's out. */
+   The leaf pile waits for an outdoor space. While a plant sits on the crate the seasonal item makes room (it isn't drawn); the cat naps elsewhere while it's out. */
 const LEAVES=['maple','redmaple','ginkgo','oak','twig','round'].map(n=>img('leaf_'+n+'.png'));
-const GLASS=img('window_glass.png'),GLASS_AT={x:318,y:88},GLASS_W=254,GLASS_H=434; // over the season window piece
+const GLASS_AT={x:PANES.x,y:PANES.y},GLASS_W=PANES.w,GLASS_H=PANES.h; // the window's panes (js/room.js): the room is drawn over the leaves, so they show only through the glass
 const PUMPKIN=[1,2,3].map(i=>img('pumpkin'+i+'.png')); // idle, rock one way, rock the other
 const TREE=[img('tree1.png'),img('tree2.png')];
 // each ornament: its two swing frames, where its hook hangs on the tree (in tree1.png's pixels) and the hook's column in its own art
 const ORNAMENTS=[['star',70,55,60],['ball',128,57,56],['heart',40,112,56],['mushroom',152,112,57],['bell',65,180,56],['pot',135,182,54]]
  .map(([n,x,y,hx])=>({f:[img('ornament_'+n+'1.png'),img('ornament_'+n+'2.png')],x,y,hx,swing:0}));
 const LEAF_SC=.2,PUMPKIN_SC=.3,TREE_SC=.56,ORN_SC=.15; // sizes set here, never by resizing the art
-const STACK_TOP={x:972,y:651}; // the middle of the top book's cover (room art), where the item's bottom row rests
+const STACK_TOP={x:336,y:660}; // the middle of the milk crate's top (room art), where the item's bottom row rests (Jackie, Nov 18: the book stack is gone, so they sit on the crate)
 const SWAP_MS=150; // one frame of a rock, sway or swing
 let sLeaves=[],sLeafNext=0,sRock=0,sSway=0;const leafCv=document.createElement('canvas');leafCv.width=GLASS_W;leafCv.height=GLASS_H;const leafG=leafCv.getContext('2d');leafG.imageSmoothingEnabled=false;
 
 /* ---------- autumn: leaves drifting past the window ---------- */
 // one leaf at a time (two at most), every 5-12 s; it drifts slowly down in whole pixels (13-20 px a second, slowed for Jackie, Nov 17) and sways gently side to side
 function drawFallingLeaves(tk){const now=performance.now();
- if(seasonNow()!=='autumn'||tk==='night'||st.curtain==='closed'&&curK>.98||tsCalm()||!ok(GLASS)){sLeaves=[];sLeafNext=0;return;}
+ if(seasonNow()!=='autumn'||tk==='night'||st.curtain==='closed'&&curK>.98||tsCalm()){sLeaves=[];sLeafNext=0;return;}
  if(!sLeafNext)sLeafNext=now+rnd(1,4)*1000;
  if(now>=sLeafNext&&sLeaves.length<2){const im=LEAVES[Math.floor(Math.random()*LEAVES.length)];
   sLeaves.push({im,x:rnd(10,GLASS_W-40),y:-40,vy:rnd(13,20),a:rnd(6,14),w:rnd(.8,1.3),ph:rnd(0,6.28)});sLeafNext=now+rnd(5,12)*1000;}
@@ -29,15 +29,14 @@ function drawFallingLeaves(tk){const now=performance.now();
  for(const L of sLeaves){L.y+=L.vy*dtDraw;L.ph+=L.w*dtDraw;if(!ok(L.im))continue;
   leafG.drawImage(L.im,Math.round(L.x+Math.sin(L.ph)*L.a),Math.round(L.y),Math.round(L.im.naturalWidth*LEAF_SC),Math.round(L.im.naturalHeight*LEAF_SC));}
  sLeaves=sLeaves.filter(L=>L.y<GLASS_H);
- leafG.globalCompositeOperation='destination-in';leafG.drawImage(GLASS,0,0);leafG.globalCompositeOperation='source-over'; // only where the glass is
  g.drawImage(leafCv,GLASS_AT.x,GLASS_AT.y);}
 
-/* ---------- the pumpkin (autumn) and the tree (winter) on the book stack ---------- */
+/* ---------- the pumpkin (autumn) and the tree (winter) on the milk crate ---------- */
 function seasonOut(){const s=seasonNow();return s==='autumn'?'pumpkin':s==='winter'?'tree':null;} // whose season it is
-// out on the book stack unless a plant sits there (or the cat, which only happens when debug puts it there: the cat leaves the stack to it)
-function seasonItem(){const k=seasonOut();if(!k||cat.spot==='books')return null;
- let onStack=false;eachPlant(()=>{if(st.stage>=0&&spotKey()==='books')onStack=true;});return onStack?null:k;}
-function stackOff(){const p=FP.find(q=>q.n==='bookstack');return p?{x:Math.round(p.ox),y:Math.round(p.oy)}:{x:0,y:0};} // rides along when the book stack bounces
+// out on the crate unless a plant sits there (the cat leaves the crate to it)
+function seasonItem(){const k=seasonOut();if(!k||cat.spot==='crate')return null;
+ let onStack=false;eachPlant(()=>{if(st.stage>=0&&spotKey()==='crate')onStack=true;});return onStack?null:k;}
+function stackOff(){const p=FP.find(q=>q.n==='crate');return p?{x:Math.round(p.ox),y:Math.round(p.oy)}:{x:0,y:0};} // rides along when the crate bounces
 function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now()):0;}
 function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:TREE[0];if(!ok(f))return null;const sc=k==='pumpkin'?PUMPKIN_SC:TREE_SC,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
  return {k,sc,x:STACK_TOP.x-Math.round(w/2),y:STACK_TOP.y-h,w,h};}

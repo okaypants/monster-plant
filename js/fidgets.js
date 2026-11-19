@@ -2,50 +2,44 @@
 /* Fidgets: springy room props, snow globe, vines, book spines, bouncing treats, plant boing, and one small thing of its own for each doodad (fidgetDo). */
 /* ---------- FIDGETS (Jackie: squishy, bouncy, endlessly repeatable; visual only, sound slots for Garry later) ---------- */
 // Springy props cut from the current room picture. Fixed 60fps physics; drawn on whole pixels (DS rule).
+// 'thing' = the room thing (js/room.js THINGS) this box belongs to: while it bounces, its own picture is drawn moved, never a copy over it
 const FP=[
- {n:'ammonite',x:1062,y:138,w:76,h:80,k:.18,d:.12,kick:{vy:-4},puff:true},
- {n:'snail',x:52,y:345,w:86,h:92,k:.10,d:.10,scoot:true},
- {n:'pillow',x:565,y:512,w:162,h:136,k:.14,d:.16,kick:{vy:5}},
- {n:'drum',x:1252,y:152,w:182,h:72,k:.25,d:.18,kick:{vy:3}},
- {n:'armillary',x:1288,y:248,w:110,h:110,k:.16,d:.06,kick:{vx:5},does:'sun'},
- {n:'butterflies',x:922,y:128,w:116,h:150,k:.12,d:.08,kick:{vx:4},does:'fly'},
- {n:'catpic',x:738,y:348,w:154,h:120,k:.15,d:.12,kick:{vx:3},does:'hearts'},
- {n:'flowerpic',x:668,y:122,w:240,h:212,k:.12,d:.1,kick:{vx:3},does:'petals'},
- {n:'moonpanel',x:922,y:290,w:116,h:180,k:.13,d:.1,kick:{vx:3},does:'moon'},
- {n:'radio',x:1078,y:468,w:106,h:60,k:.22,d:.14,kick:{vy:-3}},
- {n:'glass',x:838,y:552,w:46,h:50,k:.3,d:.08,kick:{vx:3},does:'drops'},
- {n:'bookstack',x:898,y:622,w:156,h:140,k:.16,d:.14,kick:{vy:4}},
- {n:'petbed',x:1478,y:782,w:186,h:136,k:.16,d:.16,kick:{vy:5}},
- {n:'cratebook',x:282,y:612,w:116,h:46,k:.18,d:.12,kick:{vy:-5}},
- {n:'box1',x:98,y:466,w:86,h:76,k:.2,d:.1,kick:{vy:-4},does:'coins'},
- {n:'lockbox',x:22,y:672,w:96,h:66,k:.2,d:.1,kick:{vy:-4},does:'safe'},
- {n:'box2',x:1072,y:292,w:82,h:70,k:.2,d:.1,kick:{vy:-4},does:'music'},
- {n:'moonbox',x:1492,y:412,w:102,h:76,k:.2,d:.1,kick:{vy:-4}},
- {n:'crate',x:252,y:664,w:178,h:106,k:.2,d:.14,kick:{vy:-3},does:'record'},
- {n:'stool',x:756,y:606,w:140,h:156,k:.2,d:.12,kick:{vx:3}},
- {n:'deskchair',x:1214,y:548,w:152,h:214,k:.12,d:.16,kick:{vx:5}},
+ {n:'ammonite',x:1060,y:146,w:108,h:84,k:.18,d:.12,kick:{vy:-4},puff:true},
+ {n:'toy',thing:'toy',x:52,y:350,w:90,h:90,k:.10,d:.10,scoot:true,clip:[52,340,88,100]}, // it rolls behind the lamp's shade, never over it
+ {n:'pillow',x:582,y:532,w:122,h:116,k:.14,d:.16,kick:{vy:5}},
+ {n:'drum',x:1220,y:140,w:186,h:88,k:.25,d:.18,kick:{vy:3}},
+ {n:'moondial',x:1306,y:270,w:98,h:102,k:.16,d:.06,does:'moon'},
+ {n:'viewer',x:1056,y:284,w:108,h:86,k:.2,d:.1,kick:{vy:-3},does:'view'},
+ {n:'catpic',x:737,y:352,w:158,h:112,k:.15,d:.12,kick:{vx:3},does:'hearts'},
+ {n:'bigpic',x:670,y:122,w:232,h:214,k:.12,d:.1,kick:{vx:3},does:'stars'},
+ {n:'radio',x:1073,y:478,w:124,h:64,k:.22,d:.14,kick:{vy:-3}},
+ {n:'forks',x:784,y:468,w:80,h:92,k:.3,d:.08,kick:{vx:4},does:'rattle'},
+ {n:'petbed',x:1464,y:768,w:194,h:154,k:.16,d:.16,kick:{vy:5}},
+ {n:'box1',x:112,y:460,w:80,h:90,k:.2,d:.1,kick:{vy:-4},does:'coins'},
+ {n:'lockbox',x:28,y:676,w:100,h:64,k:.2,d:.1,kick:{vy:-4},does:'safe'},
+ {n:'moonbox',x:1502,y:408,w:120,h:72,k:.2,d:.1,does:'trunk'},
+ {n:'ball',x:1524,y:216,w:76,h:86,k:.25,d:.12,does:'ball'},
+ {n:'crate',x:242,y:626,w:190,h:152,k:.2,d:.14,kick:{vy:-3},does:'record'},
+ {n:'deskchair',x:1214,y:546,w:154,h:232,k:.12,d:.16,kick:{vx:5}},
 ];
 FP.forEach(p=>{p.ox=0;p.oy=0;p.vx=0;p.vy=0;p.hops=0;p.dust=10;});
-const FSPINE_ROWS=[[146,80,4,224],[248,80,4,212],[456,86,4,92],[568,80,4,218]];
-let fSpines=[],fBits=[],fSnow=[];
+const FSPINE_ROWS=[[140,86,4,212],[246,86,4,212],[354,84,4,50],[456,90,4,92],[558,88,4,212],[664,76,138,212]];
+let fSpines=[],fBits=[];
 const FVINES=[];const VT=16; // finer leaf grid (Jackie): small tiles, and only leaf pixels move
 for(let x=0;x<300;x+=VT)for(let y=10;y<290;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
-for(let x=1462;x<1665;x+=VT)for(let y=66;y<226;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
+for(let x=1414;x<1665;x+=VT)for(let y=60;y<366;y+=VT)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0});
 // the plant on the trinket shelf rustles like the vines (Jackie, Nov 4): its leaves are small tiles too, instead of the whole plant bouncing
-const SHELF_PLANT={x:1158,y:268,w:126,h:162};
-const SHELF_POT={x:1188,y:320,w:82,h:48}; // its pot's green diamonds look like leaves: the pot stays still
+const SHELF_PLANT={x:1166,y:268,w:132,h:214};
+const SHELF_POT={x:1214,y:318,w:60,h:50}; // its pot's green diamonds look like leaves: the pot stays still
 for(let x=SHELF_PLANT.x;x<SHELF_PLANT.x+SHELF_PLANT.w;x+=VT)for(let y=SHELF_PLANT.y;y<SHELF_PLANT.y+SHELF_PLANT.h;y+=VT)if(x+VT<=SHELF_POT.x||x>=SHELF_POT.x+SHELF_POT.w||y+VT<=SHELF_POT.y||y>=SHELF_POT.y+SHELF_POT.h)FVINES.push({x,y,w:VT,h:VT,ox:0,vx:0,shelf:true});
-const FGLOBE={cx:1537,cy:257,r:36},fGlobeKick={x:1494,y:218,w:88,h:86,ox:0,oy:0,vx:0,vy:0,k:.25,d:.12};
 const BOING={oy:0,vy:0,ox:0,vx:0};const FFLOOR=900;
-function fplay(name){/* sound slot for Garry: ammonite_puff, snail_wind, book_slide, pillow_squish, globe_shake, treat_drop, treat_bounce, plant_boing, vine_rustle, glass_clink, drum_tap */}
+function fplay(name){/* sound slot for Garry: ammonite_puff, toy_wind, book_slide, pillow_squish, globe_shake, treat_drop, treat_bounce, plant_boing, vine_rustle, glass_clink, drum_tap */}
 const fhit=(p,x,y)=>x>=p.x&&x<p.x+p.w&&y>=p.y&&y<p.y+p.h;
 function fidgetPoke(x,y){
- if(Math.hypot(x-FGLOBE.cx,y-FGLOBE.cy)<FGLOBE.r+8){for(let i=0;i<26;i++){const a=rnd(0,6.28),r=rnd(0,FGLOBE.r-6);fSnow.push({x:FGLOBE.cx+Math.cos(a)*r,y:FGLOBE.cy+Math.sin(a)*r,vx:rnd(-1.5,1.5),vy:rnd(-2.5,.5)});}
-  if(fSnow.length>80)fSnow.splice(0,fSnow.length-80);fGlobeKick.vx+=4*(Math.random()<.5?1:-1);fplay('globe_shake');if(st.started&&bump('shakes')>=30)earnPot('frost');return true;}
  if(x>=SHELF_PLANT.x&&x<SHELF_PLANT.x+SHELF_PLANT.w&&y>=SHELF_PLANT.y&&y<SHELF_PLANT.y+SHELF_PLANT.h){const dir=x<SHELF_PLANT.x+SHELF_PLANT.w/2?1:-1; // a tap rustles the leaves near your finger, away from it
   for(const v of FVINES)if(v.shelf){const d=Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2));if(d<70)v.vx+=dir*(2.2-d/50)*(.8+Math.random()*.4);}fplay('vine_rustle');return true;}
  for(const p of FP)if(fhit(p,x,y)){
-  if(p.scoot){p.laps=Math.min((p.laps||0)+1,3);if(p.run==null)p.run=0;fplay('snail_wind');return true;} // the wind-up snail trundles along its shelf and back
+  if(p.scoot){p.laps=Math.min((p.laps||0)+1,3);if(p.run==null)p.run=0;fplay('toy_wind');return true;} // the wind-up cat trundles along its shelf and back
   if(p.does)fidgetDo(p,x,y);
   const k=p.kick||{};p.vx+=(k.vx||0)*(x<p.x+p.w/2?1:-1);p.vy+=(k.vy||0);
   if(p.puff){const n=Math.max(2,Math.round(p.dust));for(let i=0;i<n;i++)fBits.push({x:p.x+p.w/2+rnd(-25,25),y:p.y+rnd(10,40),vx:rnd(-1.6,1.6),vy:rnd(-3.2,-.6),life:rnd(40,80),c:Math.random()<.5?'#f3e6c8':'#d9c6a0'});
@@ -53,37 +47,46 @@ function fidgetPoke(x,y){
   fplay(p.n);return true;}
  for(const s of FSPINE_ROWS)if(y>=s[0]&&y<s[0]+s[1]&&x>=s[2]&&x<s[3]){fSpines.push({x:Math.max(s[2],Math.round(x)-12),y:s[0],w:24,h:s[1],oy:0,vy:-6});if(fSpines.length>30)fSpines.shift();fplay('book_slide');return true;}
  return false;}
-/* EVERYTHING YOU CAN TOUCH DOES SOMETHING OF ITS OWN (Jackie, Nov 17: "if it's like a container, it needs to be filled with stuff
-   that we can fuck with ... Not everything has to be super involved. It can just be like a little micro interaction").
-   Beyond its bounce or swing, each of these has one small thing that is its own, made of code-drawn pixels and whole-pixel
-   moves (no new room art):
-     the lidded jar on the left bookcase   gold coins spill out and bounce along the shelf
-     the red box on the trinket shelf      a music box: a short tune, with notes floating up
-     the lockbox                           opens the journal at Keep it safe (its lock ribbon)
+/* EVERYTHING YOU CAN TOUCH DOES SOMETHING OF ITS OWN (Jackie, Nov 17 and 18). Beyond its bounce, each of these has one small
+   thing that is its own:
+     the lidded jar on the left bookcase   its lid lifts and gold coins spill out along the shelf
+     the lockbox                           opens, and the journal opens at Keep it safe
      the milk crate                        holds the records: a tap puts the next one on the radio
-     the butterfly frame                   a butterfly flutters out and away
-     the moon panel                        says what tonight's real moon is
-     the armillary                         says which sign the sun is in today
+     the moon dial                         shows tonight's real moon, and says what it is
+     the crystal ball                      mist gathers and it gives a sign (Melville's "Crystal-Gazing", 1910: the colour of
+                                           the clouds and whether they rise or sink)
+     the viewfinder                        its lever clicks
+     the cup of forks                      the forks rattle
+     the moon trunk                        its lid lifts, and the moon box opens
      the cat's picture                     little hearts
-     the flower painting                   petals drift down
-     the glass                             drops of water jump
-     the wind-up snail                     trundles along its shelf and back (it used to hop up into the shelf above)
-   The stool and the desk chair wobble like the other furniture. */
+     the big picture                       a few gold stars
+     the wind-up cat                       trundles along its shelf and back
+   The shell puffs dust; the pillow, the cat bed and the desk chair wobble like the other furniture. */
 const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17: "I think lidded jar should be coins")
-const TUNES=[[0,2,4,7,4,2,0],[7,4,2,0,2,4,7,9],[0,4,7,9,7,4,0],[4,2,0,2,4,4,4],[9,7,4,2,0,2,4]]; // steps of a major scale, five small tunes
-function musicBox(){if(!AC)audioInit();if(!AC)return;const tune=TUNES[Math.floor(Math.random()*TUNES.length)],t0=AC.currentTime+.03;
- tune.forEach((st2,i)=>{try{tone(t0+i*.19,.5,'triangle',523.25*Math.pow(2,st2/12),0,.07,.005)}catch(e){}});}
+/* THE CRYSTAL BALL (Jackie, Nov 17: "let's base it on something real"). The signs are John Melville's, from "Crystal-Gazing and
+   the Wonders of Clairvoyance" (1910), "Appearances in the Crystal": white clouds are good; black are bad; violet, green and blue
+   mean coming joy; red, crimson, orange and yellow mean danger or trouble; clouds that rise answer yes and clouds that sink answer no.
+   Bad signs stay in. The mist gathers in four frames and clears again. */
+const BALL_SIGNS=['White clouds fill the ball. That is a good sign.','The clouds in the ball rise. The answer is yes.','The clouds in the ball sink. The answer is no.',
+ 'Dark clouds fill the ball. That is a bad sign for now.','Green clouds drift through the ball. Something happy is coming.','Blue clouds drift through the ball. Something happy is coming.',
+ 'Violet clouds drift through the ball. Something happy is coming.','Red clouds flicker in the ball. Be careful for a while.','Yellow clouds flicker in the ball. Be careful for a while.'];
+const BALL_MS=2600;let ballT=-1e9;
+function ballFrame(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?1:[2,3,4,5,5,4,3,2][Math.floor(d/(BALL_MS/8))]||1;}
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ballT=now;sfx('chime');
+ if(!st.ballMet){st.ballMet=1;tell('Tell the crystal ball what you want to know, or it will figure it out for you.',{kind:'info',key:'ballHi'});}
+ setTimeout(()=>tell(BALL_SIGNS[Math.floor(Math.random()*BALL_SIGNS.length)],{kind:'info',key:'ballSign'}),BALL_MS*.55);
+ if(st.started&&bump('shakes')>=30)earnPot('frost');}
 function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.length>160)fBits.shift();};
- if(p.does==='coins'){for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(110,170),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:p.y+p.h-10});sfx('pop');}
- else if(p.does==='music'){musicBox();for(let i=0;i<4;i++)add({x:cx+rnd(-24,20),y:p.y-4-i*6,vx:rnd(-.5,.5),vy:rnd(-1.5,-.9),g:0,sway:true,life:70+i*14,c:i%2?'#c4155c':'#4a2a4f',note:true});}
- else if(p.does==='safe'){if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
+ if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(110,170),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:p.y+p.h-10});sfx('pop');}
+ else if(p.does==='safe'){openThing('lockbox',900);if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
  else if(p.does==='record'){if(typeof radioOn==='function'){if(!radio.on){radio.band='crates';radioOn(true);tell('You put a record from the crate on the radio.',{kind:'info',key:'crateRec'});}else if(radio.band!=='crates')radioBand('crates');else radioStep(1);}}
- else if(p.does==='fly'){add({x:cx+rnd(-20,20),y:p.y+12,vx:rnd(-.8,.8),vy:-1.3,g:0,sway:true,life:230,c:'#fff4e2',fly:true});}
- else if(p.does==='moon'){if(typeof moonName==='function'){const n=moonName(Date.now());tell(/quarter/.test(n)?'The moon is at its '+n+' tonight.':'There is a '+n+(/moon$/.test(n)?'':' moon')+' tonight.',{kind:'info',key:'moonPanel'});}}
- else if(p.does==='sun'){if(typeof skyLon==='function')tell('The sun is in '+skySign(skyLon('sun',Date.now())).name+' today.',{kind:'info',key:'armillary'});}
+ else if(p.does==='moon'){if(typeof moonName==='function'){const n=moonName(Date.now());tell(/quarter/.test(n)?'The moon is at its '+n+' tonight.':'There is a '+n+(/moon$/.test(n)?'':' moon')+' tonight.',{kind:'info',key:'moonDial'});}}
  else if(p.does==='hearts'){for(let i=0;i<2;i++)add({x:cx+rnd(-30,20),y:p.y+p.h*.3,vx:rnd(-.3,.3),vy:-1,g:0,sway:true,life:60+i*20,c:'#e98aa8',heart:true});}
- else if(p.does==='petals'){for(let i=0;i<4;i++)add({x:p.x+rnd(40,p.w-40),y:p.y+p.h*.45,vx:rnd(-.4,.4),vy:.5,g:.004,sway:true,life:rnd(120,170),c:['#e98aa8','#fdebc9','#e2b04a'][i%3],petal:true});}
- else if(p.does==='drops'){for(let i=0;i<4;i++)add({x:cx+rnd(-8,8),y:p.y+10,vx:rnd(-1.2,1.2),vy:rnd(-3.2,-1.8),life:rnd(30,50),c:'#9ad1e8',drop:true});}}
+ else if(p.does==='stars'){for(let i=0;i<4;i++)add({x:p.x+rnd(30,p.w-30),y:p.y+rnd(30,p.h-60),vx:rnd(-.5,.5),vy:rnd(-.9,-.3),g:.01,sway:true,life:rnd(60,110),c:['#ffd23f','#ffdf6b','#fff4e2'][i%3],petal:true});}
+ else if(p.does==='rattle'){[0,90,180].forEach(d=>setTimeout(()=>sfx('tick'),d));}
+ else if(p.does==='view'){openThing('viewer',500);sfx('tick');}
+ else if(p.does==='trunk'){openThing('trunk',900);}
+ else if(p.does==='ball'){ballGaze();}}
 function plantBoing(x){BOING.vy=-9-Math.random()*3;const b=plantBox();BOING.vx=(x<b.x+b.w/2?2:-2);fplay('plant_boing');}
 const fDrag={last:null}; // the last pointer spot, for brushing the vines
 cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
@@ -93,12 +96,9 @@ function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox
 function fidgetStep(){
  for(const p of FP){if(p.scoot){if(p.run!=null){p.run++;const f=Math.floor(p.run/9),SEQ=[1,2,2,1,0];p.ox=SEQ[f%5]*ART_PX;if(p.run%9===0&&f%5<4)sfx('tick');if(f>=5*p.laps){p.run=null;p.laps=0;p.ox=0;}}continue;}
   fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
- fspring(fGlobeKick);
  for(const s of fSpines){s.vy+=-.14*s.oy;s.vy*=.9;s.oy+=s.vy;}fSpines=fSpines.filter(s=>Math.abs(s.oy)>.3||Math.abs(s.vy)>.2);
  for(const v of FVINES){v.vx+=-.1*v.ox;v.vx*=.9;v.ox=clamp(v.ox+v.vx,-3,3);}
  for(const b of fBits){b.vy+=b.g!=null?b.g:.12;b.vx*=.98;if(b.sway)b.vx+=Math.sin(b.life/9)*.06;b.x+=b.vx;b.y+=b.vy;if(b.fl!=null&&b.y>=b.fl&&b.vy>0){b.y=b.fl;b.vy=b.vy>1?-b.vy*.45:0;b.vx*=.7;}b.life--;}fBits=fBits.filter(b=>b.life>0);
- for(const s of fSnow){s.vy+=.04;s.vx*=.96;s.vy*=.97;s.x+=s.vx;s.y+=s.vy;const dx=s.x-FGLOBE.cx,dy=s.y-FGLOBE.cy,d=Math.hypot(dx,dy),lim=FGLOBE.r-5;if(d>lim){s.x=FGLOBE.cx+dx/d*lim;s.y=FGLOBE.cy+dy/d*lim;s.vx*=-.3;s.vy*=-.3;}}
- fSnow=fSnow.filter(s=>!(s.y>FGLOBE.cy+FGLOBE.r-8&&Math.abs(s.vy)<.05&&Math.random()<.01));
  if(BOING.oy<0||BOING.vy!==0){BOING.vy+=.6;BOING.oy+=BOING.vy;if(BOING.oy>=0){BOING.oy=0;if(BOING.vy>2.5)BOING.vy=-BOING.vy*.42;else BOING.vy=0;}}
  BOING.vx+=-.2*BOING.ox;BOING.vx*=.85;BOING.ox+=BOING.vx;
 }
@@ -117,13 +117,13 @@ function fgPiece(src,x,y,w,h,kind){const key=src.src+'|'+x+','+y+','+w+','+h+'|'
   for(let i=0;i<D.length;i+=4){let near=false;for(const q of bg){if(Math.abs(D[i]-q[0])+Math.abs(D[i+1]-q[1])+Math.abs(D[i+2]-q[2])<42){near=true;break;}}if(near)D[i+3]=0;}}
  cx.putImageData(d,0,0);if(fgCache.size>400)fgCache.clear();fgCache.set(key,c);return c;}
 function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now-fPrev);fPrev=now;while(fAcc>=1000/60){fidgetStep();fAcc-=1000/60;}
- if(!src||!ok(src))return;const pc=(x,y,w,h,ox,oy)=>g.drawImage(src,x,y,w,h,x+Math.round(ox),y+Math.round(oy),w,h);
+ if(!src)return;const pc=(x,y,w,h,ox,oy)=>g.drawImage(src,x,y,w,h,x+Math.round(ox),y+Math.round(oy),w,h);
  const pf=(x,y,w,h,ox,oy,kind)=>{const c=fgPiece(src,x,y,w,h,kind);if(c)g.drawImage(c,x+Math.round(ox),y+Math.round(oy));};
  vineFilter(src);for(const v of FVINES)if(v.on&&Math.round(v.ox))pf(v.x,v.y,v.w,v.h,v.ox,0,'leaf');
- for(const p of FP)if(Math.round(p.ox)||Math.round(p.oy))pf(p.x,p.y,p.w,p.h,p.ox,p.oy,'obj');
- if(Math.round(fGlobeKick.ox)||Math.round(fGlobeKick.oy))pc(fGlobeKick.x,fGlobeKick.y,fGlobeKick.w,fGlobeKick.h,fGlobeKick.ox,fGlobeKick.oy);
+ for(const p of FP){if(!(Math.round(p.ox)||Math.round(p.oy)))continue;
+  if(p.thing){const t=thingBy(p.thing),b=t&&thingBox(t);if(b){g.save();if(p.clip){g.beginPath();g.rect(...p.clip);g.clip();}g.drawImage(litPic(b.im,lightAt(t.x,t.y-20)),b.x+Math.round(p.ox),b.y+Math.round(p.oy));g.restore();}}
+  else pf(p.x,p.y,p.w,p.h,p.ox,p.oy,'obj');}
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
- g.fillStyle='#ffffff';for(const s of fSnow)g.fillRect(Math.round(s.x+fGlobeKick.ox)-1,Math.round(s.y)-1,3,3);
  idleTick(now);const io=idleOffset(now);if(io&&idleOn.it.k!=='sprite'){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
 function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round(b.x/U)*U,y=Math.round(b.y/U)*U;g.fillStyle=b.c; // the new little things are drawn on the room art's own pixel grid (5 units), so they read at phone size
   if(b.fly){const up=Math.floor(b.life/7)%2;g.fillRect(x-2*U,y+(up?-U:0),2*U,2*U);g.fillRect(x+U,y+(up?-U:0),2*U,2*U);g.fillStyle='#4a2a4f';g.fillRect(x,y-U,U,3*U);continue;} // a butterfly: two wings that flap by a frame swap
@@ -142,18 +142,18 @@ function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round
 /* Jackie, Nov 4: for now ONLY these wiggle, one item every 10 s, one at a time, under half a second each (4 frames x 110 ms):
    both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from).
    Nov 16: the sampler on the top shelf joined them when its app was built. */
-const IDLE_ITEMS=[{n:'carafe',x:776,y:498,w:66,h:106,k:'obj'},{n:'SNACKS cabinet',x:1486,y:576,w:134,h:156,k:'plain'},
- {n:'floor lamp',x:150,y:262,w:146,h:166,k:'plain'},{n:'desk lamp',x:1272,y:390,w:150,h:140,k:'obj'},
- {n:'desk drawers (journal)',x:1068,y:566,w:108,h:168,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
- {n:'sampler',x:1252,y:152,w:182,h:72,k:'obj'},
- {n:'snow globe',x:fGlobeKick.x,y:fGlobeKick.y,w:fGlobeKick.w,h:fGlobeKick.h,k:'plain'},
+const IDLE_ITEMS=[{n:'cup',k:'sprite',when:()=>false},{n:'mini fridge',x:762,y:556,w:144,h:210,k:'plain'},
+ {n:'floor lamp',x:138,y:288,w:186,h:166,k:'plain'},{n:'desk lamp',x:1268,y:402,w:174,h:146,k:'obj'},
+ {n:'desk drawers (journal)',x:1082,y:570,w:96,h:132,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
+ {n:'sampler',x:1220,y:140,w:186,h:88,k:'obj'},
+ {n:'crystal ball',x:1524,y:216,w:76,h:86,k:'obj'},
  {n:'pumpkin',k:'sprite',when:()=>seasonItem()==='pumpkin'},{n:'tree',k:'sprite',when:()=>seasonItem()==='tree'}]; // seasonal items (js/seasonal.js) nudge their own sprite, only while they're out
 const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
 function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!feed.item||!!bookDrag.item||!!bubble||!!document.querySelector('.screen');}
-function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||!!(fGlobeKick.ox||fGlobeKick.oy)||fBits.length>0||!!(BOING.oy||BOING.vy);}
+function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||fBits.length>0||!!(BOING.oy||BOING.vy);}
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
  if(!st.started||touching()||somethingMoving()){idleNext=now+1000;return;} // busy: try again in a second, so the 10 s rhythm holds

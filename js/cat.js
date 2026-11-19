@@ -21,9 +21,9 @@ const catK=f=>f.old?1:CAT_K*(POSES_SHEET.includes(f.catName)?POSES_K:f.catName==
 const SCRATCH_AT={pet:[48,-115],belly:[108,-85]};
 // his size comes from the one perspective curve (depthK in room.js): CAT_BASE at the front of the rug, smaller at deeper spots
 const CAT_BASE=.62,catSc=d=>CAT_BASE*depthK(d);
-const CAT_SPOTS={bed:{x:1578,y:SURFACE.bed,sc:catSc(DEPTH.bed),poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:catSc(DEPTH.floor),poses:['side','loaf','curl']},
- chair:{x:640,y:SURFACE.chair,sc:catSc(DEPTH.chair),poses:['curl','loaf']},sill:{x:405,y:SURFACE.sill,sc:catSc(DEPTH.sill),poses:['loaf','curl']},crate:{x:338,y:SURFACE.crate,sc:catSc(DEPTH.crate),poses:['loaf','curl']},books:{x:978,y:SURFACE.books,sc:catSc(DEPTH.books),poses:['loaf','curl']}};
-const cat={spot:'bed',x:1578,y:SURFACE.bed,sc:CAT_SPOTS.bed.sc,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0,pat:1,touchT:99};
+const CAT_SPOTS={bed:{x:1562,y:SURFACE.bed,sc:catSc(DEPTH.bed),poses:['curl','loaf']},rug:{x:760,y:SURFACE.floor,sc:catSc(DEPTH.floor),poses:['side','loaf','curl']},
+ chair:{x:620,y:SURFACE.chair,sc:catSc(DEPTH.chair),poses:['curl','loaf']},sill:{x:405,y:SURFACE.sill,sc:catSc(DEPTH.sill),poses:['loaf','curl']},crate:{x:336,y:SURFACE.crate,sc:catSc(DEPTH.crate),poses:['loaf','curl']},books:{x:832,y:SURFACE.books,sc:catSc(DEPTH.books),poses:['loaf','curl']}};
+const cat={spot:'bed',x:1562,y:SURFACE.bed,sc:CAT_SPOTS.bed.sc,state:'sleep',pose:'curl',t:0,nap:rnd(50,110),dir:1,path:null,pets:0,pat:1,touchT:99};
 /* PATIENCE (Jackie, Nov 10): a real cat's short-term patience, hidden and separate from trust. It lives only on this in-memory cat (never saved,
    never shown, never changes trust). Full each morning and after every nap. It goes down when you pet past what the cat likes right now, touch
    it while it's walking and didn't want to stop, touch it while it's winding down, or a monster spooks it or bounces near it. Left alone it

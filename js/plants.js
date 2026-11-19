@@ -57,9 +57,9 @@ function ageName(s=st.stage){return s<1?'seed':s<4?'sprout':s<6?'kid':s<8?'teen'
 function plantSpotName(){if(onChair())return 'chair';const k=spotKey();return k==='free'?'rug':k;}
 function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantSpotName()]||[0,0];}
 // SLEEPING IN THE ARMCHAIR (Jackie): asleep plants sit on the seat, sized by the chair's depth like any spot
-const CHAIR_SEAT={x:628,y:SURFACE.chair};
+const CHAIR_SEAT={x:610,y:SURFACE.chair};
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
-const CHAIR_FRONT=[[443,598,80,150],[688,598,78,150],[515,686,178,62]];
+const CHAIR_FRONT=[[440,598,84,160],[686,598,76,160],[520,690,170,64]];
 let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;} // only the plant you're dragging leaves the chair
 function inChair(){return onChair()||(!(drag.on&&st.id===drag.id)&&st.stage>=4&&spotKey()==='chair');} // napping there, or sitting there awake
 function pickChair(){const p=allRaw().find(q=>q.perch==='chair'&&q.stage>=6&&q.stage>=0);if(p){chairId=p.id;return;} /* someone sits in it awake: it's theirs */const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
