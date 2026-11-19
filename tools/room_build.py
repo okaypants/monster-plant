@@ -5,9 +5,9 @@
   sheet1.png  loose objects on magenta: only the trunk's open lid is used from it
   sheet2.png  loose objects on magenta: the crystal ball's mist, the moon dial's faces, the paper cup, the coin
   bigpic.png  the picture in the big frame
+  smallpic.png the picture in the small frame
   curtains.png the curtains drawn closed, on magenta
   views.png   the view from the window in spring, summer, autumn and winter, side by side
-  proto.png   an earlier picture, used only for the small frame's stand-in cat
 
 Writes into the repo root:
   room2.png        the room, window panes see-through, the wind-up cat's cubby empty
@@ -43,16 +43,11 @@ def build_room():
         keep|=lab==i
         if s[1].start>640:frames.append(s)
     a=defringe(a,keep);alpha=np.where(keep,0,255).astype(np.uint8)
-    # the frames: stand-in pictures until the real ones are drawn (the small one is the cat from an earlier prototype)
-    p=load('proto.png')[348:462,739:893]
+    # the frames: Jackie's pictures, each sized to cover its opening (bigpic.png the tree, smallpic.png Tofu asleep)
     for s in frames:
-        hole=keep[s];h,w=hole.shape
-        if w<180:
-            cat=np.asarray(Image.fromarray(p.astype(np.uint8)).resize((w,h),Image.LANCZOS)).astype(np.int32);a[s][hole]=cat[hole]
-        else: # the big frame: Jackie's tree (bigpic.png), sized to cover the opening
-            t=Image.open(os.path.join(SRC,'bigpic.png')).convert('RGB');k=max(w/t.width,h/t.height);t=t.resize((round(t.width*k),round(t.height*k)),Image.BOX)
-            ox,oy=(t.width-w)//2,(t.height-h)//2;a[s][hole]=np.asarray(t.crop((ox,oy,ox+w,oy+h))).astype(np.int32)[hole]
-        alpha[s][hole]=255
+        hole=keep[s];h,w=hole.shape;t=Image.open(os.path.join(SRC,'smallpic.png' if w<180 else 'bigpic.png')).convert('RGB')
+        k=max(w/t.width,h/t.height);t=t.resize((round(t.width*k),round(t.height*k)),Image.BOX);ox,oy=(t.width-w)//2,(t.height-h)//2
+        a[s][hole]=np.asarray(t.crop((ox,oy,ox+w,oy+h))).astype(np.int32)[hole];alpha[s][hole]=255
     # the wind-up cat comes out of the picture: its cubby's back is one flat colour, so the gap is that colour
     x0,y0,x1,y1=TOY;reg=a[y0:y1,x0:x1];bg=np.median(reg[2:10,2:8].reshape(-1,3),0)
     isbg=np.abs(reg-bg).sum(2)<30;lab,n=nd.label(isbg);edge=set(lab[0])|set(lab[:,0]);edge.discard(0)
