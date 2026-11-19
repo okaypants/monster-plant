@@ -53,12 +53,19 @@ function shadeMask(k,src){if(shadeMasks[k])return shadeMasks[k];const[sx,sy,sw,s
  dx.putImageData(d,0,0);const warm=mk(),wx=warm.getContext('2d');wx.drawImage(day,0,0);wx.globalCompositeOperation='source-in';wx.fillStyle='rgb(255,214,140)';wx.fillRect(0,0,w,h);
  return shadeMasks[k]={day,warm};}
 function sceneLit(){const d=sceneDay();return d?litLayer('room',d,dayKey):null;}
-/* THE WINDOW: the sky and what is outside are drawn first, the room goes over them, and the view shows through the panes. Until the
-   four season views are drawn the sky is a flat colour for the time of day, with a few stars at night and tonight's moon (js/moon.js). */
-const PANES={x:316,y:170,w:256,h:334},SKY={day:'#8fc8ee',golden:'#f0a25a',night:'#0b1640'};
-const STARS=[[20,30],[70,12],[120,60],[200,26],[232,90],[40,110],[150,140],[96,190],[214,180],[28,230],[180,250],[240,300],[60,290]];
-function drawWindowView(tk){g.fillStyle=SKY[tk];g.fillRect(PANES.x,PANES.y,PANES.w,PANES.h);
- if(tk==='night'){g.fillStyle='#e8ecf6';for(const[sx,sy]of STARS)g.fillRect(PANES.x+sx,PANES.y+sy,4,4);drawMoon(tk,seasonNow());}}
+/* THE WINDOW: what is outside is drawn first, the room goes over it, and the view shows through the panes. One daytime picture per
+   season (view_*.png, Jackie's, Nov 18). At golden hour and at night the sky is a flat sunset or night colour and the tree is
+   tinted to match; at night tonight's moon is drawn in the clear sky to the right of the tree (js/moon.js). */
+const PANES={x:316,y:170,w:256,h:334},SKY={day:'#8fc8ee',golden:'#f6a65c',night:'#0b1640'},VIEW_TINT={golden:'rgb(255,196,140)',night:'rgb(92,104,176)'};
+const VIEWS_OUT={},VIEWS_FG={};['spring','summer','autumn','winter'].forEach(n=>{VIEWS_OUT[n]=img('view_'+n+'.png');VIEWS_FG[n]=img('viewfg_'+n+'.png');}); // viewfg: the same view with its sky taken out (tools/room_build.py)
+const viewCvs=new Map();
+// the tree (and any clouds) tinted for golden hour or night: only its own pixels, made once per season and time
+function viewTinted(season,tk){const im=VIEWS_FG[season];if(!ok(im))return null;const key=season+tk;let c=viewCvs.get(key);if(c)return c;c=document.createElement('canvas');c.width=PANES.w;c.height=PANES.h;const x=c.getContext('2d');
+ x.drawImage(im,0,0);x.globalCompositeOperation='multiply';x.fillStyle=VIEW_TINT[tk];x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='destination-in';x.drawImage(im,0,0);viewCvs.set(key,c);return c;}
+function drawWindowView(tk){const s=seasonNow(),v=VIEWS_OUT[s];g.fillStyle=SKY[tk];g.fillRect(PANES.x,PANES.y,PANES.w,PANES.h);
+ if(tk==='day'){if(ok(v))g.drawImage(v,PANES.x,PANES.y);return;} // daytime: the picture as drawn, its own sky
+ if(tk==='night')drawMoon(tk,s); // the moon is behind the tree
+ const t=viewTinted(s,tk);if(t)g.drawImage(t,PANES.x,PANES.y);}
 function timeKey(){if(st.night)return 'night';const p=phase(st.dayT);return p==='golden hour'||p==='dusk'?'golden':p==='night'?'night':'day';}
 let SEASON_OVERRIDE=null; // debug: force a season (window and seasonal items); null = from the calendar
 function seasonNow(){if(SEASON_OVERRIDE)return SEASON_OVERRIDE;const m=nowDate().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';}

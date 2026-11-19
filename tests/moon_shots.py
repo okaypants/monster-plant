@@ -20,7 +20,7 @@ KNOWN = [("2024-01-11T11:57Z", "new moon"), ("2024-01-25T17:54Z", "full moon"), 
          ("2024-10-17T11:26Z", "full moon"), ("2025-03-14T06:55Z", "full moon"), ("2025-09-21T19:54Z", "new moon"),
          ("2024-02-16T15:01Z", "first quarter"), ("2024-03-03T15:23Z", "last quarter")]
 # brightness left and right of the moon's middle, and the brightest spot over the painted moon's area
-MEASURE = """(s)=>{const M=MOON_AT[s],x=318+M.x,y=88+M.y,r=M.r-2;const b=(x0,w)=>{const d=g.getImageData(x0,y-r,w,2*r).data;let t=0;for(let i=0;i<d.length;i+=4)t+=d[i]+d[i+1];return t/(d.length/4)};
+MEASURE = """(s)=>{const M=MOON_AT[s],x=PANES.x+M.x,y=PANES.y+M.y,r=M.r-2;const b=(x0,w)=>{const d=g.getImageData(x0,y-r,w,2*r).data;let t=0;for(let i=0;i<d.length;i+=4)t+=d[i]+d[i+1];return t/(d.length/4)};
  const a=g.getImageData(x-13,y-13,26,26).data;let mx=0;for(let i=0;i<a.length;i+=4)mx=Math.max(mx,a[i]+a[i+1]);return {left:b(x-r,r-1),right:b(x+2,r-1),max:mx}}"""
 
 
@@ -52,7 +52,7 @@ async def main():
                 m = await pg.evaluate("([s,a])=>{SEASON_OVERRIDE=s;MOON_TEST=a;st.night=true;st.dayT=.95;st.curtain='open';capClear();__step(2.5);capClear();__step(.1);return 1}", [s, age])
                 v = await pg.evaluate(MEASURE, s)
                 path = os.path.join(OUT, f"{s}_{name.replace(' ', '_')}.png")
-                await pg.screenshot(path=path, clip={"x": 318 + 60, "y": 88 + 90, "width": 180, "height": 130})
+                await pg.screenshot(path=path, clip={"x": 316 + 120, "y": 170 + 80, "width": 180, "height": 130})
                 shots.append((s, name, path))
                 if name == "new":
                     check(v["max"] < 300, f"{s}: at new moon the painted moon should be gone (stars and snowflakes are dimmer), brightest {v['max']}")

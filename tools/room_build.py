@@ -4,6 +4,7 @@
   filled.png  the room with every object painted in, lamps off (window panes and both frames flat magenta)
   sheet1.png  loose objects on magenta: only the trunk's open lid is used from it
   sheet2.png  loose objects on magenta: the crystal ball's mist, the moon dial's faces, the paper cup, the coin
+  views.png   the view from the window in spring, summer, autumn and winter, side by side
   proto.png   an earlier picture, used only for the small frame's stand-in cat
 
 Writes into the repo root:
@@ -135,6 +136,23 @@ def build_sash(room,panes):
     m&=~al;out=room.copy();out[...,3]=np.where(m,255,0)
     Image.fromarray(out[y0:y1,x0:x1],'RGBA').save(os.path.join(ROOT,'sash2.png'),optimize=True)
     return {'sash':[int(x0),int(y0),int(x1-x0),int(y1-y0)],'rise':int(rows[-1][0]-rows[-2][0]),'rows':rows}
+def build_views(panes):
+    """The view from the window, one picture per season (views.png: four panels side by side, each inside a dark border).
+    Each is cut out of its border and sized to cover the window's panes. Daylight only: the game tints them for golden hour and night."""
+    a=load('views.png');dark=a.sum(2)<120;cols=np.where(dark.sum(0)>a.shape[0]*.5)[0];rows=np.where(dark.sum(1)>a.shape[1]*.2)[0]
+    runs=[];
+    for c in cols:
+        if runs and c-runs[-1][1]<=3:runs[-1][1]=c
+        else:runs.append([c,c])
+    assert len(runs)==8,runs;y0,y1=rows.min(),rows.max();pw,ph=panes[2],panes[3]
+    for n,(l,r) in zip(['spring','summer','autumn','winter'],zip(runs[0::2],runs[1::2])):
+        im=Image.fromarray(a[y0+8:y1-7,l[1]+4:r[0]-3].astype(np.uint8));k=max(pw/im.width,ph/im.height)
+        im=im.resize((round(im.width*k),round(im.height*k)),Image.BOX);ox=(im.width-pw)//2;oy=(im.height-ph)//2
+        im=im.crop((ox,oy,ox+pw,oy+ph));im.save(os.path.join(ROOT,'view_'+n+'.png'),optimize=True)
+        # the same view with its sky taken out (the tree and any clouds only), so the game can put a sunset or a night sky behind it
+        v=np.asarray(im).astype(np.int32);q=(v//8).reshape(-1,3);keys,cnt=np.unique(q,axis=0,return_counts=True);sky=keys[cnt.argmax()]*8+4
+        m=np.abs(v-sky).sum(2)<70 # every bit of sky, the small gaps between leaves too
+        Image.fromarray(np.dstack([v,np.where(m,0,255)]).astype(np.uint8),'RGBA').save(os.path.join(ROOT,'viewfg_'+n+'.png'),optimize=True)
 if __name__=='__main__':
-    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']))
+    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes'])
     print(json.dumps(meta))

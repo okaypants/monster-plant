@@ -8,7 +8,7 @@
 const MOON_MONTH=29.530588853,MOON_NEW0=Date.UTC(2000,0,6,18,14); // the length of a lunar month (days) and a known new moon
 // where the moon sits in each season's night window (picture pixels; the picture is drawn at 318,88), its color, and how
 // much sky to paint over the painted moon first (enough to hide its whole shape)
-const MOON_AT=(()=>{const m=(lit)=>({x:119,y:210,r:12,cover:0,sky:'#0b1640',lit});return {spring:m([253,226,130]),summer:m([253,226,142]),autumn:m([254,211,86]),winter:m([236,236,214])};})(); // in the middle pane of the second row (Nov 18: the new room's window)
+const MOON_AT=(()=>{const m=(lit)=>({x:212,y:146,r:12,cover:0,sky:'#0b1640',lit});return {spring:m([253,226,130]),summer:m([253,226,142]),autumn:m([254,211,86]),winter:m([236,236,214])};})(); // in the right-hand pane of the second row, clear of the tree in every season and above a monster asleep in the armchair (Nov 18: the new room's window)
 const MOON_PX=2; // its pixels, in room units: chunky, like the rest of the room's pixel art
 let MOON_TEST=null; // the debug drawer and the tests can set a moon age (days) to see any phase
 function moonAge(t){if(MOON_TEST!=null)return MOON_TEST;const d=((t??Date.now())-MOON_NEW0)/864e5;return ((d%MOON_MONTH)+MOON_MONTH)%MOON_MONTH}
@@ -28,6 +28,6 @@ function moonPic(season,age){const M=MOON_AT[season],key=season+'|'+Math.round(a
     else if(lit>.02)x.fillStyle='rgba(120,140,190,.16)';else continue;
     x.fillRect(i*MOON_PX,j*MOON_PX,MOON_PX,MOON_PX)}
   moonCache.set(key,c);return c}
-function drawMoon(tk,season){if(tk!=='night')return;const M=MOON_AT[season];if(!M)return;const ox=318,oy=88;
+function drawMoon(tk,season){if(tk!=='night')return;const M=MOON_AT[season];if(!M)return;const ox=PANES.x,oy=PANES.y;
   if(M.cover){g.fillStyle=M.sky;g.beginPath();g.arc(ox+M.x,oy+M.y,M.cover,0,Math.PI*2);g.fill()}
   const p=moonPic(season,moonAge());g.drawImage(p,Math.round(ox+M.x-p.width/2),Math.round(oy+M.y-p.height/2))}
