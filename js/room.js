@@ -5,18 +5,17 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'toy cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+const OBJ={};'toy toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
 /* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (cut
    out of the room so its cubby can be empty), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'toy',x:97,y:438,pic:()=>toyHome()?'toy':null},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
+const THINGS=[{n:'toy',x:97,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
  {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
-function toyHome(){return typeof toy==='undefined'||toy.home;} // the wind-up cat is in its cubby unless it has been wound and let out (js/fidgets.js)
 function moonDialPic(){const f=typeof moonAge==='function'?moonAge()/MOON_MONTH:0; // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
  return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
 function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;return f>1?'ball'+f:null;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
@@ -178,7 +177,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
  if(drag.on){const gp=stageGroup();for(const k of gp==='seed'?GROUPS.seed:PERCH[ageName()].filter(k=>!perchTaken(k))){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,k==='chair'?110:gp==='seed'?44:70,12,0,0,Math.PI*2);g.fill();}}
- drawSill(); // what Sloth's paw brought, and the paw itself, behind plants and the cat (js/paw.js)
+ drawSill();if(typeof drawToy==='function')drawToy(); // what Sloth's paw brought, and the paw itself, behind plants and the cat (js/paw.js)
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}

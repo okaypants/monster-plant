@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A new room, on one picture (Nov 18)
+
+- Jackie reworked the room's look in ChatGPT: deep teal wallpaper over olive panelling, a mini fridge "for food now", a water cooler, a wall lamp, a patterned rug, and every small object chosen one by one. The base is ChatGPT's crisp filled room; only the trunk was swapped for the earlier drawing ("i wish the moon was bigger and it looked more like it used to").
+- Jackie's picks: a moon dial replaces the armillary and tells tonight's moon (the sun's sign stays in the charts); the ammonite stays as a toy; the books beside it go; the forks only rattle; the old SNACKS cabinet is Tofu's cupboard; watering is "fill a cup, carry it"; the pumpkin and tree sit on the crate; the music box tune is dropped; the butterflies go; a crystal ball replaces the snow globe; a viewfinder replaces the red box; "wind up cat" replaces the snail.
+- "I actually prefer for some of these objects if not most to be integrated": almost everything is painted into the room. The cup and the coins are separate ("like the cup no of course that should be singular"). The wind-up cat is cut out so its cubby can be empty; the moon dial's phase, the crystal ball's mist and the trunk's lid are small changes drawn over the painted object.
+- Golden hour, night, the three lamps and shut curtains are light worked out in code from the one picture (RULES 1 already allows light to blend). The window's panes are see-through with the sky drawn behind.
+- Stand-ins until the art is drawn: the view from the window, the closed curtains, both framed pictures.
+- **Why:** Jackie did not like "the warm salmon dark palette" of the old room, and wanted everything touchable to do something. One picture means a change to the room is made once, where the old room needed thirty matching pictures.
+
 ### The lidded jar holds coins (Nov 17)
 
 - Jackie, going over the room's containers: "I think lidded jar should be coins".
