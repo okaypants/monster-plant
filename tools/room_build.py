@@ -53,22 +53,18 @@ def greens(a,where):
     s0,d0=hsv(hx('#BCD017')[None,None])[0,0],hsv(hx('#4F7A3A')[None,None])[0,0];h=hsv(a)
     leaf=where&(a[...,1]>a[...,0]+6)&(a[...,1]>a[...,2]+30)&(a.sum(2)>110)
     h2=h.copy();h2[...,0]=h[...,0]+(d0[0]-s0[0]);h2[...,1]=h[...,1]*d0[1]/s0[1];h2[...,2]=h[...,2]*d0[2]/s0[2];out=a.copy();out[leaf]=unhsv(h2)[leaf];return out
-# things on the wall that have small cream parts of their own, which are not wallpaper: left, top, right, bottom
-NOT_WALL=[(0,112,216,942),(1466,112,1670,942),(684,136,888,324),(750,364,882,450),(776,460,872,566)] # the bookcases, inside both frames, the cup of forks
 def wall_dots(a):
-    """The wallpaper's cream dots turn a blue close to the wall's own, so the wall sits back. A dot's petals are tiny cream shapes on the
-    bare wall, mostly wall colour around them; anything inside NOT_WALL is left alone."""
-    bg,cream,dst=hx('#024359'),hx('#FCE6B7'),hx('#2A6A80');isc=np.sqrt(((a-cream)**2).sum(2))<70;lab,n=nd.label(isc);out=a.copy()
-    wallish=np.sqrt(((a-bg)**2).sum(2))<60;off_limits=np.zeros(a.shape[:2],bool)
-    for l,t,r,b in NOT_WALL:off_limits[t:b,l:r]=True
-    for i,sl in enumerate(nd.find_objects(lab),1):
-        h,w=sl[0].stop-sl[0].start,sl[1].stop-sl[1].start
-        if h>22 or w>22 or sl[0].start>545 or sl[0].start<36 or off_limits[sl].any():continue
-        y0,y1,x0,x1=max(0,sl[0].start-12),sl[0].stop+12,max(0,sl[1].start-12),sl[1].stop+12
-        if wallish[y0:y1,x0:x1].mean()<.3:continue
-        y0,y1,x0,x1=max(0,sl[0].start-3),sl[0].stop+3,max(0,sl[1].start-3),sl[1].stop+3
-        r=a[y0:y1,x0:x1];t=((r-bg)*(cream-bg)).sum(2)/((cream-bg)**2).sum();off=np.sqrt(((r-(bg+t[...,None]*(cream-bg)))**2).sum(2)) # how far along from wall to cream each pixel is
-        m=(off<60)&(t>.08)&nd.binary_dilation(lab[y0:y1,x0:x1]==i,iterations=2);out[y0:y1,x0:x1][m]=(bg+np.clip(t,0,1)[...,None]*(dst-bg))[m]
+    """The wallpaper's cream dots turn a blue close to the wall's own, so the wall sits back. A dot is a small island on the wall:
+    everything that is not wall colour is grouped into islands, and only the little ones (a dot with its dark centre) are dots.
+    Furniture, lamps and pictures are big islands, so their own cream parts are left alone."""
+    bg,cream,dst=hx('#024359'),hx('#FCE6B7'),hx('#2A6A80');out=a.copy();top,bot=36,548
+    island,n=nd.label(np.sqrt(((a-bg)**2).sum(2))>=60);size=nd.sum(np.ones(a.shape[:2]),island,range(1,n+1))
+    for i,sl in enumerate(nd.find_objects(island),1):
+        if size[i-1]>520 or sl[0].start<top or sl[0].stop>bot:continue
+        y0,y1,x0,x1=max(0,sl[0].start-3),sl[0].stop+3,max(0,sl[1].start-3),sl[1].stop+3;r=a[y0:y1,x0:x1]
+        if (np.sqrt(((r-cream)**2).sum(2))<70).sum()<8:continue # an island with no cream in it is not a dot
+        t=((r-bg)*(cream-bg)).sum(2)/((cream-bg)**2).sum();off=np.sqrt(((r-(bg+t[...,None]*(cream-bg)))**2).sum(2)) # how far along from wall to cream each pixel is
+        m=(off<60)&(t>.08)&nd.binary_dilation(island[y0:y1,x0:x1]==i,iterations=2);out[y0:y1,x0:x1][m]=(bg+np.clip(t,0,1)[...,None]*(dst-bg))[m]
     return out
 def recolour(a):
     a=a.astype(float);sh=a.shape
@@ -81,9 +77,15 @@ def recolour(a):
     a=scale(a,box(sh,1208,540,1372,782),'#F2A557','#F7C48C',.12) # the desk chair
     a=shift(a,box(sh,756,548,910,770),'#2C2B29','#24323F',46) # the mini fridge
     return a.clip(0,255).astype(np.int32)
+def nudge(a,x0,y0,x1,y1,dx):
+    """Moves one painted thing sideways on the wall (Jackie, Nov 19: the shell sat too far left of the drum machine). Its pixels are
+    whatever in the box is not wall; the gap it leaves is plain wall."""
+    bg=hx('#024359');reg=a[y0:y1,x0:x1].astype(float);far=np.sqrt(((reg-bg)**2).sum(2));m=nd.binary_fill_holes(nd.binary_closing(far>=62,iterations=2))
+    lab,n=nd.label(m);m=lab==(1+int(np.argmax(nd.sum(m,lab,range(1,n+1))))) # the thing itself, not a stray wallpaper dot
+    wall=np.median(reg[far<30],0);piece=reg[m].copy();a[y0:y1,x0:x1][nd.binary_dilation(m,iterations=5)]=wall;a[y0:y1,x0+dx:x1+dx][m]=piece;return a # the gap takes the wall's own colour just there, a little past the thing's edge
 TOY=(54,352,140,438) # the wind-up cat's place in its cubby (left, top, right, bottom)
 def build_room():
-    a=recolour(fit(load('filled.png')));m=magenta(a);m=nd.binary_opening(m,iterations=1)
+    a=recolour(fit(load('filled.png')));a=nudge(a,1054,140,1176,227,34);m=magenta(a);m=nd.binary_opening(m,iterations=1)
     lab,n=nd.label(m);keep=np.zeros_like(m);frames=[]
     for i,s in enumerate(nd.find_objects(lab),1):
         if (lab[s]==i).sum()<400:continue

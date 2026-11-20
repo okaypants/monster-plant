@@ -4,7 +4,7 @@
 // Springy props cut from the current room picture. Fixed 60fps physics; drawn on whole pixels (DS rule).
 // 'thing' = the room thing (js/room.js THINGS) this box belongs to: while it bounces, its own picture is drawn moved, never a copy over it
 const FP=[
- {n:'ammonite',x:1060,y:146,w:108,h:84,k:.18,d:.12,kick:{vy:-4},puff:true},
+ {n:'ammonite',x:1094,y:146,w:108,h:84,k:.18,d:.12,kick:{vy:-4},puff:true},
  {n:'toy',x:52,y:350,w:90,h:90,k:.10,d:.10},
  {n:'pillow',x:582,y:532,w:122,h:116,k:.14,d:.16,kick:{vy:5}},
  {n:'drum',x:1220,y:140,w:186,h:88,k:.25,d:.18,kick:{vy:3}},
