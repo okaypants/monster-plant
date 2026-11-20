@@ -34,9 +34,56 @@ def defringe(rgb,hole,ring=3):
     bad=hole|pink
     idx=nd.distance_transform_edt(bad,return_distances=False,return_indices=True)
     out=rgb.copy();out[pink]=rgb[idx[0][pink],idx[1][pink]];return out
+"""JACKIE'S COLOUR CHANGES (Nov 19): nine named colours, each with the colour it is now and the colour it should be. The art itself
+is not redrawn: every pixel of that colour's family, in that thing's part of the picture, is moved by the same step, so its
+shading and its dark outlines stay as drawn."""
+def hx(h):return np.array([int(h[i:i+2],16) for i in (1,3,5)],float)
+def hsv(a):return np.asarray(Image.fromarray(a.clip(0,255).astype(np.uint8),'RGB').convert('HSV')).astype(float)
+def unhsv(h):return np.asarray(Image.fromarray(h.clip(0,255).astype(np.uint8),'HSV').convert('RGB')).astype(np.int32)
+def box(shape,x0,y0,x1,y1):m=np.zeros(shape[:2],bool);m[y0:y1,x0:x1]=True;return m
+def shift(a,where,src,dst,tol):
+    """Every pixel within tol of src (in that part of the picture) moves by the same step as src does, less the further it is from src."""
+    src,dst=hx(src),hx(dst);d=np.sqrt(((a-src)**2).sum(2));w=np.clip(1-d/tol,0,1)*where;return (a+(dst-src)*w[...,None]).clip(0,255)
+def scale(a,where,src,dst,tol):
+    """The same, but each pixel is made darker or lighter in proportion (for wood: its grain and board lines keep their contrast)."""
+    src,dst=hx(src),hx(dst);n=a/np.maximum(a.sum(2,keepdims=True),1);ns=src/src.sum();d=np.abs(n-ns).sum(2);w=np.clip(1-d/tol,0,1)*where*(a.sum(2)>90)
+    return (a*(1+(dst/src-1)*w[...,None])).clip(0,255)
+def greens(a,where):
+    """Leaves: any green pixel (more green than red, well more than blue) turns from the yellow-green it was to a deeper, cooler green."""
+    s0,d0=hsv(hx('#BCD017')[None,None])[0,0],hsv(hx('#4F7A3A')[None,None])[0,0];h=hsv(a)
+    leaf=where&(a[...,1]>a[...,0]+6)&(a[...,1]>a[...,2]+30)&(a.sum(2)>110)
+    h2=h.copy();h2[...,0]=h[...,0]+(d0[0]-s0[0]);h2[...,1]=h[...,1]*d0[1]/s0[1];h2[...,2]=h[...,2]*d0[2]/s0[2];out=a.copy();out[leaf]=unhsv(h2)[leaf];return out
+# things on the wall that have small cream parts of their own, which are not wallpaper: left, top, right, bottom
+NOT_WALL=[(0,112,216,942),(1466,112,1670,942),(684,136,888,324),(750,364,882,450),(776,460,872,566)] # the bookcases, inside both frames, the cup of forks
+def wall_dots(a):
+    """The wallpaper's cream dots turn a blue close to the wall's own, so the wall sits back. A dot's petals are tiny cream shapes on the
+    bare wall, mostly wall colour around them; anything inside NOT_WALL is left alone."""
+    bg,cream,dst=hx('#024359'),hx('#FCE6B7'),hx('#2A6A80');isc=np.sqrt(((a-cream)**2).sum(2))<70;lab,n=nd.label(isc);out=a.copy()
+    wallish=np.sqrt(((a-bg)**2).sum(2))<60;off_limits=np.zeros(a.shape[:2],bool)
+    for l,t,r,b in NOT_WALL:off_limits[t:b,l:r]=True
+    for i,sl in enumerate(nd.find_objects(lab),1):
+        h,w=sl[0].stop-sl[0].start,sl[1].stop-sl[1].start
+        if h>22 or w>22 or sl[0].start>545 or sl[0].start<36 or off_limits[sl].any():continue
+        y0,y1,x0,x1=max(0,sl[0].start-12),sl[0].stop+12,max(0,sl[1].start-12),sl[1].stop+12
+        if wallish[y0:y1,x0:x1].mean()<.3:continue
+        y0,y1,x0,x1=max(0,sl[0].start-3),sl[0].stop+3,max(0,sl[1].start-3),sl[1].stop+3
+        r=a[y0:y1,x0:x1];t=((r-bg)*(cream-bg)).sum(2)/((cream-bg)**2).sum();off=np.sqrt(((r-(bg+t[...,None]*(cream-bg)))**2).sum(2)) # how far along from wall to cream each pixel is
+        m=(off<60)&(t>.08)&nd.binary_dilation(lab[y0:y1,x0:x1]==i,iterations=2);out[y0:y1,x0:x1][m]=(bg+np.clip(t,0,1)[...,None]*(dst-bg))[m]
+    return out
+def recolour(a):
+    a=a.astype(float);sh=a.shape
+    a=greens(a,box(sh,0,20,300,345)|box(sh,1405,30,1670,480)|box(sh,1160,262,1302,495)) # the two pothos and the shelf plant
+    a=wall_dots(a)
+    rug=box(sh,150,760,1500,935)
+    a=shift(a,rug,'#AE1B1D','#8A2E26',110);a=shift(a,rug,'#F4CA79','#D8B47E',90)
+    floor=box(sh,0,742,1670,942)
+    a=scale(a,floor,'#C66E42','#94502F',.09)
+    a=scale(a,box(sh,1208,540,1372,782),'#F2A557','#F7C48C',.12) # the desk chair
+    a=shift(a,box(sh,756,548,910,770),'#2C2B29','#24323F',46) # the mini fridge
+    return a.clip(0,255).astype(np.int32)
 TOY=(54,352,140,438) # the wind-up cat's place in its cubby (left, top, right, bottom)
 def build_room():
-    a=fit(load('filled.png'));m=magenta(a);m=nd.binary_opening(m,iterations=1)
+    a=recolour(fit(load('filled.png')));m=magenta(a);m=nd.binary_opening(m,iterations=1)
     lab,n=nd.label(m);keep=np.zeros_like(m);frames=[]
     for i,s in enumerate(nd.find_objects(lab),1):
         if (lab[s]==i).sum()<400:continue
@@ -152,7 +199,8 @@ def build_views(panes):
     for n,(l,r) in zip(['spring','summer','autumn','winter'],zip(runs[0::2],runs[1::2])):
         im=Image.fromarray(a[y0+8:y1-7,l[1]+4:r[0]-3].astype(np.uint8));k=max(pw/im.width,ph/im.height)
         im=im.resize((round(im.width*k),round(im.height*k)),Image.BOX);ox=(im.width-pw)//2;oy=(im.height-ph)//2
-        im=im.crop((ox,oy,ox+pw,oy+ph));im.save(os.path.join(ROOT,'view_'+n+'.png'),optimize=True)
+        im=im.crop((ox,oy,ox+pw,oy+ph));v0=np.asarray(im).astype(float);im=Image.fromarray(greens(v0,np.ones(v0.shape[:2],bool)).astype(np.uint8)) # the tree's leaves take the same deeper green as the plants indoors
+        im.save(os.path.join(ROOT,'view_'+n+'.png'),optimize=True)
         # the same view with its sky taken out (the tree and any clouds only), so the game can put a sunset or a night sky behind it
         v=np.asarray(im).astype(np.int32);q=(v//8).reshape(-1,3);keys,cnt=np.unique(q,axis=0,return_counts=True);sky=keys[cnt.argmax()]*8+4
         m=np.abs(v-sky).sum(2)<70 # every bit of sky, the small gaps between leaves too

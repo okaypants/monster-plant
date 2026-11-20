@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The room's colours, tuned so the monster stands out (Nov 19)
+
+- Jackie sent a chart of colours as they were and as they should be: "I want to change these things."
+- Decor plants (both pothos, the shelf plant, the tree outside): yellow-green #BCD017 to a deeper, cooler green #4F7A3A.
+- Wallpaper dots: cream #FCE6B7 to a low-contrast blue #2A6A80, so the wall sits back. The wallpaper's own colour is kept.
+- Rug: red #AE1B1D to a muted brick #8A2E26; cream #F4CA79 to a softer #D8B47E.
+- Wood floor: #C66E42 to a darker #94502F, so furniture separates from it.
+- Desk chair: #F2A557 to a lighter honey wood #F7C48C.
+- Mini fridge: black #2C2B29 to charcoal navy #24323F.
+- Done in tools/room_build.py as steps applied to the picture when it is built: each named colour's whole family moves by the same step, so shading and dark outlines stay as drawn. Nothing is redrawn.
+- **Why:** the decor plants were the same bright yellow-green as a green monster, and the cream dots, red rug and orange floor competed with it. RULES 6 asks for Jackie's OK before any recolouring; this is that OK, for these colours.
+
 ### A new room, on one picture (Nov 18)
 
 - Jackie reworked the room's look in ChatGPT: deep teal wallpaper over olive panelling, a mini fridge "for food now", a water cooler, a wall lamp, a patterned rug, and every small object chosen one by one. The base is ChatGPT's crisp filled room; only the trunk was swapped for the earlier drawing ("i wish the moon was bigger and it looked more like it used to").
