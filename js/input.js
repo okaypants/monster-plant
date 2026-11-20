@@ -51,7 +51,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
  if(on){if(growTap())return; /* ready to grow up: it grows now (js/growup.js) */pet();return;}
- if(inR(x,y,CAN)||inR(x,y,COOLER)){held.tool='can';carryFace.dir=0;sfx('drip');return;} // the water cooler: you take the cup, filled, to water with
+ if(inR(x,y,CAN)||inR(x,y,COOLER)){held.tool='can';carryFace.dir=0;sfx('blub');return;} // the water cooler: you take the cup, filled, to water with
  // treats only come from the mini fridge (Jackie, Nov 18; it was the SNACKS cabinet)
  if(inR(x,y,JAR)){openSnacks(x,y);return;}
  if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('paper');return;}

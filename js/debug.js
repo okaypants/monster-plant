@@ -97,12 +97,12 @@ function buildDbg(){const sc=dbg.scrollTop;SYNC=[];dbg.innerHTML='';
   slider(b,'Fullness',0,1,.01,()=>pRaw().full||0,v=>onP(()=>{st.full=v;}));
   toggle(b,'Nap',()=>pRaw().nap>0,v=>onP(()=>{st.nap=v?1e6:0;}));
   const p=pRaw(),gp=p.stage<4?'seed':p.stage===4?'baby':'grown';
-  if(gp!=='seed'){const age=ageName(p.stage),SN={crate:'milk crate',books:'book stack',chair:'armchair (awake)'};
+  if(gp!=='seed'){const age=ageName(p.stage),SN={crate:'milk crate',books:'by the fridge',chair:'armchair (awake)'};
    seg(b,'Spot',[['floor','floor']].concat(PERCH[age].map(k=>[k,SN[k]])),()=>{const q=pRaw();return q.perch||(q.perch===undefined&&age==='kid'?(q.place||{}).baby||'books':'floor');},v=>{onP(()=>{st.perch=v==='floor'?null:v;st.walk=null;st.nap=0;pickChair();});buildDbgSoon();});}
   if(gp!=='seed'&&!p.perch&&!(p.perch===undefined&&gp==='baby')){slider(b,'Rug x',FLOOR_X0,FLOOR_X1,1,()=>pRaw().free?pRaw().free.x:SPOT.rugC.x,v=>onP(()=>{spotKey();st.free.x=v;st.walk=null;}),v=>String(v));
    slider(b,'Rug y (back ↔ front)',FLOOR_BACK,FLOOR_FRONT,1,()=>pRaw().free?pRaw().free.y:SPOT.rugC.y,v=>onP(()=>{spotKey();st.free.y=v;st.walk=null;}),v=>String(v));
    btns(b,[['By the window',()=>onP(()=>{st.free={x:SPOT.rugL.x,y:SPOT.rugL.y};st.walk=null;})],['By the armchair',()=>onP(()=>{st.free={x:SPOT.rugC.x,y:SPOT.rugC.y};st.walk=null;})],['By the desk',()=>onP(()=>{st.free={x:SPOT.rugR.x,y:SPOT.rugR.y};st.walk=null;})]]);}
-  else if(gp==='seed')seg(b,'Spot',GROUPS[gp].map(k=>[k,{sill:'windowsill',desk:'desk',crate:'milk crate',books:'book stack'}[k]]),()=>(pRaw().place||{})[gp],v=>onP(()=>{st.place=st.place||{};st.place[gp]=v;}));
+  else if(gp==='seed')seg(b,'Spot',GROUPS[gp].map(k=>[k,{sill:'windowsill',desk:'desk',crate:'milk crate',books:'by the fridge'}[k]]),()=>(pRaw().place||{})[gp],v=>onP(()=>{st.place=st.place||{};st.place[gp]=v;}));
   chips(b,'Charms',SNACKS.map(s=>[s.trait,s.trait]),t=>(pRaw().traits||[]).includes(t),t=>onP(()=>{st.traits=st.traits||[];st.traits=st.traits.includes(t)?st.traits.filter(x=>x!==t):st.traits.concat(t);if(st.wear&&!st.traits.includes(st.wear))st.wear=null;}));
   chips(b,'Titles',Object.entries(TITLES),t=>(pRaw().titles||[]).includes(t),t=>onP(()=>{st.titles=st.titles||[];st.titles=st.titles.includes(t)?st.titles.filter(x=>x!==t):st.titles.concat(t);}));
   b.appendChild(el('div','status',(()=>{const q=pRaw(),T=q.treats||{};return 'Treats: '+SNACKS.map(s=>esc(s.name)+' '+(T[s.id]||0)+'/'+TRAIT_AT).join(' · ')+'<br>Lately: '+esc((q.log||[]).join(', ')||'nothing yet')+'<br>Pots: '+esc((st.pots||[]).join(', ')||'none')+(q.potOn?' (on: '+esc(q.potOn)+')':'')+'<br>Today: water '+(q.met&&q.met.thirst?'✓':'·')+' light '+(q.met&&q.met.light?'✓':'·')+' company '+(q.met&&q.met.attention?'✓':'·');})())); // what the old journal showed

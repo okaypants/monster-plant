@@ -59,7 +59,7 @@ function awayStory(away){const bits=[],P=allRaw().filter(q=>q.stage>=4),cap=t=>t
  else{const ks=Object.keys(CAT_SPOTS).filter(k=>k!=='byplant'&&k!=='front'&&catSpotFree(k));let k=ks[Math.floor(Math.random()*ks.length)],far=false;
   if(spooky&&ks.length){let sx=0;withPlant(spooky.id,()=>{const b=plantBox();sx=b.x+b.w/2;});k=ks.slice().sort((x,y)=>Math.abs(CAT_SPOTS[y].x-sx)-Math.abs(CAT_SPOTS[x].x-sx))[0];far=Math.abs(CAT_SPOTS[k].x-sx)>500;}
   if(k){const sp=CAT_SPOTS[k];cat.spot=k;cat.x=sp.x;cat.y=sp.y;cat.sc=sp.sc;cat.pose=sp.poses[0];cat.state='sleep';cat.nap=rnd(40,90);
-   bits.push(far?catName()+' is napping as far from '+nm(spooky)+' as possible.':catName()+' napped on '+({bed:'the cat bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the book stack'})[k]+'.');}}
+   bits.push(far?catName()+' is napping as far from '+nm(spooky)+' as possible.':catName()+' napped on '+({bed:'the cat bed',rug:'the rug',chair:'the armchair',sill:'the windowsill',crate:'the milk crate',books:'the floor by the fridge'})[k]+'.');}}
  return bits;}
 // the greeting: something the monster does right now, so you see it
 function greetNow(){if(st.stage<4)return '';const p=pers(),b=plantBox(),W=who();

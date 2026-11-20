@@ -60,7 +60,7 @@ python tests/smoke_test.py
 
 Checks a brand-new game, an old save, the gift seed, breeding, night/morning, and the iPhone landscape view. **Run it after every change, before playing.**
 
-Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a teen, a kid on the book stack, the cat in every nap spot, curtains closed with lamps off) for a minute of game time each at speed 20 in about 20 seconds, fails on any error or missing image, and saves a screenshot of each case to `tests/screenshots/` (kept on your computer, not uploaded).
+Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a teen, a kid on the spot by the fridge, the cat in every nap spot, curtains closed with lamps off) for a minute of game time each at speed 20 in about 20 seconds, fails on any error or missing image, and saves a screenshot of each case to `tests/screenshots/` (kept on your computer, not uploaded).
 
 `python tests/names_shots.py` lets a sprout open its eyes on a phone held sideways, checks the hello caption has its new name, and shows the journal page with the name on top; saved to `tests/screenshots/names/`. The smoke test also checks old saves get named, two plants never share a first name, and renaming in the journal (16 letters, cleared = back to the old name).
 
@@ -72,7 +72,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/opening_shots.py` plays a brand-new game on a phone held sideways and checks the room opens in the daytime with curtains open and lamps off, the seed's name is shared in the hello caption, and its name tag shows; saved to `tests/screenshots/opening/`.
 
-`python tests/feed_shots.py` taps the SNACKS cabinet, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.
+`python tests/feed_shots.py` taps the mini fridge, drags a treat from the tray to an adult with a real mouse (its mouth opens, it chomps and eats) on an iPhone-sized screen, and saves pictures to `tests/screenshots/feed/`.
 
 `python tests/sprite_light_shots.py` checks the monster and the cat are lit like the room (untinted at noon, darker at golden hour and night, warm by the lamps and blue in the dark) and saves pictures to `tests/screenshots/sprite_light/`. `python tests/sampler_shots.py` taps the sampler on the top shelf on a phone held sideways and checks its app opens (screen, eight empty pads, the digging panel), that an empty pad asks for a record first, and that the X brings the room back with nothing left behind; it never touches the internet; saved to `tests/screenshots/sampler/`. `python tests/beat_test.py` opens the sampler by itself with two made-up pads and checks pitch, clipping, tempo, the click, LOCK, the loop playing and stopping, REC's count-in, the click sounding only while recording, the one work in progress coming back after a reload, the warning when leaving unsaved, finishing a song, sending it to the radio and erasing it. `python tests/radio_test.py` blocks the internet, puts a song on the radio, and checks the radio plays it with its caption, goes quiet while the sampler is open, switches off, and says static when there's nothing to play; saved to `tests/screenshots/radio/`.
 
@@ -84,7 +84,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/sloth_note_shots.py` plays Sloth's note (lands on the sill for a late teen, the question, "Not yet" into the journal, the seed the next morning) and saves pictures to `tests/screenshots/sloth_note/`.
 
-`python3 tests/doodad_test.py` taps every doodad in the room and checks its own small thing happens (coins from the jar, a tune from the music box, the journal from the lockbox, a record from the crate, a butterfly, the moon, the sun's sign, hearts, petals, drops, the snail trundling sideways); saved to `tests/screenshots/doodads/`.
+`python3 tests/doodad_test.py` taps every doodad in the room and checks its own small thing happens (coins from the jar, tonight's moon from the moon dial, mist and a sign from the crystal ball, the wind-up cat's trip out of its cubby and back, the journal from the lockbox, a record from the crate, a butterfly, the moon, the sun's sign, hearts, petals, drops, the snail trundling sideways); saved to `tests/screenshots/doodads/`.
 
 `python3 tests/start_over_test.py` starts over and checks the new seedling's journal opens on every one of its spreads with no error.
 
@@ -96,9 +96,9 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python3 tests/old_names_test.py` checks that the character who delivers by paw is Sloth, PhD everywhere: no old name (Doctor Bug, Slowmallow, a professor) in the game's files or in anything said or shown in play, the possessive "Sloth's", and an old save loading with its note and keepsake intact.
 
-`python3 tests/seasonal_shots.py` pictures the pumpkin and tree on the book stack (day, tapped, night) and the leaves through the window (`tests/screenshots/seasonal/sheet.png`), and checks leaves show only through the glass, only in autumn daytime, and that the items rock, sway and settle.
+`python3 tests/seasonal_shots.py` pictures the pumpkin and tree on the milk crate (day, tapped, night) and the leaves through the window (`tests/screenshots/seasonal/sheet.png`), and checks leaves show only through the glass, only in autumn daytime, and that the items rock, sway and settle.
 
-`python3 tests/night_window_shots.py` pictures the night room in every season with the curtains open and closed (`tests/screenshots/night_window/sheet.png`) and checks the night window pieces differ from winter's only behind the glass.
+`python3 tests/night_window_shots.py` pictures the night room in every season with the curtains open and closed (`tests/screenshots/night_window/sheet.png`) and checks every season looks different through the window at night.
 
 `python tests/ui_shots.py` checks the UI look (Nunito text; captions, bubbles and buttons in the one text style: round corners, a hard shadow) and saves the start screen, a caption, Sloth's bubble and the journal, laptop and phone, to `tests/screenshots/ui/`.
 
@@ -108,7 +108,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/thirst_shots.py` checks and pictures thirst from full color to fully gray for an adult, a kid and a sprout (the gray comes on gradually), and that watering brings the color back smoothly over about 2 seconds; saved to `tests/screenshots/thirst/`.
 
-`python tests/cat_cover.py` puts plants in every spot (and right in front of the crate, book stack, armchair and cat bed), lets the cat pick and settle again and again, and fails if he's ever more than 20% covered. It also checks that he moves when a plant comes in front of him while he naps.
+`python tests/cat_cover.py` puts plants in every spot (and right in front of the crate, the spot by the fridge, armchair and cat bed), lets the cat pick and settle again and again, and fails if he's ever more than 20% covered. It also checks that he moves when a plant comes in front of him while he naps.
 
 `python tests/cat_huff.py` plays the cat having had enough (3 pets enjoyed, a fed-up 4th, gone on the 5th; touched again while winding down; shy) and saves a picture of every step to `tests/screenshots/huff/`.
 
@@ -116,13 +116,13 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/debug_test.py` opens the debug drawer on an iPhone 13 held sideways, works a control in every group, and fails if the real save changes by a single byte during TEST MODE. It also checks that Back to my game brings the real game back exactly, and that Keep saves only after a second tap. Screenshots go to `tests/screenshots/debug/`.
 
-`python tests/placement_test.py` drags plants with the mouse. It checks that a kid goes from the book stack to the rug and a teen from the rug onto the crate. An adult dropped on the book stack lands on the floor; an adult in the armchair sits there awake. A teen can't take the armchair from a napping kid, two plants can't share the crate, and a teen on the crate that grows up moves to the floor. Drops onto an occupied book stack, armchair or bit of floor never leave two plants overlapping; with no clear floor, the plant goes back. Screenshots go to `tests/screenshots/placement/`. If another copy of the game is running its tests at the same time, use another port: `MP_PORT=8791 python tests/placement_test.py`.
+`python tests/placement_test.py` drags plants with the mouse. It checks that a kid goes from the spot by the fridge to the rug and a teen from the rug onto the crate. An adult dropped there lands on the floor; an adult in the armchair sits there awake. A teen can't take the armchair from a napping kid, two plants can't share the crate, and a teen on the crate that grows up moves to the floor. Drops onto an occupied book stack, armchair or bit of floor never leave two plants overlapping; with no clear floor, the plant goes back. Screenshots go to `tests/screenshots/placement/`. If another copy of the game is running its tests at the same time, use another port: `MP_PORT=8791 python tests/placement_test.py`.
 
 `python tests/perspective_shots.py` puts a seedling, a kid, a teen, an adult and the cat at every spot and lines them up at the same scale in `tests/screenshots/perspective/every_spot.png`, plus two kids asleep (armchair and book stack) and the debug Depth lines view. It checks that everything follows one depth curve, that a teen is 1.45x a kid and an adult 1.9x at every depth, and that the two sleeping kids are the same size.
 
 `python3 tests/songbook_test.py` opens every song in the Song book on a phone-size screen. It checks that each song has plain pages that fit and a record from the crates, that Play the record streams that record and says who is playing, that it keeps playing while the pages turn, that tapping again or closing the book stops it, that the radio pauses and comes back, that a record that can't play says so, and that other books have no button. Add `--online` to ask the library that every record's file is really there.
 
-`python tests/carafe_test.py` carries the carafe on a phone held sideways over a kid and an adult, right- and left-handed (switched with the tiny hand inside the journal's back cover). It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
+`python tests/carafe_test.py` carries the cup from the water cooler on a phone held sideways over a kid and an adult, right- and left-handed (switched with the tiny hand inside the journal's back cover). It checks that the tilt and pour frames are mirrored for right-handed play, the carafe sits up and to the side of the finger, a tap waters the plant only when the spout is over it, the drops fall under the spout, and the journal's left-handed setting flips everything back. Screenshots go to `tests/screenshots/carafe/`.
 
 `python tests/caption_test.py` checks the caption bubble on a phone and a laptop, day and night (top of the room, never over a plant's face or the buttons, a tail only for speakers, reading time). It also checks the rules (10-minute repeats, once-ever tips, ambient pacing, important lines) and prints every line from an hour of busy play with how often it showed. Screenshots go to `tests/screenshots/captions/`.
 
@@ -132,7 +132,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 `python tests/needs_shots.py` checks and pictures every need state on one plant, step by step (withered, burned, gray, puddle) and that each heals in steps, plus the idle wiggle rules (rare, 1 px, never while touching, never books); saved to `tests/screenshots/needs/` with a sheet of everything that can wiggle.
 
-`python tests/cat_shots.py` saves the cat in every spot (bed, rug, armchair, windowsill, milk crate, book stack, next to a plant, walking by day and at night) in every frame (petted with the back-scratcher and belly-up too) to `tests/screenshots/cat/`, and fails if he ever overlaps a plant.
+`python tests/cat_shots.py` saves the cat in every spot (bed, rug, armchair, windowsill, milk crate, by the fridge, next to a plant, walking by day and at night) in every frame (petted with the back-scratcher and belly-up too) to `tests/screenshots/cat/`, and fails if he ever overlaps a plant.
 
 `python3 tests/growth_test.py` checks growing on the real clock (Tamagotchi time): a cared-for kid is ready to grow right on time (and grows once the room is calm), a thirsty one at half speed, Good morning ages nobody, and time away (or in a background tab) counts at half speed, one age at most, and never grows a monster while you're gone.
 
@@ -169,7 +169,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `audio.js` | Sounds (`sfx`): five real recordings from `sounds/`, and the old synth sounds (muted) |
   | `saving.js` | The save (`st`), shared room keys (`GLOBAL`), swapping plants in and out, loading old saves |
   | `nudges.js` | Small per-species and per-frame position fixes (`NUDGE`), set with the debug Nudge tool |
-  | `room.js` | Room pictures, seasons, curtains, lamps, time of day, spots, drawing each frame |
+  | `room.js` | The room: one picture with its window see-through, the few things drawn on top, the light worked out in code (golden hour, night, three lamps, shut curtains), the window's view, spots, drawing each frame |
   | `light.js` | Light zones: the window's sun patch, lamp grow lights, room light; what plants feel (`lightInfo`) and the shapes to draw (`lightSources`) |
   | `plants.js` | Ages, sprites, faces, charms, pots (paused), needs, scooting, personality, friends, titles, seeds and breeding |
   | `growup.js` | The grow-up moment: waiting for you, the hop, crouch, size steps and payoff, the journal stamp, the cat's look |
@@ -185,8 +185,8 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `radio.js` | The radio on the desk and its dial: CRATES (old free records and your songs from the sampler) and WORLD (81 live stations, `WORLD`), with the tuning sound between stations |
 | `cratesdb.js` | Where the sampler keeps what you save on purpose (the work in progress and finished songs), shared with the radio; never the game's save |
 | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
-  | `fidgets.js` | Springy props, snow globe, vines, book spines, bouncing treats (sound slots `fplay`) |
-  | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the book stack |
+  | `fidgets.js` | Springy props, the crystal ball's signs, the wind-up cat, vines, book spines, bouncing treats (sound slots `fplay`) |
+  | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the milk crate |
   | `books/` | The twelve book covers, 42 x 60 each, cut from Jackie's sheet (`covers_sheet.png`); `care.js` draws them (BOOK_COVER, bookPix) |
   | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file. The Song book's reads each name a real record in the crates (`rec`); `care.js` adds the Play the record button |
   | `names.js` | The monsters' names: first and last name lists by nature (edit freely) and the name generator |
@@ -201,7 +201,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 - `st` = the save. It holds the **active plant's** fields plus shared room state (time, lamps, curtains, cat trust...). Other plants wait in `st.others`; `eachPlant()` swaps each one in so every plant function works on whichever plant is swapped in. Shared keys are listed in `GLOBAL`. `withPlant(id, f)` runs code on one specific plant.
 - Five ages: internal stage numbers `0` seed, `1` sprout, `4` kid, `6` teen, `8` adult (`NEXT`, `AGES`). File names still say `baby_` (kid) and `elder_` (old stand-ins).
-- Spots: seed = windowsill or desk; kid = milk crate or book stack; teen/adult = anywhere on the rug (`st.free`, depth-scaled).
+- Spots: seed = windowsill or desk; kid = milk crate or the floor by the fridge; teen/adult = anywhere on the rug (`st.free`, depth-scaled).
 - Room scenes: `ROOMS` (day/golden/night base), `MIX` (exact lamp/curtain pictures), `LOFF` lamp-off cut-outs, `CURTS` curtain layers, `WIN_SEASON` window pieces.
 - **Text style** (Jackie, Nov 10): every word uses one look, set in `css/textstyle.css` (shapes, sizes) and `js/textstyle.js` (the palette `TS`, each monster's `LOOKS` entry: tint, name color, ribbon color and pixel symbol, given at birth by `looksTick`; names in color with their symbol via `tsNamify`; choice buttons via `tsChoices`, with their words in `CHOICES` in js/names.js).
 - Sound: `sfx(...)` plays the real recordings in `sounds/` (page turn, letter, tap, pop, hungry tummy; sources in `sounds/CREDITS.md`); every other sound is silent for now. `fplay(...)` slots are ready for Garry's sounds.
@@ -210,26 +210,29 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 
 | Files | What |
 | --- | --- |
-| `room_day/golden/night.png`, `room_<time>_[closed_]floorOn/Off_deskOn/Off.png` | Whole-room pictures |
+| `room2.png` | The room, drawn once in daylight with every lamp off; its window panes are see-through. Built from `art_src/room2/` by `tools/room_build.py`, which also applies the colour changes Jackie asked for |
+| `view_<season>.png`, `viewfg_<season>.png` | The view from the window by day, and the same with its sky taken out (for a sunset or night sky behind the tree) |
+| `curtains2.png`, `sash2.png` | The closed curtains (a whole-room layer) and the bars of the window's bottom row, which slide up for Sloth's paw |
+| `obj_*.png`, `carry_cup_*.png` | The few things drawn on top of the room (the wind-up cat's frames, the cup, the moon dial's faces, the crystal ball's mist, the trunk's lifted lid, a coin) and the cup as it is carried |
 | `<time>_floorlamp_off.png`, `<time>_desklamp_off.png`, `<time>_curtains_closed.png` | Lamp and curtain pieces |
-| `day_window_<season>.png`, `night_window_<season>.png` | Season windows, day and night (drawn at 318,88) |
+| `room_*.png`, `day_/golden_/night_*.png`, `lampoff_*.png`, `stool_empty.png`, `window_glass.png` | The old room's thirty pictures: no longer loaded, kept until the new room is live |
 | `leaf_<maple/redmaple/ginkgo/oak/twig/round>.png` | Autumn leaves that drift past the window (cut from `season_leaves.png`; its leaf piles wait for an outdoor space) |
 | `window_glass.png` | Where the window's glass is, so the falling leaves show only there (made by `tools/window_glass.py`) |
-| `pumpkin1-3.png` | Pumpkin on the book stack in autumn, day and night: idle, rock one way, rock the other (cut from `season_pumpkin.png`; eyes closed by `tools/pumpkin_eyes.py`; the sheet's lit frame isn't used) |
-| `tree1/2.png`, `ornament_<star/ball/heart/mushroom/bell/pot>1/2.png` | Winter tree on the book stack (2-frame sway) and its six ornaments (2-frame swing), cut from `season_tree.png` |
+| `pumpkin1-3.png` | Pumpkin on the milk crate in autumn, day and night: idle, rock one way, rock the other (cut from `season_pumpkin.png`; eyes closed by `tools/pumpkin_eyes.py`; the sheet's lit frame isn't used) |
+| `tree1/2.png`, `ornament_<star/ball/heart/mushroom/bell/pot>1/2.png` | Winter tree on the milk crate (2-frame sway) and its six ornaments (2-frame swing), cut from `season_tree.png` |
 | `seedling_soil1/2.png`, `seedling_sprout1/2.png`, `seedling_bigsprout1/2.png` | Seedling pot: seed (soil), first sprout, bigger sprout, 2 frames each (cut from `seedling_sheet.png`) |
 | `baby_01..16.png`, `baby_NN_sleep.png` | Kids (+ sleeping) |
 | `teen_01..16.png`, `adult_01..16.png` | Teens and adults |
 | `elder_01..16.png` | Old stand-ins (fallback only) |
 | `eyes_NN_open/blink.png`, `mouthB_01..12.png` | Face kit for teens and adults (`mouth_NN` = older set, unused) |
 | `cat_*.png` | Cat (Nov 3 redesign, cut from `cat_design.png`, `cat_poses.png`, `cat_backscratcher.png`): sit1/sit2 (blink), curl1/curl2 (breathing), loaf1 (eyes open)/loaf2 (dozing), side1/side2 (asleep on his side, from `cat_side_sheet.png`), pet1/pet2, belly (belly-up roll), walk1/walk2 (right), walkL1/walkL2 (left), yawn, scratcher1/scratcher2 (the back-scratcher), and extras for jumping, play and "had enough": leap_r/leap_l, playbow, pounce, stalk, groom1/groom2, stand_side, stand_front, annoyed, back |
-| `old_cat/` | The old cat frames (kept, unused) |
+| `old_cat/` | Tofu: the old cat's frames, which the game uses, with his extra poses (cut from `art_src/tofu_poses.png` by `tools/tofu_cut.py`) |
 | `charm_*.png` | Charms earned with treats |
-| `treat_*.png`, `carafe_up/tilt/pour.png` | Things you carry |
+| `treat_*.png`, `carry_cup_up/tilt/pour.png` | Things you carry |
 | `fx_*.png` | Effects (2 frames each): hearts, Zzz, sparkles, drops, puddle, flames, sweat... |
 | `pot_*.png`, `topper_*.png` | Paused (kept for later) |
 | `sloth_paw_envelope.png`, `sloth_paw_seed.png`, `sloth_paw_empty.png`, `envelope.png`, `seed_packet.png` | Sloth's paw and what it brings (cut from `sloth_paw_sheet.png`, drawn at 1/3 nearest-neighbor; js/paw.js) |
-| `books_special.png`, `stool_empty.png`, `curtains_closed_layer.png`, `lampoff_*.png` | Room pieces |
+| `books_special.png` | Room pieces |
 | `icon-*.png`, `apple-touch-icon.png`, `manifest.webmanifest` | Home-screen app files |
 
 ---

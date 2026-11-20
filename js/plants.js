@@ -13,7 +13,7 @@ const NAMES=['curl-sprout bun','lobed bun','stacked cone','leafy mop','bulb','ro
 function lightFit(k){return lightFitText(spotInfo(k,.37,true),st.pref);} // the spot by day, curtains open
 function stageGroup(){return st.stage<4?'seed':st.stage===4?'baby':'grown';}
 const STAGES=['seed','sprout','sprout','sprout','kid','teen','teen','adult','adult'];
-const TEACH={thirst:'Someone\'s thirsty -- try dragging over the water carafe or enjoy your new living rock sculptures.',attention:'A little frown: it\'s lonely. Pet it or read to it.'};
+const TEACH={thirst:'Someone\'s thirsty -- try bringing over a cup of water from the cooler or enjoy your new living rock sculptures.',attention:'A little frown: it\'s lonely. Pet it or read to it.'};
 /* ---------- plant sprite ---------- */
 // returns {img|null, x, y, w, h, scale} in room coords for the current stage
 // FEWER AGES (Jackie): seed -> sprout -> baby -> teen -> adult, each clearly bigger. Internal stage numbers kept: 0 seed, 1 sprout, 4 baby, 6 teen, 8 elder
@@ -126,7 +126,7 @@ const POTS=[
  {id:'plaid',name:'Plaid pot',how:'read the almanac 10 times'},
  {id:'rainbow',name:'Rainbow pot',how:'read 10 nonsense poems'},
  {id:'eye',name:'All-seeing pot',how:'read the grimoire 10 times'},
- {id:'frost',name:'Frosted pot',how:'shake the snow globe 30 times'},
+ {id:'frost',name:'Frosted pot',how:'look into the crystal ball 30 times'},
  {id:'gold',name:'Gold-dot pot',how:'cover all its needs on 5 days'},
  {id:'kintsugi',name:'Mended pot',how:'nurse it back after it got very thirsty'},
  {id:'basket',name:'Basket pot',how:'pet it 25 times'},
@@ -346,7 +346,7 @@ function quirkTick(dt){if(st.stage<4||st.nap>0||st.night||st.float)return;st.qui
  if(!opts.length){if(ambientOK()&&Math.random()<.35)tell(line('idle'),{kind:'ambient',who:st.id});return;}
  const q=opts[Math.floor(Math.random()*opts.length)];let t='';doMove();
  if(q==='bonk'){let best=null,bd=480;for(const f of FP){const d=Math.hypot(f.x+f.w/2-cx,f.y+f.h/2-(b.y+b.h*.4));if(d<bd){bd=d;best=f;}}
-  st.bonkT=.5;st.bonkDir=best&&best.x+best.w/2<cx?-1:1;if(best){const bb=best;setTimeout(()=>fidgetPoke(bb.x+bb.w/2,bb.y+bb.h/2),250);t=who()+' bonked the '+({ammonite:'fossil shell',armillary:'brass globe',bookstack:'book stack',butterflies:'butterfly picture',catpic:'cat picture',cratebook:'book on the crate',drum:'drum machine',flowerpic:'flower painting',glass:'glass',lockbox:'little pink box',moonbox:'moon box',moonpanel:'moon picture',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',snail:'wind-up snail'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
+  st.bonkT=.5;st.bonkDir=best&&best.x+best.w/2<cx?-1:1;if(best){const bb=best;setTimeout(()=>fidgetPoke(bb.x+bb.w/2,bb.y+bb.h/2),250);t=who()+' bonked the '+({ammonite:'fossil shell',moondial:'moon dial',viewer:'viewfinder',catpic:'cat picture',bigpic:'tree picture',drum:'drum machine',forks:'cup of forks',box1:'coin jar',lockbox:'little purple box',moonbox:'moon box',ball:'crystal ball',crate:'milk crate',deskchair:'desk chair',petbed:'cat bed',pillow:'pillow',radio:'radio',shelfplant:'shelf plant',toy:'wind-up cat'}[best.n]||'something')+'. Just because.';}else t=line('idle');}
  else if(q==='wander'){const c=[];for(let x=FLOOR_X0;x<=FLOOR_X1;x+=60)for(const y of [FLOOR_FRONT,850,FLOOR_BACK]){if(lightFeel(lightInfo(x,y),st.pref)==='ok'&&freeClear(x,y)&&Math.abs(x-st.free.x)>150)c.push({x,y});}
   if(c.length){st.walk={...c[Math.floor(Math.random()*c.length)],why:'bored'};t=who()+' got bored and wandered off somewhere new.';}else{plantBoing(cx);t=line('idle');}}
  else if(q==='tidy'){st.listen=1.6;st.tidyT=1.2;t=who()+' tidies its leaves into neat rows.';}
