@@ -102,6 +102,14 @@ async def main():
         check(not missing, f"viewfinder cards missing from viewer/: {missing}")
         await pg.click(".vwx")
         check(await pg.evaluate("()=>!document.querySelector('.screen.viewer')"), "the viewfinder should close")
+        # Tofu's cupboard: the star door opens on a tray of five toys; a trusting cat wakes and plays, then sits; a shy cat only watches
+        await pg.evaluate("()=>{const r=cv.getBoundingClientRect();capClear();cv.dispatchEvent(new MouseEvent('click',{clientX:r.left+(CUPBOARD.x+CUPBOARD.w/2)*S,clientY:r.top+(CUPBOARD.y+CUPBOARD.h/2)*S,bubbles:true}));__step(.1);}")
+        check(await pg.evaluate("()=>cubIsOpen()&&thingBy('cupboard').pic()==='cup_open'&&document.querySelectorAll('.ttray .ttreat').length===5"), "tapping the star door should open Tofu's cupboard on five toys")
+        r = await pg.evaluate("()=>{st.catTrust=.75;Object.assign(cat,{hold:false,state:'sleep',pose:'loaf',nap:1e6,pat:1,huff:0,path:null});cubGive(CUB_TOYS[0]);__step(.1);const a=[cat.state,catFrame().catName];__step(3);return a.concat([cat.state,catFrame().catName]);}")
+        check(r[0] == "play" and r[1] == "playbow" and r[2] != "play", f"a trusting cat should wake, play with the yarn, then stop: {r}")
+        r = await pg.evaluate("()=>{st.catTrust=.1;Object.assign(cat,{state:'wake',t:1.3,pat:1,huff:0,path:null});capClear();cubGive(CUB_TOYS[1]);__step(.1);return [cat.state,/watches the felt mouse/.test(capText.textContent)];}")
+        check(r[0] == "look" and r[1], f"a shy cat should only watch a toy: {r}")
+        await pg.evaluate("()=>{st.catTrust=.75;cubClose();Object.assign(cat,{state:'sleep',pose:'curl',nap:1e6});__step(.2);capClear();}")
         # the lockbox opens the journal at Keep it safe
         await pg.evaluate(TAP, "lockbox")
         await pg.evaluate("()=>__step(.6)")

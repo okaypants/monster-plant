@@ -5,13 +5,14 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
 /* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (the one
    painted into the room is taken out, so its cubby can be empty, and the toy cats from Jackie's sheet are used), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
 const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
  {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
+ {n:'cupboard',x:1516,y:740,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
  {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:778,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
 /* THE BASSINET (Jackie, Nov 23): while a monster is young (a seed, a sprout or a kid) the bassinet stands where the milk crate does, and
@@ -237,5 +238,6 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   else{const k=overK(x,y),R=(a,b,c,d)=>g.fillRect(Math.round(x+a*k),Math.round(y+b*k),Math.round(c*k),Math.round(d*k)); // a book, sized for the depth it's held at
    g.fillStyle=C.out;R(-28,-36,56,72);g.fillStyle=(BOOK_LOOK[held.item&&held.item.id]||{c:C.out}).c;R(-24,-32,48,64);g.fillStyle=C.ivory;R(-16,-20,32,4);}}
  drawFeed(); // a treat being dragged to a monster (care.js)
+ drawCub(); // a toy from Tofu's cupboard being dragged to the cat (cupboard.js)
  drawReading(); // a monster reading, a book hopping home, a book being dragged (care.js)
 }

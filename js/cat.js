@@ -81,6 +81,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  else if(cat.state==='settle'){const a=cat.awake;cat.huffF=cat.t>a*.5&&cat.t%3.4<.3?'sit2':'sit1'; // sitting awake, facing a little away, "grooming" (a slow 1 px head bob, drawCat), then a slow blink now and then
   if(cat.t>a){cat.state='loafwake';cat.t=0;cat.loafT=rnd(40,70);}}
  else if(cat.state==='loafwake'){if(cat.t>cat.loafT){cat.state='sleep';cat.pose='curl';cat.t=0;cat.nap=rnd(60,150);cat.huff=0;cat.huffN=0;cat.pets=0;}} // only now does it curl up and nap for real (patience refills while it sleeps)
+ else if(cat.state==='play'){if(!cat.play||cat.t>=cat.play.len){cat.play=null;cat.state='wake';cat.t=1.2;}} // a toy from the cupboard (js/cupboard.js): when the play is over it sits, then wanders off to nap
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
  else if(cat.state==='walk'&&(cat.pauseT||0)>0){cat.pauseT-=dt;if(cat.pauseT<=0)cat.walkPet=false;} // stopped for a touch
  else if(cat.state==='walk'&&(cat.stutter||0)>0){cat.stutter-=dt;} // shy: a tiny pause in stride, then on it goes
@@ -100,6 +101,7 @@ function catFrame(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // deb
  if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return CATF[cat.state==='present'&&T%3.4<.3?'sit2':'sit1']; // only the existing frames: sit, never an expression
  if(cat.state==='settle')return CATF[cat.huffF==='sit2'?'sit2':'sit1'];
  if(cat.state==='loafwake')return CATF.loaf1;
+ if(cat.state==='play')return cubFrame();
  if(cat.state==='pet')return cat.belly?CATF.belly:CATF['pet'+(catPetF()+1)];
  if(cat.state==='walk'&&(cat.pauseT||0)>0)return cat.walkPet?CATF['pet'+(catPetF()+1)]:CATF.sit1; // stopped for a touch: turned toward you, leaning in
  if(cat.state==='walk'&&(cat.stutter||0)>0)return CATF[(cat.dir<0?'walkL':'walk')+(cat.stF||1)]; // mid-stride, held a moment
@@ -128,7 +130,7 @@ function drawCat(){const b=catBox();if(!b)return;catLit=lightAt(b.x+b.w/2,b.y+b.
  if(cat.state==='pet'&&!OLD_CAT){const s=CATF['scratcher'+(catPetF()+1)];if(ok(s)){const k=cat.sc*catK(s),[ox,oy]=SCRATCH_AT[cat.belly?'belly':'pet'];  // offsets are in the cat frame's own pixels
    g.drawImage(litPic(s,catLit),Math.round(b.x+ox*b.k),Math.round(b.y+oy*b.k),Math.round(s.naturalWidth*k),Math.round(s.naturalHeight*k));}}
  g.restore();
- if(cat.state==='sleep')sleepZ('cat',b.x+b.w*.15,b.y-6,.3);}
+ if(cat.state==='sleep')sleepZ('cat',b.x+b.w*.15,b.y-6,.3);if(cat.state==='play')drawCubToy(b);}
 function catHit(x,y){const b=catBox();return b&&x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h;}
 // Trust (Jackie: earn the cat's affection). 0..1, saved, never goes down (grace); a little per day so it takes a few days.
 const TRUST_SHY=.3,TRUST_FOND=.65,TRUST_BFF=.9;

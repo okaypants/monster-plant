@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tofu's cupboard holds cat toys (Nov 23)
+
+- The star door at the bottom of the right bookcase is Tofu's cupboard (Jackie, Nov 18). Jackie had the open cupboard and five toys drawn on Nov 23: a ball of yarn, a felt mouse, a feather wand, a jingle ball and a tin of treats.
+- How it works was left to me ("Prompt me", then the sheet, with no other instruction), so it follows the treat tray: tap the door, it opens and a small tray shows the toys; drag one to the cat.
+- A cat that trusts you plays for a couple of seconds and then sits, and it will wake up for a toy. A shy cat only watches, and trusts you a little more. Play uses a little of the cat's patience, so after a few goes it has had enough until it rests. A cat that has walked off is not in the mood.
+- This puts Tofu's extra poses to use (play bow, pounce, stalk, leap, standing, eating). All are posture. The annoyed and back-turned drawings are still unused, since using them would undo the rule that the cat never shows an expression.
+- The drawing is a whole cabinet, taller than the star door, so its inside and its door are placed as two parts at their own proportions.
+
 ### The viewfinder shows stereo cards (Nov 23)
 
 - Jackie turned down a first set of twelve famous museum paintings (Nov 18): "this is like a museum I want like a unique large collection of photos and illustrations and really interesting stuff."

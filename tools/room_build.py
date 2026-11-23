@@ -9,6 +9,7 @@
   curtains.png the curtains drawn closed, on magenta
   views.png   the view from the window in spring, summer, autumn and winter, side by side
   sheet3.png  the jar of mash and the spoon, on magenta (its side-on bassinet is not used)
+  sheet5.png  Tofu's cupboard with its door open, and the cat toys, on magenta
   sheet4.png  the bassinet seen from the front, empty and with its blanket up, on magenta
 
 Writes into the repo root:
@@ -20,6 +21,7 @@ Writes into the repo root:
   obj_nocrate.png  the bit of wall and floor behind the milk crate, for when the bassinet stands there instead
   obj_bass.png, obj_bass_bed.png  the bassinet, and the bassinet with its blanket up
   treat_mash.png   the jar of mash with its spoon
+  obj_cup_open.png Tofu's cupboard standing open; cub_*.png the cat toys kept in it
 Run: python3 tools/room_build.py
 """
 import os,json
@@ -235,6 +237,18 @@ def build_bassinet(room):
     sh=load('sheet3.png')
     cut(sh,99,652,172,276,.8,holes=True).save(os.path.join(ROOT,'treat_mash.png'),optimize=True) # the open jar with its spoon, about the size of the treats
     return {'nocrate':[int((x0+x1)//2),int(y1)],'wall_end':wall_end}
+def build_cupboard():
+    """Tofu's cupboard, open (sheet5.png). The drawing is of a whole cabinet, taller than the star door in the bookcase, so two parts of it
+    are used at their own proportions: the inside (the lower shelf and what is under it), sized to cover the star door, and the door
+    swung open, hung at the opening's left edge. Then the toys, each cut out whole."""
+    sh=load('sheet5.png');inside=Image.fromarray(sh[310:505,168:368].astype(np.uint8),'RGB').resize((172,154),Image.LANCZOS).convert('RGBA')
+    door=cut(sh,40,188,166,336,.5,holes=True);dw=door.width
+    out=Image.new('RGBA',(dw+172,max(door.height,158)),(0,0,0,0));out.alpha_composite(inside,(dw,out.height-154-2));out.alpha_composite(door,(0,out.height-door.height))
+    if out.width%2:out=out.crop((0,0,out.width+1,out.height)) if False else out
+    out.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
+    for n,(x,y,w,h) in {'yarn':(757,275,259,185),'mouse':(1088,292,301,140),'wand':(122,646,219,271),'bell':(1170,710,133,155),'tin':(446,714,200,168),'tin_open':(747,718,307,164),'yarn_ball':(484,275,170,172)}.items():
+        cut(sh,x,y,w,h,.8,holes=True).save(os.path.join(ROOT,'cub_'+n+'.png'),optimize=True)
+    return {'cup_open':[out.width,out.height,dw]}
 if __name__=='__main__':
-    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room))
+    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard())
     print(json.dumps(meta))

@@ -36,6 +36,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,DRAWERS)){openArchive();return;} // the drawers hold the files of past monsters (Jackie, Nov 8); the journal opens from a name tag
  if(!held.tool&&!onPlantPx(x,y)&&seasonPoke(x,y))return; // the pumpkin or the tree, sitting on the book stack (js/seasonal.js)
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,MOONBOX)){fidgetPoke(x,y);openTarot();return;} // the moon box on the right bookcase: a tarot reading (js/tarot.js), day or night
+ if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,CUPBOARD)){cubOpen();return;} // the star door: Tofu's cupboard (js/cupboard.js)
  if(!held.tool&&!st.night&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks(bookZone(x,y).books);return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,SAMPLER)){openSampler();return;} // the sampler on the top shelf opens its own app (js/sampler.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,RADIO)){radioTap();fidgetPoke(x,y);return;} // the radio on the desk: on or off (js/radio.js), day or night
