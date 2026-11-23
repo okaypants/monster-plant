@@ -213,7 +213,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `room2.png` | The room, drawn once in daylight with every lamp off; its window panes are see-through. Built from `art_src/room2/` by `tools/room_build.py`, which also applies the colour changes Jackie asked for |
 | `view_<season>.png`, `viewfg_<season>.png` | The view from the window by day, and the same with its sky taken out (for a sunset or night sky behind the tree) |
 | `curtains2.png`, `sash2.png` | The closed curtains (a whole-room layer) and the bars of the window's bottom row, which slide up for Sloth's paw |
-| `obj_*.png`, `carry_cup_*.png` | The few things drawn on top of the room (the wind-up cat's frames, the cup, the moon dial's faces, the crystal ball's mist, the trunk's lifted lid, a coin) and the cup as it is carried |
+| `obj_*.png`, `carry_cup_*.png` | The few things drawn on top of the room (the wind-up cat's frames, the cup, the moon dial's faces, the crystal ball's mist, the trunk's lifted lid, a coin, the bassinet with and without its blanket, and the patch of wall behind the milk crate) and the cup as it is carried |
 | `<time>_floorlamp_off.png`, `<time>_desklamp_off.png`, `<time>_curtains_closed.png` | Lamp and curtain pieces |
 | `room_*.png`, `day_/golden_/night_*.png`, `lampoff_*.png`, `stool_empty.png`, `window_glass.png` | The old room's thirty pictures: no longer loaded, kept until the new room is live |
 | `leaf_<maple/redmaple/ginkgo/oak/twig/round>.png` | Autumn leaves that drift past the window (cut from `season_leaves.png`; its leaf piles wait for an outdoor space) |
@@ -228,7 +228,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `cat_*.png` | Cat (Nov 3 redesign, cut from `cat_design.png`, `cat_poses.png`, `cat_backscratcher.png`): sit1/sit2 (blink), curl1/curl2 (breathing), loaf1 (eyes open)/loaf2 (dozing), side1/side2 (asleep on his side, from `cat_side_sheet.png`), pet1/pet2, belly (belly-up roll), walk1/walk2 (right), walkL1/walkL2 (left), yawn, scratcher1/scratcher2 (the back-scratcher), and extras for jumping, play and "had enough": leap_r/leap_l, playbow, pounce, stalk, groom1/groom2, stand_side, stand_front, annoyed, back |
 | `old_cat/` | Tofu: the old cat's frames, which the game uses, with his extra poses (cut from `art_src/tofu_poses.png` by `tools/tofu_cut.py`) |
 | `charm_*.png` | Charms earned with treats |
-| `treat_*.png`, `carry_cup_up/tilt/pour.png` | Things you carry |
+| `treat_*.png`, `carry_cup_up/tilt/pour.png` | Things you carry (`treat_mash.png` is the kids' mash) |
 | `fx_*.png` | Effects (2 frames each): hearts, Zzz, sparkles, drops, puddle, flames, sweat... |
 | `pot_*.png`, `topper_*.png` | Paused (kept for later) |
 | `sloth_paw_envelope.png`, `sloth_paw_seed.png`, `sloth_paw_empty.png`, `envelope.png`, `seed_packet.png` | Sloth's paw and what it brings (cut from `sloth_paw_sheet.png`, drawn at 1/3 nearest-neighbor; js/paw.js) |

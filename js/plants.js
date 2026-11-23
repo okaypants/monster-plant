@@ -62,7 +62,7 @@ const CHAIR_SEAT={x:610,y:SURFACE.chair};
 const CHAIR_FRONT=[[440,598,84,160],[686,598,76,160],[520,690,170,64]];
 let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;} // only the plant you're dragging leaves the chair
 function inChair(){return onChair()||(!(drag.on&&st.id===drag.id)&&st.stage>=4&&spotKey()==='chair');} // napping there, or sitting there awake
-function pickChair(){const p=allRaw().find(q=>q.perch==='chair'&&q.stage>=6&&q.stage>=0);if(p){chairId=p.id;return;} /* someone sits in it awake: it's theirs */const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night));c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
+function pickChair(){const p=allRaw().find(q=>q.perch==='chair'&&q.stage>=6&&q.stage>=0);if(p){chairId=p.id;return;} /* someone sits in it awake: it's theirs */const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night)&&!(p.perch==='crate'&&bassinetOut()));/* a kid in the bassinet sleeps there */c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
 function baseY(){return onChair()?CHAIR_SEAT.y:SPOT[spotKey()].y;}
 // NEEDS SHOW ONLY ON THE PLANT (Jackie, Nov 3; RULES.md 10): never on tools, curtains or the room. Each in a few clear steps, and back in steps once the need is met.
 //  not enough water: fades to gray (dryLv 0-4, gradually: 16 tiny levels)            too much water: sits in a puddle, a bit soggy and droopy (puddleLv 0-3, dries over time)
@@ -242,7 +242,7 @@ function stageUp(){st.stage=NEXT[st.stage]??8;st.timer=0;st.walk=null;const W=()
  if(st.stage===1){if(!st.bornAt)st.bornAt=Date.now();sfx('soil');return 'A sprout!';} // the sprouting minute is its birth moment (birth charts, js/charts.js)
  sfx('chime');sfx('boing');
  if(st.stage===4){const had=!!st.name;if(!had)st.name=makeName(st);return had?W()+' opens its eyes!':'Hello, '+st.name+'! Its eyes are open.';}
- if(st.stage===6){earnPot('drip');return W()+' is a teen now!';}
+ if(st.stage===6){if(st.perch==='crate'&&allRaw().some(q=>q.id!==st.id&&isYoung(q)))st.perch=null; /* too big for the bassinet while a younger one needs it */earnPot('drip');return W()+' is a teen now!';}
  earnPot('speckle');st.adultDay=st.day;return W()+' is an adult now!';}
 // away: half rate, at most one age per absence (the rest of the time away is let go); returns what happened, by name.
 // Only a seed sprouts while you're away. A sprout, kid or teen whose time came is ready and waits for you: its moment comes once you're back.

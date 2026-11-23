@@ -5,14 +5,24 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
 /* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (the one
    painted into the room is taken out, so its cubby can be empty, and the toy cats from Jackie's sheet are used), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
 const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
- {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null}];
+ {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
+ {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:776,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
+/* THE BASSINET (Jackie, Nov 23): while a monster is young (a seed, a sprout or a kid) the bassinet stands where the milk crate does, and
+   the crate comes back when nobody is young any more. A young one sits in it as it would on the crate; when the one in it is asleep
+   its blanket is up. A teen or adult already sitting on the crate keeps the crate, and so does the cat asleep on it. */
+const isYoung=q=>q.stage>=0&&q.stage<6;
+function bassinetOut(){if(typeof st==='undefined'||!st.started)return false;const P=allRaw();if(!P.some(isYoung))return false;
+ if(P.some(q=>q.stage>=6&&q.perch==='crate'))return false;return !(typeof cat!=='undefined'&&cat.spot==='crate'&&cat.state==='sleep');}
+const bassIn=q=>isYoung(q)&&(q.stage<4?(q.place||{}).seed==='crate':q.perch==='crate')&&!(drag.on&&drag.id===q.id); // sitting in it right now
+function bassAsleep(){return allRaw().some(q=>bassIn(q)&&(q.nap>0||st.night));}
+const BASS_FRONT=[[236,664,206,114]],BASS_FRONT_BED=[[236,664,206,114],[290,648,126,16]]; // its front rail (and the blanket's top edge), drawn again over whoever sits in it
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
@@ -77,8 +87,8 @@ const CURT_L=244,CURT_R=648,CURT_MID=446; // the closed curtains (curtains2.png,
 // windowsill front edge, front of the desk top, front of the book on the milk crate, front of the top book's cover, the armchair seat, the cat bed's rim, the floor in front of the rug.
 // On the rug any y is floor (back 790 to front 918). Small per-species and per-frame fixes live in NUDGE (js/nudges.js).
 const SURFACE={sill:530/* the windowsill ledge (room art: the orange ledge, y 508-535) */,desk:550/* on the desktop, just behind its front edge (room art: top y 535-562) */,crate:660/* the crate's flat top (y 628-668) */,books:800/* on the floor in front of the mini fridge; the key is still 'books' from when a book stack stood by the desk, so old saves keep their place */,chair:656,bed:888,floor:925};
-const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,y:SURFACE.crate},books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
-const GROUPS={seed:['sill','desk'],baby:['crate','books'],grown:['rugL','rugC','rugR']};
+const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,get y(){return bassinetOut()?672:SURFACE.crate}}/* in the bassinet the pot sits down behind the front rail */,books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+const GROUPS={get seed(){return bassinetOut()?['sill','desk','crate']:['sill','desk']}/* a seed or sprout may go in the bassinet too */,baby:['crate','books'],grown:['rugL','rugC','rugR']};
 SPOT.chair={x:610,y:SURFACE.chair,name:'in the armchair'};
 // WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big
 // for those and stand on the floor. Teens and adults can also sit in the armchair awake (any age can nap there). st.perch = the furniture, or null = the floor.
@@ -131,7 +141,7 @@ function nearestClearFloor(x,y){const c=[];for(let fx=FLOOR_X0;fx<=FLOOR_X1;fx+=
  for(const[fx,fy]of c)if(freeClear(fx,fy))return {x:fx,y:fy};return null;}
 function defaultFree(){const r=st.place&&SPOT[st.place.grown]?st.place.grown:({sun:'rugL',shade:'rugR',night:'rugR'}[st.pref]||'rugC');
  const c=[r,'rugL','rugC','rugR'].map(k=>[SPOT[k].x,SPOT[k].y]).concat([[400,800],[700,800],[1300,800],[1000,860]]);for(const[x,y]of c)if(freeClear(x,y))return {x,y};return {x:c[0][0],y:c[0][1]};}
-function perchTaken(k){return otherPos().some(q=>q.k===k)||(k==='chair'&&chairId!=null&&chairId!==st.id);} // one plant per piece of furniture (a napper in the armchair counts)
+function perchTaken(k){return otherPos().some(q=>q.k===k)||(k==='crate'&&st.stage>=6&&bassinetOut())/* the bassinet is for the young */||(k==='chair'&&chairId!=null&&chairId!==st.id);} // one plant per piece of furniture (a napper in the armchair counts)
 function spotKey(){const gp=stageGroup();st.place=st.place||{};
  if(gp!=='seed'){const a=ageName();
   if(st.perch===undefined)st.perch=a==='kid'?kidDefault():null; // old saves and new kids: a kid starts on the crate or book stack, a teen or adult on the floor
@@ -141,7 +151,7 @@ function spotKey(){const gp=stageGroup();st.place=st.place||{};
  const k=st.place[gp];if(GROUPS[gp].includes(k))return k;
  const hid=k=>otherPos().some(q=>q.k==='free'&&Math.abs(q.x-SPOT[k].x)<260); // a plant standing on the floor in front would hide a new seed
  const def={seed:hid('sill')&&!hid('desk')?'desk':'sill',baby:'books'}[gp],taken=otherPos().filter(q=>q.g===gp).map(q=>q.k),pick=taken.includes(def)?(GROUPS[gp].find(x=>!taken.includes(x))||def):def;st.place[gp]=pick;return pick;}
-function kidDefault(){const k=st.place.baby;if(GROUPS.baby.includes(k)&&!perchTaken(k))return k;return GROUPS.baby.find(x=>!perchTaken(x))||null;} // the book stack or crate, whichever is free (else the floor)
+function kidDefault(){const k=st.place.baby;if(GROUPS.baby.includes(k)&&!perchTaken(k))return k;if(bassinetOut()&&!perchTaken('crate'))return 'crate'; /* a new kid goes in the bassinet if it is free */return GROUPS.baby.find(x=>!perchTaken(x))||null;} // the book stack or crate, whichever is free (else the floor)
 function spotLight(){return spotInfo(spotKey()).L;} // light zones live in light.js
 function nudgeSun(){if(st.night||clockLive())return;st.dayT=Math.min(.7,st.dayT+.055);}
 /* ---------- props (code placeholders) ---------- */
@@ -196,6 +206,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
   if(st.puddleLv)fx('puddle',pb.x+pb.w/2,baseY()-12,1.5,0,FX_SCALE*clamp(pb.w/220,.5,1.7)*[0,.55,.8,1][st.puddleLv]); // too much water: a puddle under the pot that dries in 3 steps
   b=drawPlant();if(sill)curtainOver(b); // the fabric sweeping over it as the curtains close (or back as they open)
   if(inChair()&&rm)for(const[x,y,w,h]of CHAIR_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
+  if(rm&&bassinetOut()&&bassIn(st)&&!onChair())for(const[x,y,w,h]of bassAsleep()?BASS_FRONT_BED:BASS_FRONT)g.drawImage(rm,x,y,w,h,x,y,w,h);
   const cx=b.x+b.w/2,top=b.y;
   // each reaction has its own slot around the plant, outside its outline (Jackie: no overlaps, more space)
   const base=baseY(),M=34,vh=inChair()?b.h:Math.max(b.h,440),vt=base-vh; // small plants get a taller virtual box so slots never stack

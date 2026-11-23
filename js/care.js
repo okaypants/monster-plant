@@ -1,6 +1,6 @@
 'use strict';
 /* Care: things you carry and use on a plant: the carafe, treats, books, and petting. */
-const CARRY={up:img('carry_cup_up.png'),tilt:img('carry_cup_tilt.png'),pour:img('carry_cup_pour.png')},TREAT_IMG={};['solar','peat','cotton','pizza','plants','fossil','blood'].forEach(k=>TREAT_IMG[k]=img('treat_'+k+'.png'));
+const CARRY={up:img('carry_cup_up.png'),tilt:img('carry_cup_tilt.png'),pour:img('carry_cup_pour.png')},TREAT_IMG={};['solar','peat','cotton','pizza','plants','fossil','blood'].forEach(k=>TREAT_IMG[k]=img('treat_'+k+'.png'));TREAT_IMG.mash=img('treat_mash.png');
 const CARRY_SC=.45; // carried items at the front of the room; over a plant they take that plant's depth (holdK, overK)
 function drawCarried(im,x,y,sc=CARRY_SC,flip){if(!ok(im))return;y+=(Math.floor(T*2)%2)*2;const w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);
  if(flip){g.save();g.translate(Math.round(x),0);g.scale(-1,1);g.drawImage(im,-Math.round(w/2),Math.round(y-h/2),w,h);g.restore();}else g.drawImage(im,Math.round(x-w/2),Math.round(y-h/2),w,h);} // flip = mirrored when drawn; the PNG never changes
@@ -33,6 +33,10 @@ const SNACKS=[ // Jackie's treats, good -> evil. Treats are optional; regular se
  {id:'fossil',name:'Dinosaur fossils',ge:-.08,s:'crunch',trait:'Dino-skull clip'},
  {id:'blood',name:'Blood',ge:-.14,s:'slurp',trait:'Heart-charm bow'}];
 const TRAIT_AT=5; // servings to grow a trait
+/* MASH (Jackie, Nov 23): food only for the young. A jar of green mash in the mini fridge, first on the tray, fed by dragging like a
+   treat. Only a kid eats it (a seed or sprout has no mouth yet; teens and adults are too big for it). It is plain food: it fills the
+   kid up and pleases it, and changes nothing about who the kid grows into. A full kid dozes off, as a full monster does. */
+const MASH={id:'mash',name:'Mash',s:'slurp',young:true},MASH_FULL=.4;
 /* THE BOOKS (Jackie, Nov 15): twelve, each nudging a monster a little (ge: sweet + / spooky -, lc: tidy + / wiggly -). What's inside is in
    js/stories.js; where each can be found is BOOK_ZONES below (four at a time, by where you tap). */
 const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02},
@@ -58,6 +62,12 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
    if(st.stage>=4)setTimeout(()=>doMove(),1300);
    if(P.l==='lawful'&&onTime&&st.stage>=4){}else if(st.stage>=4&&quiet()&&Math.random()<.6)setTimeout(()=>{if(ambientOK())tell(line('water'),{kind:'ambient',who:st.id});},1400);}
   st.needs.thirst=0;held.tool=null;return;}
+ if(held.tool==='mash'){const W=who();held.tool=null;sfx('slurp');burst('crumb',b.x+b.w/2,b.y+b.h*.5,6,'#a9bf3c');
+  setTimeout(()=>{plantBoing(b.x+b.w/2);sfx('pop');burst('heart',b.x+b.w*.15,b.y-20,2);},350);
+  st.full=clamp((st.full||0)+MASH_FULL,0,1);st.needs.attention=Math.max(0,st.needs.attention-.2);logEv('Mash');bump('mash');
+  if(st.full>.6){setTimeout(()=>{sfx('burp');st.nap=60;},900);tell('Burp! '+W+' is so full it\'s dozing off.',{kind:'info',who:st.id});}
+  else tell(W+' eats a spoonful of mash.',{kind:'info',who:st.id});
+  save();return;}
  if(st.stage<4){tell(held.tool==='snack'?'This tyke\'s not eating whole food yet.':'Too little for that yet.',{kind:'info',who:st.id});held.tool=null;return;}
  if(held.tool==='snack'&&(st.full||0)>.6){ // full (Jackie): it won't eat; a little head-shake, treat stays in your hand
   BOING.vx+=6;sfx('hmm');tell(who()+' is full. Maybe later.',{kind:'info',who:st.id});return;}
@@ -88,7 +98,7 @@ function useTool(tx=mx,ty=my){const b=plantBox();const base=SPOT[spotKey()].y;
    or a few seconds after the last treat. Pointer events, so a mouse drag works the same way. */
 const feed={item:null,x:0,y:0,over:null,trayT:0},CHOMP=new Map(),CHOMP_MS=110,TRAY_HIDE=4000;let trayEl=null;
 function openSnacks(){sfx('tick');if(!trayEl){trayEl=document.createElement('div');trayEl.className='ttray tsb';
-  for(const s of SNACKS){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
+  for(const s of [MASH].concat(SNACKS)){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
    const im=document.createElement('img');im.src=TREAT_IMG[s.id].src;im.alt='';im.draggable=false;b.appendChild(im);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();grabTreat(s,e);});trayEl.appendChild(b);}
   trayEl.addEventListener('pointerdown',e=>e.stopPropagation());trayEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(trayEl);}
@@ -105,17 +115,19 @@ function feedPos(e){const [x,y]=toGame(e);feed.x=x+(rightHand()?-30:30)/S;feed.y
 function grabTreat(s,e){feed.item=s;feedPos(e);feedOver();trayKeep();sfx('pop');
  addEventListener('pointermove',feedMove);addEventListener('pointerup',feedUp);addEventListener('pointercancel',feedUp);}
 function feedMove(e){if(!feed.item)return;feedPos(e);feedOver();}
-function canEat(){return st.stage>=6&&st.nap<=0&&!st.night&&(st.full||0)<=.6;}
+function canEat(s=feed.item){const age=s&&s.young?st.stage>=4&&st.stage<6:st.stage>=6;return age&&st.nap<=0&&!st.night&&(st.full||0)<=.6;} // mash is for kids, treats for teens and adults
 // the monster under the treat (the frontmost if two overlap): its whole body plus a generous margin
 function feedTarget(x,y){let best=null,by=-1;eachPlant(()=>{if(st.stage<0)return;const b=plantBox(),m=40+b.w*.12;
   if(x>=b.x-m&&x<=b.x+b.w+m&&y>=b.y-m&&y<=baseY()+m*.5&&baseY()>by){by=baseY();best={id:st.id,eat:canEat()};}});return best;}
 function feedOver(){const t=feedTarget(feed.x,feed.y);feed.over=t&&t.eat?t.id:null;}
 function feedUp(){removeEventListener('pointermove',feedMove);removeEventListener('pointerup',feedUp);removeEventListener('pointercancel',feedUp);
  const s=feed.item,id=feed.over;feed.item=null;feed.over=null;trayKeep();if(!s)return;
- if(id==null){sfx('tick');const t=feedTarget(feed.x,feed.y);if(t)withPlant(t.id,()=>{if(st.stage>=4&&st.stage<6){plantBoing(plantBox().x+plantBox().w/2);tell(who()+' is too little for big monster food.',{kind:'info',who:st.id});}});return;} // back to the tray; a kid says why
+ if(id==null){sfx('tick');const t=feedTarget(feed.x,feed.y);if(t)withPlant(t.id,()=>{const say=x=>{plantBoing(plantBox().x+plantBox().w/2);tell(x,{kind:'info',who:st.id});};
+   if(s.young){if(st.stage>=6)say(who()+' is too big for mash.');else if(st.stage<4)say('Too little for mash yet.');else if(st.nap<=0&&!st.night&&(st.full||0)>.6)say(who()+' is full. Maybe later.');}
+   else if(st.stage>=4&&st.stage<6)say(who()+' is too little for big monster food. Try the mash.');});return;} // back to the tray; a kid says why
  const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you fed becomes the one you're tending
  CHOMP.set(id,performance.now());sfx(s.s);
- setTimeout(()=>withPlant(id,()=>{held.tool='snack';held.item=s;useTool();}),CHOMP_MS*3);}
+ setTimeout(()=>withPlant(id,()=>{held.tool=s.young?'mash':'snack';held.item=s;useTool();}),CHOMP_MS*3);}
 // mouth while feeding: open over a treat; chomp = closed, open, closed (one 110 ms frame each)
 function feedMouth(){const t=CHOMP.get(st.id);if(t!=null){const f=Math.floor((performance.now()-t)/CHOMP_MS);if(f<3)return f===1?2:8;CHOMP.delete(st.id);}return feed.item&&feed.over===st.id?2:0;}
 function chompDip(){const t=CHOMP.get(st.id);if(t==null)return 0;const f=Math.floor((performance.now()-t)/CHOMP_MS);return f===1?2:0;} // squash 2 px down on the open frame, back up after

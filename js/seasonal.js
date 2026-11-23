@@ -34,7 +34,7 @@ function drawFallingLeaves(tk){const now=performance.now();
 /* ---------- the pumpkin (autumn) and the tree (winter) on the milk crate ---------- */
 function seasonOut(){const s=seasonNow();return s==='autumn'?'pumpkin':s==='winter'?'tree':null;} // whose season it is
 // out on the crate unless a plant sits there (the cat leaves the crate to it)
-function seasonItem(){const k=seasonOut();if(!k||cat.spot==='crate')return null;
+function seasonItem(){const k=seasonOut();if(!k||cat.spot==='crate'||bassinetOut())return null; // put away while the bassinet stands in the crate's place
  let onStack=false;eachPlant(()=>{if(st.stage>=0&&spotKey()==='crate')onStack=true;});return onStack?null:k;}
 function stackOff(){const p=FP.find(q=>q.n==='crate');return p?{x:Math.round(p.ox),y:Math.round(p.oy)}:{x:0,y:0};} // rides along when the crate bounces
 function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now()):0;}

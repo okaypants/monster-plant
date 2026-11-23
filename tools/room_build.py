@@ -8,6 +8,7 @@
   smallpic.png the picture in the small frame
   curtains.png the curtains drawn closed, on magenta
   views.png   the view from the window in spring, summer, autumn and winter, side by side
+  sheet3.png  the bassinet (empty, and with its blanket up), the jar of mash and the spoon, on magenta
 
 Writes into the repo root:
   room2.png        the room, window panes see-through, the wind-up cat's cubby empty
@@ -15,6 +16,9 @@ Writes into the repo root:
   carry_cup_*.png  the cup as it is carried
   curtains2.png    the closed curtains
   sash2.png        the bars of the window's bottom row, for when it slides up
+  obj_nocrate.png  the bit of wall and floor behind the milk crate, for when the bassinet stands there instead
+  obj_bass.png, obj_bass_bed.png  the bassinet, and the bassinet with its blanket up
+  treat_mash.png   the jar of mash with its spoon
 Run: python3 tools/room_build.py
 """
 import os,json
@@ -116,11 +120,12 @@ CUTS={'trunk_open':(1,465,286,254,207,.42),
  'toy_h1':(2,41,516,170,153,.56),'toy_h2':(2,253,514,169,155,.56), # in its cubby: as big as the cubby allows
  'toy_r1':(2,41,516,170,153,.82),'toy_r2':(2,253,514,169,155,.82),'toy_l1':(2,448,516,169,153,.82),'toy_l2':(2,648,514,169,155,.82),'toy_d1':(2,880,514,105,160,.82),'toy_d2':(2,1070,516,106,158,.82), # out of it: bigger (Jackie, Nov 18)
  'cup':(2,1221,305,135,151,.3),'coin':(2,681,735,147,150,.14)}
-def cut(sheet,x,y,w,h,sc,pad=6):
+def cut(sheet,x,y,w,h,sc,pad=6,holes=False): # holes: magenta shut in by the thing (the gap under the bassinet) is background too
     a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,200)
     lab,n=nd.label(bg);edge=set(lab[0])|set(lab[-1])|set(lab[:,0])|set(lab[:,-1]);edge.discard(0)
     out=np.isin(lab,list(edge)) # only the magenta that reaches the edge of the cut is background (a pink crystal ball stays)
     pure=(a[...,0]>225)&(a[...,2]>225)&(a[...,1]<60);out|=nd.binary_opening(pure,iterations=1)
+    if holes:out|=nd.binary_opening(bg,iterations=1)
     out=nd.binary_dilation(out,iterations=1)
     rgb=defringe(a,out,2);al=np.where(out,0,255)
     ys,xs=np.where(al>0);rgb=rgb[ys.min():ys.max()+1,xs.min():xs.max()+1];al=al[ys.min():ys.max()+1,xs.min():xs.max()+1]
@@ -207,6 +212,27 @@ def build_views(panes):
         v=np.asarray(im).astype(np.int32);q=(v//8).reshape(-1,3);keys,cnt=np.unique(q,axis=0,return_counts=True);sky=keys[cnt.argmax()]*8+4
         m=np.abs(v-sky).sum(2)<70 # every bit of sky, the small gaps between leaves too
         Image.fromarray(np.dstack([v,np.where(m,0,255)]).astype(np.uint8),'RGBA').save(os.path.join(ROOT,'viewfg_'+n+'.png'),optimize=True)
+CRATE=[(238,633),(381,622),(437,651),(435,770),(288,785),(238,754)] # the milk crate's outline in the room, a little generous
+def build_bassinet(room):
+    """The bassinet stands where the milk crate does while a monster is young (Jackie, Nov 23). The crate is painted into the room, so
+    a patch of what is behind it is made: the panelled wall carries on down from just above the crate (each column keeps its own
+    colour, so the panel lines run on), and the skirting and the floor carry on from just right of it (each row keeps its colour)."""
+    from PIL import ImageDraw
+    a=room[...,:3].astype(np.int32);mk=Image.new('L',(W,H),0);ImageDraw.Draw(mk).polygon(CRATE,fill=255);m=np.asarray(mk)>0
+    ys,xs=np.where(m);x0,x1,y0,y1=xs.min(),xs.max()+1,ys.min(),ys.max()+1;x1+=(x1-x0)%2
+    ref=a[:,437:441].reshape(H,-1,3);row=np.median(ref,1) # just right of the crate, under the throw's tassels: wall, skirting, floor
+    wallc=np.median(a[600:616,x0:x1],0) # the wall above the crate, column by column
+    wall_end=int(np.argmax(np.abs(row[700:]-row[700]).sum(1)>40))+700 # the row where the wall gives way to the skirting
+    out=np.zeros((y1-y0,x1-x0,4),np.uint8)
+    for y in range(y0,y1):
+        out[y-y0,:,:3]=wallc if y<wall_end else row[y]
+    out[...,3]=np.where(m[y0:y1,x0:x1],255,0)
+    Image.fromarray(out,'RGBA').save(os.path.join(ROOT,'obj_nocrate.png'),optimize=True)
+    sh=load('sheet3.png');sc=.72
+    cut(sh,57,164,284,283,sc,holes=True).save(os.path.join(ROOT,'obj_bass.png'),optimize=True)
+    cut(sh,420,164,284,283,sc,holes=True).save(os.path.join(ROOT,'obj_bass_bed.png'),optimize=True)
+    cut(sh,99,652,172,276,.8,holes=True).save(os.path.join(ROOT,'treat_mash.png'),optimize=True) # the open jar with its spoon, about the size of the treats
+    return {'nocrate':[int((x0+x1)//2),int(y1)],'wall_end':wall_end}
 if __name__=='__main__':
-    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes'])
+    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room))
     print(json.dumps(meta))

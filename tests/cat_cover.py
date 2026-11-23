@@ -35,11 +35,11 @@ SETUP_JS = """(L)=>{const [grown,kid,seed]=L;
  return ps.length+1;}"""
 
 # how much of the cat is covered, from the rendered room: cat pixels visible with the plants vs without them
-MEASURE_JS = """()=>{const sz=sleepZ,fx0=fx;sleepZ=()=>{};fx=()=>{};const grab=()=>{draw();return g.getImageData(0,0,W,H).data;};const keep=cat.x;
+MEASURE_JS = """()=>{const sz=sleepZ,fx0=fx;sleepZ=()=>{};fx=()=>{};const bo=bassinetOut(),bf=bassinetOut;bassinetOut=()=>bo; /* the room stays as it is while the plants are taken out to measure */const grab=()=>{draw();return g.getImageData(0,0,W,H).data;};const keep=cat.x;
  const diff=(A,B)=>{let n=0;for(let i=0;i<A.length;i+=4)if(Math.abs(A[i]-B[i])+Math.abs(A[i+1]-B[i+1])+Math.abs(A[i+2]-B[i+2])>30)n++;return n;};
  const A=grab();cat.x=-9999;const B=grab();cat.x=keep;
  const o=st.others,s0=st.stage;st.others=[];st.stage=-1;const C=grab();cat.x=-9999;const D=grab();cat.x=keep;st.others=o;st.stage=s0;
- sleepZ=sz;fx=fx0;draw();const all=diff(C,D),vis=diff(A,B);return {cover:all?1-vis/all:0,spot:cat.spot,x:Math.round(cat.x),pose:cat.pose,game:catCover(cat.x,cat.y,cat.sc,catFrame())};}"""
+ sleepZ=sz;fx=fx0;bassinetOut=bf;draw();const all=diff(C,D),vis=diff(A,B);return {cover:all?1-vis/all:0,spot:cat.spot,x:Math.round(cat.x),pose:cat.pose,game:catCover(cat.x,cat.y,cat.sc,catFrame())};}"""
 
 SETTLE_JS = """()=>{for(let i=0;i<2400;i++){__step(.05);if(cat.state==='sleep'&&cat.t>.5)return true;}return false;}"""
 

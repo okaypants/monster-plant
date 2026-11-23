@@ -150,7 +150,7 @@ CASES = [
     # feeding (Jackie, Nov 4): drag a treat from the tray to an adult (open mouth, it eats) and to the floor (it goes back to the tray)
     ("feed_drag", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;s.nap=0;s.full=0;", "", 0.1,
      "(()=>{st.nap=0;st.full=0;st.night=false;openSnacks();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});"
-     "const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;if(document.querySelectorAll('.ttray .ttreat').length!==7)return 'tray has '+document.querySelectorAll('.ttray .ttreat').length;"
+     "const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;if(document.querySelectorAll('.ttray .ttreat').length!==8)return 'tray has '+document.querySelectorAll('.ttray .ttreat').length;"
      "document.querySelector('.ttreat[data-id=pizza]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));"
      "if(feed.over!==st.id)return 'treat over the adult does not count';if(mouthNow()!==2)return 'mouth not open: '+mouthNow();"
      "dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));__step(1);if(((st.treats||{}).pizza||0)!==1)return 'it did not eat the pizza';"
@@ -174,7 +174,13 @@ CASES = [
     ("kid_food_caption", "s.stage=4;s.species=2;s.name='Pip Wobblebean';s.perch=null;s.free={x:1250,y:918};s.giftSeed=1;s.dayT=.3;", "", 0.1,
      "(()=>{capClear();CAP.seen.clear();openSnacks();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;"
      "document.querySelector('.ttreat[data-id=pizza]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));"
-     "return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Pip is too little for big monster food.')||'caption: '+CAP.q.map(c=>c.t).join('|');})()"),
+     "return CAP.q.concat(CAP.cur||[]).some(c=>c.t==='Pip is too little for big monster food. Try the mash.')||'caption: '+CAP.q.map(c=>c.t).join('|');})()"),
+    # a kid sits in the bassinet, eats the mash, and a teen won't (Jackie, Nov 23)
+    ("kid_mash_bassinet", "s.stage=4;s.species=2;s.name='Pip Wobblebean';s.perch='crate';s.giftSeed=1;s.dayT=.3;", "", 0.1,
+     "(()=>{if(!bassinetOut())return 'no bassinet for a kid';if(thingBy('bass').pic()!=='bass')return 'bassinet picture: '+thingBy('bass').pic();capClear();CAP.seen.clear();openSnacks();const r=cv.getBoundingClientRect(),cl=(x,y)=>({clientX:r.left+x*S,clientY:r.top+y*S,bubbles:true,pointerId:1,isPrimary:true});const b=plantBox(),fx=b.x+b.w/2-(rightHand()?-30:30)/S,fy=b.y+b.h/2+46/S;"
+     "const give=()=>{document.querySelector('.ttreat[data-id=mash]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));};"
+     "give();__step(.6);if(!(st.full>.3))return 'the kid did not eat: full '+st.full;give();__step(1.6);if(!(st.nap>0))return 'a full kid did not doze off';__step(.2);if(thingBy('bass').pic()!=='bass_bed')return 'no blanket for a sleeping kid';"
+     "st.stage=6;st.nap=0;st.full=0;if(bassinetOut())return 'bassinet still out for a teen';return true;})()"),
     # the cat answers a touch even while he's walking: he stops for a moment (Jackie, Nov 7)
     ("cat_touch_walking", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.catTrust=.5;", "", 0.1,
      "(()=>{catGo(catPick());if(cat.state!=='walk')return 'cat not walking: '+cat.state;const x0=cat.x;petCat();if(!(cat.pauseT>0))return 'no pause';__step(.5);if(Math.abs(cat.x-x0)>1)return 'he kept walking';__step(1);return cat.state!=='walk'||Math.abs(cat.x-x0)>0||cat.path.length===0||'he never went on';})()"),

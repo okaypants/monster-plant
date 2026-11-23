@@ -120,13 +120,26 @@ async def main():
         check((await where(1))["spot"] == "free", "dragging the adult out of the armchair didn't put it on the floor")
 
         # 5. a kid naps in the armchair: a teen can't take it
-        await load([{"id": 1, "stage": 4, "species": 6, "place": {"baby": "crate"}, "nap": 999},
+        await load([{"id": 1, "stage": 4, "species": 6, "perch": None, "free": {"x": 800, "y": 900}, "nap": 999},
                     {"id": 2, "stage": 6, "species": 2, "free": {"x": 1200, "y": 900}}])
         w1 = await where(1)
         check(w1["inChair"], f"the napping kid isn't in the armchair: {w1}")
         await drag(2, (610, 656))
         w2, w1 = await where(2), await where(1)
         check(w2["spot"] == "free" and w1["inChair"], f"the teen displaced the napping kid: teen {w2}, kid {w1}")
+
+        # 5b. a kid in the bassinet naps there, under its blanket, and the armchair stays free (Jackie, Nov 23)
+        await load([{"id": 1, "stage": 4, "species": 6, "place": {"baby": "crate"}, "nap": 999},
+                    {"id": 2, "stage": 6, "species": 2, "free": {"x": 1200, "y": 900}}])
+        w1 = await where(1)
+        check(w1["spot"] == "crate" and not w1["inChair"], f"a kid napping in the bassinet left it: {w1}")
+        check(await pg.evaluate("()=>bassinetOut()&&thingBy('bass').pic()==='bass_bed'"), "no bassinet with its blanket up for a napping kid")
+        await shot("kid_asleep_in_the_bassinet.png")
+        # the bassinet is for the young: with the kid on the floor a teen still can't sit in it
+        await pg.evaluate("()=>{st.nap=0;st.perch=null;st.free={x:800,y:900};__step(.2);}")
+        await drag(2, (336, 660))
+        w2 = await where(2)
+        check(w2["spot"] != "crate", f"a teen sat in the bassinet: {w2}")
 
         # 6. one plant per piece of furniture: a kid sits on the crate, a teen can't join it
         await load([{"id": 1, "stage": 4, "species": 6, "place": {"baby": "crate"}},
@@ -144,7 +157,7 @@ async def main():
         await load([{"id": 1, "stage": 4, "species": 6, "place": {"baby": "books"}},
                     {"id": 2, "stage": 8, "species": 0, "free": {"x": 300, "y": 900}},
                     {"id": 3, "stage": 6, "species": 2, "free": {"x": 1350, "y": 900}},
-                    {"id": 4, "stage": 4, "species": 9, "place": {"baby": "crate"}, "nap": 999}])
+                    {"id": 4, "stage": 4, "species": 9, "perch": None, "free": {"x": 760, "y": 900}, "nap": 999}])
         await no_overlap("the starting room")
         check((await where(4))["inChair"], "kid 4 should be napping in the armchair")
         await drag(3, (832, 800))  # the book stack: kid 1 is there

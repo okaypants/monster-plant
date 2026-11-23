@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A bassinet and mash for the young (Nov 23)
+
+- Jackie: "I would like to get Chat to make a bassonet and some kind of food just for young plants that the kids and babies and stuff will sleep in and eat." Asked where it should go, Jackie said "You suggest", then sent the sheet (the bassinet empty and with its blanket up, the jar of mash, the spoon).
+- The bassinet stands where the milk crate does while any monster is a seed, a sprout or a kid. When nobody is young the crate is back. Reason: the crate is already where a young monster sits, the room has no other free floor, and the room itself shows that the monster has grown.
+- A kid sits in it as it did on the crate, and a seed or sprout can be put in it too. When the one in it is asleep (a nap or the night) the blanket is up. A kid in the bassinet sleeps there, not in the armchair.
+- A teen or adult cannot sit in it. A kid that becomes a teen in it steps down to the floor if a younger one is still about; otherwise the crate comes back under it.
+- While the bassinet is out: the crate's record tap is away with the crate, the cat does not nap there, and the pumpkin and the little tree are put away (they sit on the crate).
+- Mash is the first thing on the fridge tray. Only a kid eats it: a seed or sprout has no mouth yet, and teens and adults are too big. It is plain food. It fills the kid and pleases it, and changes nothing about who the kid becomes; treats still start at teen, as before. Two spoonfuls and the kid dozes off.
+- The crate is painted into the room, so tools/room_build.py makes a patch of the wall and floor behind it. The room picture itself is unchanged.
+
 ### The room's colours, tuned so the monster stands out (Nov 19)
 
 - Jackie sent a chart of colours as they were and as they should be: "I want to change these things."

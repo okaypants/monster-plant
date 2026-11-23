@@ -30,8 +30,8 @@ async def main():
         jar = await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return [r.left+(JAR.x+JAR.w/2)*S,r.top+(JAR.y+JAR.h/2)*S];}")
         await pg.mouse.click(*jar)
         await pg.evaluate("()=>__step(.2)")
-        if await pg.locator(".ttray .ttreat").count() != 7:
-            fails.append("tapping the SNACKS cabinet didn't show the tray of 7 treats")
+        if await pg.locator(".ttray .ttreat").count() != 8:
+            fails.append("tapping the SNACKS cabinet didn't show the tray of the mash and 7 treats")
         await pg.screenshot(path=os.path.join(OUT, "1_tray.png"))
         box = await pg.locator(".ttreat[data-id=cotton]").bounding_box()
         await pg.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
