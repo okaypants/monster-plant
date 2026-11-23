@@ -2,13 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
-### The viewfinder shows reels (Nov 23)
+### The viewfinder shows stereo cards (Nov 23)
 
-- Jackie had turned down a first set of twelve famous museum paintings (Nov 18): "this is like a museum I want like a unique large collection of photos and illustrations and really interesting stuff." Shown three sample reels on Nov 23 and asked if that was the right feel: "Yes, keep going."
-- The viewfinder holds eight reels of twelve pictures, each reel on one subject: Haeckel's creatures, the sky drawn by hand (Trouvelot), cats and dogs in costume, monsters, under the microscope, stereo cards, the first colour photographs, circus posters. (The colour reel has eleven; one picture would not download.)
-- A tap on the viewer on the shelf opens it on the next picture of the reel you were on. Next, Previous and Change the reel move through it; a tap on the picture is also Next.
-- Every picture is in the public domain, from Wikimedia Commons, shown as it is with its name, who made it and when. They are kept with the game (viewer/, about 11.6 MB), so it works with no internet and nothing is sent anywhere. The "Surprise me" button that fetched a picture from a museum over the internet is gone for that reason.
-- Left out on purpose: a stereo card of a mill explosion in which people died.
+- Jackie turned down a first set of twelve famous museum paintings (Nov 18): "this is like a museum I want like a unique large collection of photos and illustrations and really interesting stuff."
+- A second try, eight themed "reels" of mixed pictures in a pop-up, was also wrong: "This doesn't feel like a viewer. It just seems like random wikipedia pitcures." and "what the heck is a reel. i thought we were just looking at those double image pictures."
+- So the viewfinder is a stereoscope and shows only stereo cards: the real double-picture cards made for viewers like it, 1858 to 1926. There are 65: girls sitting on crescent moons, the full moon, staged ghosts, the Coney Island elephant, airships, a toy shop in Tokyo, snowy owls, big trees, pyramids, volcanoes, icebergs. No reels, themes or sets.
+- A tap on the viewer on the shelf opens it. The card sits in the viewer's wooden slide, whole, with both pictures and its printed mount. A tap on the card or an arrow pulls it out and drops in the next one. Under it are the card's title, who published it and when.
+- All are in the public domain, from the Library of Congress stereograph collection, and are kept with the game (viewer/, about 6 MB), so it works with no internet and nothing is sent anywhere. The old "Surprise me" button that fetched from a museum is gone for that reason.
+- Left out on purpose: war and hunting cards, and cards whose titles talk down to the people in them.
 
 ### A bassinet and mash for the young (Nov 23)
 

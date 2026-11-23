@@ -178,7 +178,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `moon.js` | The moon in the night window: tonight's real phase, drawn over the painted moon (`moonAge`, `moonLit`, `moonName`) |
   | `tarotread.js` | Each tarot card's short meaning (used to sum up a whole spread), how readers read it today, and details special to single cards |
   | `tarotlore.js` | The details in the tarot zoom: each card's picture, astrology and how it was made |
-  | `viewer.js`, `viewerdata.js` | The viewfinder on the shelf: eight reels of twelve public-domain pictures, shown as they are with their credits. Pictures in `viewer/`; captions in `tools/viewer_captions.py`, and `tools/viewer_build.py` writes `viewerdata.js` from them |
+  | `viewer.js`, `viewerdata.js` | The viewfinder on the shelf: 65 public-domain stereo cards from the Library of Congress, each shown whole with its title and publisher. Pictures in `viewer/`; captions in `tools/viewer_captions.py`, and `tools/viewer_build.py` writes `viewerdata.js` from them |
   | `tarot.js`, `tarotdata.js` | The moon box's tarot: shuffle, cut, three cards, reading; the 78 cards' meanings (plain words and Waite's). Pictures in `tarot/` |
   | `iching.js` | The moon box's I Ching: three coins, six lines, the hexagram and what it turns into. The 64 hexagrams (Chinese original, Legge's 1882 English, plain meanings) are in `data/iching.json`, built by `tools/iching_build.py` |
   | `sky.js`, `charts.js` | The real sky (sun, moon, planets, rising sign) and the birth charts, daily horoscopes and pairings in the moon box. World cities in `data/cities.json` |

@@ -1,30 +1,31 @@
 'use strict';
 /* THE VIEWFINDER (Jackie, Nov 17: "a viewfinder where you can like look at it and see cool fun ... random public domain images";
-   Nov 18: "a unique large collection of photos and illustrations and really interesting stuff", not a museum). The wood and brass
-   viewer on the lower wall shelf. A tap clicks its lever and opens it. Its pictures come in reels, like the cards of a real viewer:
-   eight reels of twelve (js/viewerdata.js), each on one subject. Every picture is shown as it is (never pixelated or recoloured),
-   with its name, who made it and when. All are in the public domain and are kept with the game (viewer/), so the viewfinder works
-   with no internet and nothing about the player is sent anywhere. The pictures were gathered from Wikimedia Commons.
-   Each time you open it, it shows the next picture of the reel you were on. */
-const VIEW_FROM='Wikimedia Commons';
-let viewEl=null,viewR=0,viewI=-1;
-function viewReel(){return VIEW_REELS[viewR];}
-function viewShow(){if(!viewEl)return;const r=viewReel(),v=r.pics[viewI],im=viewEl.querySelector('.vwpic'),cap=viewEl.querySelector('.vwcap');
+   Nov 23: "i thought we were just looking at those double image pictures"). The wood and brass viewer on the lower wall shelf is a
+   stereoscope, and what it shows is stereo cards: the real double-picture cards people slid into viewers like it from the 1850s to
+   the 1920s. A tap clicks its lever and opens it on a card, held in the viewer's wooden slide. Tap the card (or the arrows) for the
+   next one. Each card is shown whole and as it is (never pixelated, cropped or recoloured), with its title, who published it and
+   when. All are in the public domain, from the Library of Congress's stereograph collection, and are kept with the game (viewer/),
+   so it works with no internet and nothing about the player is sent anywhere. The list is js/viewerdata.js. */
+const VIEW_FROM='Library of Congress';
+let viewEl=null,viewI=-1,viewBusy=false;
+function viewShow(){if(!viewEl)return;const v=VIEW_CARDS[viewI],im=viewEl.querySelector('.vwpic'),cap=viewEl.querySelector('.vwcap');
  im.alt=v.t;im.src='viewer/'+v.f;cap.innerHTML='';
- const a=document.createElement('div');a.className='vwt';a.textContent=v.t;const b=document.createElement('div');b.className='vwby';b.textContent=[v.by,v.d].filter(Boolean).join(', ')+'.';
- const c=document.createElement('div');c.className='vwreel';c.textContent=r.name+', picture '+(viewI+1)+' of '+r.pics.length+'. '+VIEW_FROM+'.';cap.appendChild(a);cap.appendChild(b);cap.appendChild(c);
- const nx=r.pics[(viewI+1)%r.pics.length];if(nx){const p=new Image();p.src='viewer/'+nx.f;}} // the next picture is fetched ahead, so a tap shows it at once
-function viewStep(n){const L=viewReel().pics.length;viewI=(viewI+n+L)%L;sfx('tick');viewShow();}
-function viewNextReel(){viewR=(viewR+1)%VIEW_REELS.length;viewI=0;sfx('pop');viewShow();}
-function openViewer(){if(viewEl||typeof VIEW_REELS==='undefined'||!VIEW_REELS.length)return;
+ const a=document.createElement('div');a.className='vwt';a.textContent=v.t;const b=document.createElement('div');b.className='vwby';b.textContent=[v.by,v.d].filter(Boolean).join(', ')+'. '+VIEW_FROM+'.';
+ cap.appendChild(a);cap.appendChild(b);const nx=VIEW_CARDS[(viewI+1)%VIEW_CARDS.length];if(nx){const p=new Image();p.src='viewer/'+nx.f;}} // the next card is fetched ahead
+// the card is pulled out (the slide is empty for a beat) and the next one is dropped in: two frame swaps, no slide or fade
+function viewStep(n){if(viewBusy||!viewEl)return;viewBusy=true;sfx('paper');const L=VIEW_CARDS.length,sl=viewEl.querySelector('.vwslide');sl.classList.add('vwout');
+ setTimeout(()=>{viewI=(viewI+n+L)%L;viewShow();if(viewEl){sl.classList.remove('vwout');sfx('tick');}viewBusy=false;},170);}
+function openViewer(){if(viewEl||typeof VIEW_CARDS==='undefined'||!VIEW_CARDS.length)return;
+ if(viewI<0)viewI=Math.floor(Math.random()*VIEW_CARDS.length)-1; // a different card to start on each time you play
  viewEl=document.createElement('div');viewEl.className='screen viewer';
- viewEl.innerHTML='<div class="tsb tspop vwbox"><button type="button" class="tsb tx vwx" aria-label="Close">×</button>'+
-  '<div class="vwstage"><img class="vwpic" alt="" draggable="false"></div><div class="vwcap"></div>'+
-  '<div class="vwrow"><button type="button" class="tmore" data-k="prev">‹ Previous</button><button type="button" class="tmore" data-k="reel">Change the reel</button><button type="button" class="tmore" data-k="next">Next ›</button></div></div>';
+ viewEl.innerHTML='<button type="button" class="tsb vwx" aria-label="Close">×</button>'+
+  '<div class="vwrow"><button type="button" class="vwarrow" data-k="prev" aria-label="Previous card">‹</button>'+
+  '<div class="vwslide"><span class="vwclip vwc1"></span><span class="vwclip vwc2"></span><img class="vwpic" alt="" draggable="false"></div>'+
+  '<button type="button" class="vwarrow" data-k="next" aria-label="Next card">›</button></div><div class="vwcap"></div>';
  viewEl.addEventListener('click',e=>{if(e.target===viewEl)closeViewer();});
  viewEl.querySelector('.vwx').addEventListener('click',e=>{e.stopPropagation();closeViewer();});
- viewEl.querySelector('.vwrow').addEventListener('click',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.k;if(!k)return;e.stopPropagation();if(k==='reel')viewNextReel();else viewStep(k==='next'?1:-1);});
- viewEl.querySelector('.vwpic').addEventListener('click',e=>{e.stopPropagation();viewStep(1);}); // a tap on the picture is the lever: the next one
- viewEl.querySelector('.vwpic').addEventListener('error',()=>{if(viewEl)viewEl.querySelector('.vwcap').textContent='That picture did not load.';});
- ui.appendChild(viewEl);viewI=(viewI+1)%viewReel().pics.length;viewShow();}
+ viewEl.querySelectorAll('.vwarrow').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();viewStep(b.dataset.k==='next'?1:-1);}));
+ viewEl.querySelector('.vwslide').addEventListener('click',e=>{e.stopPropagation();viewStep(1);});
+ viewEl.querySelector('.vwpic').addEventListener('error',()=>{if(viewEl)viewEl.querySelector('.vwcap').textContent='That card did not load.';});
+ ui.appendChild(viewEl);viewBusy=false;viewI=(viewI+1)%VIEW_CARDS.length;viewShow();}
 function closeViewer(){if(!viewEl)return;viewEl.remove();viewEl=null;sfx('tick');}
