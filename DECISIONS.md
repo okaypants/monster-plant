@@ -8,7 +8,8 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - The bassinet stands where the milk crate does while any monster is a seed, a sprout or a kid. When nobody is young the crate is back. Reason: the crate is already where a young monster sits, the room has no other free floor, and the room itself shows that the monster has grown.
 - A kid sits in it as it did on the crate, and a seed or sprout can be put in it too. When the one in it is asleep (a nap or the night) the blanket is up. A kid in the bassinet sleeps there, not in the armchair.
 - A teen or adult cannot sit in it. A kid that becomes a teen in it steps down to the floor if a younger one is still about; otherwise the crate comes back under it.
-- While the bassinet is out: the crate's record tap is away with the crate, the cat does not nap there, and the pumpkin and the little tree are put away (they sit on the crate).
+- While the bassinet is out: the crate's record tap is away with the crate and the cat does not nap there.
+- Jackie, asked whether the pumpkin and the little tree should stay put away while the bassinet is out: "Find them a spot." They stand on the floor in the front left corner, in front of the bookcase, just above the name tag. It is the one clear bit of floor near where they usually sit, and no monster stands there. They are drawn larger there because it is the front of the room.
 - Mash is the first thing on the fridge tray. Only a kid eats it: a seed or sprout has no mouth yet, and teens and adults are too big. It is plain food. It fills the kid and pleases it, and changes nothing about who the kid becomes; treats still start at teen, as before. Two spoonfuls and the kid dozes off.
 - The crate is painted into the room, so tools/room_build.py makes a patch of the wall and floor behind it. The room picture itself is unchanged.
 

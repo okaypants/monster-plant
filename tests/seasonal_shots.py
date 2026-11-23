@@ -115,8 +115,14 @@ async def main():
         # a kid on the crate: the pumpkin makes room
         await pg.evaluate("()=>{SEASON_OVERRIDE='autumn';st.stage=4;st.species=7;st.perch='crate';st.place={baby:'crate'};capClear();__step(2);capClear();__step(.05);}")
         check(await pg.evaluate("()=>spotKey()") == "crate", "the kid didn't get onto the crate")
-        check(await pg.evaluate("()=>seasonItem()") is None, "a kid on the crate and the pumpkin is still out")
-        await shot("kid_on_stack", "Autumn, a kid on the crate: the pumpkin makes room")
+        # a kid means the bassinet is out: the pumpkin stands on the floor in the front left corner instead (Jackie, Nov 23)
+        check(await pg.evaluate("()=>bassinetOut()&&seasonItem()==='pumpkin'&&seasonBox().x<200&&seasonBox().y+seasonBox().h>860"), "a kid in the bassinet and the pumpkin is not on the floor by the bookcase")
+        await shot("kid_on_stack", "Autumn, a kid in the bassinet: the pumpkin stands on the floor")
+        await pg.evaluate("()=>{SEASON_OVERRIDE='winter';capClear();__step(2);capClear();__step(.05);}")
+        await shot("kid_in_bassinet_winter", "Winter, a kid in the bassinet: the tree stands on the floor")
+        # a teen on the crate (no bassinet): the pumpkin makes room
+        await pg.evaluate("()=>{SEASON_OVERRIDE='autumn';st.stage=6;st.perch='crate';capClear();__step(2);capClear();__step(.05);}")
+        check(await pg.evaluate("()=>!bassinetOut()&&spotKey()==='crate'&&seasonItem()===null"), "a teen on the crate and the pumpkin is still out")
         fails += [f"page error: {e}" for e in errs]
         await b.close()
     try:
