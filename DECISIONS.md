@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The viewfinder shows reels (Nov 23)
+
+- Jackie had turned down a first set of twelve famous museum paintings (Nov 18): "this is like a museum I want like a unique large collection of photos and illustrations and really interesting stuff." Shown three sample reels on Nov 23 and asked if that was the right feel: "Yes, keep going."
+- The viewfinder holds eight reels of twelve pictures, each reel on one subject: Haeckel's creatures, the sky drawn by hand (Trouvelot), cats and dogs in costume, monsters, under the microscope, stereo cards, the first colour photographs, circus posters. (The colour reel has eleven; one picture would not download.)
+- A tap on the viewer on the shelf opens it on the next picture of the reel you were on. Next, Previous and Change the reel move through it; a tap on the picture is also Next.
+- Every picture is in the public domain, from Wikimedia Commons, shown as it is with its name, who made it and when. They are kept with the game (viewer/, about 11.6 MB), so it works with no internet and nothing is sent anywhere. The "Surprise me" button that fetched a picture from a museum over the internet is gone for that reason.
+- Left out on purpose: a stereo card of a mill explosion in which people died.
+
 ### A bassinet and mash for the young (Nov 23)
 
 - Jackie: "I would like to get Chat to make a bassonet and some kind of food just for young plants that the kids and babies and stuff will sleep in and eat." Asked where it should go, Jackie said "You suggest", then sent the sheet (the bassinet empty and with its blanket up, the jar of mash, the spoon).

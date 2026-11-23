@@ -105,7 +105,7 @@ function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.lengt
  else if(p.does==='hearts'){for(let i=0;i<2;i++)add({x:cx+rnd(-30,20),y:p.y+p.h*.3,vx:rnd(-.3,.3),vy:-1,g:0,sway:true,life:60+i*20,c:'#e98aa8',heart:true});}
  else if(p.does==='stars'){for(let i=0;i<4;i++)add({x:p.x+rnd(30,p.w-30),y:p.y+rnd(30,p.h-60),vx:rnd(-.5,.5),vy:rnd(-.9,-.3),g:.01,sway:true,life:rnd(60,110),c:['#ffd23f','#ffdf6b','#fff4e2'][i%3],petal:true});}
  else if(p.does==='rattle'){[0,90,180].forEach(d=>setTimeout(()=>sfx('tick'),d));}
- else if(p.does==='view'){openThing('viewer',500);sfx('tick');}
+ else if(p.does==='view'){openThing('viewer',500);sfx('tick');if(st.started&&typeof openViewer==='function')setTimeout(()=>{if(!document.querySelector('.screen'))openViewer();},220);} // the lever clicks, then the viewfinder opens (js/viewer.js)
  else if(p.does==='trunk'){openThing('trunk',900);}
  else if(p.does==='ball'){ballGaze();}}
 function plantBoing(x){BOING.vy=-9-Math.random()*3;const b=plantBox();BOING.vx=(x<b.x+b.w/2?2:-2);fplay('plant_boing');}

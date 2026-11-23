@@ -87,6 +87,19 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "wobble.png"), clip=await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return {x:r.left+700*S,y:r.top+480*S,width:720*S,height:320*S}}"))
         check(await pg.evaluate("()=>radio.on&&radio.band==='crates'"), "tapping the crate should put a record on the radio")
         await pg.evaluate("()=>{radioOff(false);__step(2);capClear()}")
+        # the viewfinder: a tap opens it on a picture with its name, the reel changes, every picture is with the game, and it closes
+        await pg.evaluate(TAP, "viewer")
+        await pg.evaluate("()=>__step(.5)")
+        check(await pg.evaluate("()=>!!document.querySelector('.screen.viewer .vwpic[src^=\"viewer/\"]')&&document.querySelector('.vwt').textContent.length>2"), "tapping the viewfinder should open it on a named picture")
+        r0 = await pg.evaluate("()=>viewR")
+        await pg.click(".vwrow [data-k=reel]")
+        await pg.click(".vwrow [data-k=next]")
+        check(await pg.evaluate("([r0])=>viewR!==r0&&viewI===1", [r0]), "Change the reel and Next should move through the viewfinder")
+        check(await pg.evaluate("()=>VIEW_REELS.length>=8&&VIEW_REELS.every(r=>r.pics.length>=11&&r.pics.every(v=>v.t&&v.by&&v.d))"), "the viewfinder should have eight reels of named, credited pictures")
+        missing = [f for f in await pg.evaluate("()=>VIEW_REELS.flatMap(r=>r.pics.map(v=>v.f))") if not os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "viewer", f))]
+        check(not missing, f"viewfinder pictures missing from viewer/: {missing}")
+        await pg.click(".vwx")
+        check(await pg.evaluate("()=>!document.querySelector('.screen.viewer')"), "the viewfinder should close")
         # the lockbox opens the journal at Keep it safe
         await pg.evaluate(TAP, "lockbox")
         await pg.evaluate("()=>__step(.6)")
