@@ -12,17 +12,17 @@ const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin t
    middle of its bottom edge rests. */
 const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
  {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
- {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:776,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
+ {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:778,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
 /* THE BASSINET (Jackie, Nov 23): while a monster is young (a seed, a sprout or a kid) the bassinet stands where the milk crate does, and
-   the crate comes back when nobody is young any more. A young one sits in it as it would on the crate; when the one in it is asleep
+   the crate comes back when nobody is young any more. It is seen from the front, its hood at the back, so whoever sits in it is framed by the hood. A young one sits in it as it would on the crate; when the one in it is asleep
    its blanket is up. A teen or adult already sitting on the crate keeps the crate, and so does the cat asleep on it. */
 const isYoung=q=>q.stage>=0&&q.stage<6;
 function bassinetOut(){if(typeof st==='undefined'||!st.started)return false;const P=allRaw();if(!P.some(isYoung))return false;
  if(P.some(q=>q.stage>=6&&q.perch==='crate'))return false;return !(typeof cat!=='undefined'&&cat.spot==='crate'&&cat.state==='sleep');}
 const bassIn=q=>isYoung(q)&&(q.stage<4?(q.place||{}).seed==='crate':q.perch==='crate')&&!(drag.on&&drag.id===q.id); // sitting in it right now
 function bassAsleep(){return allRaw().some(q=>bassIn(q)&&(q.nap>0||st.night));}
-const BASS_FRONT=[[236,664,206,114]],BASS_FRONT_BED=[[236,664,206,114],[290,648,126,16]]; // its front rail (and the blanket's top edge), drawn again over whoever sits in it
+const BASS_FRONT=[[236,652,206,126]],BASS_FRONT_BED=[[236,652,206,126],[262,643,152,9]]; // its front rail (and the blanket's top edge), drawn again over whoever sits in it
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
@@ -87,7 +87,7 @@ const CURT_L=244,CURT_R=648,CURT_MID=446; // the closed curtains (curtains2.png,
 // windowsill front edge, front of the desk top, front of the book on the milk crate, front of the top book's cover, the armchair seat, the cat bed's rim, the floor in front of the rug.
 // On the rug any y is floor (back 790 to front 918). Small per-species and per-frame fixes live in NUDGE (js/nudges.js).
 const SURFACE={sill:530/* the windowsill ledge (room art: the orange ledge, y 508-535) */,desk:550/* on the desktop, just behind its front edge (room art: top y 535-562) */,crate:660/* the crate's flat top (y 628-668) */,books:800/* on the floor in front of the mini fridge; the key is still 'books' from when a book stack stood by the desk, so old saves keep their place */,chair:656,bed:888,floor:925};
-const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,get y(){return bassinetOut()?672:SURFACE.crate}}/* in the bassinet the pot sits down behind the front rail */,books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,get y(){return bassinetOut()?662:SURFACE.crate}}/* in the bassinet the pot sits down behind the front rail */,books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={get seed(){return bassinetOut()?['sill','desk','crate']:['sill','desk']}/* a seed or sprout may go in the bassinet too */,baby:['crate','books'],grown:['rugL','rugC','rugR']};
 SPOT.chair={x:610,y:SURFACE.chair,name:'in the armchair'};
 // WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big

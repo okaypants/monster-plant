@@ -11,6 +11,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - While the bassinet is out: the crate's record tap is away with the crate and the cat does not nap there.
 - Jackie, asked whether the pumpkin and the little tree should stay put away while the bassinet is out: "Find them a spot." They stand on the floor in the front left corner, in front of the bookcase, just above the name tag. It is the one clear bit of floor near where they usually sit, and no monster stands there. They are drawn larger there because it is the front of the room.
 - Mash is the first thing on the fridge tray. Only a kid eats it: a seed or sprout has no mouth yet, and teens and adults are too big. It is plain food. It fills the kid and pleases it, and changes nothing about who the kid becomes; treats still start at teen, as before. Two spoonfuls and the kid dozes off.
+- Jackie on the first bassinet, which was drawn side-on with its hood at one end: "the bassanet looks kind of dumb sideways." Jackie had it redrawn facing front, with the hood at the back, and that is the one in the game: the hood arches behind whoever sits in it.
 - The crate is painted into the room, so tools/room_build.py makes a patch of the wall and floor behind it. The room picture itself is unchanged.
 
 ### The room's colours, tuned so the monster stands out (Nov 19)

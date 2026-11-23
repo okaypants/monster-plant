@@ -8,7 +8,8 @@
   smallpic.png the picture in the small frame
   curtains.png the curtains drawn closed, on magenta
   views.png   the view from the window in spring, summer, autumn and winter, side by side
-  sheet3.png  the bassinet (empty, and with its blanket up), the jar of mash and the spoon, on magenta
+  sheet3.png  the jar of mash and the spoon, on magenta (its side-on bassinet is not used)
+  sheet4.png  the bassinet seen from the front, empty and with its blanket up, on magenta
 
 Writes into the repo root:
   room2.png        the room, window panes see-through, the wind-up cat's cubby empty
@@ -228,9 +229,10 @@ def build_bassinet(room):
         out[y-y0,:,:3]=wallc if y<wall_end else row[y]
     out[...,3]=np.where(m[y0:y1,x0:x1],255,0)
     Image.fromarray(out,'RGBA').save(os.path.join(ROOT,'obj_nocrate.png'),optimize=True)
-    sh=load('sheet3.png');sc=.72
-    cut(sh,57,164,284,283,sc,holes=True).save(os.path.join(ROOT,'obj_bass.png'),optimize=True)
-    cut(sh,420,164,284,283,sc,holes=True).save(os.path.join(ROOT,'obj_bass_bed.png'),optimize=True)
+    sh4=load('sheet4.png');sc=.47 # the bassinet seen from the front, its hood at the back (Jackie, Nov 23: the side view "looks kind of dumb sideways")
+    cut(sh4,371,82,424,489,sc,holes=True).save(os.path.join(ROOT,'obj_bass.png'),optimize=True)
+    cut(sh4,1204,82,424,489,sc,holes=True).save(os.path.join(ROOT,'obj_bass_bed.png'),optimize=True)
+    sh=load('sheet3.png')
     cut(sh,99,652,172,276,.8,holes=True).save(os.path.join(ROOT,'treat_mash.png'),optimize=True) # the open jar with its spoon, about the size of the treats
     return {'nocrate':[int((x0+x1)//2),int(y1)],'wall_end':wall_end}
 if __name__=='__main__':
