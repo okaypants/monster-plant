@@ -40,6 +40,20 @@ def erase(card,x0,x1,y_fox,y_end,fill):
     part=c[y_fox:y_end,x0:x1];part[(part[...,1]>150)&(part[...,2]<170)]=fill
     band=c[y_fox-2:y_end,x0-4:x1+4];notpink=np.abs(band-np.array(fill)).sum(2)>60;thin=notpink&~nd.binary_opening(notpink,structure=np.ones((1,4),bool));band[thin]=fill # hair-thin leftovers of the wand's edge
     return Image.fromarray(c.astype(np.uint8),'RGB').convert('RGBA')
+BACK='moon' # which of Jackie's four backs the deck wears (backs.webp, left to right, top to bottom)
+def backs():
+    """The four backs are a little wider than the cards, so each is fitted by its width and its own flat colour is added in equal
+    parts above and below: a back has to look the same upside down. All four are saved (tarot/back_<name>.png); back.png is the one in use."""
+    im=Image.open(os.path.join(SRC,'backs.webp')).convert('RGB');a=np.asarray(im).astype(int);bx=cards(a);assert len(bx)==4,len(bx)
+    for (x0,y0,x1,y1),name in zip(bx,['foxes','moon','otters','suits']):
+        sm=im.crop((x0+2,y0+2,x1-2,y1-2));sm=sm.resize((W,round(sm.height*W/sm.width)),Image.LANCZOS);c=np.asarray(sm).astype(int).copy()
+        keys,cnt=np.unique((c//8).reshape(-1,3),axis=0,return_counts=True);bg=tuple(int(v) for v in keys[cnt.argmax()]*8+4) # its ground: the colour there is most of
+        white=(c.min(2)>236);lab,n=nd.label(white)
+        for l in {int(lab[0,0]),int(lab[0,-1]),int(lab[-1,0]),int(lab[-1,-1])}-{0}:c[lab==l]=bg # the white outside its own rounded corners takes the ground colour
+        c[nd.binary_dilation(np.isin(lab,[int(lab[0,0]),int(lab[0,-1]),int(lab[-1,0]),int(lab[-1,-1])])&(lab>0),iterations=2)]=bg
+        card=Image.new('RGB',(W,H),bg);card.paste(Image.fromarray(c.astype(np.uint8),'RGB'),(0,(H-sm.height)//2));card=card.convert('RGBA');card.putalpha(MASK)
+        q=card.quantize(colors=64,method=Image.FASTOCTREE);q.save(os.path.join(OUT,'back_'+name+'.png'),optimize=True)
+        if name==BACK:q.save(os.path.join(OUT,'back.png'),optimize=True)
 def main():
     os.makedirs(OUT,exist_ok=True);done=[]
     for name,codes in SHEETS.items():
@@ -55,5 +69,6 @@ def main():
             card.putalpha(MASK)
             card.quantize(colors=128,method=Image.FASTOCTREE).save(os.path.join(OUT,code+'.png'),optimize=True);done.append((code,round((x1-x0)/(y1-y0),3)))
     codes=sorted(c for c,_ in done);assert len(codes)==78==len(set(codes)),len(codes)
+    backs()
     print(len(codes),'cards; shapes',min(r for _,r in done),'to',max(r for _,r in done))
 if __name__=='__main__':main()
