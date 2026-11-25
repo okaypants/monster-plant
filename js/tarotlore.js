@@ -32,7 +32,7 @@ W02:{p:'A fox stands on a castle wall holding a globe, between two wands, and lo
 W03:{p:'A fox stands on a cliff among three wands and watches a ship on the sea.',s:{d:['sun',0]}},
 W04:{p:'Two foxes raise bunches of flowers beneath a garland hung on four wands, with a castle behind.',s:{d:['venus',0]}},
 W05:{p:'Five young foxes wave their wands at each other in a tangle.',s:{d:['saturn',4]}},
-W06:{p:'A fox in a laurel wreath rides a white horse and holds up a wand with a wreath on it, while three foxes walk alongside with wands.',s:{d:['jupiter',4]}},
+W06:{p:'A fox in a laurel wreath rides a white horse and holds up a wand with a wreath on it, while five foxes hold up wands behind a hedge.',s:{d:['jupiter',4]}},
 W07:{p:'A fox stands on a hilltop holding a wand across its body, with six more wands rising from below.',s:{d:['mars',4]}},
 W08:{p:'Eight wands fly through the air over a river and green hills.',s:{d:['mercury',8]},n:'This is one of the few cards in the deck with no figure in it.'},
 W09:{p:'A fox holds a wand upright in both paws and glances to one side, with a row of wands standing behind it.',s:{d:['moon',8]}},
