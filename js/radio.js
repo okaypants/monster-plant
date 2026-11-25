@@ -79,8 +79,8 @@ function wakeOff(){const w=WAKE;WAKE=null;if(w)w.release().catch(()=>{})}
    Freeform and DJ stations talk between records now and then, and anything can come on: that's the fun of them. */
 const WORLD=[
  {n:'KPISS.FM',k:'Weird internet radio',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
- {n:'Coast to Coast AM',k:'Reruns of Art Bell\'s call-in show about aliens and ghosts',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
- {n:'Midnight in the Desert',k:'More reruns of Art Bell\'s late-night show',p:'From the desert, in spirit',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
+ {n:'Coast to Coast AM',k:'Reruns of Art Bell\'s call-in show about aliens and ghosts',p:'From the high desert',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
+ {n:'Midnight in the Desert',k:'More reruns of Art Bell\'s late-night show',p:'From the high desert',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
  {n:'Free People of the Cosmos',k:'UFO and paranormal shows',p:'USA',u:'https://podradio.us/stream/free-cosmos',x:-98.0},
  {n:'Radio is a Foreign Country',k:'Rare tapes, records and field recordings',p:'USA',u:'https://s5.radio.co/s20251311a/listen',x:-95.0},
  {n:'Montez Press Radio: The Sounded Word',k:'Sound and poetry',p:'New York, USA',u:'https://stream.montezpress.com/icecast/reading-and-poetry-the-sounded-word',x:-74.01},
@@ -157,7 +157,7 @@ const WORLD=[
  {n:'Dark Matter Sessions',k:'Experimental broadcasts',p:'Signal City, somewhere online',u:'https://signalcity.tv/dark_matter.mp3',x:999.3},
  {n:'LISTEN.moe K-pop',k:'K-pop, fan-run',p:'Somewhere online',u:'https://listen.moe/kpop/fallback',x:999.4},
  {n:'LISTEN.moe',k:'J-pop and anime songs, fan-run',p:'Somewhere online',u:'https://listen.moe/fallback',x:999.5},
- {n:'Gensokyo Radio',k:'Fan music for the Touhou games',p:'Gensokyo, in spirit',u:'https://stream.gensokyoradio.net/3',x:999.6},
+ {n:'Gensokyo Radio',k:'Fan music for the Touhou games',p:'An internet station',u:'https://stream.gensokyoradio.net/3',x:999.6},
  {n:'Miku Radio',k:'Vocaloid songs',p:'Somewhere online',u:'https://miku.fm/listen/miku/mp3-128',x:999.7}];
 const HISS_VOL=.22; // the tuning sound between stations: quiet
 let HISS_BUF=null,hissLoading=false;

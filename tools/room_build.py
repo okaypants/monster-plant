@@ -99,6 +99,10 @@ def build_room():
         keep|=lab==i
         if s[1].start>640:frames.append(s)
     a=defringe(a,keep);alpha=np.where(keep,0,255).astype(np.uint8)
+    # the last trace of the pink the panes were drawn in: a faintly purple pixel or two along every edge of the glass. By day nobody sees it;
+    # against the night sky it was a thin lit line round the bars and the curtains (Jackie, Nov 25). Those pixels take the colour beside them.
+    near=nd.binary_dilation(keep,iterations=3)&~keep;purp=near&(a[...,0]>a[...,1]+10)&(a[...,2]>a[...,1]+10)
+    idx=nd.distance_transform_edt(keep|purp,return_distances=False,return_indices=True);a[purp]=a[idx[0][purp],idx[1][purp]]
     # the frames: Jackie's pictures, each sized to cover its opening (bigpic.png the tree, smallpic.png Tofu asleep)
     for s in frames:
         hole=keep[s];h,w=hole.shape;t=Image.open(os.path.join(SRC,'smallpic.png' if w<180 else 'bigpic.png')).convert('RGB')
@@ -229,6 +233,13 @@ def build_views(panes):
         blue=(v[...,2]>v[...,0]+28)&(v[...,1]>v[...,0]+8)&(np.abs(v-sky).sum(2)<260)
         for _ in range(3):m|=nd.binary_dilation(m,iterations=1)&blue
         m|=blue&(np.abs(v-sky).sum(2)<170) # and small patches of sky shut in between leaves
+        for _ in range(2): # and any edge pixel that is neither a leaf's warm colour nor its dark outline: a grey-blue in-between
+            edge=nd.binary_dilation(m,iterations=1)&~m;m|=edge&(v[...,2]>v[...,0]-8)&(v.sum(2)>110)
+        speck=~m&(v[...,2]>v[...,0]+6)&(v.sum(2)>110);lab,cnt=nd.label(speck) # and stray bluish dots left inside the tree: small ones only, so snow keeps its shading
+        if cnt:m|=np.isin(lab,1+np.where(nd.sum(speck,lab,range(1,cnt+1))<14)[0])
+        if n!='winter': # scraps of pale cloud caught between leaves (a whole cloud is kept; snow is left alone)
+            pale=~m&(v[...,2]>v[...,0]-45)&(v.sum(2)>330)&(v[...,2]>110);lab,cnt=nd.label(pale)
+            if cnt:m|=np.isin(lab,1+np.where(nd.sum(pale,lab,range(1,cnt+1))<400)[0])
         Image.fromarray(np.dstack([v,np.where(m,0,255)]).astype(np.uint8),'RGBA').save(os.path.join(ROOT,'viewfg_'+n+'.png'),optimize=True)
 CRATE=[(238,633),(381,622),(437,651),(435,770),(288,785),(238,754)] # the milk crate's outline in the room, a little generous
 def build_bassinet(room):
