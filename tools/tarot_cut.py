@@ -56,6 +56,12 @@ def backs():
         card=Image.new('RGB',(W,H),bg);card.paste(Image.fromarray(c.astype(np.uint8),'RGB'),(0,(H-sm.height)//2));card=card.convert('RGBA');card.putalpha(MASK)
         q=card.quantize(colors=64,method=Image.FASTOCTREE);q.save(os.path.join(OUT,'back_'+name+'.png'),optimize=True)
         if name==BACK:q.save(os.path.join(OUT,'back.png'),optimize=True)
+# The deck has no shadows, and one card came with one (the Ten of Wands, a pale shadow on the path under the fox). It takes the path's own
+# colour. code: (left, top, right, bottom, the shadow's colour, the colour of the path)
+FLAT={'W10':(40,490,205,580,(252,212,164),(252,236,204))}
+def flat(card,x0,y0,x1,y1,was,now):
+    c=np.asarray(card.convert('RGB')).astype(int).copy();part=c[y0:y1,x0:x1];d=np.abs(part-np.array(was)).sum(2);path=np.abs(part-np.array(now)).sum(2)
+    part[(d<60)&(d<=path+25)]=now;return Image.fromarray(c.astype(np.uint8),'RGB').convert('RGBA')
 def main():
     os.makedirs(OUT,exist_ok=True);done=[]
     for name,codes in SHEETS.items():
@@ -68,6 +74,7 @@ def main():
                 sm=im.crop((x0+2,y0+2,x1-2,y1-2));sm=sm.resize((W,round(sm.height*W/sm.width)),Image.LANCZOS);im2=Image.new('RGB',(W,H));T=28;im2.paste(sm.crop((0,T,W,T+1)).resize((W,H-sm.height+T)),(0,0));im2.paste(sm.crop((0,T,W,sm.height)),(0,H-sm.height+T)) # from below its own rounded corners
             ox=(im2.width-W)//2;card=im2.crop((ox,im2.height-H,ox+W,im2.height)).convert('RGBA') # a card a little taller than the rest loses the extra from its top; the name band always stays
             if code in ERASE:card=erase(card,*ERASE[code])
+            if code in FLAT:card=flat(card,*FLAT[code])
             card.putalpha(MASK)
             card.quantize(colors=128,method=Image.FASTOCTREE).save(os.path.join(OUT,code+'.png'),optimize=True);done.append((code,round((x1-x0)/(y1-y0),3)))
     codes=sorted(c for c,_ in done);assert len(codes)==78==len(set(codes)),len(codes)
