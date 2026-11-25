@@ -251,12 +251,12 @@ def build_cupboard():
     """Tofu's cupboard, open (sheet5.png), and the toys kept in it, each cut out whole.
     Jackie, Nov 25: "it looks strange when the cat food door opens. and empty". The drawing's door is seen at an angle the room is not, so
     it is left out: open, the star door is simply out of the way and the inside shows. The inside is the drawing's lower shelf and what is
-    under it, sized to cover the star door, with the five toys standing in it at a small size, so it is never an empty box."""
+    under it, sized to cover the star door, with a couple of the toys in it (the ball of yarn and the felt mouse), so it is not an empty box."""
     sh=load('sheet5.png');inside=Image.fromarray(sh[316:474,210:364].astype(np.uint8),'RGB').resize((158,156),Image.LANCZOS).convert('RGBA') # between the bookcase's own posts
     toys={'yarn':(757,275,259,185),'mouse':(1088,292,301,140),'wand':(122,646,219,271),'bell':(1170,710,133,155),'tin':(446,714,200,168),'tin_open':(747,718,307,164),'yarn_ball':(484,275,170,172)}
     for n,(x,y,w,h) in toys.items():cut(sh,x,y,w,h,.8,holes=True).save(os.path.join(ROOT,'cub_'+n+'.png'),optimize=True)
     floor=156-14 # the cupboard's floor in the picture: the toys stand on it. name: (left, size)
-    for n,(left,sc) in {'wand':(4,.2),'yarn_ball':(36,.2),'tin':(68,.2),'mouse':(98,.13),'bell':(132,.16)}.items():
+    for n,(left,sc) in {'yarn_ball':(30,.26),'mouse':(84,.19)}.items(): # just a couple (Jackie, Nov 25); all five are still on the tray
         x,y,w,h=toys[n];t=cut(sh,x,y,w,h,sc,holes=True);inside.alpha_composite(t,(left,floor-t.height))
     inside.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
     return {'cup_open':[inside.width,inside.height]}

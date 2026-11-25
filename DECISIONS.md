@@ -17,7 +17,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - "Gold coins don't bounce on regular surfaces": the jar's coins bounced on one line at shelf height right across the room. A coin over the bookcase now lands on the jar's shelf; one that goes past the bookcase's edge falls to the floor and bounces there.
 - "The crystal ball is slightly offset when it activates": the mist pictures were about 3% smaller than the painted ball and sat a few pixels low. They are resized and placed so the glass is exactly over the painted glass.
 - "kids should be smaller, and teens relative to them": a kid is about a fifth smaller (the adult's height over 2.4, where it was over 1.9) and a teen is one and a half kids. Adults are unchanged.
-- "it looks strange when the cat food door opens. and empty": the drawn door was seen at an angle the room is not, so it is left out. Open, the star door is simply out of the way, and the five toys stand inside.
+- "it looks strange when the cat food door opens. and empty": the drawn door was seen at an angle the room is not, so it is left out. Open, the star door is simply out of the way. Five toys inside was too many ("maybe put like just a couple of toys in the shelf"), so the ball of yarn and the felt mouse sit there; all five are still on the tray.
 
 ### The tarot deck's new style (Nov 25)
 
