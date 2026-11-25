@@ -101,7 +101,7 @@ function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ball
    of the jar's shelf, right across the room, so one that flew past the bookcase bounced in mid-air. Now a coin over the bookcase lands on the
    shelf the jar stands on, and one that goes past the bookcase's edge (or rolls off the shelf) falls on to the floor and bounces there. Each
    coin has its own bit of floor, a little nearer or further, so they do not all stop on one line. */
-const COIN_SHELF={x0:8,x1:214,y:540},COIN_FLOOR=[800,870];
+const COIN_SHELF={x0:8,x1:214,y:545},COIN_FLOOR=[800,870];
 function coinFloor(b){return b.x>=COIN_SHELF.x0&&b.x<=COIN_SHELF.x1&&b.y<=COIN_SHELF.y+6?COIN_SHELF.y:b.fz;}
 function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.length>160)fBits.shift();};
  if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(210,290),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:COIN_SHELF.y,fz:rnd(COIN_FLOOR[0],COIN_FLOOR[1])});sfx('pop');}
