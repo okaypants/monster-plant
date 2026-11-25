@@ -14,6 +14,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - All 78 cards are in the game (tarot/, cut from the sheets in art_src/tarot/ by tools/tarot_cut.py). The cards are now twice as tall as wide and are no longer drawn as pixels.
 - Jackie tried a mockup of the room in this style and turned it down: "Nah it looks bad." The room stays in its pixel style; the new style is for the cards only.
 - The "In the picture" line on each card's page described the 1909 art, so all 78 were rewritten to describe the new cards, and the few notes about details that are no longer drawn (the letters on the pillars and the wheel, the hand from the cloud) were changed or dropped. This wording is mine and has not been read by Jackie.
+- Jackie: "nine of wands has ten wands." The middle wand of the back row is painted out with the card's own pink when the card is cut (tools/tarot_cut.py), leaving nine. It is the only card changed by hand; the sheet itself is untouched.
 - The back is a stand-in. Jackie's four backs were drawn in an earlier style; a back in the new style is still to do.
 
 ### Tofu's cupboard holds cat toys (Nov 23)
