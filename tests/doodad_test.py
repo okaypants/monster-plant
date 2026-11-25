@@ -46,17 +46,12 @@ async def main():
             await pg.evaluate("()=>__step(.25)")
             await pg.screenshot(path=os.path.join(OUT, n + ".png"), clip=await pg.evaluate("(n)=>{const p=FP.find(p=>p.n===n),r=cv.getBoundingClientRect();return {x:r.left+(p.x-90)*S,y:r.top+Math.max(0,p.y-110)*S,width:(p.w+180)*S,height:(p.h+200)*S}}", n))
             await pg.evaluate("()=>__step(4)")
-        # coins land on real surfaces (Jackie, Nov 25): over the bookcase, the jar's shelf; past its edge, the floor. Never a line in mid-air
-        for _ in range(4):
-            await pg.evaluate(TAP, "box1")
-            await pg.evaluate("()=>__step(.3)")
-        await pg.evaluate("()=>__step(2.6)")
-        r = await pg.evaluate("()=>{const c=fBits.filter(b=>b.coin),on=b=>b.x>=COIN_SHELF.x0&&b.x<=COIN_SHELF.x1;return {n:c.length,through:c.filter(b=>on(b)&&b.y>COIN_SHELF.y+1&&b.y<COIN_SHELF.y+7).length,"
-                              "under:c.filter(b=>b.y>b.fz+1).length,air:c.filter(b=>!on(b)&&b.vy===0&&Math.abs(b.y-b.fz)>2).length,floor:c.filter(b=>!on(b)&&Math.abs(b.y-b.fz)<=2).length,shelf:c.filter(b=>on(b)&&Math.abs(b.y-COIN_SHELF.y)<=1).length}}")
-        check(r["n"] >= 6 and r["through"] == 0 and r["under"] == 0 and r["air"] == 0 and r["shelf"] + r["floor"] > 0, f"coins should rest on the jar's shelf or on the floor, never in mid-air: {r}")
-        check(await pg.evaluate("()=>coinFloor({x:100,y:400,fz:820})===COIN_SHELF.y&&coinFloor({x:300,y:400,fz:820})===820&&coinFloor({x:100,y:700,fz:820})===820"), "a coin over the bookcase lands on the shelf; one past its edge, or already below the shelf, lands on the floor")
-        r2 = await pg.evaluate("()=>{fBits.push({x:260,y:480,vx:1,vy:0,life:400,c:'#f2c230',big:true,coin:true,fl:COIN_SHELF.y,fz:830});__step(3);const b=fBits.find(b=>b.fz===830);return b?[Math.round(b.y),b.vy]:null}")
-        check(r2 is not None and abs(r2[0] - 830) <= 3 and abs(r2[1]) < .5, f"a coin past the bookcase should fall to the floor and come to rest there: {r2}")
+        # every coin falls to the floor and comes to rest there (Jackie, Nov 25): never a line in mid-air, never the shelf
+        await pg.evaluate("()=>{fBits.length=0}")
+        await pg.evaluate(TAP, "box1")
+        await pg.evaluate("()=>__step(4,16)")  # small frames: the coins' fall is worked out sixty times a second
+        r = await pg.evaluate("()=>{const c=fBits.filter(b=>b.coin);return {n:c.length,off:c.filter(b=>Math.abs(b.y-b.fz)>3).length,low:c.filter(b=>b.fz<COIN_FLOOR[0]||b.fz>COIN_FLOOR[1]).length,moving:c.filter(b=>Math.abs(b.vy)>.5).length}}")
+        check(r["n"] >= 6 and r["off"] == 0 and r["low"] == 0 and r["moving"] == 0, f"every coin should be at rest on the floor: {r}")
         await pg.screenshot(path=os.path.join(OUT, "coins_landed.png"), clip=await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return {x:r.left,y:r.top+380*S,width:520*S,height:520*S}}"))
         # the moon dial says tonight's moon and shows a face for it
         await pg.evaluate(TAP, "moondial")
