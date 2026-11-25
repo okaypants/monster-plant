@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The tarot deck's new style (Nov 25)
+
+- The cards in the game are still the 1909 pictures. Jackie is having the whole deck redrawn in ChatGPT and chose the style over several rounds.
+- Chosen: flat 2D shapes in bright colour (hot pink, yellow, cyan, purple, orange, navy, cream-white), each shape one solid colour with slightly uneven hand-drawn edges. A cream band at the bottom with the card's name. No border.
+- Jackie's reasons along the way: the first postmodern row was "a little too swatch watch"; calmer versions were "too warm and completely lost their colorful edge"; heavy outlines "look like computer work" and the figures "look like cartoons"; the paper-collage version was loved but its texture had to go, because "I need it to be something I could actually reasonably create with digital art and my hands".
+- No humans on any card. Every person is an upright animal ("bipedal animorphised people is fine"). Jackie did not like a figure that read as a costume from a particular culture.
+- "No falling figures at all" on The Tower. Carried through the deck: nobody is hurt, falling or dead on any card.
+- The cast (mine, shown to Jackie, not yet confirmed): Wands are foxes, Cups otters, Swords crows, Pentacles badgers; the Major Arcana each have their own animal.
+- The finished Fool and Tower are the style reference. The prompts for the other 76 cards are in research_notes/tarot/prompts_all_batches.md.
+
 ### Tofu's cupboard holds cat toys (Nov 23)
 
 - The star door at the bottom of the right bookcase is Tofu's cupboard (Jackie, Nov 18). Jackie had the open cupboard and five toys drawn on Nov 23: a ball of yarn, a felt mouse, a feather wand, a jingle ball and a tin of treats.
