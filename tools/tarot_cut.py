@@ -31,12 +31,15 @@ def cards(a):
     return boxes
 from PIL import ImageDraw
 MASK=Image.new('L',(W*4,H*4),0);ImageDraw.Draw(MASK).rounded_rectangle((0,0,W*4-1,H*4-1),radius=22*4,fill=255);MASK=MASK.resize((W,H),Image.LANCZOS).point(lambda v:255 if v>=128 else 0) # every card gets the same rounded corners
-# The one change made to a drawing by hand (Jackie, Nov 25: "nine of wands has ten wands"): a part of a card painted over with the flat colour
-# beside it. code: (left, right, bottom, the colour to paint out as a test, the colour to paint with)
-ERASE={'W09':(140,180,158,lambda c:(c[...,0]>200)&(c[...,1]>170)&(c[...,2]<170),(250,2,137))} # the middle wand of the row behind the fox, so nine are left
-def erase(card,x0,x1,y1,test,fill):
-    c=np.asarray(card.convert('RGB')).astype(int).copy();m=np.zeros(c.shape[:2],bool);m[:y1,x0:x1]=test(c[:y1,x0:x1]);m=nd.binary_dilation(m,iterations=2);m[y1:]=False;m[:,:x0-3]=False;m[:,x1+3:]=False
-    c[m]=fill;return Image.fromarray(c.astype(np.uint8),'RGB').convert('RGBA')
+# The one change made to a drawing by hand (Jackie, Nov 25: "nine of wands has ten wands"): the middle wand of the row behind the fox is
+# painted over with the card's own pink, so nine are left. Above the fox that is a plain block of pink the width of the wand; where the
+# wand ran down between the fox's ears, only the yellow and its soft edge are painted, never the fox's orange.
+ERASE={'W09':(144,176,156,172,(250,2,137))} # left, right, where the fox's ears begin, where the wand ends, the pink
+def erase(card,x0,x1,y_fox,y_end,fill):
+    c=np.asarray(card.convert('RGB')).astype(int).copy();c[:y_fox,x0:x1]=fill
+    part=c[y_fox:y_end,x0:x1];part[(part[...,1]>150)&(part[...,2]<170)]=fill
+    band=c[y_fox-2:y_end,x0-4:x1+4];notpink=np.abs(band-np.array(fill)).sum(2)>60;thin=notpink&~nd.binary_opening(notpink,structure=np.ones((1,4),bool));band[thin]=fill # hair-thin leftovers of the wand's edge
+    return Image.fromarray(c.astype(np.uint8),'RGB').convert('RGBA')
 def main():
     os.makedirs(OUT,exist_ok=True);done=[]
     for name,codes in SHEETS.items():
