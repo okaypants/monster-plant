@@ -36,7 +36,7 @@ W06:{p:'A fox in a laurel wreath rides a white horse and holds up a wand with a 
 W07:{p:'A fox stands on a hilltop holding a wand across its body, with six more wands rising from below.',s:{d:['mars',4]}},
 W08:{p:'Eight wands fly through the air over a river and green hills.',s:{d:['mercury',8]},n:'This is one of the few cards in the deck with no figure in it.'},
 W09:{p:'A fox holds a wand upright in both paws and glances to one side, with a row of wands standing behind it.',s:{d:['moon',8]}},
-W10:{p:'A fox, seen from behind, hugs a bundle of ten wands and carries it up a path toward a town.',s:{d:['saturn',8]},n:'Smith based this scene on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
+W10:{p:'A fox, seen from behind, hugs a bundle of ten wands and carries it up a path toward a town.',s:{d:['saturn',8]},n:'The 1909 card this one is adapted from was based on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
 W11:{p:'A young fox in a feathered hat and a cape stands in the desert and looks up at a tall wand.'},
 W12:{p:'A fox in armor rides a rearing horse and holds a wand, with pyramids behind.'},
 W13:{p:'A crowned fox sits on a throne with lions on its arms, holding a wand and a sunflower, with a black cat in front.'},
@@ -57,7 +57,7 @@ C13:{p:'A crowned otter sits on a shell throne at the edge of the sea and gazes 
 C14:{p:'A crowned otter sits on a throne on the sea, holding a cup and a scepter, with a fish leaping and a ship behind.'},
 S01:{p:'A sword stands upright on a cloud, its tip passing through a crown hung with two leafy branches.'},
 S02:{p:'A blindfolded crow perches on a bench by the sea, holding two crossed swords, under a crescent moon.',s:{d:['moon',6]}},
-S03:{p:'Three swords pierce a red heart under rain clouds.',s:{d:['saturn',6]},n:'Smith based this picture on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
+S03:{p:'Three swords pierce a red heart under rain clouds.',s:{d:['saturn',6]},n:'The 1909 card this one is adapted from was based on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
 S04:{p:'A crow sleeps perched on the back of a stone bench, beneath three hanging swords and a stained-glass window, with a fourth sword on the floor.',s:{d:['jupiter',6]}},
 S05:{p:'A crow holds three swords under its wing and watches two other crows walk away, with two swords left on the ground.',s:{d:['venus',10]}},
 S06:{p:'A crow poles a boat across the water with two passengers and six swords standing in the bow.',s:{d:['mercury',10]}},
@@ -102,5 +102,5 @@ function tarotLore(c,now){const L=TAROT_LORE[c.id]||{},out=[],maj=c.id[0]==='M',
     else if(s.pl&&s.pl!=='sun'&&s.pl!=='moon'&&skyChart(t)[s.pl].rx)sky+=' '+cap(s.pl)+' is retrograde right now.'}
   out.push(['In astrology',sky]);
   if(L.n)out.push(['About this card',L.n]);
-  else if(!maj&&num>=2&&num<=10)out.push(['About this card','Before this deck, most number cards showed only a pattern of '+SUIT[c.id[0]].n.toLowerCase()+'. Smith gave every number card a full scene.']);
+  else if(!maj&&num>=2&&num<=10)out.push(['About this card','Before 1909, most number cards showed only a pattern of '+SUIT[c.id[0]].n.toLowerCase()+'. The 1909 deck that these cards are adapted from gave every number card a full scene, drawn by Pamela Colman Smith.']);
   return out}

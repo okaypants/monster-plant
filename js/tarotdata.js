@@ -1,5 +1,5 @@
 'use strict';
-/* The tarot deck (js/tarot.js): the 78 cards of the Rider-Waite-Smith deck, pictures by Pamela Colman Smith, published 1909,
+/* The tarot deck (js/tarot.js): the 78 cards of the Rider-Waite-Smith deck (published 1909; the pictures in the game are Jackie's deck of Nov 25, 2026, adapted from Pamela Colman Smith's),
    both public domain. id: the picture in tarot/; n: its name; u, r: what it means upright and reversed, in plain words written
    for the game from Waite's meanings (plain phrases, no clipped colon-and-semicolon style: Jackie, Nov 16; and nothing that accuses anyone of lying, betrayal or cruelty: Jackie, Nov 17, so the harshest of Waite's meanings are given as mixed messages, harshness, plans that fall through); wu, wr: Waite's own words, from The Pictorial Key to the Tarot (1910, public domain),
    kept as the record of where each meaning comes from, not shown in the game (wr is null where Waite gives no reversed meaning). Waite's Major Arcana numbers: Strength 8, Justice 11. */

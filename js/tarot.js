@@ -101,7 +101,7 @@ function tarotChoose(){tr={k:'spreads',step:'spreads',cards:[],open:[]};tarotTab
   for(const [k,S] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=k;
     const n=document.createElement('b');n.textContent=S.name+(tarotDone(k)?' ✓':'');const d=document.createElement('span');d.className='tmd';d.textContent=SPREAD_SAY[k];b.append(tarotSpreadIcon(k),n,d);
     b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotStart(k)});m.appendChild(b)}
-  st0.appendChild(m);tSayNote('','Pamela Colman Smith drew all 78 cards in London in 1909. Her initials are in a corner of each picture.')}
+  st0.appendChild(m);tSayNote('','The pictures on these cards are adapted from the deck Pamela Colman Smith drew in London in 1909, with animals in place of the people.')}
 // the top row. In the Celtic Cross it steps through the ten cards: "Turn card 3" while they are being turned, then Previous
 // card and Next card. Everywhere else in the tarot it is empty (the charts put their people there, js/charts.js).
 function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBoxMode();
