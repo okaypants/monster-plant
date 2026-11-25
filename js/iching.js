@@ -28,7 +28,14 @@ const ICH_ORD=['first','second','third','fourth','fifth','top'];
 let ICH=null,ichP=null,ich=null;
 function ichingLoad(){return ichP||(ichP=fetch('data/iching.json').then(r=>r.json()).then(j=>{ICH=j;return j}).catch(e=>{ichP=null;throw e}))}
 function ichingHex(bits){return ICH.find(h=>h.b===bits)}
-function ichingLog(){try{const s=JSON.parse(localStorage.getItem(ICHING_KEY)||'{}');return s.day===tarotToday()&&Array.isArray(s.lines)&&s.lines.length===6&&s.lines.every(v=>v>=6&&v<=9)?s:null}catch(e){return null}}
+// today's hexagrams, one for each thing a reading can be about (Jackie, Nov 25; the tarot's topics, js/tarot.js). A save from when there was
+// one hexagram a day is read as the one about everything.
+function ichingLog(){let s=null;try{s=JSON.parse(localStorage.getItem(ICHING_KEY)||'{}')}catch(e){}if(!s||s.day!==tarotToday())return {};
+  const okL=l=>Array.isArray(l)&&l.length===6&&l.every(v=>v>=6&&v<=9),c={};if(okL(s.lines))c.all=s.lines;for(const t in (s.casts||{}))if(TOPICS[t]&&okL(s.casts[t]))c[t]=s.casts[t];return c}
+function ichingKeep(topic,lines){const c=ichingLog();c[topic]=lines;try{localStorage.setItem(ICHING_KEY,JSON.stringify({day:tarotToday(),casts:c}))}catch(e){}}
+function ichingToday(){if(!ICH)return [];const c=ichingLog();return Object.keys(TOPICS).filter(t=>c[t]).map(t=>({topic:t,name:ichingName(ichingPair(c[t]).first)+', '+ichingPair(c[t]).first.en}))}
+// back from a hexagram: to the coins and what to ask about (or to Today, if it was opened from there). false = nothing to go back to here
+function ichingBack(){if(!ich||ich.lines.length!==6)return false;if(ich.from==='today'){todayShow();return true}ichingShow();return true}
 // the two hexagrams of a reading: the one thrown, and (if any lines are changing) the one it turns into
 function ichingPair(lines){const a=lines.map(v=>v%2?'1':'0').join(''),chg=lines.map((v,i)=>v===6||v===9?i:-1).filter(i=>i>=0);
   const b=lines.map(v=>v===6?'1':v===9?'0':v%2?'1':'0').join('');return {first:ichingHex(a),second:chg.length?ichingHex(b):null,chg}}
@@ -39,9 +46,10 @@ function ichingFig(vals,cls,plain){const d=document.createElement('div');d.class
   return d}
 function ichingIcon(){return ichingFig([7,8,8,8,7,8],'iicon')}
 function ichingName(h){return h.k+'. '+h.zh+' '+h.py}
-function ichingShow(){tr={k:'iching',step:'iching',cards:[],open:[]};tarotTabs();tStage().innerHTML='';tSay('Opening the book…');
-  ichingLoad().then(()=>{if(!tarotEl||!tr||tr.k!=='iching')return;const done=ichingLog();ich={lines:done?done.lines.slice():[],again:!!done,busy:false};
-    if(ich.lines.length===6)ichingResult();else ichingDraw()}).catch(()=>{if(tarotEl&&tr&&tr.k==='iching')tSay('The book wouldn’t open. It needs the internet the first time.')})}
+function ichingShow(topic,from){tr={k:'iching',step:'iching',cards:[],open:[]};tarotTabs();tStage().innerHTML='';tSay('Opening the book…');
+  ichingLoad().then(()=>{if(!tarotEl||!tr||tr.k!=='iching')return;const c=ichingLog(),left=Object.keys(TOPICS).filter(t=>!c[t]);
+    if(topic&&c[topic]){ich={lines:c[topic].slice(),again:true,busy:false,topic,from};ichingResult();return} // one you have had today: straight to it
+    ich={lines:[],again:false,busy:false,topic:left.includes(tarotTopic)?tarotTopic:(left[0]||null)};ichingDraw()}).catch(()=>{if(tarotEl&&tr&&tr.k==='iching')tSay('The book wouldn’t open. It needs the internet the first time.')})}
 // a coin: the side with writing (開元通寶, the Tang dynasty coin) or the plain side
 function ichingCoin(face){const c=document.createElement('div');c.className='icoin'+(face===2?' iw':face===3?' ip':'');
   if(face===2)['開','元','通','寶'].forEach((ch,i)=>{const s=document.createElement('i');s.className='ic'+i;s.textContent=ch;s.lang='zh-Hant';c.appendChild(s)});return c}
@@ -51,12 +59,16 @@ function ichingDraw(faces){const st0=tStage();st0.innerHTML='';const row=documen
   for(let i=0;i<3;i++)coins.appendChild(ichingCoin(faces?faces[i]:0));
   const b=document.createElement('button');b.type='button';b.className='tsb itoss';b.textContent=ich.lines.length?'Toss again ('+(ich.lines.length+1)+' of 6)':'Toss the coins';
   b.addEventListener('click',e=>{e.stopPropagation();ichingToss()});side.append(coins,b);row.append(fig,side);st0.appendChild(row);
-  if(!ich.lines.length)tSayNote('Toss three coins six times. Each toss draws one line, from the bottom up.','The I Ching, or Book of Changes, was put together in China about 3,000 years ago. Tossing coins for it is at least a thousand years old.')}
+  if(!ich.lines.length){const c=ichingLog(),tp=document.createElement('div');tp.className='ttopics itopics'; // what to ask about, as in the tarot: a ticked one opens today's hexagram for it
+    for(const [id,T] of Object.entries(TOPICS)){const had=!!c[id],t=document.createElement('button');t.type='button';t.className='ttopic'+(id===ich.topic?' on':'')+(had?' thad':'');t.dataset.t=id;t.textContent=T.n+(had?' ✓':'');
+      t.addEventListener('click',e=>{e.stopPropagation();if(ich.busy||ich.lines.length)return;sfx('tick');if(had){ichingShow(id);return}tarotTopic=ich.topic=id;tp.querySelectorAll('.ttopic').forEach(x=>x.classList.toggle('on',x===t))});tp.appendChild(t)}
+    st0.appendChild(tp);b.disabled=!ich.topic}
+  if(!ich.lines.length)tSayNote(ich.topic?'Pick what to ask about. Then toss three coins six times. Each toss draws one line, from the bottom up.':'You have a hexagram for each of these today. Tap one to see it again.','The I Ching, or Book of Changes, was put together in China about 3,000 years ago. Tossing coins for it is at least a thousand years old.')}
 // one toss: three coins, each 2 (writing) or 3 (plain); faces can be given (tests)
-function ichingToss(faces){if(!ich||ich.busy||ich.lines.length>=6)return;sfx('paper');const f=faces||[0,1,2].map(()=>tarotRand(2)?3:2),sum=f[0]+f[1]+f[2];ich.busy=true;
+function ichingToss(faces){if(!ich||ich.busy||ich.lines.length>=6||!ich.topic)return;sfx('paper');const f=faces||[0,1,2].map(()=>tarotRand(2)?3:2),sum=f[0]+f[1]+f[2];ich.busy=true;
   const land=()=>{if(!tarotEl||!tr||tr.k!=='iching')return;ich.busy=false;ich.lines.push(sum);sfx('tick');
     const n=f.filter(v=>v===2).length,what=sum===6?'a broken line that is changing':sum===7?'a solid line':sum===8?'a broken line':'a solid line that is changing';
-    if(ich.lines.length===6){try{localStorage.setItem(ICHING_KEY,JSON.stringify({day:tarotToday(),lines:ich.lines}))}catch(e){}ichingResult();return}
+    if(ich.lines.length===6){ichingKeep(ich.topic,ich.lines);ichingResult();return}
     ichingDraw(f);tSay((n===3?'Three sides with writing':n===0?'Three plain sides':n===1?'One side with writing and two plain':'Two sides with writing and one plain')+' add up to '+sum+'. That is '+what+'.')};
   if(tsCalm()){land();return}
   tarotEl.querySelectorAll('.icoin').forEach(c=>c.classList.add('ispin'));const t=tarotEl.querySelector('.itoss');if(t)t.disabled=true;setTimeout(land,520)}
@@ -72,7 +84,7 @@ function ichingResult(){const P=ichingPair(ich.lines),st0=tStage();st0.innerHTML
   ich.story='Your hexagram is '+P.first.en+'. '+P.first.m;
   ich.turn=P.second?(nums.length===6?'All six lines are':nums.length===1?'Line '+nums[0]+' is':'Lines '+list(nums)+' are')+' changing, so it turns into '+P.second.en+'. '+P.second.m:'No lines are changing, so this one hexagram is the whole reading.';
   const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=ich.story+' '+ich.turn;
-  const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((ich.again?'This is today’s reading. ':'')+'Tap a hexagram for more about it. A new one comes tomorrow.'));s.append(sp,note);
+  const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((ich.again?'This is today’s reading'+(ich.topic&&ich.topic!=='all'?' about '+TOPICS[ich.topic].of:'')+'. ':'')+'Tap a hexagram for more about it. A new one comes tomorrow.'));s.append(sp,note);
   if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();ichingRead(-1)});note.appendChild(b)}}
 // a page: the whole summary (w = -1), the hexagram thrown (0) or the one it turns into (1)
 function ichingRead(w){const P=ichingPair(ich.lines),old=tarotEl.querySelector('.tread');if(old)old.remove();sfx('tick');

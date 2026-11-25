@@ -52,9 +52,16 @@ function tarotImg(id){const i=new Image();i.src='tarot/'+id+'.png';i.alt='';i.dr
 function tarotRand(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
 // today, by the phone's own calendar
 function tarotToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function tarotLog(){try{const s=JSON.parse(localStorage.getItem(TAROT_KEY)||'{}');return s.day===tarotToday()?s:{day:tarotToday(),done:{}}}catch(e){return {day:tarotToday(),done:{}}}}
-function tarotDone(k){const d=tarotLog().done[k];return d?d.map(([id,rev])=>({c:TAROT.find(c=>c.id===id),rev:!!rev})).filter(x=>x.c):null}
-function tarotKeep(k,cards,topic){const s=tarotLog();s.done[k]=cards.map(x=>[x.c.id,x.rev?1:0]);s.topic=s.topic||{};s.topic[k]=topic||'all';try{localStorage.setItem(TAROT_KEY,JSON.stringify(s))}catch(e){}}
+/* TODAY'S READINGS (Jackie, Nov 25: "you should be able to get readings on everything and go back and view them for that day in the tarot
+   and iching etc"). A reading is kept for each spread and each thing it can be about (Everything, Work, People, Mind, Home), so in one day
+   you can have all of them, and each can be opened again until midnight. Before this there was one reading a day for each spread, whatever
+   it was about; a save from then is read as that. */
+function tarotLog(){let s=null;try{s=JSON.parse(localStorage.getItem(TAROT_KEY)||'{}')}catch(e){}if(!s||s.day!==tarotToday())return {day:tarotToday(),done:{},v:2};
+  if(s.v!==2){const d={};for(const k in (s.done||{}))d[k+'|'+((s.topic||{})[k]||'all')]=s.done[k];s.done=d;s.v=2;delete s.topic}return s}
+const tarotKey=(k,topic)=>k+'|'+(TOPICS[topic]?topic:'all');
+function tarotDone(k,topic){const d=tarotLog().done[tarotKey(k,topic)];return d?d.map(([id,rev])=>({c:TAROT.find(c=>c.id===id),rev:!!rev})).filter(x=>x.c):null}
+function tarotDoneAny(k){return Object.keys(TOPICS).some(t=>!!tarotDone(k,t))}
+function tarotKeep(k,cards,topic){const s=tarotLog();s.done[tarotKey(k,topic)]=cards.map(x=>[x.c.id,x.rev?1:0]);try{localStorage.setItem(TAROT_KEY,JSON.stringify(s))}catch(e){}}
 function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl=document.createElement('div');tarotEl.className='screen tarot';
   tarotEl.innerHTML='<div class="tbox tsb tspop"><button type="button" class="tsb tx" aria-label="Close">×</button><button type="button" class="tsb tbk" aria-label="Back">‹</button><div class="tpick"></div><div class="tstage"></div><div class="tsay"></div></div>';
@@ -62,14 +69,15 @@ function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl.querySelector('.tx').addEventListener('click',e=>{e.stopPropagation();closeTarot()});
   // BACK (Jackie, Nov 17: "a back button more similar to the x button not like a bubble menu"): a square button beside the close
   // button. It closes a card's or hexagram's page if one is open; otherwise it goes back to the box's menu. Hidden on the menu.
-  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');if(SPREADS[tr.k])tarotChoose();else tarotMenu()});
+  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');if(tr.from==='today'){todayShow();return} /* opened from Today: back there */if(SPREADS[tr.k]){if(tr.step==='deck')tarotChoose();else tarotDeck(tr.k)} /* from a reading, back to what this spread can be about; from there, back to the spreads */else if(tr.k==='iching'&&typeof ichingBack==='function'&&ichingBack())return;else tarotMenu()});
   ui.appendChild(tarotEl);tarotMenu()}
 // THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
 // choices, each a big button with a picture, its name and one line. The back button beside the close button comes back here.
-const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'}];
+const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'},{k:'today',n:'Today',d:'Every reading you have had today.'}];
 function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmicon';
   if(k==='tarot'){const b=tarotImg('back');d.appendChild(b)}
   else if(k==='charts'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☉';d.appendChild(g)}
+  else if(k==='today'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☾';d.appendChild(g)}
   else if(typeof ichingIcon==='function')d.appendChild(ichingIcon());
   return d}
 function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySelector('.tpick').innerHTML='';tBoxMode();const st0=tStage();st0.innerHTML='';
@@ -77,7 +85,7 @@ function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySel
   const m=document.createElement('div');m.className='tmenu';
   for(const it of BOX_MENU){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=it.k;
     const n=document.createElement('b');n.textContent=it.n;const d=document.createElement('span');d.className='tmd';d.textContent=it.d;b.append(tarotMenuIcon(it.k),n,d);
-    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotChoose();else if(it.k==='charts')tarotStart('charts');else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
+    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotChoose();else if(it.k==='charts')tarotStart('charts');else if(it.k==='today')todayShow();else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
   st0.appendChild(m);tSay('')}
 function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
@@ -99,7 +107,7 @@ function tarotSpreadIcon(k){const d=document.createElement('div');d.className='t
 function tarotChoose(){tr={k:'spreads',step:'spreads',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='';const old=tarotEl.querySelector('.tread');if(old)old.remove();
   const m=document.createElement('div');m.className='tmenu tspreads';
   for(const [k,S] of Object.entries(SPREADS)){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=k;
-    const n=document.createElement('b');n.textContent=S.name+(tarotDone(k)?' ✓':'');const d=document.createElement('span');d.className='tmd';d.textContent=SPREAD_SAY[k];b.append(tarotSpreadIcon(k),n,d);
+    const n=document.createElement('b');n.textContent=S.name+(tarotDoneAny(k)?' ✓':'');const d=document.createElement('span');d.className='tmd';d.textContent=SPREAD_SAY[k];b.append(tarotSpreadIcon(k),n,d);
     b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');tarotStart(k)});m.appendChild(b)}
   st0.appendChild(m);tSayNote('','The pictures on these cards are adapted from the deck Pamela Colman Smith drew in London in 1909, with animals in place of the people.')}
 // the top row. In the Celtic Cross it steps through the ten cards: "Turn card 3" while they are being turned, then Previous
@@ -108,19 +116,22 @@ function tarotTabs(){const p=tarotEl.querySelector('.tpick');p.innerHTML='';tBox
   if(tr.k!=='cross'||!tr.cards.length)return;const next=tr.open.indexOf(false),mk=(label,fn)=>{const b=document.createElement('button');b.type='button';b.className='tsb tspick tnext';b.textContent=label;b.addEventListener('click',e=>{e.stopPropagation();fn()});p.appendChild(b)};
   if(next>=0)mk('Turn card '+(next+1),()=>{const btn=tarotEl.querySelectorAll('.tcross .tflip')[next];if(btn&&!tr.open[next])tarotFlip(next,btn)});
   else for(const [d,label] of [[-1,'‹ Previous card'],[1,'Next card ›']])mk(label,()=>{sfx('tick');tarotFocus(((tr.focus<0?0:tr.focus)+d+10)%10)})}
-function tarotStart(k){if(k==='charts'){chartsShow();return}tarotPick=k;const done=tarotDone(k);if(done){tarotShow(k,done);return}tarotDeck(k)}
+function tarotStart(k){if(k==='charts'){chartsShow();return}tarotPick=k;tarotDeck(k)}
 // 1. the deck, waiting (no question is asked: Jackie, Nov 17)
 function tarotDeck(k){const S=SPREADS[k];tr={k,step:'deck',deck:null,cards:[],open:S.pos.map(()=>false)};tarotTabs();const st0=tStage();st0.innerHTML='';
   const d=document.createElement('button');d.type='button';d.className='tdeck';d.setAttribute('aria-label','Shuffle the deck');
   for(let i=0;i<4;i++){const b=tBack();b.style.setProperty('--i',i);d.appendChild(b)}
   d.addEventListener('click',e=>{e.stopPropagation();tarotShuffle(d)});
-  tr.topic=TOPICS[tarotTopic]?tarotTopic:'all';const col=document.createElement('div');col.className='tdeckcol';const row=document.createElement('div');row.className='ttopics';
-  for(const [id,T] of Object.entries(TOPICS)){const b=document.createElement('button');b.type='button';b.className='ttopic'+(id===tr.topic?' on':'');b.dataset.t=id;b.textContent=T.n;
-    b.addEventListener('click',e=>{e.stopPropagation();if(tr.step!=='deck')return;sfx('tick');tarotTopic=tr.topic=id;row.querySelectorAll('.ttopic').forEach(x=>x.classList.toggle('on',x===b))});row.appendChild(b)}
+  // what the reading is about. One you have had today is ticked: tap it to see that reading again. The rest can still be dealt.
+  const left=Object.keys(TOPICS).filter(t=>!tarotDone(k,t));tr.topic=left.includes(tarotTopic)?tarotTopic:(left[0]||null);
+  const col=document.createElement('div');col.className='tdeckcol';const row=document.createElement('div');row.className='ttopics';
+  for(const [id,T] of Object.entries(TOPICS)){const had=tarotDone(k,id),b=document.createElement('button');b.type='button';b.className='ttopic'+(id===tr.topic?' on':'')+(had?' thad':'');b.dataset.t=id;b.textContent=T.n+(had?' ✓':'');
+    if(had)b.setAttribute('aria-label',T.n+', read today. See it again.');
+    b.addEventListener('click',e=>{e.stopPropagation();if(tr.step!=='deck')return;sfx('tick');if(had){tarotShow(k,had,id);return}tarotTopic=tr.topic=id;row.querySelectorAll('.ttopic').forEach(x=>x.classList.toggle('on',x===b))});row.appendChild(b)}
   col.append(d,row);st0.appendChild(col);
-  tSay('Pick what the reading is about. Then tap the deck to shuffle it.')}
+  tSay(!left.length?'You have had every reading in this spread today. Tap one to see it again.':left.length<5?'Pick what the reading is about. Then tap the deck to shuffle it. Tap a ticked one to see it again.':'Pick what the reading is about. Then tap the deck to shuffle it.')}
 // 2. shuffle (78 cards, each maybe reversed), then cut into three piles
-function tarotShuffle(d){if(tr.step!=='deck')return;tr.step='shuffling';sfx('paper');
+function tarotShuffle(d){if(tr.step!=='deck'||(tr.k&&(!tr.topic||tarotDone(tr.k,tr.topic))))return; /* nothing left to deal in this spread today, or that one has been read */tr.step='shuffling';sfx('paper');
   const ids=TAROT.map((c,i)=>i);for(let i=ids.length-1;i>0;i--){const j=tarotRand(i+1);[ids[i],ids[j]]=[ids[j],ids[i]]}
   tr.deck=ids.map(i=>({c:TAROT[i],rev:tarotRand(1000)<TAROT_REV*1000}));
   d.classList.add('tshuf');tSay('Shuffling…');setTimeout(()=>{if(!tarotEl||tr.step!=='shuffling')return;tarotCut()},tsCalm()?60:900)}
@@ -181,7 +192,7 @@ function tarotFlip(i,btn){const x=tr.cards[i];tr.open[i]=true;sfx('page');
   if(tsCalm()){show();return}
   btn.classList.add('tturn');setTimeout(()=>{show();btn.classList.remove('tturn');btn.classList.add('tturn2');setTimeout(()=>btn.classList.remove('tturn2'),120)},120)} // a stepped turn: narrow, then the face
 // today's reading, opened again: the same cards, face up
-function tarotShow(k,cards){const tp=(tarotLog().topic||{})[k];tr={k,step:'shown',cards,open:cards.map(()=>true),topic:TOPICS[tp]?tp:'all'};tarotTabs();tarotLay(true);tarotSum(true)}
+function tarotShow(k,cards,topic,from){tr={k,step:'shown',cards,open:cards.map(()=>true),topic:TOPICS[topic]?topic:'all',from};tarotTabs();tarotLay(true);tarotSum(true)}
 // the spread as a whole, the traditional way: big cards and the leading suit
 function tarotSum(again){const C=tr.cards,n=C.length,maj=C.filter(x=>x.c.id[0]==='M').length,cnt={};
   for(const x of C)if(x.c.id[0]!=='M')cnt[x.c.id[0]]=(cnt[x.c.id[0]]||0)+1;
@@ -203,7 +214,7 @@ function tarotStory(){const k=tr.cards.map(x=>(TAROT_K[x.c.id]||['',''])[x.rev?1
   return 'You are surrounded by '+k[0]+', with '+k[1]+' standing in the way. At its best this brings '+k[2]+', and all of it rests on '+k[3]+'. You are leaving behind '+k[4]+' and heading toward '+k[5]+'. You meet this with '+k[6]+', and the people and places around you bring '+k[7]+'. Your hopes or fears are about '+k[8]+'. It leads toward '+k[9]+'.'}
 // under the spread: the summary (three lines at most; "Read all of it" opens the whole thing when it doesn't fit), then a small note
 function tarotSumShow(again){tr.again=!!again;if(tr.k==='cross'){tSay('');tarotFocus(tr.focus>=0?tr.focus:0);return}const s=tarotEl.querySelector('.tsay');s.innerHTML='';const sp=document.createElement('span');sp.className='tsumtx';sp.textContent=tr.sum;
-  const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading. ':'')+(tr.cards.length===1?'Tap the card for more about it. '+SPREADS.one.next:'Tap a card for more about it.')));
+  const note=document.createElement('div');note.className='tnote';note.appendChild(document.createTextNode((again?'This is today’s reading'+(tr.topic&&tr.topic!=='all'?' about '+TOPICS[tr.topic].of:'')+'. ':'')+(tr.cards.length===1?'Tap the card for more about it. '+SPREADS.one.next:'Tap a card for more about it.')));
   s.append(sp,note);
   if(tr.k==='one'){const h=document.createElement('div');h.className='tlab';h.textContent=tarotTitle(0);const m=document.createElement('div');m.className='tmn';m.textContent=tarotMean(0);sp.textContent=tr.pat;s.prepend(h,m)}
   if(sp.scrollHeight>sp.clientHeight+2){const b=document.createElement('button');b.type='button';b.className='tmore';b.textContent='Read all of it';b.addEventListener('click',e=>{e.stopPropagation();tarotSumOpen()});note.appendChild(b)}}
@@ -235,3 +246,18 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   for(const [k,v] of tarotLore(x.c)){const d=document.createElement('div');d.className='tlore';const b=document.createElement('b');b.textContent=k+'. ';d.append(b,document.createTextNode(v));txt.appendChild(d)}
   r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
   tarotEl.querySelector('.tbox').appendChild(r)}
+
+/* TODAY (Jackie, Nov 25): the fourth choice in the box. Every reading you have had today, newest kind first as they are listed in the box:
+   each tarot spread and what it was about, each I Ching hexagram and what it was about, and what the crystal ball has said. Tap a tarot or
+   I Ching line to open that reading again; the back button comes back here. It empties at midnight, as the readings do. */
+function todayShow(){if(typeof ICH!=='undefined'&&!ICH&&Object.keys(ichingLog()).length)ichingLoad().then(()=>{if(tarotEl&&tr&&tr.k==='today')todayShow()}).catch(()=>{}); /* the I Ching's text loads when first needed; today's casts are listed as soon as it is in */
+  tr={k:'today',step:'today',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='';const old=tarotEl.querySelector('.tread');if(old)old.remove();
+  const L=document.createElement('div');L.className='ttoday';let n=0;
+  const row=(head,sub,fn)=>{const b=document.createElement(fn?'button':'div');if(fn){b.type='button';b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');fn()})}b.className='tsb ttrow'+(fn?'':' ttplain');
+    const h=document.createElement('b');h.textContent=head;const d=document.createElement('span');d.className='tmd';d.textContent=sub;b.append(h,d);L.appendChild(b);n++};
+  for(const [k,S] of Object.entries(SPREADS))for(const t of Object.keys(TOPICS)){const c=tarotDone(k,t);if(!c)continue;
+    row('Tarot, '+S.name.toLowerCase()+', '+TOPICS[t].n.toLowerCase(),c.map(x=>x.c.n+(x.rev?' (reversed)':'')).join(', ')+'.',()=>{tarotPick=k;tarotShow(k,c,t,'today')})}
+  if(typeof ichingToday==='function')for(const e of ichingToday())row('I Ching, '+TOPICS[e.topic].n.toLowerCase(),e.name+'.',()=>ichingShow(e.topic,'today'));
+  if(typeof ballToday==='function')for(const e of ballToday())row('Crystal ball, '+e.when,e.say);
+  if(!n){const p=document.createElement('p');p.className='ttnone';p.textContent='No readings yet today. The tarot, the I Ching and the crystal ball on the shelf above are all kept here once you have one.';L.appendChild(p)}
+  st0.appendChild(L);tSay(n?'Tap a tarot or I Ching reading to open it again. They are kept until midnight.':'')}

@@ -9,7 +9,7 @@ const alphaCache=new Map();function alphaAt(im,u,v){let a=alphaCache.get(im.src)
 function onPlantPx(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();if(!b.img||!ok(b.img))return onPlant(x,y);const sx=b.img.naturalWidth/b.w,sy=b.img.naturalHeight/b.h;for(const[dx,dy]of[[0,0],[10,0],[-10,0],[0,10],[0,-10]])if(alphaAt(b.img,(x+dx-b.x)*sx,(y+dy-b.y)*sy)>40)return true;return false;}
 function onPlant(x,y){if(st.stage<0||behindCurtain())return false;const b=plantBox();return x>=b.x-10&&x<=b.x+b.w+10&&y>=b.y-10&&y<=baseY()+4;}
 // over a book you can open, the cursor is a magnifying glass (Jackie, Nov 17); the same checks, in the same order, as the tap below
-function overBook(x,y){return st.started&&st.stage>=0&&!held.tool&&!st.night&&!onPlantPx(x,y)&&!sillHit(x,y)&&!catHit(x,y)&&!inR(x,y,DRAWERS)&&!inR(x,y,MOONBOX)&&onBookshelf(x,y);}
+function overBook(x,y){return st.started&&st.stage>=0&&!held.tool&&!onPlantPx(x,y)&&!sillHit(x,y)&&!catHit(x,y)&&!inR(x,y,DRAWERS)&&!inR(x,y,MOONBOX)&&onBookshelf(x,y);}
 cv.addEventListener('mousemove',e=>{[mx,my]=toGame(e);cv.style.cursor=held.tool?'none':overBook(mx,my)?'zoom-in':'pointer';});
 cv.addEventListener('mouseleave',()=>{mx=my=-99;});
 function focusPlantAt(x,y,box){if(!(st.others||[]).length)return;const hk=box==='can'?holdK(x,y):1,hit=()=>st.stage>=0&&(box==='can'?pourOver(x,y,hk):box?onPlant(x,y):onPlantPx(x,y));
@@ -37,7 +37,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&seasonPoke(x,y))return; // the pumpkin or the tree, sitting on the book stack (js/seasonal.js)
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,MOONBOX)){fidgetPoke(x,y);openTarot();return;} // the moon box on the right bookcase: a tarot reading (js/tarot.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,CUPBOARD)){cubOpen();return;} // the star door: Tofu's cupboard (js/cupboard.js)
- if(!held.tool&&!st.night&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks(bookZone(x,y).books);return;} // any book: both bookcases, the crate book, the book stack
+ if(!held.tool&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks(bookZone(x,y).books);return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,SAMPLER)){openSampler();return;} // the sampler on the top shelf opens its own app (js/sampler.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,RADIO)){radioTap();fidgetPoke(x,y);return;} // the radio on the desk: on or off (js/radio.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&toyHit(x,y)){toyPutBack();return;} // the wind-up cat, out of its cubby: a tap puts it back (js/fidgets.js)

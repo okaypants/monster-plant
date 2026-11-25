@@ -194,7 +194,7 @@ function bookOver(){let best=null,by=-1;const x=bookDrag.x,y=bookDrag.y;eachPlan
   if(x>=b.x-m&&x<=b.x+b.w+m&&y>=b.y-m&&y<=baseY()+m*.5&&baseY()>by){by=baseY();best=canRead()?st.id:null;}});bookDrag.over=best;}
 function bookUp(){removeEventListener('pointermove',bookMove);removeEventListener('pointerup',bookUp);removeEventListener('pointercancel',bookUp);
  const bk=bookDrag.item,id=bookDrag.over,tap=!bookDrag.moved,from=bookDrag.btn;bookDrag.item=null;bookDrag.over=null;bookDrag.trayT=performance.now();if(!bk)return;
- if(tap){const L=listener();if(L==null){tell('Nobody is awake to listen right now.',{kind:'info'});return;}const i=(st.others||[]).findIndex(q=>q.id===L);if(i>=0){swapIn(i);ACT=st.id;}closeBookTray();startReading(L,bk,from);return;} // a tap: you read it to the monster you're tending
+ if(tap){const L=listener();if(L==null){closeBookTray();startReading(0,bk,from);tell('Nobody is awake to listen, so you read it to yourself.',{kind:'info',now:true});return;} /* you can read whenever you want (Jackie, Nov 25): with no listener the book just opens for you, and nothing is counted for any monster */const i=(st.others||[]).findIndex(q=>q.id===L);if(i>=0){swapIn(i);ACT=st.id;}closeBookTray();startReading(L,bk,from);return;} // a tap: you read it to the monster you're tending
  if(id==null){sfx('tick');return;} // back to the tray
  const i=(st.others||[]).findIndex(q=>q.id===id);if(i>=0){swapIn(i);ACT=st.id;} // the one you read to becomes the one you're tending
  closeBookTray();startReading(id,bk);}
@@ -204,7 +204,8 @@ function bookUp(){removeEventListener('pointermove',bookMove);removeEventListene
    goes back to where it was. Tap the room to close it early. */
 let storyEl=null;
 function startReading(id,bk,from){closeStory(true);
- withPlant(id,()=>{held.tool='book';held.item=bk;useTool();let from=null;
+ if(!id)READ.set(0,{bk,from:null,page:0,s:nextRead(bk.id),solo:true}); // id 0 = nobody is listening: no monster moves, listens or changes
+ else withPlant(id,()=>{held.tool='book';held.item=bk;useTool();let from=null;
   if(spotKey()!=='chair'&&!perchTaken('chair')&&spaceFree('chair')){from={perch:st.perch,free:st.free&&{...st.free}};st.perch='chair';st.walk=null;pickChair();sfx('pop');}
   READ.set(id,{bk,from,page:0,s:nextRead(bk.id)});st.listen=2;});
  storyEl=document.createElement('div');storyEl.className='story';storyEl.dataset.id=id;storyEl.style.setProperty('--bc',BOOK_LOOK[bk.id].c);
@@ -265,7 +266,7 @@ function closeStory(quiet){if(!storyEl)return;songStop();const id=+storyEl.datas
  if(r.from)withPlant(id,()=>{st.perch=r.from.perch;if(r.from.free)st.free=r.from.free;st.walk=null;pickChair();});save();}
 cv.addEventListener('pointerdown',()=>{if(storyEl&&!bookDrag.item)closeStory();}); // tap the room: close the book
 function drawReading(){const now=performance.now();
- if(storyEl){const id=+storyEl.dataset.id;let gone=true;withPlant(id,()=>{gone=st.nap>0||st.night;if(!gone)st.listen=Math.max(st.listen,.5);});if(gone||!READ.has(id))closeStory();} // eyes softly closed while it listens
+ if(storyEl){const id=+storyEl.dataset.id;let gone=!!id;if(id)withPlant(id,()=>{gone=st.nap>0||st.night;if(!gone)st.listen=Math.max(st.listen,.5);});if(gone||!READ.has(id))closeStory();} // eyes softly closed while it listens
  for(let i=bookHops.length-1;i>=0;i--){const h=bookHops[i],u=(now-h.t0)/1000/BOOK_HOP;if(u>=1){bookHops.splice(i,1);continue;} // the closed book hops back to the shelf
   const sx=SHELF.x+SHELF.w/2,sy=SHELF.y+SHELF.h/2,px=4,x=Math.round((h.x+(sx-h.x)*u)/px)*px,y=Math.round((h.y+(sy-h.y)*u-Math.sin(u*Math.PI)*90)/px)*px,im=bookImg('c'+h.id,()=>bookPix(h.id,px));
   g.drawImage(im,x-im.width/2,y-im.height/2);}

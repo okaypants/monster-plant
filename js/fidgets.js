@@ -8,7 +8,7 @@ const FP=[
  {n:'toy',x:52,y:350,w:90,h:90,k:.10,d:.10},
  {n:'pillow',x:582,y:532,w:122,h:116,k:.14,d:.16,kick:{vy:5}},
  {n:'drum',x:1220,y:140,w:186,h:88,k:.25,d:.18,kick:{vy:3}},
- {n:'moondial',x:1306,y:270,w:98,h:102,k:.16,d:.06,does:'moon'},
+ {n:'moondial',x:1304,y:266,w:102,h:104,k:.16,d:.06,does:'moon'},
  {n:'viewer',x:1056,y:284,w:108,h:86,k:.2,d:.1,kick:{vy:-3},does:'view'},
  {n:'catpic',x:737,y:352,w:158,h:112,k:.15,d:.12,kick:{vx:3},does:'hearts'},
  {n:'bigpic',x:670,y:122,w:232,h:214,k:.12,d:.1,kick:{vx:3},does:'stars'},
@@ -88,15 +88,45 @@ const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17
    the Wonders of Clairvoyance" (1910), "Appearances in the Crystal": white clouds are good; black are bad; violet, green and blue
    mean coming joy; red, crimson, orange and yellow mean danger or trouble; clouds that rise answer yes and clouds that sink answer no.
    Bad signs stay in. The mist gathers in four frames and clears again. */
-const BALL_SIGNS=['White clouds fill the ball. That is a good sign.','The clouds in the ball rise. The answer is yes.','The clouds in the ball sink. The answer is no.',
- 'Dark clouds fill the ball. That is a bad sign for now.','Green clouds drift through the ball. Something happy is coming.','Blue clouds drift through the ball. Something happy is coming.',
- 'Violet clouds drift through the ball. Something happy is coming.','Red clouds flicker in the ball. Be careful for a while.','Yellow clouds flicker in the ball. Be careful for a while.'];
-const BALL_MS=2600;let ballT=-1e9;
-function ballFrame(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?1:[2,3,4,5,5,4,3,2][Math.floor(d/(BALL_MS/8))]||1;}
-function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ballT=now;sfx('chime');
- if(!st.ballMet){st.ballMet=1;tell('Tell the crystal ball what you want to know, or it will figure it out for you.',{kind:'info',key:'ballHi'});}
- setTimeout(()=>tell(BALL_SIGNS[Math.floor(Math.random()*BALL_SIGNS.length)],{kind:'info',key:'ballSign'}),BALL_MS*.55);
+/* THE CRYSTAL BALL'S ANSWERS (Jackie, Nov 25: "The reading isn't clear or fun enough"). Think of a question and tap. The mist swirls in the
+   colour of the answer and the ball gives a plain answer first, then what the mist did. The meanings are the old crystal-gazing ones: mist
+   rising is yes and sinking is no; white clouds are good and dark ones are not; green, blue and violet promise something happy; red and
+   yellow say take care. What it says is kept with the day's other readings (the moon box's Today page, js/tarot.js). */
+const BALL_SIGNS=[{a:'Yes.',s:'The mist rises and fills the ball.',tint:'white',fr:[2,3,4,5,5,5,5,4]},{a:'No.',s:'The mist sinks away to nothing.',tint:'white',fr:[5,5,4,4,3,3,2,2]},
+ {a:'It looks good.',s:'White clouds fill the ball.',tint:'white'},{a:'Not now.',s:'Dark clouds fill the ball.',tint:'dark'},
+ {a:'Something happy is coming.',s:'Green clouds drift through the ball.',tint:'green'},{a:'Something happy is coming.',s:'Blue clouds drift through the ball.',tint:'blue'},
+ {a:'Something happy is coming.',s:'Violet clouds drift through the ball.',tint:null},{a:'Take care for a while.',s:'Red clouds flicker in the ball.',tint:'red'},
+ {a:'Take care for a while.',s:'Yellow clouds flicker in the ball.',tint:'yellow'}];
+const BALL_TINT={white:[236,236,242],dark:[74,72,92],green:[70,186,112],blue:[66,140,232],red:[226,70,74],yellow:[242,206,62]},BALL_KEY='mp-ball';
+const BALL_MS=2600;let ballT=-1e9,ballCur=null;
+function ballFrame(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?1:((ballCur&&ballCur.fr)||[2,3,4,5,5,4,3,2])[Math.floor(d/(BALL_MS/8))]||1;}
+function ballTint(){return ballCur&&performance.now()-ballT<BALL_MS?ballCur.tint:null;} // the colour of the mist while it swirls (js/room.js ballPic)
+// a mist picture in another colour: only the glass changes (its violets and lilacs), by how light each pixel is; the gold stand and the white glints stay
+function ballTinted(f,tint){const base=OBJ['ball'+f],name='ball'+f+'_'+tint;if(OBJ[name])return name;if(!ok(base)||!BALL_TINT[tint])return 'ball'+f;
+ const c=document.createElement('canvas');c.width=base.naturalWidth;c.height=base.naturalHeight;const x=c.getContext('2d');x.drawImage(base,0,0);let d;try{d=x.getImageData(0,0,c.width,c.height);}catch(e){return 'ball'+f;}
+ const D=d.data,[tr2,tg,tb]=BALL_TINT[tint];for(let i=0;i<D.length;i+=4){const r=D[i],g=D[i+1],b=D[i+2];if(!D[i+3]||!(b>g+18&&r>g+4)||(r>232&&g>226))continue;const k=Math.min(1.25,(r+g+b)/3/150);D[i]=Math.min(255,tr2*k);D[i+1]=Math.min(255,tg*k);D[i+2]=Math.min(255,tb*k);}
+ x.putImageData(d,0,0);c.naturalWidth=c.width;c.naturalHeight=c.height;c.complete=true;OBJ[name]=c;return name;}
+function ballLog(){try{const s=JSON.parse(localStorage.getItem(BALL_KEY)||'{}');return s.day===tarotToday()&&Array.isArray(s.looks)?s:{day:tarotToday(),looks:[]}}catch(e){return {day:tarotToday(),looks:[]}}}
+function ballToday(){return ballLog().looks.filter(l=>BALL_SIGNS[l[1]]).map(l=>{const h=Math.floor(l[0]/60),m=l[0]%60;return {when:((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' am':' pm'),say:BALL_SIGNS[l[1]].a+' '+BALL_SIGNS[l[1]].s}}).reverse();}
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ballT=now;const i=Math.floor(Math.random()*BALL_SIGNS.length);ballCur=BALL_SIGNS[i];sfx('chime');
+ if(!st.ballMet){st.ballMet=1;tell('Think of a question for the crystal ball, then tap it.',{kind:'info',key:'ballHi'});}
+ setTimeout(()=>tell(ballCur.a+' '+ballCur.s,{kind:'info',key:'ballSign',now:true}),BALL_MS*.55);
+ try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
+/* THE MOON DIAL (Jackie, Nov 25: "it's not that fun, I wish it had more info or interactivity"). A tap says what the moon is doing tonight: its
+   phase, how much of it is lit, and how many nights it is to the next full moon and the next new moon. Tap again while it is still showing
+   and the dial turns on one night, and says what the moon will be then, as many nights ahead as you care to tap (up to a month). Its face
+   shows the night it is talking about. Left alone for a few seconds it goes back to tonight. All worked out from the date (js/moon.js). */
+const DIAL_HOLD=7000;let dialT=-1e9,dialDay=0;
+function moonDialAt(){return performance.now()-dialT<DIAL_HOLD&&dialDay>0?Date.now()+dialDay*864e5:null;} // the night the dial is showing, if it has been turned ahead
+function moonDialSay(n){const t=Date.now()+n*864e5,name=moonName(t),lit=Math.round(moonLit(t)*100),a=moonAge(t),nights=x=>x===1?'tomorrow night':'in '+x+' nights';
+ const when=n===0?'Tonight':n===1?'Tomorrow night':'In '+n+' nights',is=n===0?'is':'will be';
+ let say=name==='new moon'?when+' '+is+' the new moon, when the sky is dark.':name==='full moon'?when+' '+is+' the full moon.':/quarter/.test(name)?when+' the moon '+is+' at its '+name+', half lit.':when+' the moon '+is+' a '+name+', '+lit+'% lit.';
+ if(n===0){const half=MOON_MONTH/2,toFull=Math.round(((half-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH),toNew=Math.round(((MOON_MONTH-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH);
+  if(name!=='full moon'&&toFull>0&&toFull<=toNew)say+=' The full moon is '+nights(toFull)+'.';else if(name!=='new moon'&&toNew>0)say+=' The new moon is '+nights(toNew)+'.';
+  say+=' Tap the dial again to turn it on a night.';}
+ return say;}
+function moonDialTap(){const now=performance.now();dialDay=now-dialT<DIAL_HOLD?Math.min(dialDay+1,29):0;dialT=now;sfx(dialDay?'tick':'chime');tell(moonDialSay(dialDay),{kind:'info',key:'moonDial',now:true});}
 /* WHERE A SPILLED COIN LANDS (Jackie, Nov 25: "Gold coins don't bounce on regular surfaces", then "all the coins should hit the floor"). The coins
    used to bounce on one line at the height of the jar's shelf, right across the room, so they bounced in mid-air. Now every coin falls out of
    the jar, past the shelves, and lands on the floor, where it bounces and comes to rest. Each coin has its own bit of floor, a little nearer
@@ -107,7 +137,7 @@ function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.lengt
  if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(270,350),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fz:rnd(COIN_FLOOR[0],COIN_FLOOR[1])});sfx('pop');}
  else if(p.does==='safe'){openThing('lockbox',900);if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
  else if(p.does==='record'){if(typeof radioOn==='function'){if(!radio.on){radio.band='crates';radioOn(true);tell('You put a record from the crate on the radio.',{kind:'info',key:'crateRec'});}else if(radio.band!=='crates')radioBand('crates');else radioStep(1);}}
- else if(p.does==='moon'){if(typeof moonName==='function'){const n=moonName(Date.now());tell(/quarter/.test(n)?'The moon is at its '+n+' tonight.':'There is a '+n+(/moon$/.test(n)?'':' moon')+' tonight.',{kind:'info',key:'moonDial'});}}
+ else if(p.does==='moon'){if(typeof moonName==='function')moonDialTap();}
  else if(p.does==='hearts'){for(let i=0;i<2;i++)add({x:cx+rnd(-30,20),y:p.y+p.h*.3,vx:rnd(-.3,.3),vy:-1,g:0,sway:true,life:60+i*20,c:'#e98aa8',heart:true});}
  else if(p.does==='stars'){for(let i=0;i<4;i++)add({x:p.x+rnd(30,p.w-30),y:p.y+rnd(30,p.h-60),vx:rnd(-.5,.5),vy:rnd(-.9,-.3),g:.01,sway:true,life:rnd(60,110),c:['#ffd23f','#ffdf6b','#fff4e2'][i%3],petal:true});}
  else if(p.does==='rattle'){[0,90,180].forEach(d=>setTimeout(()=>sfx('tick'),d));}

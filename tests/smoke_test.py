@@ -181,6 +181,16 @@ CASES = [
      "const give=()=>{document.querySelector('.ttreat[data-id=mash]').dispatchEvent(new PointerEvent('pointerdown',cl(fx,fy-200)));dispatchEvent(new PointerEvent('pointermove',cl(fx,fy)));dispatchEvent(new PointerEvent('pointerup',cl(fx,fy)));};"
      "give();__step(.6);if(!(st.full>.3))return 'the kid did not eat: full '+st.full;give();__step(1.6);if(!(st.nap>0))return 'a full kid did not doze off';__step(.2);if(thingBy('bass').pic()!=='bass_bed')return 'no blanket for a sleeping kid';"
      "st.stage=6;st.nap=0;st.full=0;if(bassinetOut())return 'bassinet still out for a teen';return true;})()"),
+    # you can read whenever you want: at night nobody listens, the book still opens and a line says so (Jackie, Nov 25)
+    ("read_any_time", TEEN + "s.night=true;", "", 0.1,
+     "(()=>{capClear();st.night=true;if(listener()!=null)return 'somebody can listen';const n0=st.needs.attention;startReading(0,BOOKS[0],null);if(!storyEl)return 'no book opened';"
+     "__step(.5);if(!storyEl)return 'the book closed by itself';const t0=storyEl.textContent;turnStory();__step(.5);if(!storyEl||storyEl.textContent===t0)return 'page did not turn';"
+     "if(st.needs.attention!==n0||st.listen>0)return 'a sleeping monster was counted as listening';closeStory();return (!storyEl&&!READ.has(0))||'did not close';})()"),
+    # bothered into moving three times in a row, the cat leaves the room, stays away a while and walks back in (Jackie, Nov 25)
+    ("cat_leaves_room", TEEN + "s.catTrust=.7;", "", 0.1,
+     "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.to!=='out')return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"
+     "if(cat.x>-60&&cat.x<W+60)return 'still on screen at x'+Math.round(cat.x);if(!CAP.log.some(l=>/has left the room/.test(l.t))&&!CAP.q.concat(CAP.cur||[]).some(c=>/has left the room/.test(c.t)))return 'did not say it left';"
+     "cat.t=cat.awayT+1;__step(.1);if(cat.state!=='walk')return 'did not come back: '+cat.state;for(let i=0;i<1200&&cat.state==='walk';i++)__step(.05);return (cat.state==='sleep'&&cat.x>0&&cat.x<W&&!cat.pester)||'did not settle: '+cat.state+' x'+Math.round(cat.x);})()"),
     # the cat answers a touch even while he's walking: he stops for a moment (Jackie, Nov 7)
     ("cat_touch_walking", "s.stage=8;s.species=3;s.free={x:1250,y:918};s.giftSeed=1;s.catTrust=.5;", "", 0.1,
      "(()=>{catGo(catPick());if(cat.state!=='walk')return 'cat not walking: '+cat.state;const x0=cat.x;petCat();if(!(cat.pauseT>0))return 'no pause';__step(.5);if(Math.abs(cat.x-x0)>1)return 'he kept walking';__step(1);return cat.state!=='walk'||Math.abs(cat.x-x0)>0||cat.path.length===0||'he never went on';})()"),

@@ -2,6 +2,41 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Read any time (Nov 25)
+
+- Jackie: "you should be able to read whenever you want it'll just note if no one is listening".
+- The bookshelf now opens at night too. If no monster is awake and old enough to listen, the book opens anyway and a line says "Nobody is awake to listen, so you read it to yourself." Nothing is counted for any monster and none of them moves.
+
+### Readings for every topic, and a Today page (Nov 25)
+
+- Jackie: "I also think you should be able to get readings on everything and go back and view them for that day in the tarot and iching etc".
+- Tarot gives one reading a day for each spread and each topic, where it used to give one a day for each spread. A topic you have already asked about shows a tick, and tapping it opens that reading again.
+- The I Ching has the same topics, one cast a day for each.
+- The moon box has a new page, Today, that lists every tarot reading, I Ching cast and crystal ball answer from today. Tap one to open it again.
+
+### The crystal ball gives a plain answer (Nov 25)
+
+- Jackie asked "how does the crystal ball work?" and then: "The reading isn't clear or fun enough". I offered four directions; Jackie did not pick, so I chose the plainest one and it can change.
+- The first time, it says "Think of a question for the crystal ball, then tap it."
+- Each answer now starts with a plain answer ("Yes.", "No.", "It looks good.", "Not now.", "Something happy is coming.", "Take care for a while.") and then the old sign that it comes from. The mist takes a colour that goes with the answer.
+- The answer shows at once every time. Before, asking twice inside ten minutes showed nothing the second time, because a repeated caption was being held back. That was the main reason it seemed unclear.
+- "The crystal ball is slightly offset when it activates": the mist frames now sit exactly where the still ball does.
+
+### The moon dial is in place and can be turned (Nov 25)
+
+- Jackie: "the moon phase thing is offset and it's not that fun i wish it had more info or interactivity".
+- The dial sits where it is drawn in the room.
+- Tap it and it names tonight's phase and how many nights until the next full or new moon. Tap again while that line is up and the dial turns one night ahead, showing the moon for that night, for as many nights as you like. Left alone for seven seconds it goes back to tonight.
+
+### The cat can leave the room (Nov 25)
+
+- Jackie: "the cat never leaves when you boop him a billion times i mean leave the scene entirely".
+- Bothered into moving three times in a row without getting to sleep in between, the cat walks out through the left side of the room. A line says the cat has left. One to two minutes later the cat walks back in and settles, and a line says so.
+
+### The pot sits down inside the bassinet (Nov 25)
+
+- Jackie: "the plant looks bad on the bed". The pot was standing on top of the bassinet's bedding. It now sits lower, behind the front rail, so it reads as inside.
+
 ### Lamp light is smooth and lights the room (Nov 25)
 
 - Jackie, playing the new room at night for the first time: "Lamp on the left is off. Lighting is not smooth and looks super weird. Entire room is not lit at night at all." Then: "part of the left lamp is cut off and repeating. the bottom corners of the sconce are dim", and "cup in the water cooler is too small".

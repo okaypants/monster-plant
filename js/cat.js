@@ -80,12 +80,14 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  else if(cat.state==='present'){if(cat.t>cat.presT){cat.state='sleep';cat.pose='loaf';cat.t=0;cat.nap=rnd(60,150);}} // came back to the front for a pet; it dozes if none comes
  else if(cat.state==='settle'){const a=cat.awake;cat.huffF=cat.t>a*.5&&cat.t%3.4<.3?'sit2':'sit1'; // sitting awake, facing a little away, "grooming" (a slow 1 px head bob, drawCat), then a slow blink now and then
   if(cat.t>a){cat.state='loafwake';cat.t=0;cat.loafT=rnd(40,70);}}
- else if(cat.state==='loafwake'){if(cat.t>cat.loafT){cat.state='sleep';cat.pose='curl';cat.t=0;cat.nap=rnd(60,150);cat.huff=0;cat.huffN=0;cat.pets=0;}} // only now does it curl up and nap for real (patience refills while it sleeps)
+ else if(cat.state==='loafwake'){if(cat.t>cat.loafT){cat.state='sleep';cat.pose='curl';cat.t=0;cat.nap=rnd(60,150);cat.huff=0;cat.huffN=0;cat.pets=0;cat.pester=0;}} // only now does it curl up and nap for real (patience refills while it sleeps)
+ else if(cat.state==='away'){if(cat.t>cat.awayT){cat.huffN=0;cat.huff=0;cat.pets=0;cat.pester=0;patFull();catGo(catPick());tell(catName()+' comes back in.',{kind:'info',who:'cat'});}} // out of the room; then back in to a spot of its choosing
  else if(cat.state==='play'){if(!cat.play||cat.t>=cat.play.len){cat.play=null;cat.state='wake';cat.t=1.2;}} // a toy from the cupboard (js/cupboard.js): when the play is over it sits, then wanders off to nap
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
  else if(cat.state==='walk'&&(cat.pauseT||0)>0){cat.pauseT-=dt;if(cat.pauseT<=0)cat.walkPet=false;} // stopped for a touch
  else if(cat.state==='walk'&&(cat.stutter||0)>0){cat.stutter-=dt;} // shy: a tiny pause in stride, then on it goes
  else if(cat.state==='walk'){const p=cat.path[0];if(!p&&!spotVisible(CAT_SPOTS[cat.to],cat.huff?HUFF_FRAMES():null)&&(cat.retry=(cat.retry||0)+1)<6){if(cat.huff)huffWalk();else catGo(catPick(cat.to));return;} // a plant moved in front while he walked: he never stops behind it
+  if(!p&&cat.to==='out'){cat.retry=0;cat.fast=1;cat.spot='out';cat.pester=0;cat.state='away';cat.t=0;cat.awayT=rnd(CAT_AWAY[0],CAT_AWAY[1]);tell(catName()+' has left the room.',{kind:'info',who:'cat'});return;} // gone for a while (catExit)
   if(!p&&cat.huff){cat.retry=0;cat.fast=1;const s=CAT_SPOTS[cat.to];cat.spot=cat.to;cat.sc=s.sc;huffSettle();return;}
   if(!p&&cat.to==='front'){cat.retry=0;cat.fast=1;const s=CAT_SPOTS.front;cat.spot='front';cat.sc=s.sc;cat.pose='loaf';cat.state='present';cat.t=0;cat.presT=rnd(25,40);backHello();return;}
   if(!p){cat.retry=0;cat.fast=1;backHello();const s=CAT_SPOTS[cat.to];cat.spot=cat.to;st.catNaps=st.catNaps||{};st.catNaps[cat.to]=(st.catNaps[cat.to]||0)+1;cat.sc=s.sc;cat.pose=s.poses[Math.floor(Math.random()*s.poses.length)];cat.state='sleep';cat.t=0;cat.nap=rnd(60,150);fplay('cat_settle');if(cat.spot==='byplant'){catSaw('byplant');catFeel(st.id,'bond');st.listen=3;sfx('purr');tell(catName()+' curled up next to '+(firstName()||'your plant')+'.',{kind:'teach',key:'catPlant',who:'cat'});}return;}
@@ -152,7 +154,7 @@ function trustGain(v){if(st.catDayN!==st.day){st.catDayN=st.day;st.catGain=0;}co
 // then loafs with its eyes open, then curls up and naps; patience refills during the nap. Touch it while it winds down and it simply moves
 // farther (each move makes the winding down a little longer).
 const HUFF_FRAMES=()=>['sit1','sit2','loaf1'].map(n=>CATF[n]);
-function catLeave(why){catSaw('huff');cat.state='annoyed';cat.t=0;cat.pets=0;cat.huff=1;cat.huffN=0;cat.huffFrom=cat.touchX??cat.x;cat.back=catTrust()>=TRUST_FOND;sfx('paper');
+function catLeave(why){cat.pester=(cat.pester||0)+1;catSaw('huff');cat.state='annoyed';cat.t=0;cat.pets=0;cat.huff=1;cat.huffN=0;cat.huffFrom=cat.touchX??cat.x;cat.back=catTrust()>=TRUST_FOND;sfx('paper');
  if(why!=='shy'&&!catSession.enough){catSession.enough=true;tell(catName()+' has had enough pets for now.',{kind:'info',who:'cat'});}} // said once a play session; after that, body language only
 function huffSpot(){const from=cat.huffFrom??cat.x,pl=[];if(st.started)eachPlant(()=>{if(st.stage>=0){const b=plantBox();pl.push(b.x+b.w/2);}});
  const far=x=>Math.abs(x-from)>=350&&pl.every(px=>Math.abs(x-px)>=220); // not right next to you or a monster
@@ -160,7 +162,12 @@ function huffSpot(){const from=cat.huffFrom??cat.x,pl=[];if(st.started)eachPlant
  const naps=st.catNaps||{},bag=ks.flatMap(k=>Array(1+Math.min(3,naps[k]||0)).fill(k)); // a spot it likes is likelier
  if(bag.length)return bag[Math.floor(Math.random()*bag.length)];
  const r=CAT_SPOTS.rug,fx=from<835?FLOOR_X1:FLOOR_X0,x=floorX({...r,x:fx}); r.x=x??fx; return 'rug';} // nowhere else: the far end of the rug
-function huffWalk(){catSaw('huff');cat.huffN=(cat.huffN||0)+1;cat.huffFrom=cat.touchX??cat.x;catGo(huffSpot());cat.huff=1;}
+/* OUT OF THE ROOM (Jackie, Nov 25: "the cat never leaves when you boop him a billion times, I mean leave the scene entirely"). Bothered into
+   getting up and moving a third time in a row, the cat does not look for another spot: it walks off the nearer side of the room and is gone
+   for a minute or two. Then it walks back in, patience full again, and settles somewhere. It still never scolds, and trust is not touched. */
+const CAT_OUT_AT=3,CAT_OUT_X=170,CAT_AWAY=[60,120];
+function catExit(){catSaw('huff');const x=cat.x<W/2?-CAT_OUT_X:W+CAT_OUT_X;CAT_SPOTS.out={x,y:SURFACE.floor,sc:catSc(DEPTH.floor),poses:['loaf']};catGo('out');cat.huff=0;cat.fast=1.35;}
+function huffWalk(){catSaw('huff');cat.huffN=(cat.huffN||0)+1;if((cat.pester||0)>=CAT_OUT_AT){catExit();return;} /* only your own touching counts (cat.pester): a monster taking the armchair or a plant in the way never sends it out */cat.huffFrom=cat.touchX??cat.x;catGo(huffSpot());cat.huff=1;}
 function huffSettle(){cat.state='settle';cat.t=0;cat.huffF='sit1';cat.away=(cat.huffFrom??cat.x)<cat.x;const n=cat.huffN||1;cat.awake=n>1?Math.max(rnd(30,90)*(1+.35*(n-1)),(cat.awake||0)+10):rnd(30,90);fplay('cat_settle');} // each extra move: a little longer
 // COMING BACK (Nov 10): after it walked off, once its patience is full again, a fond cat may come nap by the monster you're tending and a cat
 // that adores you may come sit near the front of the room for a pet. Said once: "<Cat> wanders back over."
@@ -179,7 +186,7 @@ function walkTouch(){const tr=catTrust(),b=catBox();
 function petCat(x){const tr=catTrust();const b=catBox();cat.touchX=x??cat.x;
  if(cat.state==='walk'){walkTouch();return;}
  if(cat.state==='annoyed')return; // already getting up to go
- if(cat.state==='settle'||cat.state==='loafwake'){patHit();huffWalk();return;} // winding down: it gets up and moves farther. It never scolds; it just goes.
+ if(cat.state==='settle'||cat.state==='loafwake'){patHit();cat.pester=(cat.pester||0)+1;huffWalk();return;} // winding down: it gets up and moves farther. It never scolds; it just goes.
  if(cat.state==='fedup'){patHit();catLeave();return;} // you kept going: it has had enough
  if((cat.shyT||0)>0){sfx('hmm');return;}
  if(tr<TRUST_SHY){ // shy: only sniffs your hand while it's awake

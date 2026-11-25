@@ -11,7 +11,7 @@ const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin t
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
 const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:620,pic:()=>held.tool==='can'?null:'cup'},
- {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:299,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
+ {n:'moon',x:1355,y:367,pic:()=>moonDialPic()},{n:'ball',x:1561,y:299,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
  {n:'cupboard',x:1563,y:738,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
  {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:778,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
@@ -27,9 +27,9 @@ const BASS_FRONT=[[236,652,206,126]],BASS_FRONT_BED=[[236,652,206,126],[262,643,
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
-function moonDialPic(){const f=typeof moonAge==='function'?moonAge()/MOON_MONTH:0; // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
+function moonDialPic(){const ahead=typeof moonDialAt==='function'?moonDialAt():null,f=typeof moonAge==='function'?moonAge(ahead??undefined)/MOON_MONTH:0; // tonight's moon, or the night the dial has been turned on to (js/fidgets.js) // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
  return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
-function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;return f>1?'ball'+f:null;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
+function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
 function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
 const roomReady=()=>ok(ROOM2);
 const mkCv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingEnabled=false;return c;};
@@ -109,7 +109,7 @@ const CURT_L=244,CURT_R=648,CURT_MID=446; // the closed curtains (curtains2.png,
 // windowsill front edge, front of the desk top, front of the book on the milk crate, front of the top book's cover, the armchair seat, the cat bed's rim, the floor in front of the rug.
 // On the rug any y is floor (back 790 to front 918). Small per-species and per-frame fixes live in NUDGE (js/nudges.js).
 const SURFACE={sill:530/* the windowsill ledge (room art: the orange ledge, y 508-535) */,desk:550/* on the desktop, just behind its front edge (room art: top y 535-562) */,crate:660/* the crate's flat top (y 628-668) */,books:800/* on the floor in front of the mini fridge; the key is still 'books' from when a book stack stood by the desk, so old saves keep their place */,chair:656,bed:900,floor:925};
-const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,get y(){return bassinetOut()?662:SURFACE.crate}}/* in the bassinet the pot sits down behind the front rail */,books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
+const SPOT={sill:{x:400,y:SURFACE.sill}/* the open middle of the ledge; the armchair covers it right of x 478 */,desk:{x:1268,y:SURFACE.desk}/* between the radio and the desk lamp, in its pool of light */,crate:{x:336,get y(){return bassinetOut()?680:SURFACE.crate}}/* in the bassinet the pot sits down behind the front rail */,books:{x:832,y:SURFACE.books,name:'by the fridge'},rugL:{x:300,y:918,name:'by the window'},rugC:{x:545,y:918,name:'by the armchair'},rugR:{x:1250,y:918,name:'by the desk'}}; // grown spots sit at the front edges so the carafe, books, snacks and curtains stay reachable
 const GROUPS={get seed(){return bassinetOut()?['sill','desk','crate']:['sill','desk']}/* a seed or sprout may go in the bassinet too */,baby:['crate','books'],grown:['rugL','rugC','rugR']};
 SPOT.chair={x:610,y:SURFACE.chair,name:'in the armchair'};
 // WHERE EACH AGE FITS (Jackie, Nov 4): kids and teens can stand on the floor too, or sit on the crate or the book stack; adults are too big
