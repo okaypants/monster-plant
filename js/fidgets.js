@@ -97,8 +97,14 @@ function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ball
  if(!st.ballMet){st.ballMet=1;tell('Tell the crystal ball what you want to know, or it will figure it out for you.',{kind:'info',key:'ballHi'});}
  setTimeout(()=>tell(BALL_SIGNS[Math.floor(Math.random()*BALL_SIGNS.length)],{kind:'info',key:'ballSign'}),BALL_MS*.55);
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
+/* WHERE A SPILLED COIN LANDS (Jackie, Nov 25: "Gold coins don't bounce on regular surfaces"). The coins used to bounce on one line at the height
+   of the jar's shelf, right across the room, so one that flew past the bookcase bounced in mid-air. Now a coin over the bookcase lands on the
+   shelf the jar stands on, and one that goes past the bookcase's edge (or rolls off the shelf) falls on to the floor and bounces there. Each
+   coin has its own bit of floor, a little nearer or further, so they do not all stop on one line. */
+const COIN_SHELF={x0:8,x1:214,y:540},COIN_FLOOR=[800,870];
+function coinFloor(b){return b.x>=COIN_SHELF.x0&&b.x<=COIN_SHELF.x1&&b.y<=COIN_SHELF.y+6?COIN_SHELF.y:b.fz;}
 function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.length>160)fBits.shift();};
- if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(110,170),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:p.y+p.h-10});sfx('pop');}
+ if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(210,290),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fl:COIN_SHELF.y,fz:rnd(COIN_FLOOR[0],COIN_FLOOR[1])});sfx('pop');}
  else if(p.does==='safe'){openThing('lockbox',900);if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
  else if(p.does==='record'){if(typeof radioOn==='function'){if(!radio.on){radio.band='crates';radioOn(true);tell('You put a record from the crate on the radio.',{kind:'info',key:'crateRec'});}else if(radio.band!=='crates')radioBand('crates');else radioStep(1);}}
  else if(p.does==='moon'){if(typeof moonName==='function'){const n=moonName(Date.now());tell(/quarter/.test(n)?'The moon is at its '+n+' tonight.':'There is a '+n+(/moon$/.test(n)?'':' moon')+' tonight.',{kind:'info',key:'moonDial'});}}
@@ -120,7 +126,7 @@ function fidgetStep(){
   fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
  for(const s of fSpines){s.vy+=-.14*s.oy;s.vy*=.9;s.oy+=s.vy;}fSpines=fSpines.filter(s=>Math.abs(s.oy)>.3||Math.abs(s.vy)>.2);
  for(const v of FVINES){v.vx+=-.1*v.ox;v.vx*=.9;v.ox=clamp(v.ox+v.vx,-3,3);}
- for(const b of fBits){b.vy+=b.g!=null?b.g:.12;b.vx*=.98;if(b.sway)b.vx+=Math.sin(b.life/9)*.06;b.x+=b.vx;b.y+=b.vy;if(b.fl!=null&&b.y>=b.fl&&b.vy>0){b.y=b.fl;b.vy=b.vy>1?-b.vy*.45:0;b.vx*=.7;}b.life--;}fBits=fBits.filter(b=>b.life>0);
+ for(const b of fBits){b.vy+=b.g!=null?b.g:.12;b.vx*=.98;if(b.sway)b.vx+=Math.sin(b.life/9)*.06;b.x+=b.vx;b.y+=b.vy;const fl=b.coin?coinFloor(b):b.fl;if(fl!=null&&b.y>=fl&&b.vy>0){b.y=fl;b.vy=b.vy>1?-b.vy*.45:0;b.vx*=.7;}b.life--;}fBits=fBits.filter(b=>b.life>0);
  if(BOING.oy<0||BOING.vy!==0){BOING.vy+=.6;BOING.oy+=BOING.vy;if(BOING.oy>=0){BOING.oy=0;if(BOING.vy>2.5)BOING.vy=-BOING.vy*.42;else BOING.vy=0;}}
  BOING.vx+=-.2*BOING.ox;BOING.vx*=.85;BOING.ox+=BOING.vx;
 }
