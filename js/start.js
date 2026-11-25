@@ -86,7 +86,7 @@ function quiz(){openingRoom();const picks=QUIZ.map(pool=>pool[Math.floor(Math.ra
 // a second plant only ever comes from Sloth's note (plants.js), never from the start screen (Jackie, Nov 7)
 function plantSeed(sp){
  giveNature(st);st.species=sp;
- nameStep(st,()=>{st.started=true;st.stage=0;st.timer=0;if(!st.catBornAt)st.catBornAt=Date.now();openingRoom();sfx('soil');
+ nameStep(st,()=>{st.started=true;st.stage=0;st.timer=0;if(!st.catBornAt)st.catBornAt=Date.now();openingRoom();if(clockLive()&&!brightHours(clockDayT())){st.lamp=true;st.desk=true;st.wall=true;} /* begun in the evening or at night: the lamps are on, so the first room is not a dark one (Jackie, Nov 25) */sfx('soil');
   tell(seedHello(st.name),{kind:'important'});save();});}
 function seedHello(n){return 'Hello, '+n+'! Your little seed is on the window sill growing, or move it to the desk and turn on the lamp.';}
 // its name is picked for it (js/names.js) and shared in the hello; rename it anytime by tapping its name in the journal (no naming screens)

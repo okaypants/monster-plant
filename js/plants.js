@@ -3,7 +3,7 @@
 const BABY=[],ELDER=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');BABY.push(img('baby_'+n+'.png'));ELDER.push(img('elder_'+n+'.png'));}
 // seedling pot (Jackie's sheet, 2 frames per stage): soil, first sprout, then the bigger sprout halfway through the sprout stage.
 // Drawn at half size in code (never resized): the sheet's pot is 238 px across, baby_01's is 140, so it lands a bit smaller, and halving stays crisp.
-const SEEDLING={soil:[img('seedling_soil1.png'),img('seedling_soil2.png')],sprout:[img('seedling_sprout1.png'),img('seedling_sprout2.png')],bigsprout:[img('seedling_bigsprout1.png'),img('seedling_bigsprout2.png')]},SEED_K=.65; // at the front of the rug; depthK makes it ~.43 on the desk
+const SEEDLING={soil:[img('seedling_soil1.png'),img('seedling_soil2.png')],sprout:[img('seedling_sprout1.png'),img('seedling_sprout2.png')],bigsprout:[img('seedling_bigsprout1.png'),img('seedling_bigsprout2.png')]},SEED_K=.42,SEED_SIT={sill:-8,desk:-10,crate:-7}; /* the small pot sits back on its surface, not at the front edge: the middle of the window ledge, the back of the desk top (clear of the chair in front of the desk), up on the bassinet's mattress (Jackie, Nov 25) */ // at the front of the rug; depthK makes it ~.43 on the desk
 function seedFrame(){const k=st.stage<1?'soil':st.timer<GROW_FOR[1]/2?'sprout':'bigsprout';return SEEDLING[k][Math.floor(T*.6)%2];} // slow 2-frame swap
 const BABY_SLEEP=[];for(let i=1;i<=16;i++)BABY_SLEEP.push(img('baby_'+String(i).padStart(2,'0')+'_sleep.png'));
 const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3], [1, 3], [0, 4], [0, 4], [-2, 4], [-1, 5], [1, -2], [0, 2], [2, 3], [0, 2]]; // sleeping baby offset vs awake; only x is used now (the bottom is anchored by the real bottom)
@@ -48,7 +48,7 @@ function plantDepth(){return onChair()?DEPTH.chair:spotDepth(spotKey());}
 function ageArt(){const n=NEWART[st.species+1];if(!n||st.stage<6)return null;const k=st.stage>=8?'adult':'teen';return ok(n[k])?{im:n[k],k,face:n.face[k]}:null;}
 function plantBoxRaw(){const sp=SPOT[spotKey()];
  if(st.stage<4){const [nx,ny]=plantNudge(),f=seedFrame();if(!ok(f))return {img:null,x:sp.x-60+nx,y:sp.y-80+ny,w:120,h:80};const k=SEED_K*depthK(plantDepth()),w=f.naturalWidth*k,h=f.naturalHeight*k;
-  return {img:null,seed:f,seedK:k,x:Math.round(sp.x-w/2)+nx,y:Math.round(sp.y-h+bottomPad(f)*k)+ny,w,h};} // the pot's real bottom on the spot's surface line
+  return {img:null,seed:f,seedK:k,x:Math.round(sp.x-w/2)+nx,y:Math.round(sp.y-h+bottomPad(f)*k)+ny+(SEED_SIT[spotKey()]||0),w,h};} // the pot's real bottom on the spot's surface line, set back from its front edge
  let im,sc=1;const aa=ageArt(),age=st.stage<=5?'kid':st.stage>=8?'adult':'teen';if(st.stage<=5){im=BABY[st.species];sc=AGE_H.kid/(im.naturalHeight||AGE_REF.kid);}else if(aa){im=aa.im;sc=AGE_H[age]/Math.max(im.naturalHeight,AGE_REF[age]);} /* squat drawings aren't blown up */else{im=ELDER[st.species];sc=AGE_H[age]/(im.naturalHeight||601);} /* stand-in */
  const wl=st.witherLv||0;let w=im.naturalWidth*sc*(1-.05*wl),h=im.naturalHeight*sc*(1-.07*wl); // withering: hunches and curls in, one clear step per level
  const dk=depthK(plantDepth())*growK()/* mid grow-up: part of the way to its new size, face and all */,at=onChair()?CHAIR_SEAT:sp;w*=dk;h*=dk;sc*=dk; // the armchair is just another spot: its depth, like any other
@@ -222,7 +222,7 @@ function drawElderFace(b,bob){ // face kit: eyes = gene, mouth = disposition/moo
  else g.drawImage(eo,Math.round(cx-ew/2),Math.round(ey),Math.round(ew),Math.round(eh));
  const mw=m.naturalWidth*sc,mh=m.naturalHeight*sc;g.drawImage(m,Math.round(cx-mw/2),Math.round(ey+eh+8*sc),Math.round(mw),Math.round(mh));}
 function drawSeedPot(b){ // Jackie's seedling frames; thirst grays and sun toasts them like any plant (needLook), and a leaning sprout shifts its top while the pot stays
- const im=needLook(b.seed,needK(),st.burnLv||0),X=Math.round(b.x),Y=Math.round(b.y),w=Math.round(b.w),h=Math.round(b.h),lean=st.stage>=1?Math.round(leanOff()/2):0,dip=growDip();g.save();g.imageSmoothingEnabled=false;
+ const im=litPic(needLook(b.seed,needK(),st.burnLv||0),lightAt(b.x+b.w/2,b.y+b.h)),X=Math.round(b.x), /* lit like the room where it stands, as every other plant is (Jackie, Nov 25) */Y=Math.round(b.y),w=Math.round(b.w),h=Math.round(b.h),lean=st.stage>=1?Math.round(leanOff()/2):0,dip=growDip();g.save();g.imageSmoothingEnabled=false;
  if(!lean&&!dip)g.drawImage(im,X,Y,w,h);
  else if(dip){const nh=b.seed.naturalHeight,cut=nh-172,ch=Math.round(cut*b.seedK); // crouching before it grows up: the sprout sinks a few pixels into the pot, the pot stays
   g.drawImage(im,0,0,b.seed.naturalWidth,cut,X+lean,Y+dip,w,ch);g.drawImage(im,0,cut,b.seed.naturalWidth,nh-cut,X,Y+ch,w,h-ch);}

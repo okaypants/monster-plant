@@ -22,7 +22,7 @@ const VIEW_CARDS=[{"f":"card01.jpg","t":"The girl in the moon","by":"Exhibit Sup
  {"f":"card20.jpg","t":"Children’s delight: driving a goat team in Central Park","by":"William H. Rau","d":"about 1904"},
  {"f":"card21.jpg","t":"The king of beasts, a lion in the Central Park zoo","by":"William H. Rau","d":"about 1904"},
  {"f":"card22.jpg","t":"The faithful ship of the desert, a camel in the Central Park zoo","by":"William H. Rau","d":"about 1904"},
- {"f":"card23.jpg","t":"Professor Lowe in his balloon","by":"a photographer in America","d":"1862"},
+ {"f":"card23.jpg","t":"Thaddeus Lowe in his balloon","by":"a photographer in America","d":"1862"},
  {"f":"card24.jpg","t":"The children’s friend, a balloon seller at Coney Island","by":"H. C. White Co.","d":"about 1904"},
  {"f":"card25.jpg","t":"A balloon ascension in Dawson, the Klondike","by":"William H. Rau","d":"1900"},
  {"f":"card26.jpg","t":"The circus ring, Luna Park, Coney Island","by":"American Stereoscopic Company","d":"1904"},

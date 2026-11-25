@@ -122,7 +122,7 @@ CUTS={'trunk_open':(1,465,286,254,207,.42),
  'moon1':(2,58,298,177,169,.56),'moon2':(2,285,298,178,169,.56),'moon3':(2,505,298,178,169,.56),'moon4':(2,727,298,178,168,.56),'moon5':(2,948,298,178,169,.56),
  'toy_h1':(2,41,516,170,153,.56),'toy_h2':(2,253,514,169,155,.56), # in its cubby: as big as the cubby allows
  'toy_r1':(2,41,516,170,153,.82),'toy_r2':(2,253,514,169,155,.82),'toy_l1':(2,448,516,169,153,.82),'toy_l2':(2,648,514,169,155,.82),'toy_d1':(2,880,514,105,160,.82),'toy_d2':(2,1070,516,106,158,.82), # out of it: bigger (Jackie, Nov 18)
- 'cup':(2,1221,305,135,151,.3),'coin':(2,681,735,147,150,.14)}
+ 'cup':(2,1221,305,135,151,.19),'coin':(2,681,735,147,150,.14)}
 def cut(sheet,x,y,w,h,sc,pad=6,holes=False): # holes: magenta shut in by the thing (the gap under the bassinet) is background too
     a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,200)
     lab,n=nd.label(bg);edge=set(lab[0])|set(lab[-1])|set(lab[:,0])|set(lab[:,-1]);edge.discard(0)
@@ -173,8 +173,18 @@ def build_curtains(room):
     A=sm[...,3:];rgb=np.where(A>0,sm[...,:3]*255/np.maximum(A,1),0).clip(0,255);A=np.where(A>=128,255,0)
     out=np.zeros((H,W,4),np.uint8);out[y0:y1,x0:x1]=np.dstack([rgb,A]).astype(np.uint8)
     yy,xx=np.mgrid[0:H,0:W]
-    front=(((xx-230)/96.0)**2+((yy-368)/90.0)**2<=1)|((xx>=208)&(xx<=250)&(yy>=250)) # the floor lamp
-    front|=(xx>=444)&(yy>=474+np.clip((490-xx)*1.3,0,70)) # the armchair's back
+    # WHAT STAYS IN FRONT OF THE CLOTH (Jackie, Nov 25: with the curtains drawn "some of the imagery is offset"). The floor lamp and the armchair
+    # were kept in front by an oval and a slanted line, which did not match them: beside the lamp's shade and at the armchair's corner the
+    # open curtains showed through, like a second, shifted picture. Each is now its own true shape, read from the room: everything reached
+    # from a point inside it without crossing its dark outline, plus that outline.
+    opaque=room[...,3]>0;lit=(a.sum(2)>300)&opaque
+    def shape(seed,box):
+        x0,y0,x1,y1=box;sub=lit[y0:y1,x0:x1];lab,n=nd.label(sub);l=lab[seed[1]-y0,seed[0]-x0];m=np.zeros((H,W),bool)
+        if l and (lab==l).sum()<sub.size*.85:m[y0:y1,x0:x1]=nd.binary_dilation(lab==l,iterations=4)
+        return m
+    front=shape((230,360),(130,244,332,476))|shape((232,242),(200,218,264,264))|shape((231,500),(204,452,262,566)) # the floor lamp: shade, top, pole
+    front|=shape((600,540),(436,466,770,566))|shape((470,560),(424,520,520,566)) # the armchair's back, and the throw over its arm
+    assert front.sum()>20000,front.sum()
     r_,g_,b_=a[...,0],a[...,1],a[...,2];leaf=((g_>r_+8)&(g_>b_+40))&(xx<300)&(yy<340);front|=nd.binary_dilation(leaf,iterations=4) # the vine
     out[front&(room[...,3]>0),3]=0 # never a gap of bare window: where the glass is, the cloth always hangs
     Image.fromarray(out,'RGBA').save(os.path.join(ROOT,'curtains2.png'),optimize=True)
@@ -238,17 +248,18 @@ def build_bassinet(room):
     cut(sh,99,652,172,276,.8,holes=True).save(os.path.join(ROOT,'treat_mash.png'),optimize=True) # the open jar with its spoon, about the size of the treats
     return {'nocrate':[int((x0+x1)//2),int(y1)],'wall_end':wall_end}
 def build_cupboard():
-    """Tofu's cupboard, open (sheet5.png). The drawing is of a whole cabinet, taller than the star door in the bookcase, so two parts of it
-    are used at their own proportions: the inside (the lower shelf and what is under it), sized to cover the star door, and the door
-    swung open, hung at the opening's left edge. Then the toys, each cut out whole."""
-    sh=load('sheet5.png');inside=Image.fromarray(sh[310:505,168:368].astype(np.uint8),'RGB').resize((172,154),Image.LANCZOS).convert('RGBA')
-    door=cut(sh,40,188,166,336,.5,holes=True);dw=door.width
-    out=Image.new('RGBA',(dw+172,max(door.height,158)),(0,0,0,0));out.alpha_composite(inside,(dw,out.height-154-2));out.alpha_composite(door,(0,out.height-door.height))
-    if out.width%2:out=out.crop((0,0,out.width+1,out.height)) if False else out
-    out.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
-    for n,(x,y,w,h) in {'yarn':(757,275,259,185),'mouse':(1088,292,301,140),'wand':(122,646,219,271),'bell':(1170,710,133,155),'tin':(446,714,200,168),'tin_open':(747,718,307,164),'yarn_ball':(484,275,170,172)}.items():
-        cut(sh,x,y,w,h,.8,holes=True).save(os.path.join(ROOT,'cub_'+n+'.png'),optimize=True)
-    return {'cup_open':[out.width,out.height,dw]}
+    """Tofu's cupboard, open (sheet5.png), and the toys kept in it, each cut out whole.
+    Jackie, Nov 25: "it looks strange when the cat food door opens. and empty". The drawing's door is seen at an angle the room is not, so
+    it is left out: open, the star door is simply out of the way and the inside shows. The inside is the drawing's lower shelf and what is
+    under it, sized to cover the star door, with the five toys standing in it at a small size, so it is never an empty box."""
+    sh=load('sheet5.png');inside=Image.fromarray(sh[316:474,210:364].astype(np.uint8),'RGB').resize((158,156),Image.LANCZOS).convert('RGBA') # between the bookcase's own posts
+    toys={'yarn':(757,275,259,185),'mouse':(1088,292,301,140),'wand':(122,646,219,271),'bell':(1170,710,133,155),'tin':(446,714,200,168),'tin_open':(747,718,307,164),'yarn_ball':(484,275,170,172)}
+    for n,(x,y,w,h) in toys.items():cut(sh,x,y,w,h,.8,holes=True).save(os.path.join(ROOT,'cub_'+n+'.png'),optimize=True)
+    floor=156-14 # the cupboard's floor in the picture: the toys stand on it. name: (left, size)
+    for n,(left,sc) in {'wand':(4,.2),'yarn_ball':(36,.2),'tin':(68,.2),'mouse':(98,.13),'bell':(132,.16)}.items():
+        x,y,w,h=toys[n];t=cut(sh,x,y,w,h,sc,holes=True);inside.alpha_composite(t,(left,floor-t.height))
+    inside.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
+    return {'cup_open':[inside.width,inside.height]}
 if __name__=='__main__':
     room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard())
     print(json.dumps(meta))

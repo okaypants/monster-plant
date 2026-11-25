@@ -2,6 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Lamp light is smooth and lights the room (Nov 25)
+
+- Jackie, playing the new room at night for the first time: "Lamp on the left is off. Lighting is not smooth and looks super weird. Entire room is not lit at night at all." Then: "part of the left lamp is cut off and repeating. the bottom corners of the sconce are dim", and "cup in the water cooler is too small".
+- Lamp light no longer comes in three hard rings. It is strongest by the lamp and fades away smoothly (RULES 1 allows light itself to blend), with no edge.
+- Each lamp that is on also lifts the whole room a little toward its daytime colours, up to half way with all three on. A room with its lamps on now looks lit; with none on it is still dark blue.
+- A lamp's glowing shade is now found by its own outline, not by an oval. The floor lamp's glow had run onto the curtain beside it, and the wall lamp's lower corners were outside the oval.
+- If you begin a new game in the evening or at night, the lamps are on. Begun in the daytime they are off, as before.
+- The cup under the water cooler's taps: first "too small", so I made it bigger; then "much much too big -- it should be shorter than the bottom of the spouts". It now stands on the alcove's floor with its rim just below the spouts, which is the tallest it can be there (28 px). That is smaller than it was to begin with, when it overlapped the spouts.
+- "The seedling and sprout pot is much too big": it is about two thirds the size it was (64 px wide on the windowsill, where it was 98), so it is clearly smaller than a kid's pot and sits among the room's small things.
+- "at night with lights off some of the imagery is offset": a thing that bounces or wiggles is cut out of the room by colour, and that was judged on the room as lit. In a dark room every colour is nearly the same, so bits of wall moved and bits of the thing stayed. The shape is now always judged on the daylight room; only the colours come from the room as lit.
+- The floor lamp's idle wiggle moved a box that missed the top of its shade, so the shade looked cut and doubled. It now moves the whole shade, found by its outline. The mini fridge's wiggle stays inside its door.
+- "it looks strange when the cat food door opens. and empty": the drawn door was seen at an angle the room is not, so it is left out. Open, the star door is simply out of the way, and the five toys stand inside.
+
 ### The tarot deck's new style (Nov 25)
 
 - The cards in the game are still the 1909 pictures. Jackie is having the whole deck redrawn in ChatGPT and chose the style over several rounds.

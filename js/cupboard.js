@@ -1,6 +1,6 @@
 'use strict';
 /* TOFU'S CUPBOARD (Jackie, Nov 18: the star door at the bottom of the right bookcase is "Tofu's cupboard"; the toys are Jackie's sheet,
-   Nov 23). A tap opens the door and a small tray holds what is kept inside: a ball of yarn, a felt mouse, a feather wand, a jingle
+   Nov 23). A tap opens it (the star door is out of the way and the toys show standing inside) and a small tray holds what is kept inside: a ball of yarn, a felt mouse, a feather wand, a jingle
    ball and a tin of cat treats. Press one and drag it to the cat, as a treat is dragged to a monster. What the cat does is posture
    only, from its own drawn poses (play bow, pounce, stalk, leap, eating): never an expression.
    - A cat that trusts you plays with it for a couple of seconds, then sits. It will wake up for a toy.

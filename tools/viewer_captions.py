@@ -8,7 +8,7 @@ CARDS=[
 ('The sick kitten','a photographer in America','about 1870'),('A dog on the grass and a cat on the stairs','a photographer in America','about 1870'),('The truth it was: she kissed the cat','Berry, Kelley & Chadwick','about 1906'),('The House of Hoo-Hoo, home of the great black cat','C. L. Wasson','about 1904'),
 ('Prairie dog at Prairie Dog Town, Abilene, Kansas','Alexander Gardner','1867'),('The dog performance, Saratoga','George Stacy','about 1865'),('The Minnesota dog team in Seattle',K,'about 1898'),
 ('In Steeplechase Park, Coney Island',W,'about 1904'),('Children’s delight: driving a goat team in Central Park',R,'about 1904'),('The king of beasts, a lion in the Central Park zoo',R,'about 1904'),('The faithful ship of the desert, a camel in the Central Park zoo',R,'about 1904'),
-('Professor Lowe in his balloon','a photographer in America','1862'),('The children’s friend, a balloon seller at Coney Island',W,'about 1904'),('A balloon ascension in Dawson, the Klondike',R,'1900'),
+('Thaddeus Lowe in his balloon','a photographer in America','1862'),('The children’s friend, a balloon seller at Coney Island',W,'about 1904'),('A balloon ascension in Dawson, the Klondike',R,'1900'),
 ('The circus ring, Luna Park, Coney Island','American Stereoscopic Company','1904'),('Trained bears riding a merry-go-round pulled by a pony',W,'1904'),('The elephant now goes round, Luna Park, Coney Island',UU,'about 1904'),
 ('The great elephant, Coney Island','Kilburn Brothers','1890'),('Elephant Bazaar, Coney Island',C,'about 1897'),('Elephants, Central Park, New York',C,'1896'),
 ('A Swiss guide cutting steps up the great glacier, British Columbia','a publisher in America','1904'),('Storm on the great glacier, British Columbia','a publisher in America','1900'),

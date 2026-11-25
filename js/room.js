@@ -10,9 +10,9 @@ const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin t
    painted into the room is taken out, so its cubby can be empty, and the toy cats from Jackie's sheet are used), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:622,pic:()=>held.tool==='can'?null:'cup'},
+const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:620,pic:()=>held.tool==='can'?null:'cup'},
  {n:'moon',x:1355,y:371,pic:()=>moonDialPic()},{n:'ball',x:1561,y:301,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
- {n:'cupboard',x:1516,y:740,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
+ {n:'cupboard',x:1563,y:738,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
  {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:778,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
 /* THE BASSINET (Jackie, Nov 23): while a monster is young (a seed, a sprout or a kid) the bassinet stands where the milk crate does, and
@@ -39,30 +39,51 @@ function sceneDay(){if(!roomReady())return null;const key=THINGS.map(t=>thingMov
  dayCv=dayCv||mkCv();dayKey=key;const x=dayCv.getContext('2d');x.clearRect(0,0,W,H);x.drawImage(ROOM2,0,0);
  for(const t of THINGS){if(thingMoving(t.n))continue;const b=thingBox(t);if(b)x.drawImage(b.im,b.x,b.y);}dayCv.src='day|'+key;return dayCv;}
 /* THE LIGHT. Each time of day is one flat tint over the whole room. A lamp that is on gives back the daytime colours, a little
-   warmer, in three steps around it (bands, as the room's pixels are steps); its shade glows. Shut curtains dim the daytime a touch. */
+   warmer: strongest by the lamp and fading smoothly away, and a little over the whole room; its shade glows. Shut curtains dim the daytime a touch. */
 const GRADE={day:null,golden:'rgb(255,206,158)',night:'rgb(92,104,178)'},GRADE_SHUT={day:'rgb(226,220,208)',golden:'rgb(232,190,150)',night:'rgb(86,98,170)'};
 const LAMP_K={day:.0,golden:.55,night:1}; // how much a lamp's glow shows: nothing to add in daylight
-const GLOWS={lamp:{x:236,y:600,r:400,shade:[230,368,94,86]},desk:{x:1320,y:610,r:350,shade:[1318,446,50,44]},wall:{x:980,y:400,r:300,shade:[980,200,52,42]}}; // key = the lamp's on/off field in the save
+const LAMP_ROOM=.2,LAMP_ROOM_MAX=.5,LAMP_REACH=2.1,LAMP_FALL=[[0,.95],[.18,.86],[.4,.56],[.65,.26],[.85,.08],[1,0]],LAMP_WARM='rgb(255,240,214)',lampCv=[]; // each lamp's lift to the whole room and its cap; how far its own light reaches (times its radius) and how it fades; the warmth of lamp light
+const GLOWS={lamp:{x:236,y:600,r:400,shade:[231,360,97,112],seed:[230,360]},desk:{x:1320,y:610,r:350,shade:[1318,446,50,44]},wall:{x:980,y:400,r:300,shade:[980,207,58,37],seed:[980,205]}}; // key = the lamp's on/off field in the save
 function lampsKey(){return LAMPS.map(p=>lampOn(p)?'1':'0').join('');}
 const litCvs=new Map();
 // any whole-room layer (the room itself, the closed curtains) lit for right now
 function litLayer(name,src,srcKey){if(!src)return null;const tk=timeKey(),shut=st.curtain==='closed'&&curK>.5,key=srcKey+'|'+tk+'|'+lampsKey()+'|'+(shut?1:0);let e=litCvs.get(name);
  if(e&&e.key===key)return e.c;const c=e?e.c:mkCv(),x=c.getContext('2d');x.globalCompositeOperation='source-over';x.globalAlpha=1;x.clearRect(0,0,W,H);x.drawImage(src,0,0);
  const tint=(shut?GRADE_SHUT:GRADE)[tk];if(tint){x.globalCompositeOperation='multiply';x.fillStyle=tint;x.fillRect(0,0,W,H);}
- for(const p of LAMPS){if(!lampOn(p))continue;const G=GLOWS[p.key];if(!G)continue;const k=LAMP_K[tk];
-  if(k>0)for(const[rr,a]of[[1,.34],[.7,.42],[.42,.55]]){x.save();x.beginPath();x.ellipse(G.x,G.y,G.r*rr,G.r*rr,0,0,Math.PI*2);x.clip();x.globalCompositeOperation='source-over';x.globalAlpha=a*k;x.drawImage(src,0,0);
-   x.globalCompositeOperation='multiply';x.globalAlpha=a*k*.5;x.fillStyle='rgb(255,232,190)';x.fillRect(G.x-G.r,G.y-G.r,G.r*2,G.r*2);x.restore();}
-  const sm=name==='room'?shadeMask(p.key,src):null;if(sm){const[sx,sy,sw,sh]=G.shade;x.globalAlpha=1;x.globalCompositeOperation='source-over';x.drawImage(sm.day,sx-sw,sy-sh);
+ /* LAMP LIGHT (Jackie, Nov 25: "Lighting is not smooth and looks super weird. Entire room is not lit at night at all"). A lamp that is on
+    does two things. It lifts the whole room a little toward its daytime colours, and more with each lamp, so a room with its lamps on is a
+    lit room. And around the lamp itself the light is strongest and fades away smoothly with distance (RULES 1: light itself may blend):
+    no rings and no edge. The light is a mask (how lit each bit of the room is) and the warm daytime room is laid over the night room through it. */
+ const k=LAMP_K[tk],on=LAMPS.filter(p=>lampOn(p)&&GLOWS[p.key]);
+ if(k>0&&on.length){const mk=lampCv[0]=lampCv[0]||mkCv(),mx=mk.getContext('2d');mx.globalCompositeOperation='source-over';mx.clearRect(0,0,W,H);
+  mx.globalAlpha=1;mx.fillStyle='rgba(255,255,255,'+(k*Math.min(LAMP_ROOM_MAX,LAMP_ROOM*on.length)).toFixed(3)+')';mx.fillRect(0,0,W,H);
+  for(const p of on){const G=GLOWS[p.key],R=G.r*LAMP_REACH,gr=mx.createRadialGradient(G.x,G.y,0,G.x,G.y,R);
+   for(const[at,a]of LAMP_FALL)gr.addColorStop(at,'rgba(255,255,255,'+(a*k).toFixed(3)+')');mx.fillStyle=gr;mx.fillRect(G.x-R,G.y-R,R*2,R*2);}
+  const wm=lampCv[1]=lampCv[1]||mkCv(),wx=wm.getContext('2d');wx.globalCompositeOperation='source-over';wx.globalAlpha=1;wx.clearRect(0,0,W,H);wx.drawImage(src,0,0);
+  wx.globalCompositeOperation='multiply';wx.fillStyle=LAMP_WARM;wx.fillRect(0,0,W,H);wx.globalCompositeOperation='destination-in';wx.drawImage(mk,0,0);wx.globalCompositeOperation='source-over';
+  x.globalCompositeOperation='source-over';x.globalAlpha=1;x.drawImage(wm,0,0);}
+ for(const p of on){const G=GLOWS[p.key],sm=name==='room'?shadeMask(p.key,src):null;if(sm){const[sx,sy,sw,sh]=G.shade;x.globalAlpha=1;x.globalCompositeOperation='source-over';x.drawImage(sm.day,sx-sw,sy-sh);
    x.globalCompositeOperation='lighter';x.globalAlpha=tk==='day'?.14:.24;x.drawImage(sm.warm,sx-sw,sy-sh);x.globalAlpha=1;}}
  x.globalCompositeOperation='destination-in';x.globalAlpha=1;x.drawImage(src,0,0);x.globalCompositeOperation='source-over'; // only the layer's own pixels: the window panes stay see-through
  c.src=name+'|'+key;litCvs.set(name,{key,c});return c;}
 // a lamp's shade alone (its pale pixels inside GLOWS.shade), in daylight colours and as a flat warm shape to brighten it with: made once per lamp
 const shadeMasks={};
-function shadeMask(k,src){if(shadeMasks[k])return shadeMasks[k];const[sx,sy,sw,sh]=GLOWS[k].shade,w=sw*2,h=sh*2,mk=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
+function shadeMask(k,src){if(shadeMasks[k])return shadeMasks[k];const G=GLOWS[k],[sx,sy,sw,sh]=G.shade,w=sw*2,h=sh*2,mk=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
  const day=mk(),dx=day.getContext('2d');dx.drawImage(src,sx-sw,sy-sh,w,h,0,0,w,h);let d;try{d=dx.getImageData(0,0,w,h);}catch(e){return null;}const D=d.data;
- for(let j=0;j<h;j++)for(let i=0;i<w;i++){const o=(j*w+i)*4,inE=((i-sw)/sw)**2+((j-sh)/sh)**2<=1,pale=D[o]>200&&D[o+1]>170&&D[o+2]>90;if(!(inE&&pale))D[o+3]=0;}
+ /* WHICH PIXELS ARE THE SHADE (Jackie, Nov 25: the floor lamp's glow ran onto the curtain beside it, and the wall lamp's lower corners stayed dim).
+    Where a lamp names a point inside its shade (seed), the shade is everything reached from there without crossing its dark outline, so it is
+    the whole shade whatever its shape and never what is next to it. Without one (or if that spills out), it is the oval, as before. */
+ let inside=null;if(G.seed){const open=o=>D[o+3]>0&&D[o]+D[o+1]+D[o+2]>300,m=new Uint8Array(w*h),q=[(G.seed[1]-(sy-sh))*w+(G.seed[0]-(sx-sw))];let n=0;
+  while(q.length){const i=q.pop();if(i<0||i>=w*h||m[i]||!open(i*4))continue;m[i]=1;n++;const xx=i%w;if(xx>0)q.push(i-1);if(xx<w-1)q.push(i+1);q.push(i-w,i+w);}
+  if(n>50&&n<w*h*.8)inside=m;}
+ let whole=null;if(inside){whole=mk();const hx=whole.getContext('2d'),hd=hx.createImageData(w,h);for(let i=0;i<w*h;i++){let on=0;const xx=i%w,yy=(i-xx)/w;for(let b=-3;b<=3&&!on;b++)for(let a=-3;a<=3;a++){const x2=xx+a,y2=yy+b;if(x2>=0&&x2<w&&y2>=0&&y2<h&&inside[y2*w+x2]){on=1;break;}}hd.data[i*4+3]=on?255:0;}hx.putImageData(hd,0,0);} // the shade with its outline: everything within 3 px of its inside
+ for(let j=0;j<h;j++)for(let i=0;i<w;i++){const o=(j*w+i)*4,inS=inside?inside[j*w+i]:((i-sw)/sw)**2+((j-sh)/sh)**2<=1,pale=D[o]>200&&D[o+1]>170&&D[o+2]>90;if(!(inS&&pale))D[o+3]=0;}
  dx.putImageData(d,0,0);const warm=mk(),wx=warm.getContext('2d');wx.drawImage(day,0,0);wx.globalCompositeOperation='source-in';wx.fillStyle='rgb(255,214,140)';wx.fillRect(0,0,w,h);
- return shadeMasks[k]={day,warm};}
+ return shadeMasks[k]={day,warm,whole};}
+// a lamp's whole shade cut out of the room as it is lit now, for its idle nudge (js/fidgets.js): {c, x, y}
+const shadePieces=new Map();
+function shadePiece(k,src){const d=sceneDay(),sm=d&&shadeMask(k,d);if(!sm||!sm.whole)return null;const key=k+'|'+src.src;let p=shadePieces.get(key);if(p)return p;const[sx,sy,sw,sh]=GLOWS[k].shade,c=document.createElement('canvas');c.width=sw*2;c.height=sh*2;
+ const x=c.getContext('2d');x.drawImage(sm.whole,0,0);x.globalCompositeOperation='source-in';x.drawImage(src,sx-sw,sy-sh,sw*2,sh*2,0,0,sw*2,sh*2);if(shadePieces.size>40)shadePieces.clear();p={c,x:sx-sw,y:sy-sh};shadePieces.set(key,p);return p;}
 function sceneLit(){const d=sceneDay();return d?litLayer('room',d,dayKey):null;}
 /* THE WINDOW: what is outside is drawn first, the room goes over it, and the view shows through the panes. One daytime picture per
    season (view_*.png, Jackie's, Nov 18). At golden hour and at night the sky is a flat sunset or night colour and the tree is

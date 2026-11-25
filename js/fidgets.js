@@ -129,15 +129,21 @@ let fAcc=0,fPrev=performance.now();
 // leaves = green pixels; props = pixels that differ from the colors around the prop's edge (its background)
 const leafPx=(r,g2,b)=>(g2>r+8&&g2>b+20)||(g2>110&&b<g2-70&&r<g2+70&&r>g2-10); // greens and yellow-green leaves (autumn/golden light)
 // keep only tiles that are mostly leaf, so books/shelves/wall never wiggle
-let vineChecked=null;function vineFilter(src){if(vineChecked===src.src)return;vineChecked=src.src;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(src,0,0);let D;try{D=x.getImageData(0,0,W,H).data;}catch(e){return;}
+let vineChecked=null;function vineFilter(src){src=fgDay(src);if(vineChecked===src.src)return;vineChecked=src.src;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.drawImage(src,0,0);let D;try{D=x.getImageData(0,0,W,H).data;}catch(e){return;}
  for(const v of FVINES){let n=0,t=0;for(let y=v.y;y<v.y+v.h;y+=2)for(let xx=v.x;xx<v.x+v.w;xx+=2){const i=(y*W+xx)*4;t++;if(leafPx(D[i],D[i+1],D[i+2]))n++;}v.on=n/t>.5;}}
 const fgCache=new Map();
+/* WHICH PIXELS ARE THE THING (Jackie, Nov 25: "at night with lights off some of the imagery is offset"). A thing that bounces or wiggles is cut
+   out of the room by colour: what matches the wall around it is left behind. That was judged on the room as lit right now, and in a dark
+   room every colour is nearly the same dark blue, so bits of wall moved with the thing and bits of the thing stayed. The shape is now always
+   judged on the room in daylight, and only the colours come from the room as it is lit. */
+const fgDay=src=>(typeof sceneDay==='function'&&sceneDay())||src;
 function fgPiece(src,x,y,w,h,kind){const key=src.src+'|'+x+','+y+','+w+','+h+'|'+kind;let c=fgCache.get(key);if(c)return c;
- c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');cx.drawImage(src,x,y,w,h,0,0,w,h);let d;try{d=cx.getImageData(0,0,w,h);}catch(e){return null;}const D=d.data;
+ c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');cx.drawImage(fgDay(src),x,y,w,h,0,0,w,h);let d;try{d=cx.getImageData(0,0,w,h);}catch(e){return null;}const D=d.data;
  if(kind==='leaf'){for(let i=0;i<D.length;i+=4){if(!leafPx(D[i],D[i+1],D[i+2])&&!(D[i]+D[i+1]+D[i+2]<150))D[i+3]=0;}}
  else{const bg=[];const take=i=>bg.push([D[i],D[i+1],D[i+2]]);for(let xx=0;xx<w;xx+=2){take(xx*4);take(((h-1)*w+xx)*4);}for(let yy=0;yy<h;yy+=2){take(yy*w*4);take((yy*w+w-1)*4);}
   for(let i=0;i<D.length;i+=4){let near=false;for(const q of bg){if(Math.abs(D[i]-q[0])+Math.abs(D[i+1]-q[1])+Math.abs(D[i+2]-q[2])<42){near=true;break;}}if(near)D[i+3]=0;}}
- cx.putImageData(d,0,0);if(fgCache.size>400)fgCache.clear();fgCache.set(key,c);return c;}
+ cx.putImageData(d,0,0);cx.globalCompositeOperation='source-in';cx.drawImage(src,x,y,w,h,0,0,w,h);cx.globalCompositeOperation='source-over'; // the shape from daylight, the colours from now
+ if(fgCache.size>400)fgCache.clear();fgCache.set(key,c);return c;}
 function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now-fPrev);fPrev=now;while(fAcc>=1000/60){fidgetStep();fAcc-=1000/60;}
  if(!src)return;const pc=(x,y,w,h,ox,oy)=>g.drawImage(src,x,y,w,h,x+Math.round(ox),y+Math.round(oy),w,h);
  const pf=(x,y,w,h,ox,oy,kind)=>{const c=fgPiece(src,x,y,w,h,kind);if(c)g.drawImage(c,x+Math.round(ox),y+Math.round(oy));};
@@ -146,7 +152,7 @@ function fidgetDrawProps(src){const now=performance.now();fAcc+=Math.min(100,now
   if(p.thing){const t=thingBy(p.thing),b=t&&thingBox(t);if(b){g.save();if(p.clip){g.beginPath();g.rect(...p.clip);g.clip();}g.drawImage(litPic(b.im,lightAt(t.x,t.y-20)),b.x+Math.round(p.ox),b.y+Math.round(p.oy));g.restore();}}
   else pf(p.x,p.y,p.w,p.h,p.ox,p.oy,'obj');}
  for(const s of fSpines)if(Math.round(s.oy))pc(s.x,s.y,s.w,s.h,0,s.oy);
- idleTick(now);const io=idleOffset(now);if(io&&idleOn.it.k!=='sprite'){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else pf(r.x,r.y,r.w,r.h,io,0,r.k);}}
+ idleTick(now);const io=idleOffset(now);if(io&&idleOn.it.k!=='sprite'){const r=idleOn.it;if(r.k==='plain')pc(r.x,r.y,r.w,r.h,io,0);else if(r.k==='shade'){const p=shadePiece(r.key,src);if(p)g.drawImage(p.c,p.x+io,p.y);}else pf(r.x,r.y,r.w,r.h,io,0,r.k);}} // 'shade' = a lamp's whole shade, by its own outline (the floor lamp's shade is wider than any box that misses the curtain)
 function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round(b.x/U)*U,y=Math.round(b.y/U)*U;g.fillStyle=b.c; // the new little things are drawn on the room art's own pixel grid (5 units), so they read at phone size
   if(b.fly){const up=Math.floor(b.life/7)%2;g.fillRect(x-2*U,y+(up?-U:0),2*U,2*U);g.fillRect(x+U,y+(up?-U:0),2*U,2*U);g.fillStyle='#4a2a4f';g.fillRect(x,y-U,U,3*U);continue;} // a butterfly: two wings that flap by a frame swap
   if(b.note){g.fillRect(x,y,2*U,2*U);g.fillRect(x+U,y-3*U,U,4*U);g.fillRect(x+U,y-3*U,3*U,U);continue;} // a music note
@@ -164,8 +170,8 @@ function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round
 /* Jackie, Nov 4: for now ONLY these wiggle, one item every 10 s, one at a time, under half a second each (4 frames x 110 ms):
    both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from).
    Nov 16: the sampler on the top shelf joined them when its app was built. */
-const IDLE_ITEMS=[{n:'cup',x:960,y:576,w:44,h:48,k:'obj'},{n:'mini fridge',x:762,y:556,w:144,h:210,k:'plain'},
- {n:'floor lamp',x:138,y:288,w:186,h:166,k:'plain'},{n:'desk lamp',x:1268,y:402,w:174,h:146,k:'obj'},
+const IDLE_ITEMS=[{n:'cup',x:966,y:588,w:32,h:34,k:'obj'},{n:'mini fridge',x:772,y:580,w:124,h:176,k:'plain'},
+ {n:'floor lamp',x:134,y:248,w:194,h:224,k:'shade',key:'lamp'},{n:'desk lamp',x:1268,y:402,w:174,h:146,k:'obj'},
  {n:'desk drawers (journal)',x:1082,y:570,w:96,h:132,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
  {n:'sampler',x:1220,y:140,w:186,h:88,k:'obj'},
  {n:'crystal ball',x:1524,y:216,w:76,h:86,k:'obj'},
