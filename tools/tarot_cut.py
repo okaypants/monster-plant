@@ -11,9 +11,9 @@ from scipy import ndimage as nd
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));SRC=os.path.join(ROOT,'art_src','tarot');OUT=os.path.join(ROOT,'tarot');W,H=320,640
 M=lambda a,b:['M%02d'%i for i in range(a,b+1)]
 S=lambda s,a,b:['%s%02d'%(s,i) for i in range(a,b+1)]
-SHEETS={'s01':M(1,6),'s02':M(7,12),'s03':['M13','M14','M15','M17','M18','M19'],'s04':['M20','M21','W01','W02',None,'W04'],'s05':S('W',5,10),
- 's06':S('W',11,14)+['C01','C02'],'s07':['C03','C04','C05',None,'C07','C08'],'s08':S('C',9,14),'s09':S('S',1,6),'s10':S('S',7,11)+[None],
- 's11':[None,None]+S('P',1,4),'s12':S('P',5,10),'s13':[None,None]+S('P',11,14),'fixes':['S12','S13','S14',None,'W03'],'last3':['M00','M16','C06']}
+SHEETS={'s01':M(1,6),'s02':M(7,12),'s03':['M13','M14','M15','M17','M18','M19'],'s04':['M20','M21','W01','W02',None,'W04'],'s05':[None,None,'W07','W08',None,None],
+ 's06':[None]+S('W',12,14)+['C01','C02'],'s07':['C03','C04','C05',None,'C07','C08'],'s08':S('C',9,14),'s09':S('S',1,3)+[None]+S('S',5,6),'s10':S('S',7,11)+[None],
+ 's11':[None,None]+S('P',1,4),'s12':S('P',5,10),'s13':[None,None]+S('P',11,14),'fixes':['S12','S13','S14',None,'W03'],'last3':['M00','M16','C06'],'fix2':['S04','W05','W06','W09','W10','W11']}
 def runs(v,minlen):
     out=[];on=None
     for i,x in enumerate(list(v)+[False]):
