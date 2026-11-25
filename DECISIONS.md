@@ -10,7 +10,11 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - No humans on any card. Every person is an upright animal ("bipedal animorphised people is fine"). Jackie did not like a figure that read as a costume from a particular culture.
 - "No falling figures at all" on The Tower. Carried through the deck: nobody is hurt, falling or dead on any card.
 - The cast (mine, shown to Jackie, not yet confirmed): Wands are foxes, Cups otters, Swords crows, Pentacles badgers; the Major Arcana each have their own animal.
-- The finished Fool and Tower are the style reference. The prompts for the other 76 cards are in research_notes/tarot/prompts_all_batches.md.
+- Birds keep real bird bodies: "I don't like when crows have fake legs or hands - I'd rather have their legs and wings be normal just maybe more nimble than normal with hand-like capabilities." Jackie agreed to the cast and to the fixes I listed (the Knight of Swords read as a person, the Four of Swords crow looked dead, two cards had the wrong count).
+- All 78 cards are in the game (tarot/, cut from the sheets in art_src/tarot/ by tools/tarot_cut.py). The cards are now twice as tall as wide and are no longer drawn as pixels.
+- Jackie tried a mockup of the room in this style and turned it down: "Nah it looks bad." The room stays in its pixel style; the new style is for the cards only.
+- The "In the picture" line on each card's page described the 1909 art, so all 78 were rewritten to describe the new cards, and the few notes about details that are no longer drawn (the letters on the pillars and the wheel, the hand from the cloud) were changed or dropped. This wording is mine and has not been read by Jackie.
+- The back is a stand-in. Jackie's four backs were drawn in an earlier style; a back in the new style is still to do.
 
 ### Tofu's cupboard holds cat toys (Nov 23)
 

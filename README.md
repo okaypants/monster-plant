@@ -180,7 +180,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `tarotlore.js` | The details in the tarot zoom: each card's picture, astrology and how it was made |
   | `cupboard.js` | Tofu's cupboard (the star door): a tray of cat toys to drag to the cat, and how the cat plays with each. Pictures `obj_cup_open.png`, `cub_*.png` |
   | `viewer.js`, `viewerdata.js` | The viewfinder on the shelf: 65 public-domain stereo cards from the Library of Congress, each shown whole with its title and publisher. Pictures in `viewer/`; captions in `tools/viewer_captions.py`, and `tools/viewer_build.py` writes `viewerdata.js` from them |
-  | `tarot.js`, `tarotdata.js` | The moon box's tarot: shuffle, cut, three cards, reading; the 78 cards' meanings (plain words and Waite's). Pictures in `tarot/` |
+  | `tarot.js`, `tarotdata.js` | The moon box's tarot: shuffle, cut, three cards, reading; the 78 cards' meanings (plain words and Waite's). Pictures in `tarot/` (Jackie's deck of animals, cut from `art_src/tarot/` by `tools/tarot_cut.py`) |
   | `iching.js` | The moon box's I Ching: three coins, six lines, the hexagram and what it turns into. The 64 hexagrams (Chinese original, Legge's 1882 English, plain meanings) are in `data/iching.json`, built by `tools/iching_build.py` |
   | `sky.js`, `charts.js` | The real sky (sun, moon, planets, rising sign) and the birth charts, daily horoscopes and pairings in the moon box. World cities in `data/cities.json` |
   | `keepsafe.js` | Keep it safe: backup file save and load, copies on the phone, persistent storage, the Home Screen how-to |

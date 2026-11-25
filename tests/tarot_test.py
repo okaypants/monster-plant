@@ -31,7 +31,7 @@ async def main():
     ids = ["M%02d" % i for i in range(22)] + [s + "%02d" % r for s in "WCSP" for r in range(1, 15)]
     for k in ids + ["back"]:
         p = os.path.join(ROOT, "tarot", k + ".png")
-        check(os.path.exists(p) and Image.open(p).size == (72, 124), f"tarot/{k}.png should exist, 72x124")
+        check(os.path.exists(p) and Image.open(p).size == (320, 640), f"tarot/{k}.png should exist, 320x640")
     serve()
     os.makedirs(OUT, exist_ok=True)
     async with async_playwright() as p:
