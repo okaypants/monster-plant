@@ -9,7 +9,7 @@ The sheets they were drawn on are in art_src/tarot/, and tools/tarot_cut.py cuts
 rounded corners on every card). File names: M00–M21 the Major Arcana (Waite's numbering: Strength 8, Justice 11); W, C, S, P
 for Wands, Cups, Swords and Pentacles, 01 the Ace to 10, then 11 Page, 12 Knight, 13 Queen, 14 King.
 
-back.png is the roses and lilies of the 1909 deck's back, redrawn in the same style (Jackie: "I want the design based on the
+back.png is the roses and lilies of the 1909 deck's back, drawn by Jackie in the same style as an ornament of vines (Jackie: "I want the design based on the
 actual ryder waithe"). It was drawn in four colours (back_navy, back_pink, back_purple, back_cyan); back.png is the navy one.
 
 The meanings in js/tarotdata.js are from A. E. Waite, *The Pictorial Key to the Tarot* (1910, public domain), via Wikisource.
