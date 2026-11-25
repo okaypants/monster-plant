@@ -36,7 +36,7 @@ W06:{p:'A fox in a laurel wreath rides a white horse and holds up a wand with a 
 W07:{p:'A fox stands on a hilltop holding a wand across its body, with six more wands rising from below.',s:{d:['mars',4]}},
 W08:{p:'Eight wands fly through the air over a river and green hills.',s:{d:['mercury',8]},n:'This is one of the few cards in the deck with no figure in it.'},
 W09:{p:'A fox holds a wand upright in both paws and glances to one side, with a row of wands standing behind it.',s:{d:['moon',8]}},
-W10:{p:'A fox carries a bundle of ten wands in its arms and walks toward a town.',s:{d:['saturn',8]},n:'Smith based this scene on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
+W10:{p:'A fox, seen from behind, hugs a bundle of ten wands and carries it up a path toward a town.',s:{d:['saturn',8]},n:'Smith based this scene on a card in the Sola Busca deck, made in Italy in the 1490s. The British Museum had put photographs of that deck on display in 1907.'},
 W11:{p:'A young fox in a feathered hat and a cape stands in the desert and looks up at a tall wand.'},
 W12:{p:'A fox in armor rides a rearing horse and holds a wand, with pyramids behind.'},
 W13:{p:'A crowned fox sits on a throne with lions on its arms, holding a wand and a sunflower, with a black cat in front.'},
