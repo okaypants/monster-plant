@@ -224,6 +224,11 @@ def build_views(panes):
         # the same view with its sky taken out (the tree and any clouds only), so the game can put a sunset or a night sky behind it
         v=np.asarray(im).astype(np.int32);q=(v//8).reshape(-1,3);keys,cnt=np.unique(q,axis=0,return_counts=True);sky=keys[cnt.argmax()]*8+4
         m=np.abs(v-sky).sum(2)<70 # every bit of sky, the small gaps between leaves too
+        # and the rim: where sky meets a leaf, the picture has in-between pixels that are still bluish. By day they are invisible; against a
+        # night sky they showed as a faint pale outline round everything in the window (Jackie, Nov 25). Bluish pixels touching the sky go too.
+        blue=(v[...,2]>v[...,0]+28)&(v[...,1]>v[...,0]+8)&(np.abs(v-sky).sum(2)<260)
+        for _ in range(3):m|=nd.binary_dilation(m,iterations=1)&blue
+        m|=blue&(np.abs(v-sky).sum(2)<170) # and small patches of sky shut in between leaves
         Image.fromarray(np.dstack([v,np.where(m,0,255)]).astype(np.uint8),'RGBA').save(os.path.join(ROOT,'viewfg_'+n+'.png'),optimize=True)
 CRATE=[(238,633),(381,622),(437,651),(435,770),(288,785),(238,754)] # the milk crate's outline in the room, a little generous
 def build_bassinet(room):
