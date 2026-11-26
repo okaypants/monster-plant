@@ -6,6 +6,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 - Jackie: "the kid should sit on the chair better and probably be even smaller".
 - A pot in the armchair stood on the very front edge of the seat, drawn over the cushion, so a small kid looked as if it hovered. Pots now sit a little further back, and the seat from its front lip down is drawn again over them, so the lip hides the pot's bottom edge. This is the same for teens and adults.
+- Jackie, on seeing that: "the kid looks like hes being pulled into the chair". The lip hid too much of the pot. The pot now stands on the seat at the lip's line with only its bottom outline behind it, and sits a little to the right, on the clear part of the seat, so the throw over the arm no longer covers its corner.
 - The kid is smaller again (the adult's height over 2.9, was 2.65). The teen stays one and a half kids, so it is smaller too.
 
 ### The drawn curtains hang behind the armchair (Nov 25)

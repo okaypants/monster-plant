@@ -58,7 +58,7 @@ function ageName(s=st.stage){return s<1?'seed':s<4?'sprout':s<6?'kid':s<8?'teen'
 function plantSpotName(){if(onChair())return 'chair';const k=spotKey();return k==='free'?'rug':k;}
 function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantSpotName()]||[0,0];}
 // SLEEPING IN THE ARMCHAIR (Jackie): asleep plants sit on the seat, sized by the chair's depth like any spot
-const CHAIR_SEAT={x:610,y:SURFACE.chair};
+const CHAIR_SEAT={x:628,y:SURFACE.chair}; // on the clear part of the seat, right of the throw
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
 const CHAIR_FRONT=[[440,598,84,160],[686,598,76,160],[520,650,170,104]]; /* the arms, and the seat from its front lip down: a pot sits back on the seat, so the lip hides its bottom edge (Jackie, Nov 25: "the kid should sit on the chair better") */
 let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;} // only the plant you're dragging leaves the chair
