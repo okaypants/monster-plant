@@ -24,12 +24,16 @@ BASE={'s':.4,'d':.36,'f':.5} # and its usual scale, used when that is smaller
 WIN_BOX=(240,118,660,560) # the part of the room the window and its curtains are in
 TOL=110 # only what is very near the sheet's magenta is background, so pinks in the art are kept
 PINK_GLOW={('halloween','w')} # drawn with a pink glow behind it, which is too near the sheet's magenta to keep: cut more boldly
-def tidy(im):
-    """Drops stray specks: any island of fewer than 14 pixels that is not joined to the thing itself."""
+def tidy(im,fit=None):
+    """Drops stray specks (any island of fewer than 14 pixels that is not joined to the thing itself), trims the picture to what is
+    left, and if that is still bigger than its space allows, makes it fit."""
     a=np.asarray(im).copy();lab,n=nd.label(a[...,3]>0);sz=nd.sum(np.ones(lab.shape),lab,range(1,n+1))
     for i in range(1,n+1):
         if sz[i-1]<14:a[lab==i,3]=0
-    return Image.fromarray(a,'RGBA')
+    ys,xs=np.where(a[...,3]>0);out=Image.fromarray(a[ys.min():ys.max()+1,xs.min():xs.max()+1],'RGBA')
+    if fit and (out.width>fit[0] or out.height>fit[1]):
+        k=min(fit[0]/out.width,fit[1]/out.height);out=out.resize((max(1,int(out.width*k)),max(1,int(out.height*k))),Image.NEAREST)
+    return out
 def dim(im):
     """The garland with its lights gone dim. The lights are the small pale balls strung just under the cord; where a garland has none
     (the Christmas one is all coloured bulbs) its bright bulbs are the lights."""
@@ -67,7 +71,7 @@ def build():
             assert len(r)==k,(n,o,len(r),k)
             for kind,(bx,by,bw,bh) in zip('wsdf',sorted(r,key=lambda b:b[0])):
                 sc=FIT_W/bw if kind=='w' else min(BASE[kind],FIT[kind][0]/bw,FIT[kind][1]/bh)
-                im=tidy(rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=220 if (o,kind) in PINK_GLOW else TOL));im.save(os.path.join(OUT,f'{o}_{kind}.png'),optimize=True);meta[f'{o}_{kind}']=[im.width,im.height]
+                im=tidy(rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=220 if (o,kind) in PINK_GLOW else TOL),(FIT_W+4,400) if kind=='w' else FIT[kind]);im.save(os.path.join(OUT,f'{o}_{kind}.png'),optimize=True);meta[f'{o}_{kind}']=[im.width,im.height]
                 if kind=='w':dim(im).save(os.path.join(OUT,f'{o}_w_dim.png'),optimize=True)
     room=np.asarray(Image.open(os.path.join(ROOT,'room2.png')).convert('RGBA')).astype(int);x0,y0,x1,y1=WIN_BOX;s=room[y0:y1,x0:x1];r,g,b=s[...,0],s[...,1],s[...,2]
     glass=(s[...,3]==0)|((r>200)&(b>200)&(g<80));frame=(r>190)&(g>80)&(g<175)&(b<95)&(r-g>55)
