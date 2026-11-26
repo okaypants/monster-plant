@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cuts the holiday decorations out of Jackie's sheets (art_src/decor/sheetN.webp: nine objects each on magenta, three rows of three)
 into decor/<name>.png. Each object is found by its own outline, cut whole and scaled with hard
-edges. HANG things (garlands) are scaled to hang under the curtain rod; SIT and WALL things to sit among the room's small objects.
+edges. Garlands are all made the width of the window, where they hang; desk and wall things are kept to the size of the room's own small objects.
 Run: python3 tools/decor_build.py"""
 import os,sys,json
 import numpy as np
@@ -10,7 +10,9 @@ sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import room_build as rb
 import scipy.ndimage as nd
 ROOT=rb.ROOT;SRC=os.path.join(ROOT,'art_src','decor');OUT=os.path.join(ROOT,'decor')
-SCALE={'H':.62,'S':.27,'W':.27}
+SCALE={'S':.27,'W':.27} # the usual size of a desk or wall thing
+FIT_H=236 # every garland is exactly this wide: the width of the window's opening between the open curtains
+FIT={'S':(96,80),'W':(90,88)} # the most room a desk thing or a wall thing may take (width, height): about the radio's height on the desk
 WIN_BOX=(240,118,660,560) # the part of the room the window and its curtains are in
 TOL=110 # the paper banners have hot pink and purple panels, so only what is very near the sheet's magenta is background
 SHEETS={1:[('lny_lanterns','H'),('lny_oranges','S'),('valentine_hearts','H'),('holi_powder','S'),('nowruz_sprouts','S'),('hina_dolls','S'),('easter_eggs','S'),('koinobori','W'),('eid_lantern','S')],
@@ -31,7 +33,8 @@ def build():
         assert len(boxes)==9,(n,len(boxes),boxes)
         boxes.sort(key=lambda b:b[1]+b[3]/2);rows=[sorted(boxes[i:i+3],key=lambda b:b[0]) for i in (0,3,6)];boxes=[b for r in rows for b in r]
         for (name,kind),(bx,by,bw,bh) in zip(items,boxes):
-            im=rb.cut(a,bx,by,bw,bh,SCALE[kind],holes=True,tol=TOL);im.save(os.path.join(OUT,name+'.png'),optimize=True);meta[name]=[kind,im.width,im.height]
+            sc=FIT_H/bw if kind=='H' else min(SCALE[kind],FIT[kind][0]/bw,FIT[kind][1]/bh) # sized to its place, so no one thing outweighs its neighbours
+            im=rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=TOL);im.save(os.path.join(OUT,name+'.png'),optimize=True);meta[name]=[kind,im.width,im.height]
     # the string lights with their bulbs gone dim, for when they blink: everything below the cord is darkened, the dark outline left alone
     p=os.path.join(OUT,'xmas_lights.png')
     if os.path.exists(p):

@@ -24,6 +24,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
   - The pumpkin no longer comes out by itself every autumn, nor the tree every winter. The pumpkin is the floor decoration of a new set, Autumn, and I made the tree Christmas's floor decoration by the same reasoning. Both still rock and sway when tapped.
   - "Mid-Autumn and Chuseok" is now three sets: Mid-Autumn (the mooncakes and the rabbit lantern), Chuseok (nothing drawn for it yet, so it is not offered) and Autumn.
   - Most sets do not have all three kinds yet. I wrote a prompt for the 59 missing drawings.
+  - "then make sure everything is scaled and fits well in and matches a nice depth and visual weight": every garland is now exactly as wide as the window's opening, and a desk or wall thing is kept to about the height of the radio (96 by 80 at most on the desk), so none outweighs what stands beside it.
   - "1 light animation": only the Christmas lights blink so far. Each new garland is asked for with small lights on it so the same blink can be made for every set.
 - They cannot be tapped or played with. Several are sacred to people who keep the day (the Hanukkah and Kwanzaa candle holders, the Diwali lamps), so they are shown plainly as decoration.
 - Which holidays the list has, and which decorations go together (Christmas has the lights, the wreath and the star lantern from the Philippines; Diwali has the lamps and the rangoli), is my grouping.

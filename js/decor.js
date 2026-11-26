@@ -43,7 +43,7 @@ function drawDecor(){if(!st.started)return;for(const b of decorBoxes())g.drawIma
    hangs across the top of the window, inside the room and behind the curtains (for a while garlands also hung right across the ceiling;
    Jackie: "make the garland just the window actually"): it is drawn only through the shape of the window's
    opening between the open curtains (decor/winmask.png), before the closed curtains are drawn, so cloth always covers it. */
-const WIN_AT={x:240,y:118,cx:446,top:152},WIN_MASK=img('decor/winmask.png'),winCv=document.createElement('canvas');
+const WIN_AT={x:240,y:118,cx:444,top:150},WIN_MASK=img('decor/winmask.png'),winCv=document.createElement('canvas');
 function drawDecorWindow(){if(!st.started)return;const s=decorNow(),n=s&&s.items.find(i=>decorKind(i)==='H');if(!n||!ok(WIN_MASK))return;
  const im=n==='xmas_lights'&&lightsDim()&&ok(DECOR_IMG.xmas_lights_dim)&&!tsCalm()?DECOR_IMG.xmas_lights_dim:DECOR_IMG[n];if(!ok(im))return;
  if(winCv.width!==WIN_MASK.naturalWidth){winCv.width=WIN_MASK.naturalWidth;winCv.height=WIN_MASK.naturalHeight;}const x=winCv.getContext('2d');
