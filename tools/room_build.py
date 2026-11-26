@@ -125,8 +125,8 @@ CUTS={'trunk_open':(1,465,286,254,207,.42),
  'ball2':(2,273,62,149,177,.475),'ball3':(2,486,62,150,177,.475),'ball4':(2,697,62,150,177,.475),'ball5':(2,908,62,150,177,.475),
  'moon1':(2,58,298,177,169,.56),'moon2':(2,285,298,178,169,.56),'moon3':(2,505,298,178,169,.56),'moon4':(2,727,298,178,168,.56),'moon5':(2,948,298,178,169,.56),
  'cup':(2,1221,305,135,151,.19),'coin':(2,681,735,147,150,.14)}
-def cut(sheet,x,y,w,h,sc,pad=6,holes=False): # holes: magenta shut in by the thing (the gap under the bassinet) is background too
-    a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,200)
+def cut(sheet,x,y,w,h,sc,pad=6,holes=False,tol=200): # tol: how near to magenta counts as background (lower it for art with hot pink in it) # holes: magenta shut in by the thing (the gap under the bassinet) is background too
+    a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,tol)
     lab,n=nd.label(bg);edge=set(lab[0])|set(lab[-1])|set(lab[:,0])|set(lab[:,-1]);edge.discard(0)
     out=np.isin(lab,list(edge)) # only the magenta that reaches the edge of the cut is background (a pink crystal ball stays)
     pure=(a[...,0]>225)&(a[...,2]>225)&(a[...,1]<60);out|=nd.binary_opening(pure,iterations=1)

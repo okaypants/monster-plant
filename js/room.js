@@ -212,6 +212,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  drawSeasonItem(); // the pumpkin (autumn) or the tree (winter) on the book stack (js/seasonal.js)
  drawPlacard(tk+'|'+lk+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
  curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01)drawCurtains(curK);
+ if(typeof drawDecor==='function')drawDecor(); // holiday decorations (js/decor.js), in front of the curtains
  lightMapUpdate(tk+'|'+lk+'|'+Math.round(curK*8)+'|'+seasonNow()+'|'+dayKey); // what the room's light is now, for the monsters, the cat and the rest (js/light.js)
  
  const dl=daylight(st.dayT);

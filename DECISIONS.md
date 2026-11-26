@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Holiday decorations from the cupboard (Nov 25)
+
+- Jackie: "I also want decorations on all kinds of holidays". I wrote a prompt for 36 decorations on four sheets and Jackie made them (art_src/decor/).
+- Jackie, with the sheets: "then we need to have the option to decorate for any of these things. maybe in the cabinet we can choose cat stuff or decorations".
+- The star door of the cupboard now asks "Cat toys" or "Decorations". Cat toys is the tray of five toys as before. Decorations lists 28 things to decorate for, from New Year to a birthday. Pick one and its decorations go up; the one that is up is marked, and "Take them down" puts them away. Any of them can go up on any day. One set is up at a time, and it is remembered.
+- Where they go: garlands hang under the curtain rod, small things stand on the windowsill and on the desk, flat things hang on the wall above the wall lamp and above the big picture.
+- They cannot be tapped or played with. Several are sacred to people who keep the day (the Hanukkah and Kwanzaa candle holders, the Diwali lamps), so they are shown plainly as decoration.
+- Which holidays the list has, and which decorations go together (Christmas has the lights, the wreath and the star lantern from the Philippines; Diwali has the lamps and the rangoli), is my grouping.
+- Not done: nothing goes up by itself on the holiday, and the list does not mark which holiday is today.
+
 ### Charts: your tab is only about you; the sign icons are drawn (Nov 25)
 
 - Jackie: "in horoscopes, i don't want my horoscope page to say anything about the other guys on my individual tab only theirs".

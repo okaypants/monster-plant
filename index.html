@@ -302,6 +302,9 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .chbtns{margin-top:6px}.chsave{font:inherit;font-size:15px;font-weight:800;padding:6px 14px 7px;cursor:pointer;align-self:flex-start}.chedit{align-self:flex-start}
 /* treat tray (Jackie, Nov 4): a cream pill beside the SNACKS cabinet, seven thumb-sized treats, no words */
 .ttray{position:absolute;z-index:45;pointer-events:auto;display:flex;gap:2px;padding:4px 10px;background:#fff4e2;border:2px solid #e8c9a8;border-radius:999px;box-shadow:0 3px 0 #d9b08c;touch-action:none;user-select:none;-webkit-user-select:none}
+.cubpick{font:inherit;font-size:15px;font-weight:800;padding:8px 14px;margin:2px;border:2px solid #2a1630;border-radius:999px;background:#fff;color:#2a1630;cursor:pointer;white-space:nowrap}
+.cubpick.on{background:#ffcf40}.cubpick.cubdown{background:#fde0ea}
+.ttray.cubdecor{flex-wrap:wrap;justify-content:center;border-radius:18px;max-width:min(560px,92vw);max-height:76vh;overflow:auto;padding:8px;touch-action:auto}
 .ttreat{width:46px;height:46px;border:none;background:none;padding:2px;margin:0;cursor:grab;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-touch-callout:none}
 .ttreat img{max-width:40px;max-height:40px;image-rendering:pixelated;pointer-events:none}
 .ttreat.tbook{width:86px;height:auto;flex-direction:column;justify-content:flex-start;gap:3px;padding:2px 2px 4px} /* a book's cover (books/, 42 x 60 with its outline) with its name under it */
@@ -397,6 +400,7 @@ body.testing #testBadge{display:block}
 <script src="js/charts.js"></script>
 <script src="js/iching.js"></script>
 <script src="js/sampler.js"></script>
+<script src="js/decor.js"></script>
 <script src="js/cupboard.js"></script>
 <script src="js/viewerdata.js"></script>
 <script src="js/viewer.js"></script>

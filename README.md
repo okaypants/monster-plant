@@ -179,6 +179,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `tarotread.js` | Each tarot card's short meaning (used to sum up a whole spread), how readers read it today, and details special to single cards |
   | `tarotlore.js` | The details in the tarot zoom: each card's picture, astrology and how it was made |
   | `cupboard.js` | Tofu's cupboard (the star door): a tray of cat toys to drag to the cat, and how the cat plays with each. Pictures `obj_cup_open.png`, `cub_*.png` |
+  | `decor.js` | Holiday decorations kept in the cupboard: which go together, where each hangs or stands (pictures in `decor/`, cut by `tools/decor_build.py`) |
   | `visions.js` | The crystal ball's visions: real things with real dates that are yet to come, each beginning "I predict!" |
   | `moonpage.js`, `moonlore.js` | The moon page the moon dial opens: tonight's phase and sign, and what tonight's moon is in Arabic, Hawaiian, Indian, Japanese and Western traditions, with lunar dates and festivals |
   | `viewer.js`, `viewerdata.js` | The viewfinder on the shelf: 65 public-domain stereo cards from the Library of Congress, each shown whole with its title and publisher. Pictures in `viewer/`; captions in `tools/viewer_captions.py`, and `tools/viewer_build.py` writes `viewerdata.js` from them |
