@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Looking through the viewfinder (Nov 25)
+
+- Jackie: "Is there any way to kind of simulate the experience of looking through the viewer". I described swapping between a card's two pictures so it shows depth, and asked; Jackie: "Yes, build it".
+- Tap a card and the screen goes dark except for the shape you see through a pair of lenses. One picture fills it and swaps between the card's left and right photograph about four times a second, so near things shift and far things hold still. Tap again to step back to the card. With reduced motion it shows the left picture, still.
+- Tapping the card used to bring the next card; the arrows do that now. A line under each card says "Tap the card to look through the viewer."
+- Where the two photographs line up is worked out for each card by the build tool. Some cards line up better than others, and the picture is enlarged from a small scan, so it is soft. Sharper scans from the Library of Congress would fix that.
+
 ### The radio has one station per city and per kind (Nov 25)
 
 - Jackie: "For the radio, only one per city to kind of narrow things down and maybe only one classical and like one argentinian music etc".

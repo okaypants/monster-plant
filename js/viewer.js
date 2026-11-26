@@ -11,9 +11,9 @@ let viewEl=null,viewI=-1,viewBusy=false;
 function viewShow(){if(!viewEl)return;const v=VIEW_CARDS[viewI],im=viewEl.querySelector('.vwpic'),cap=viewEl.querySelector('.vwcap');
  im.alt=v.t;im.src='viewer/'+v.f;cap.innerHTML='';
  const a=document.createElement('div');a.className='vwt';a.textContent=v.t;const b=document.createElement('div');b.className='vwby';b.textContent=[v.by,v.d].filter(Boolean).join(', ')+'. '+VIEW_FROM+'.';
- cap.appendChild(a);cap.appendChild(b);const nx=VIEW_CARDS[(viewI+1)%VIEW_CARDS.length];if(nx){const p=new Image();p.src='viewer/'+nx.f;}} // the next card is fetched ahead
+ cap.appendChild(a);cap.appendChild(b);if(v.s){const h=document.createElement('div');h.className='vwby vwhint';h.textContent='Tap the card to look through the viewer.';cap.appendChild(h);}const nx=VIEW_CARDS[(viewI+1)%VIEW_CARDS.length];if(nx){const p=new Image();p.src='viewer/'+nx.f;}} // the next card is fetched ahead
 // the card is pulled out (the slide is empty for a beat) and the next one is dropped in: two frame swaps, no slide or fade
-function viewStep(n){if(viewBusy||!viewEl)return;viewBusy=true;sfx('paper');const L=VIEW_CARDS.length,sl=viewEl.querySelector('.vwslide');sl.classList.add('vwout');
+function viewStep(n){if(viewBusy||!viewEl)return;viewLookEnd(true);viewBusy=true;sfx('paper');const L=VIEW_CARDS.length,sl=viewEl.querySelector('.vwslide');sl.classList.add('vwout');
  setTimeout(()=>{viewI=(viewI+n+L)%L;viewShow();if(viewEl){sl.classList.remove('vwout');sfx('tick');}viewBusy=false;},170);}
 function openViewer(){if(viewEl||typeof VIEW_CARDS==='undefined'||!VIEW_CARDS.length)return;
  if(viewI<0)viewI=Math.floor(Math.random()*VIEW_CARDS.length)-1; // a different card to start on each time you play
@@ -25,7 +25,22 @@ function openViewer(){if(viewEl||typeof VIEW_CARDS==='undefined'||!VIEW_CARDS.le
  viewEl.addEventListener('click',e=>{if(e.target===viewEl)closeViewer();});
  viewEl.querySelector('.vwx').addEventListener('click',e=>{e.stopPropagation();closeViewer();});
  viewEl.querySelectorAll('.vwarrow').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();viewStep(b.dataset.k==='next'?1:-1);}));
- viewEl.querySelector('.vwslide').addEventListener('click',e=>{e.stopPropagation();viewStep(1);});
+ viewEl.querySelector('.vwslide').addEventListener('click',e=>{e.stopPropagation();viewLook();}); // tap the card: look through the viewer (the arrows change the card)
  viewEl.querySelector('.vwpic').addEventListener('error',()=>{if(viewEl)viewEl.querySelector('.vwcap').textContent='That card did not load.';});
  ui.appendChild(viewEl);viewBusy=false;viewI=(viewI+1)%VIEW_CARDS.length;viewShow();}
-function closeViewer(){if(!viewEl)return;viewEl.remove();viewEl=null;sfx('tick');}
+function closeViewer(){if(!viewEl)return;viewLookEnd(true);viewEl.remove();viewEl=null;sfx('tick');}
+/* LOOKING THROUGH IT (Jackie, Nov 25: "Is there any way to kind of simulate the experience of looking through the viewer"). A stereo card
+   is two photographs taken a few inches apart, one for each eye, and the viewer's lenses merge them into one picture with depth. A flat
+   screen cannot do that, so the old trick is used: the view swaps between the left picture and the right one a few times a second, and
+   near things shift while far things hold still. Tap the card and the screen goes dark but for the shape you see through a pair of
+   lenses, with the one picture filling it. Tap again to step back to the card. A frame swap only; with reduced motion the left
+   picture is shown still. Where the two pictures line up on each card is worked out by tools/viewer_build.py (the card's 's'). */
+const VIEW_SWAP=240;let viewLookT=0,viewEye=0;
+function viewLookDraw(){const lk=viewEl&&viewEl.querySelector('.vwlook');if(!lk)return;const v=VIEW_CARDS[viewI],im=viewEl.querySelector('.vwpic'),c=lk.querySelector('canvas');if(!v.s||!im.naturalWidth)return;
+ const[lx,ly,rx,ry,w,h]=v.s;if(c.width!==w||c.height!==h){c.width=w;c.height=h;}
+ c.getContext('2d').drawImage(im,viewEye?rx:lx,viewEye?ry:ly,w,h,0,0,w,h);}
+function viewLook(){if(!viewEl||viewEl.querySelector('.vwlook'))return;const v=VIEW_CARDS[viewI];if(!v.s)return;sfx('tick');
+ const lk=document.createElement('div');lk.className='vwlook';lk.innerHTML='<div class="vwhood"><canvas></canvas></div>';
+ lk.addEventListener('click',e=>{e.stopPropagation();viewLookEnd();});viewEl.appendChild(lk);viewEye=0;viewLookDraw();
+ if(!(typeof tsCalm==='function'&&tsCalm()))viewLookT=setInterval(()=>{viewEye^=1;viewLookDraw();},VIEW_SWAP);}
+function viewLookEnd(quiet){if(viewLookT){clearInterval(viewLookT);viewLookT=0;}const lk=viewEl&&viewEl.querySelector('.vwlook');if(lk){lk.remove();if(!quiet)sfx('tick');}}
