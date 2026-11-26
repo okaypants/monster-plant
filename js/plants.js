@@ -6,6 +6,7 @@ const BABY=[],ELDER=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');
 const SEEDLING={soil:[img('seedling_soil1.png'),img('seedling_soil2.png')],sprout:[img('seedling_sprout1.png'),img('seedling_sprout2.png')],bigsprout:[img('seedling_bigsprout1.png'),img('seedling_bigsprout2.png')]},SEED_K=.42,SEED_SIT={sill:-8,desk:-10,crate:-20}; /* the small pot sits back on its surface, not at the front edge: the middle of the window ledge, the back of the desk top (clear of the chair in front of the desk), up on the bassinet's mattress (Jackie, Nov 25) */ // at the front of the rug; depthK makes it ~.43 on the desk
 function seedFrame(){const k=st.stage<1?'soil':st.timer<GROW_FOR[1]/2?'sprout':'bigsprout';return SEEDLING[k][Math.floor(T*.6)%2];} // slow 2-frame swap
 const BABY_SLEEP=[];for(let i=1;i<=16;i++)BABY_SLEEP.push(img('baby_'+String(i).padStart(2,'0')+'_sleep.png'));
+const BABY_EAT=[];for(let i=1;i<=16;i++)BABY_EAT.push(img('baby_'+String(i).padStart(2,'0')+'_eat.png')); // the same kid with its mouth open (tools/kid_eat.py)
 const SLEEP_OFF=[[0, 0], [-4, -1], [-1, 3], [-4, 11], [-1, 3], [-2, 2], [-2, 3], [1, 3], [0, 4], [0, 4], [-2, 4], [-1, 5], [1, -2], [0, 2], [2, 3], [0, 2]]; // sleeping baby offset vs awake; only x is used now (the bottom is anchored by the real bottom)
 const EYE_O=[],EYE_C=[],MOUTH=[];for(let i=1;i<=16;i++){const n=String(i).padStart(2,'0');EYE_O.push(img('eyes_'+n+'_open.png'));EYE_C.push(img('eyes_'+n+'_blink.png'));if(i<=12)MOUTH.push(img('mouthB_'+n+'.png'));}
 const EYE_NAMES=['big round','small dot','sparkle','sly cat','square','flower','tall oval','lashed','sleepy','swirl','sinister','slit','three-shine','pink lids','startled','blushing'];
@@ -188,11 +189,13 @@ function potted(im,pim){const key=im.src+'|'+pim.src;let c=potCache.get(key);if(
  spx.drawImage(tmp,0,0,pw,ph);const spd=spx.getImageData(0,0,pw,ph),SP=spd.data;for(let q=3;q<SP.length;q+=4)SP[q]=SP[q]>110?255:0;spx.putImageData(spd,0,0);
  x.drawImage(sp,ox,oy+up);x.drawImage(lay(plant),0,shiftP+up);x.drawImage(lay(drape),0,shiftP+up);
  c.naturalWidth=W2;c.naturalHeight=H3;c.complete=true;c.src=key;c.lift=-shiftP;if(potCache.size>60)potCache.clear();potCache.set(key,c);return c;}
+function kidEating(){return st.stage>=4&&st.stage<=5&&typeof feedMouth==='function'&&feedMouth()===2&&ok(BABY_EAT[st.species]);}
 function drawPlant(){let b=plantBox();const MO=moveOff();b={...b,x:b.x+(st.id===ACT?Math.round(BOING.ox):0)+MO[0]};const bob=((st.stage>=4&&!st.night)?Math.round(Math.sin(T*2.2)*1.5):0)+(st.id===ACT?Math.round(BOING.oy):0)+MO[1]+chompDip();
  if(!b.img){if(b.seed)drawSeedPot(b);return b;}
  if(!ok(b.img)||b.w<1||b.h<1)return b; // still loading
  const asleep=st.nap>0||st.night;
  if(asleep&&st.stage>=4&&st.stage<=5&&ok(BABY_SLEEP[st.species])){const si=BABY_SLEEP[st.species],o=SLEEP_OFF[st.species];const k=b.scale||1,line=b.y+b.h-padPx(b.img,b.h),h2=si.naturalHeight*k;b={...b,img:si,x:b.x+o[0]*k,y:line-h2+padPx(si,h2),w:si.naturalWidth*k,h:h2};} // sleeping picture: same pot line, its own real bottom
+ else if(kidEating())b={...b,img:BABY_EAT[st.species]}; /* a kid opens its mouth for food, as teens and adults do: while a treat or the mash is held over it, and on the bite (Jackie, Nov 25: "make the kid's mouth open when it eats ... then everyone") */
  const nk=needK();
  const pim=POTS_ON&&st.potOn&&POT_IMG[st.potOn],src=(pim&&ok(pim))?potted(b.img,pim):b.img;
  const sY=b.h/b.img.naturalHeight,floorY=b.y+b.h,cH=Math.round(src.naturalHeight*sY),drawY=floorY-cH;

@@ -186,6 +186,11 @@ CASES = [
      "(()=>{capClear();st.night=true;if(listener()!=null)return 'somebody can listen';const n0=st.needs.attention;startReading(0,BOOKS[0],null);if(!storyEl)return 'no book opened';"
      "__step(.5);if(!storyEl)return 'the book closed by itself';const t0=storyEl.textContent;turnStory();__step(.5);if(!storyEl||storyEl.textContent===t0)return 'page did not turn';"
      "if(st.needs.attention!==n0||st.listen>0)return 'a sleeping monster was counted as listening';closeStory();return (!storyEl&&!READ.has(0))||'did not close';})()"),
+    # every age opens its mouth for food: a kid swaps to its open-mouth picture, a teen and an adult show the open mouth of the face kit
+    ("mouths_open_to_eat", "s.stage=4;s.species=6;", "", 0.1,
+     "(()=>{if(BABY_EAT.length!==16||!BABY_EAT.every(i=>i.naturalWidth>50))return 'missing open-mouth pictures';st.nap=0;st.night=false;"
+     "if(kidEating())return 'mouth open with no food';feed.item={id:'solar'};feed.over=st.id;const on=kidEating();draw();feed.item=null;feed.over=null;if(!on)return 'the kid did not open its mouth';if(kidEating())return 'the mouth stayed open';st.stage=5;feed.item={id:'solar'};feed.over=st.id;const on5=kidEating();feed.item=null;feed.over=null;if(!on5)return 'the older kid did not open its mouth';"
+     "st.stage=6;feed.item={id:'solar'};feed.over=st.id;const t=mouthNow();st.stage=8;const a=mouthNow();feed.item=null;feed.over=null;return (t===2&&a===2&&mouthNow()!==2)||'teen or adult mouth: '+t+' '+a;})()"),
     # bothered into moving three times in a row, the cat leaves the room, stays away a while and walks back in (Jackie, Nov 25)
     ("cat_leaves_room", TEEN + "s.catTrust=.7;", "", 0.1,
      "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.to!=='out')return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"

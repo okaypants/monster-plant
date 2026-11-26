@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Every age opens its mouth to eat (Nov 25)
+
+- Jackie: "make the kid's mouth open when it eats also baby and then everyone".
+- Teens and adults already opened their mouths for food, from the face kit. Kids (the youngest ones with faces, the same drawings whether in the bassinet or not) had their mouth drawn into the picture, so it never moved. Each of the sixteen kids now has a second picture with an open mouth and a pink tongue, made by the tool from Jackie's drawing: the little w mouth is painted over in the green beside it and a round open mouth is drawn in its place. Nothing else in the drawing changes.
+- A kid's mouth opens while a treat or the mash is held over it, and on the bite. Seeds and sprouts have no faces and do not eat, so nothing changes for them.
+
 ### Holiday decorations from the cupboard (Nov 25)
 
 - Jackie: "I also want decorations on all kinds of holidays". I wrote a prompt for 36 decorations on four sheets and Jackie made them (art_src/decor/).
