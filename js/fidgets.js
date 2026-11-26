@@ -103,24 +103,9 @@ function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ball
  setTimeout(()=>tell(ballCur.a+' '+ballCur.s,{kind:'info',key:'ballSign',now:true}),BALL_MS*.55);
  try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
-/* THE MOON DIAL (Jackie, Nov 25: "it's not that fun, I wish it had more info or interactivity", then "the moon thing is okay but i think it
-   should also be tied to astrology and not advance in days"). Its face always shows tonight's moon. A tap says tonight's phase and how long it
-   is to the next full or new moon. Tap again while that is showing and it says which sign the moon is in tonight and what that sign is like
-   (the same words the birth charts use, js/charts.js); a third tap says when the moon moves into the next sign. Then it starts over. */
-const DIAL_HOLD=7000;let dialT=-1e9,dialStep=0;
-function moonDialAt(){return null;} // the dial is never turned ahead now
-function moonDialSay(n){const t=Date.now(),name=moonName(t),lit=Math.round(moonLit(t)*100),a=moonAge(t),nights=x=>x===1?'tomorrow night':'in '+x+' nights';
- const sky=typeof skyChart==='function'?skyChart(t).moon:null;
- if(n===1&&sky)return 'Tonight the moon is in '+sky.name+'. '+chartLine(null,'moon',{moon:sky});
- if(n===2&&sky){let u=t,nx=sky;for(let h=1;h<=80&&nx.i===sky.i;h++){u=t+h*36e5;nx=skyChart(u).moon;}
-  const days=Math.round((new Date(u).setHours(0,0,0,0)-new Date(t).setHours(0,0,0,0))/864e5),when=days<=0?'later today':days===1?'tomorrow':'on '+new Date(u).toLocaleDateString(undefined,{weekday:'long'});
-  return 'The moon moves into '+nx.name+' '+when+'. '+nx.name+' is '+SIGN_IS[nx.i]+'.';}
- let say=name==='new moon'?'Tonight is the new moon, when the sky is dark.':name==='full moon'?'Tonight is the full moon.':/quarter/.test(name)?'Tonight the moon is at its '+name+', half lit.':'Tonight the moon is a '+name+', '+lit+'% lit.';
- const half=MOON_MONTH/2,toFull=Math.round(((half-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH),toNew=Math.round(((MOON_MONTH-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH);
- if(name!=='full moon'&&toFull>0&&toFull<=toNew)say+=' The full moon is '+nights(toFull)+'.';else if(name!=='new moon'&&toNew>0)say+=' The new moon is '+nights(toNew)+'.';
- if(sky)say+=' Tap the dial again for the moon’s sign.';
- return say;}
-function moonDialTap(){const now=performance.now();dialStep=now-dialT<DIAL_HOLD?(dialStep+1)%3:0;dialT=now;sfx(dialStep?'tick':'chime');tell(moonDialSay(dialStep),{kind:'info',key:'moonDial',now:true});}
+/* THE MOON DIAL: its face shows tonight's moon, and a tap opens the moon page (js/moonpage.js), one card about tonight's moon. */
+function moonDialAt(){return null;} // the dial always shows tonight
+function moonDialTap(){sfx('chime');if(st.started&&typeof openMoonPage==='function')setTimeout(()=>{if(!document.querySelector('.screen'))openMoonPage();},160);}
 /* WHERE A SPILLED COIN LANDS (Jackie, Nov 25: "Gold coins don't bounce on regular surfaces", then "all the coins should hit the floor"). The coins
    used to bounce on one line at the height of the jar's shelf, right across the room, so they bounced in mid-air. Now every coin falls out of
    the jar, past the shelves, and lands on the floor, where it bounces and comes to rest. Each coin has its own bit of floor, a little nearer

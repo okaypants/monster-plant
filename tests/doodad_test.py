@@ -55,21 +55,18 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "coins_landed.png"), clip=await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return {x:r.left,y:r.top+380*S,width:520*S,height:520*S}}"))
         # the moon dial says tonight's moon and shows a face for it
         await pg.evaluate(TAP, "moondial")
-        await pg.evaluate("()=>__step(.3)")
-        cap = await pg.evaluate("()=>capText.textContent")
-        check(cap.startswith("Tonight") and "Tap the dial again" in cap, f"tapping the moon dial should say tonight's moon and that there is more: {cap!r}")
-        await pg.evaluate(TAP, "moondial")
-        await pg.evaluate("()=>__step(.2)")
-        cap2 = await pg.evaluate("()=>capText.textContent")
-        check(cap2.startswith("Tonight the moon is in ") and "The moon is about feelings" in cap2 and await pg.evaluate("()=>dialStep===1&&moonDialAt()===null"), f"a second tap should say the moon's sign tonight, and the dial should not turn ahead: {cap2!r}")
-        await pg.evaluate(TAP, "moondial")
-        await pg.evaluate("()=>__step(.2)")
-        cap3 = await pg.evaluate("()=>capText.textContent")
-        check(cap3.startswith("The moon moves into ") and not any(w in cap3 for w in ("undefined", "NaN", "Invalid")) and await pg.evaluate("()=>{const now=skyChart(Date.now()).moon,t=moonDialSay(2);return !t.includes('into '+now.name+' ')}"), f"a third tap should say when the moon changes sign: {cap3!r}")
-        await pg.evaluate(TAP, "moondial")
-        await pg.evaluate("()=>__step(.2)")
-        check((await pg.evaluate("()=>capText.textContent")).startswith("Tonight") and await pg.evaluate("()=>dialStep===0"), "a fourth tap should start over at tonight's phase")
-        await pg.evaluate("()=>{dialT=-1e9;dialStep=0}")
+        await pg.evaluate("()=>__step(.4)")
+        page = await pg.evaluate("()=>{const e=document.querySelector('.screen.moonpg');return e?{text:e.innerText,pic:!!e.querySelector('.mppic[src^=\"data:image\"]'),subs:[...e.querySelectorAll('.mpsub')].map(h=>h.textContent)}:null}")
+        check(page and page["pic"] and "In the zodiac" in page["subs"] and "Tonight elsewhere" in page["subs"] and "The moon is in " in page["text"] and "In the Hawaiian moon calendar tonight is " in page["text"] and "lunar mansions" in page["text"] and not any(w in page["text"] for w in ("undefined", "NaN", "Invalid", "null")), f"tapping the moon dial should open the moon page with the phase, the sign and tonight elsewhere: {page}")
+        # every night of two years: each tradition has a line, nothing is missing, and the festivals land on their nights
+        yr = await pg.evaluate("""()=>{const bad=[],fest=new Set(),hw=new Set(),nk=new Set(),mz=new Set(),jp=new Set();const t0=Date.UTC(2026,0,1,20);
+          for(let d=0;d<730;d++){const t=t0+d*864e5,E=moonElsewhere(t);if(E.lines.length<4||E.lines.some(l=>/undefined|NaN|Invalid/.test(l.say)))bad.push(d);
+            hw.add(hawaiiNight(t));nk.add(nakshatraAt(t));mz.add(manzilAt(t));E.fest.forEach(f=>fest.add(f));E.lines.filter(l=>l.where==='Japan').forEach(l=>jp.add(l.say));
+            if(moonPhaseLines(t).some(s=>/undefined|NaN/.test(s))||moonSignLines(t).some(s=>/undefined|NaN|Invalid/.test(s)))bad.push('p'+d);}
+          return {bad:bad.slice(0,5),fest:fest.size,hw:hw.size,nk:nk.size,mz:mz.size,jp:jp.size}}""")
+        check(not yr["bad"] and yr["hw"] == 30 and yr["nk"] == 27 and yr["mz"] == 28 and yr["jp"] == 8 and yr["fest"] >= 12, f"over two years every night should have its lines, every name should come up and the festivals should appear: {yr}")
+        await pg.click(".screen.moonpg .mpx")
+        check(await pg.evaluate("()=>!document.querySelector('.screen.moonpg')&&moonDialAt()===null"), "the moon page should close")
         check(await pg.evaluate("()=>/^moon[1-5]$/.test(moonDialPic())"), "the moon dial should show one of its five faces")
         await pg.evaluate("()=>{__step(5);capClear()}")
         # the crystal ball: mist gathers, it gives one of Melville's signs, and it clears again

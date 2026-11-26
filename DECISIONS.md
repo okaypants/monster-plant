@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon dial opens a moon page (Nov 25)
+
+- Jackie: "Let's redo the moon thing." Of four directions she picked the first, a page instead of captions, "plus the evening's astrological significance or features in different cultures", and after we talked it through: "do it".
+- A tap on the moon dial opens one card about tonight's moon. It shows the moon's picture, its phase and how lit it is, when the next full or new moon comes, the sign it is in (in the birth charts' words) and when it moves to the next sign.
+- Under "Tonight elsewhere" it says what the night is called in the Hawaiian moon calendar, the Japanese name for the night when it has one (the nights around the full moon), the Indian lunar mansion, the Arabic lunar mansion, and the date in the Chinese, Hebrew and Islamic calendars.
+- A festival is listed only on its night: Lunar New Year, the Lantern Festival, Dragon Boat and Dano, Qixi and Chilseok, the Ghost Festival, Mid-Autumn with Chuseok and moon viewing, Double Ninth, Passover, Sukkot, Purim, Tu BiShvat, Ramadan and the two Eids.
+- Choices I made, since Jackie said to go ahead: the Western sign stays as one part among several; every line describes or reports a tradition ("by some accounts it was a good night for planting") and none gives advice or predicts anything; the same kinds of line show every night.
+- The popular list of full moon names (Wolf Moon and so on) is left out. It is mostly a 20th-century almanac list, loosely credited to Native Americans.
+- The names and meanings were checked once against published sources and corrected. That check was light (search results and general knowledge, not a full read of the sources), so the Hawaiian, Indian and Arabic lines deserve a proper read by someone who knows them before this goes out widely.
+- Islamic dates are worded "about", because the months really begin when the crescent is seen.
+- This replaces the two moon dial entries below.
+
 ### The bedtime line is just "Good night, sleep tight." (Nov 25)
 
 - Jackie: "just say good night sleep tight". The line was "Goodnight, sleep tight, the bed bugs are nice here. Tap anywhere to sleep." The joke and the instruction are gone. A tap at night still asks whether to wake up for a new day.
