@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-html,body{margin:0;height:100%;background:#19101b;overflow:hidden;font-family:'Nunito','Varela Round',system-ui,sans-serif;color:#fdebc9}
+html,body{margin:0;height:100%;background:#19101b url(wall_tile.png) center/138px 66px;image-rendering:pixelated;overflow:hidden; /* round the room, where the screen is wider or taller than it: a dark wallpaper of the room's own dots, a frame and not more room (the size is set in fit(), js/core.js) */font-family:'Nunito','Varela Round',system-ui,sans-serif;color:#fdebc9}
 #wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#19101b;color:#fdebc9;align-items:center;justify-content:center;text-align:center;font-size:22px;padding:30px}
@@ -27,7 +27,6 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 @keyframes ld1{0%{visibility:hidden}25%{visibility:visible}}@keyframes ld2{0%{visibility:hidden}50%{visibility:visible}}@keyframes ld3{0%{visibility:hidden}75%{visibility:visible}}
 @media (prefers-reduced-motion:reduce){#loading .ldots i{animation:none}}
 #ui{position:absolute;inset:0;pointer-events:none}
-.side{position:absolute;top:0;pointer-events:none}#sideL{right:100%}#sideR{left:100%} /* the wall and floor carried on past the room's edges, for screens wider than the room */
 /* UI LOOK: Nunito text (Jackie, Nov 15; one step heavier than the old Fredoka weights); the colors and shapes of every word are in css/textstyle.css (Jackie, Nov 10). This block is layout. */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(25,16,27,.84);pointer-events:auto;text-align:center;gap:16px;padding:20px;box-sizing:border-box}
 .screen:not(.journal) h1{font-weight:700;font-size:52px;margin:0;color:#c8d145}
@@ -360,7 +359,6 @@ body.testing #testBadge{display:block}
 <div id="loading" role="status"><i class="ostars"></i><i class="ostars o2"></i><div class="open tsscreen"><img class="osprout" src="seedling_sprout1.png" alt=""><h1>Monster Plant</h1><p>Getting the room ready<span class="ldots"><i>.</i><i>.</i><i>.</i></span></p></div></div>
 <div id="wrap">
 <canvas id="c" width="1670" height="942" aria-label="Monster plant room"></canvas>
-<canvas id="sideL" class="side" width="512" height="942" aria-hidden="true"></canvas><canvas id="sideR" class="side" width="512" height="942" aria-hidden="true"></canvas>
 <div id="ui">
 <div id="nameTags" aria-label="Your monsters"></div>
 <div id="caption" role="status" aria-live="polite"><div class="ci tsb"><span class="ct"></span></div><div class="tail"></div></div>

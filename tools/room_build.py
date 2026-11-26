@@ -74,7 +74,6 @@ def wall_dots(a):
         m=(off<60)&(t>.08)&nd.binary_dilation(island[y0:y1,x0:x1]==i,iterations=2);out[y0:y1,x0:x1][m]=(bg+np.clip(t,0,1)[...,None]*(dst-bg))[m]
     return out
 WALL_STAMP={}
-SIDE_W=512
 def wallpaper(a):
     """Repaints the wallpaper's pattern so it is even (Jackie, Nov 25: "you also need to repaint some of the wallpaper again / there are a lot
     of light colored dots and inconsistent patterning"). Two things were wrong. Where a dot touched a picture frame, a lamp or a shelf it
@@ -106,7 +105,7 @@ def wallpaper(a):
     alone=[q for q in good if 120<q[1]<bot-60 and R<q[0]<W_-R and sfar[int(round(q[1]))-R:int(round(q[1]))+R+1,int(round(q[0]))-R:int(round(q[0]))+R+1].sum()<=size[q[2]-1]*1.25] # a dot with nothing else near it
     gx,gy,gi=min(alone,key=lambda q:abs(size[q[2]-1]-med));cx,cy=int(round(gx)),int(round(gy))
     patch=src[cy-R:cy+R+1,cx-R:cx+R+1].copy();pm=nd.binary_dilation(sfar[cy-R:cy+R+1,cx-R:cx+R+1],iterations=1)
-    WALL_STAMP.update(patch=patch,pm=pm,x0=x0,y0=y0,DX=DX,DY=DY,R=R,top=top,bot=bot) # kept for the strips of wall beside the room (build_sides)
+    WALL_STAMP.update(patch=patch,pm=pm,x0=x0,y0=y0,DX=DX,DY=DY,R=R,top=top,bot=bot) # kept for the wallpaper round the room (build_tile)
     y=y0-DY*int(y0//DY)
     row=int(round((y-y0)/DY))
     while y<bot+R:
@@ -335,33 +334,17 @@ def build_cupboard():
         d=Image.open(f).convert('RGBA');d=d.resize((max(1,round(d.width*k)),max(1,round(d.height*k))),Image.LANCZOS);da=np.asarray(d).copy();da[...,3]=np.where(da[...,3]>=128,255,0);inside.alpha_composite(Image.fromarray(da,'RGBA'),(left,shelf-d.height))
     inside.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
     return {'cup_open':[inside.width,inside.height]}
-def build_sides(room):
-    """The strips of wall and floor beside the room (Jackie, Nov 26: on a phone the room has black ends, "we could put a little background
-    wallpaper on those black ends"). A phone's screen is wider than the room, so the room has to stop somewhere; these carry its wall,
-    its ceiling trim, its panelling and its floorboards on past both edges, so the room looks as if it goes on. Each row takes the
-    colour the room has at its right-hand edge, where there is bare wall, panelling and floor; the ceiling trim repeats every 8 pixels
-    and the wallpaper's dots are stamped on the same grid as in the room, so both run straight across the join.
-    Writes side_l.png (to the left of the room) and side_r.png (to the right), each SIDE_W wide."""
-    a=room[...,:3].astype(float);W_=a.shape[1];S=WALL_STAMP;assert S,'the wallpaper must be built first'
-    col=np.median(a[:,W_-5:W_-1],1) # the room's right-hand edge, row by row
-    for name,off in (('side_l',-SIDE_W),('side_r',W_)):
-        t=np.repeat(col[:,None,:],SIDE_W,1)
-        xs=off+np.arange(SIDE_W);t[:36]=a[:36,800+(xs%8)] # the ceiling trim
-        R=S['R'];y=S['y0']-S['DY']*int(S['y0']//S['DY']);row=int(round((y-S['y0'])/S['DY']))
-        while y<S['bot']+R:
-            x=S['x0']+(row%2)*S['DX']/2+S['DX']*np.floor((off-R-S['x0'])/S['DX'])
-            while x<off+SIDE_W+R:
-                px,py=int(round(x)),int(round(y))
-                for dy in range(-R,R+1):
-                    yy=py+dy
-                    if yy<S['top'] or yy>=S['bot']:continue
-                    for dx in range(-R,R+1):
-                        j=px+dx-off
-                        if 0<=j<SIDE_W and S['pm'][dy+R,dx+R]:t[yy,j]=S['patch'][dy+R,dx+R]
-                x+=S['DX']
-            y+=S['DY'];row+=1
-        Image.fromarray(np.dstack([t.clip(0,255),np.full(t.shape[:2],255)]).astype(np.uint8),'RGBA').save(os.path.join(ROOT,name+'.png'),optimize=True)
-    return {'side':SIDE_W}
+def build_tile():
+    """The wallpaper round the room (Jackie, Nov 26: on a phone the room has black ends; a first try carried the room's wall and floor on
+    past its edges and she hated it: "I would rather have a wallpaper"). One small tile of the room's own dots on its own wall colour,
+    darkened so it sits back as a frame round the room and is not taken for more room. It repeats to fill whatever the screen has
+    left over. Writes wall_tile.png: 138 by 66, two dots, the second row shifted half a step as in the room."""
+    S=WALL_STAMP;assert S,'the wallpaper must be built first';R=S['R'];bg=hx('#024359');t=np.tile(bg,(66,138,1)).astype(float)
+    for cx,cy in ((34,16),(103,49)):
+        for dy in range(-R,R+1):
+            for dx in range(-R,R+1):
+                if S['pm'][dy+R,dx+R]:t[(cy+dy)%66,(cx+dx)%138]=S['patch'][dy+R,dx+R]
+    t=t*.55+np.array([10,6,14]);Image.fromarray(t.clip(0,255).astype(np.uint8),'RGB').save(os.path.join(ROOT,'wall_tile.png'),optimize=True);return {'tile':[138,66]}
 def build_frame():
     """The framed picture of the cat that stands in the bookcase where the wind-up cat was (sheet6.webp; Jackie, Nov 25): upright, tipped
     (for when it is tapped), and upright with its eyes shut for a blink. The blink is the upright one with each eye painted over in the
@@ -381,5 +364,5 @@ def build_frame():
     Image.fromarray(g,'RGBA').save(os.path.join(ROOT,'obj_frame_glow.png'),optimize=True)
     return {'frame':list(up.size)}
 if __name__=='__main__':
-    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard());meta.update(build_frame());meta.update(build_sides(room))
+    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard());meta.update(build_frame());meta.update(build_tile())
     print(json.dumps(meta))
