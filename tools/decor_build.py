@@ -1,53 +1,77 @@
 #!/usr/bin/env python3
-"""Cuts the holiday decorations out of Jackie's sheets (art_src/decor/sheetN.webp: nine objects each on magenta, three rows of three)
-into decor/<name>.png. Each object is found by its own outline, cut whole and scaled with hard
-edges. Garlands are all made the width of the window, where they hang; desk and wall things are kept to the size of the room's own small objects.
+"""Cuts the holiday decorations out of Jackie's ten sheets (art_src/decor/sheetNN.png, Nov 25) into decor/<occasion>_<space>.png.
+Each sheet has three occasions, one per row, and in each row four things from left to right, one for each space in the room:
+  w  the window: a garland, made exactly as wide as the window's opening between the open curtains
+  s  the shelf: a small upright thing, made to fit the bookcase cubby where the framed cat stands
+  d  the desk: a low, wide thing, made to fit between the radio and the desk lamp and under the lamp's head
+  f  the floor: a large thing, made about the size of the pumpkin
+(Autumn and Christmas have no floor thing here: the pumpkin and the tree are theirs.)
+Each thing is found by its own outline (parts that nearly touch count as one), cut whole and scaled with hard edges. Each garland
+also gets a second picture with its little lights gone dim, for when they blink. The shape of the window's opening is saved too.
 Run: python3 tools/decor_build.py"""
 import os,sys,json
-import numpy as np
+import numpy as np,scipy.ndimage as nd
 from PIL import Image
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import room_build as rb
-import scipy.ndimage as nd
 ROOT=rb.ROOT;SRC=os.path.join(ROOT,'art_src','decor');OUT=os.path.join(ROOT,'decor')
-SCALE={'S':.27,'W':.27,'F':.4} # the usual size of a desk or wall thing, and of a floor thing
-FIT_H=236 # every garland is exactly this wide: the width of the window's opening between the open curtains
-FIT={'S':(78,80),'W':(90,88),'F':(118,128)} # the most room a standing thing or a wall thing may take (width, height): a standing thing has to fit the bookcase cubby where the framed cat stands
+SHEETS=[['newyear','lny','valentine'],['hina','holi','nowruz'],['blossom','easter','songkran'],['eid','kodomo','vesak'],['juneteenth','midsummer','pride'],
+ ['tanabata','obon','autumn'],['midautumn','chuseok','diwali'],['halloween','muertos','harvest'],['advent','hanukkah','solstice'],['christmas','kwanzaa','birthday']]
+NO_FLOOR={'autumn','christmas'}
+FIT_W=236 # every garland is exactly this wide
+FIT={'s':(78,80),'d':(124,64),'f':(118,128)} # the most room a shelf, desk or floor thing may take (width, height)
+BASE={'s':.4,'d':.36,'f':.5} # and its usual scale, used when that is smaller
 WIN_BOX=(240,118,660,560) # the part of the room the window and its curtains are in
-TOL=110 # the paper banners have hot pink and purple panels, so only what is very near the sheet's magenta is background
-SHEETS={1:[('lny_lanterns','H'),('lny_oranges','S'),('valentine_hearts','H'),('holi_powder','S'),('nowruz_sprouts','S'),('hina_dolls','S'),('easter_eggs','S'),('koinobori','W'),('eid_lantern','S')],
- 2:[('vesak_lotus','H'),('tanabata_bamboo','S'),('midsummer_wreath','W'),('obon_lantern','S'),('midautumn_cakes','S'),('rabbit_lantern','S'),('diwali_lamps','H'),('rangoli','W'),('halloween_bats','H')],
- 3:[('papel_picado','H'),('marigolds','S'),('harvest_corn','W'),('menorah','S'),('xmas_wreath','W'),('xmas_lights','H'),('parol','W'),('kinara','S'),('solstice_garland','H')],
- 4:[('ny_stars','H'),('kagami_mochi','S'),('birthday_bunting','H'),('birthday_cake','S'),('songkran_bowl','S'),('pride_flag','S'),('juneteenth_bunting','H'),('advent_candles','S'),('blossom_jar','S')],
- 5:[('f_newyear','F'),('f_lny','F'),('f_valentine','F'),('f_hina','F'),('f_holi','F'),('f_nowruz','F'),('f_blossom','F'),('f_easter','F'),('f_songkran','F')]}
+TOL=110 # only what is very near the sheet's magenta is background, so pinks in the art are kept
+PINK_GLOW={('halloween','w')} # drawn with a pink glow behind it, which is too near the sheet's magenta to keep: cut more boldly
+def tidy(im):
+    """Drops stray specks: any island of fewer than 14 pixels that is not joined to the thing itself."""
+    a=np.asarray(im).copy();lab,n=nd.label(a[...,3]>0);sz=nd.sum(np.ones(lab.shape),lab,range(1,n+1))
+    for i in range(1,n+1):
+        if sz[i-1]<14:a[lab==i,3]=0
+    return Image.fromarray(a,'RGBA')
+def dim(im):
+    """The garland with its lights gone dim. The lights are the small pale balls strung just under the cord; where a garland has none
+    (the Christmas one is all coloured bulbs) its bright bulbs are the lights."""
+    a=np.asarray(im).astype(float);rgb=a[...,:3];al=a[...,3]>0;H=a.shape[0];yy=np.arange(H)[:,None]
+    pale=al&(rgb[...,0]>225)&(rgb[...,1]>215)&(rgb[...,2]>150)&(rgb[...,2]<236)&(yy<H*.5)
+    if pale.sum()<40:
+        gold=(rgb[...,0]>200)&(rgb[...,1]>150)&(rgb[...,2]<110);pale=al&(rgb.sum(2)>170)&~gold&(yy>H*.3)
+    rgb[pale]=rgb[pale]*.45+np.array([24,18,30]);return Image.fromarray(a.astype(np.uint8),'RGBA')
 def build():
     os.makedirs(OUT,exist_ok=True);meta={}
-    for n,items in SHEETS.items():
-        p=os.path.join(SRC,f'sheet{n}.webp')
-        if not os.path.exists(p):p=os.path.join(SRC,f'sheet{n}.png')
-        if not os.path.exists(p):continue
-        a=np.asarray(Image.open(p).convert('RGB')).astype(np.int32);H,W=a.shape[:2];fg=~rb.magenta(a,TOL)
-        # the nine objects: what is not magenta, with close parts joined (a bowl beside its sprouts), then read left to right in three rows
-        lab,cnt=nd.label(nd.binary_dilation(fg,iterations=14));boxes=[]
+    for n,occ in enumerate(SHEETS,1):
+        a=np.asarray(Image.open(os.path.join(SRC,f'sheet{n:02d}.png')).convert('RGB')).astype(np.int32);fg=~rb.magenta(a,TOL)
+        lab,cnt=nd.label(nd.binary_dilation(fg,iterations=3));boxes=[]
         for i in range(1,cnt+1):
             ys,xs=np.where((lab==i)&fg)
-            if len(ys)>1500:boxes.append([int(xs.min()),int(ys.min()),int(xs.max()-xs.min()+1),int(ys.max()-ys.min()+1)])
-        assert len(boxes)==9,(n,len(boxes),boxes)
-        boxes.sort(key=lambda b:b[1]+b[3]/2);rows=[sorted(boxes[i:i+3],key=lambda b:b[0]) for i in (0,3,6)];boxes=[b for r in rows for b in r]
-        for (name,kind),(bx,by,bw,bh) in zip(items,boxes):
-            sc=FIT_H/bw if kind=='H' else min(SCALE[kind],FIT[kind][0]/bw,FIT[kind][1]/bh) # sized to its place, so no one thing outweighs its neighbours
-            im=rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=TOL);im.save(os.path.join(OUT,name+'.png'),optimize=True);meta[name]=[kind,im.width,im.height]
-    # the string lights with their bulbs gone dim, for when they blink: everything below the cord is darkened, the dark outline left alone
-    p=os.path.join(OUT,'xmas_lights.png')
-    if os.path.exists(p):
-        im=np.asarray(Image.open(p).convert('RGBA')).astype(float);rgb=im[...,:3];sat=rgb.max(2)-rgb.min(2);gold=(rgb[...,0]>200)&(rgb[...,1]>150)&(rgb[...,2]<110)
-        bulb=(im[...,3]>0)&(rgb.sum(2)>170)&~gold&(np.arange(im.shape[0])[:,None]>im.shape[0]*.3);rgb[bulb]=rgb[bulb]*.42+np.array([20,16,30])
-        Image.fromarray(im.astype(np.uint8),'RGBA').save(os.path.join(OUT,'xmas_lights_dim.png'),optimize=True)
-    # the window's opening between the open curtains: its glass and its wooden bars, and nothing of the curtains. A garland hung inside the
-    # window is drawn only through this shape, so the curtains stay in front of it.
+            if len(ys)>900:boxes.append([int(xs.min()),int(ys.min()),int(xs.max()-xs.min()+1),int(ys.max()-ys.min()+1)])
+        want=[3 if o in NO_FLOOR else 4 for o in occ]
+        # a thing drawn in two parts side by side (a cucumber horse beside an aubergine cow, a candle beside a flower) is one thing:
+        # while there are too many, the two that stand closest side by side at the same height are joined
+        while len(boxes)>sum(want):
+            best=None
+            for u in range(len(boxes)):
+                for v in range(len(boxes)):
+                    A,B=boxes[u],boxes[v]
+                    if u==v or A[0]>B[0]:continue
+                    ov=min(A[1]+A[3],B[1]+B[3])-max(A[1],B[1]);gap=B[0]-(A[0]+A[2])
+                    if ov>.4*min(A[3],B[3]) and (best is None or gap<best[0]):best=(gap,u,v)
+            _,u,v=best;A,B=boxes[u],boxes[v];x0,y0=min(A[0],B[0]),min(A[1],B[1]);M=[x0,y0,max(A[0]+A[2],B[0]+B[2])-x0,max(A[1]+A[3],B[1]+B[3])-y0]
+            boxes=[b for k,b in enumerate(boxes) if k not in (u,v)]+[M]
+        assert len(boxes)==sum(want),(n,len(boxes),sum(want),boxes)
+        # rows by height on the sheet: the garlands, always the leftmost thing, mark the three rows
+        left=sorted(sorted(boxes,key=lambda b:b[0])[:3],key=lambda b:b[1]);rows=[[],[],[]]
+        for b in boxes:rows[int(np.argmin([abs((b[1]+b[3]/2)-(l[1]+l[3]/2)) for l in left]))].append(b)
+        for o,r,k in zip(occ,rows,want):
+            assert len(r)==k,(n,o,len(r),k)
+            for kind,(bx,by,bw,bh) in zip('wsdf',sorted(r,key=lambda b:b[0])):
+                sc=FIT_W/bw if kind=='w' else min(BASE[kind],FIT[kind][0]/bw,FIT[kind][1]/bh)
+                im=tidy(rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=220 if (o,kind) in PINK_GLOW else TOL));im.save(os.path.join(OUT,f'{o}_{kind}.png'),optimize=True);meta[f'{o}_{kind}']=[im.width,im.height]
+                if kind=='w':dim(im).save(os.path.join(OUT,f'{o}_w_dim.png'),optimize=True)
     room=np.asarray(Image.open(os.path.join(ROOT,'room2.png')).convert('RGBA')).astype(int);x0,y0,x1,y1=WIN_BOX;s=room[y0:y1,x0:x1];r,g,b=s[...,0],s[...,1],s[...,2]
     glass=(s[...,3]==0)|((r>200)&(b>200)&(g<80));frame=(r>190)&(g>80)&(g<175)&(b<95)&(r-g>55)
     lab,cnt=nd.label(nd.binary_closing(glass|frame,iterations=2));m=nd.binary_fill_holes(lab==np.bincount(lab[glass]).argmax())
-    out=np.zeros(s.shape[:2]+(4,),np.uint8);out[m]=255;Image.fromarray(out,'RGBA').save(os.path.join(OUT,'winmask.png'),optimize=True);meta['winmask']=[x0,y0,int(m.sum())]
+    out=np.zeros(s.shape[:2]+(4,),np.uint8);out[m]=255;Image.fromarray(out,'RGBA').save(os.path.join(OUT,'winmask.png'),optimize=True)
     print(json.dumps(meta));return meta
 if __name__=='__main__':build()

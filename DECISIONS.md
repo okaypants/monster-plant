@@ -2,6 +2,20 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Decorations started over for four spaces (Nov 25)
+
+- Jackie: "I think we need to rethink all of the decorations now that we have 4 stable spaces", then "I think we start over completely with decorations with a fresh prompt and all new categories based on fit". The four spaces, in her words: "Desk, window hanging, shelves, and floor where pumpkin is". Four pieces for every occasion? "Every". I listed all thirty occasions with a proposed piece for each space; Jackie: "Cool prompt me", and drew all ten sheets (art_src/decor/).
+- All the earlier decoration art is retired. Each of thirty occasions now has exactly four pieces, each drawn and sized for its space:
+  - the window: a garland with little lights, across the top of the window, in front of the glass and behind the curtains. Every garland is the width of the window's opening.
+  - the shelf: a small upright piece in the bookcase cubby, in the framed cat's place. The frame is put away while decorations are up.
+  - the desk: a low, wide piece between the radio and the desk lamp.
+  - the floor: a large piece on the crate, or in the front corner while the bassinet is out. Autumn's is the pumpkin and Christmas's is the tree, which Jackie's sheets leave out on purpose.
+- The wall is no longer used.
+- "1 light animation for every occasion": every garland's little lights go dim and bright three times every 6 to 16 seconds. The dim picture is made by the tool from the garland itself.
+- The thirty occasions and what stands for each were my proposal, which Jackie accepted as it stood. The ones I was least sure of are Holi's water squirter, Juneteenth's food, Chuseok's vase of cosmos, Kwanzaa's cup and New Year's bell.
+- The Hanukkah pieces came back with six-pointed stars on them, which the prompt did not ask for. They are in as drawn.
+- This replaces the decoration entry below wherever they differ.
+
 ### The wallpaper's pattern is repainted evenly (Nov 25)
 
 - Jackie: "I think you also need to repaint some of the wallpaper again / there are a lot of light colored dots and inconsistent patterning".

@@ -326,7 +326,7 @@ def build_cupboard():
     floor=156-14;shelf=62+13 # where things stand: the cupboard's floor, and the middle of the shelf's top
     for n,(left,sc) in {'yarn_ball':(34,.2),'mouse':(84,.16)}.items(): # a couple of the cat's toys below (all five are still on the tray)
         x,y,w,h=toys[n];t=cut(sh,x,y,w,h,sc,holes=True);inside.alpha_composite(t,(left,floor-t.height))
-    for n,(left,k) in {'rabbit_lantern':(32,.52),'blossom_jar':(82,.5)}.items(): # and a couple of the decorations above (decor/, tools/decor_build.py)
+    for n,(left,k) in {'midautumn_s':(32,.6),'blossom_s':(84,.6)}.items(): # and a couple of the decorations above (decor/, tools/decor_build.py)
         f=os.path.join(ROOT,'decor',n+'.png')
         if not os.path.exists(f):continue
         d=Image.open(f).convert('RGBA');d=d.resize((max(1,round(d.width*k)),max(1,round(d.height*k))),Image.LANCZOS);da=np.asarray(d).copy();da[...,3]=np.where(da[...,3]>=128,255,0);inside.alpha_composite(Image.fromarray(da,'RGBA'),(left,shelf-d.height))
