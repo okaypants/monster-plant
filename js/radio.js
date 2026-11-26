@@ -3,7 +3,7 @@
    CRATES: old records that are free for everyone (the same library as the sampler: digitized 78s published 101 or more
      years ago), and now and then one of the songs you finished in the sampler and sent to the radio. Your song gets a
      caption, and the monsters bop along. The songs come from js/cratesdb.js.
-   WORLD: 81 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
+   WORLD: 71 live stations Jackie asked for (cool, weird, arty, underground or just fun, Art Bell reruns and UFO talk, a lot
      from Asia, Africa, the Middle East and Central Asia, plus jazz, folk, tango, fado, classical and lo-fi), hand-picked and checked, laid along the dial west to east, Seattle to
      New Caledonia, then the ones that live only online. Drag the dial or
      tap the arrows; between stations you hear a real recording of a radio being tuned (sounds/tune.m4a). Live radio is
@@ -76,16 +76,15 @@ function wakeOff(){const w=WAKE;WAKE=null;if(w)w.release().catch(()=>{})}
    dial runs west to east; the ones that live only online sit at the far end). All checked Nov 16, in a browser too
    (SomaFM was left out: it refuses to stream to web pages). The two Art Bell reruns come from an unofficial relay that
    may vanish (Jackie: keep it, just skip it if it disappears; a dead station already skips to the next).
+   One station for each city, and one for each kind of music from a place (Jackie, Nov 25: "only one per city to kind of narrow things
+   down and maybe only one classical and like one argentinian music"): where two shared a city, or a country and a kind, one was dropped.
    Freeform and DJ stations talk between records now and then, and anything can come on: that's the fun of them. */
 const WORLD=[
  {n:'KPISS.FM',k:'Weird internet radio',p:'Seattle, USA',u:'https://streaming.live365.com/a18444',x:-122.33},
  {n:'Coast to Coast AM',k:'Reruns of Art Bell\'s call-in show about aliens and ghosts',p:'From the high desert',u:'https://radio.dopebeat.xyz/C2C',x:-116.0},
- {n:'Midnight in the Desert',k:'More reruns of Art Bell\'s late-night show',p:'From the high desert',u:'https://radio.dopebeat.xyz/MITD',x:-115.99},
- {n:'Free People of the Cosmos',k:'UFO and paranormal shows',p:'USA',u:'https://podradio.us/stream/free-cosmos',x:-98.0},
  {n:'Radio is a Foreign Country',k:'Rare tapes, records and field recordings',p:'USA',u:'https://s5.radio.co/s20251311a/listen',x:-95.0},
  {n:'Montez Press Radio: The Sounded Word',k:'Sound and poetry',p:'New York, USA',u:'https://stream.montezpress.com/icecast/reading-and-poetry-the-sounded-word',x:-74.01},
  {n:'La 2x4',k:'Tango',p:'Buenos Aires, Argentina',u:'https://media.radios.ar:9270/',x:-58.38},
- {n:'Radio Nacional Folklórica',k:'Argentine folk',p:'Buenos Aires, Argentina',u:'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38',x:-58.37},
  {n:'Caboradio',k:'Cape Verdean music',p:'Cape Verde',u:'https://listen.radioking.com/radio/281506/stream/327253',x:-23.5},
  {n:'Radio Thiossane',k:'Senegalese music',p:'Dakar, Senegal',u:'https://listen.senemultimedia.net:8112/stream',x:-17.44},
  {n:'Radio Quântica',k:'Club and underground',p:'Lisbon, Portugal',u:'https://libretime.radioquantica.com/main.mp3',x:-9.14},
@@ -97,13 +96,11 @@ const WORLD=[
  {n:'ROKit Radio Science Fiction',k:'Old sci-fi radio plays',p:'UK',u:'https://streaming05.liveboxstream.uk/proxy/roksta12/stream',x:-1.0},
  {n:'Oroko Radio',k:'Underground',p:'Accra, Ghana',u:'https://oroko-radio.radiocult.fm/stream',x:-0.2},
  {n:'NTS 1',k:'DJs from everywhere',p:'London, UK',u:'https://stream-relay-geo.ntslive.net/stream',x:-0.12},
- {n:'Resonance Extra',k:'Sound art and experimental music',p:'London, UK',u:'https://stream.resonance.fm/resonance-extra',x:-0.118},
  {n:'FIP',k:'Many kinds of music',p:'Paris, France',u:'https://icecast.radiofrance.fr/fip-hifi.aac',x:2.35},
  {n:'Antinea Radio',k:'Kabyle radio',p:'Tizi Ouzou, Algeria',u:'https://listen.radioking.com/radio/6640/stream/347',x:4.05},
  {n:'Kiosk Radio',k:'DJs broadcasting from a park kiosk',p:'Brussels, Belgium',u:'https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b',x:4.35},
  {n:'Radio WORM',k:'Experimental, from a music venue',p:'Rotterdam, Netherlands',u:'https://origin.streamnerd.nl/worm/worm/icecast.audio',x:4.48},
  {n:'LYL Radio',k:'Underground and odd',p:'Lyon, France',u:'https://icecast.lyl.live/live',x:4.83},
- {n:'Noise Radio',k:'Noise and field recordings',p:'Netherlands',u:'https://a2.asurahosting.com:7890/radio.mp3',x:5.3},
  {n:'Radio Meuh',k:'Groovy and eclectic',p:'The French Alps',u:'https://radiomeuh2.ice.infomaniak.ch/radiomeuh2-128.mp3',x:6.5},
  {n:'Radio Raheem',k:'DJs and odd records',p:'Milan, Italy',u:'https://radioraheem.out.airtime.pro/radioraheem_a',x:9.19},
  {n:'Mosaique FM Tarab',k:'Tarab, classic Arabic songs',p:'Tunis, Tunisia',u:'https://radio.mosaiquefm.net/mosatarab',x:10.18},
@@ -111,7 +108,6 @@ const WORLD=[
  {n:'Radio 80000',k:'DJs and weird pop',p:'Munich, Germany',u:'https://radio80k.out.airtime.pro:8000/radio80k_a',x:11.58},
  {n:'Radio Arts Tripoli',k:'Arts radio',p:'Tripoli, Libya',u:'https://stream.zeno.fm/z9wfrdpmgg0uv',x:13.19},
  {n:'Cashmere Radio',k:'Experimental',p:'Berlin, Germany',u:'https://cashmereradio.out.airtime.pro/cashmereradio_b',x:13.4},
- {n:'Refuge Worldwide',k:'DJs and community shows',p:'Berlin, Germany',u:'https://streaming.radio.co/s3699c5e49/listen',x:13.41},
  {n:'Radio Mix Congolaise',k:'Congolese rumba and soukous',p:'Kinshasa, DR Congo',u:'https://stream.zeno.fm/qe5g83upga0uv',x:15.3},
  {n:'Radio Helsinki',k:'Free community radio',p:'Graz, Austria',u:'https://live.helsinki.at:8088/live160.mp3',x:15.44},
  {n:'Bush Radio',k:'Community radio',p:'Cape Town, South Africa',u:'https://zas4.ndx.co.za:9100/stream',x:18.42},
@@ -135,22 +131,18 @@ const WORLD=[
  {n:'Radio Sangwari',k:'Chhattisgarhi folk',p:'Chhattisgarh, India',u:'https://servidor19.brlogic.com:7002/live',x:81.63},
  {n:'Mellow Bangla',k:'Bangla music',p:'Bangladesh',u:'https://radio.mellowbangla.com/stream',x:90.4},
  {n:'Looktung Eingdoi',k:'Luk thung, Thai country music',p:'Northern Thailand',u:'https://inter.lannaradio.com/radio/8000/radio.mp3',x:98.98},
- {n:'BKK.FM',k:'Alternative and electronic',p:'Bangkok, Thailand',u:'https://rsas.bkk.fm/radio',x:100.5},
  {n:'Bangkok Community Radio',k:'Underground DJs',p:'Bangkok, Thailand',u:'https://bcr.radiocult.fm/stream',x:100.51},
  {n:'Pop Radio 21',k:'Khmer pop and folk',p:'Phnom Penh, Cambodia',u:'https://listen.radioking.com/radio/318317/stream/365846',x:104.9},
  {n:'Hà Nội Community Radio',k:'Underground DJs and live music',p:'Hanoi, Vietnam',u:'https://ha-noi-community-radio.radiocult.fm/stream',x:105.85},
  {n:'Elgen Nutag',k:'Mongolian folk, stories and talk',p:'Mongolia',u:'https://a6.asurahosting.com:7210/radio.mp3',x:106.9},
- {n:'Mettaswara Koplo',k:'Dangdut koplo dance music',p:'Java, Indonesia',u:'https://mettaswara.com:8700//koplo',x:110.0},
  {n:'Radio Campursari',k:'Campursari, gamelan with keyboards',p:'Yogyakarta, Indonesia',u:'https://a8.siar.us/listen/campursari/stream',x:110.37},
  {n:'FM Belowground',k:'Electronic',p:'Hong Kong',u:'https://listen.belowground.fm/radio/8000/radio.mp3',x:114.17},
  {n:'90s Pinoy Alternative',k:'Filipino alt-rock from the 90s',p:'Philippines',u:'https://cast3.my-control-panel.com/proxy/ronald/stream',x:120.97},
- {n:'Pinoy Rap Radio',k:'Filipino hip-hop',p:'Philippines',u:'https://stream.zeno.fm/0cdp55nqam0uv',x:120.99},
  {n:'Taipei Classical Radio',k:'Classical',p:'Taipei, Taiwan',u:'https://stream.zeno.fm/w66d3dp6ynhvv',x:121.5},
  {n:'Budots FM',k:'Budots dance remixes from Davao',p:'Philippines',u:'https://stream.zeno.fm/2uhuu5hvzqzuv',x:125.6},
  {n:'yojosuknam Radio',k:'Gugak, jazz and lo-fi',p:'Korea',u:'https://stream.yojosuknam.com/live.mp3',x:127.0},
  {n:'Ashiya Radio',k:'Bossa nova and mellow tunes',p:'Ashiya, Japan',u:'https://s3.radio.co/sc8d895604/listen',x:135.3},
  {n:'Japan City Pop',k:'Japanese city pop',p:'Japan',u:'https://play.streamafrica.net/japancitypop',x:139.0},
- {n:'Moon Mission Recordings',k:'Deep house from a Tokyo label',p:'Tokyo, Japan',u:'https://uk5.internet-radio.com/proxy/mmr?mp=/stream;',x:139.7},
  {n:'NIA Radio Lo-Fi',k:'Lo-fi beats',p:'New Caledonia',u:'https://radio.nia.nc/radio/8020/lofi-hq-stream.aac',x:166.45},
  {n:'Nightride FM Spacesynth',k:'Space-age synths',p:'Somewhere online',u:'https://stream.nightride.fm/spacesynth.mp3',x:999},
  {n:'Nightwave Plaza',k:'Vaporwave',p:'Somewhere online',u:'https://radio.plaza.one/mp3',x:999.1},

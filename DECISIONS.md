@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The radio has one station per city and per kind (Nov 25)
+
+- Jackie: "For the radio, only one per city to kind of narrow things down and maybe only one classical and like one argentinian music etc".
+- Ten stations came off the dial, leaving 71. Where two shared a city, or a country and a kind of music, I kept one: Coast to Coast AM (over Midnight in the Desert and Free People of the Cosmos), La 2x4's tango (over Radio Nacional Folklórica), NTS 1 (over Resonance Extra), Radio WORM (over Noise Radio), Cashmere Radio (over Refuge Worldwide), Bangkok Community Radio (over BKK.FM), Radio Campursari (over Mettaswara Koplo), Budots FM and 90s Pinoy Alternative (over Pinoy Rap Radio), Japan City Pop and Ashiya Radio (over Moon Mission Recordings).
+- There was already only one classical station. Which of each pair stays is my pick and is easy to swap.
+
 ### The framed cat's eyes glow now and then (Nov 25)
 
 - Jackie plans to redesign and rename the cat after the cat in the Japanese film House, and wants the crystal ball to reference something in the same way. On my idea that a cat's eyes might glow in the ball: "with glowing eyes sometime".
