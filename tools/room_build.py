@@ -271,9 +271,17 @@ def build_cupboard():
     sh=load('sheet5.png');inside=Image.fromarray(sh[316:474,210:364].astype(np.uint8),'RGB').resize((158,156),Image.LANCZOS).convert('RGBA') # between the bookcase's own posts
     toys={'yarn':(757,275,259,185),'mouse':(1088,292,301,140),'wand':(122,646,219,271),'bell':(1170,710,133,155),'tin':(446,714,200,168),'tin_open':(747,718,307,164),'yarn_ball':(484,275,170,172)}
     for n,(x,y,w,h) in toys.items():cut(sh,x,y,w,h,.8,holes=True).save(os.path.join(ROOT,'cub_'+n+'.png'),optimize=True)
-    floor=156-14 # the cupboard's floor in the picture: the toys stand on it. name: (left, size)
-    for n,(left,sc) in {'yarn_ball':(30,.26),'mouse':(84,.19)}.items(): # just a couple (Jackie, Nov 25); all five are still on the tray
+    # The shelf is moved down to the middle (Jackie, Nov 25: "move the shelf inside the cabinet down so you can put a couple decorations on
+    # top and then have a couple cat things below"). The drawing has its shelf near the top, so the picture is put together again from
+    # its own rows: plain back wall above, then the shelf (its top, its front edge and the shadow under it), then the bottom of the cupboard.
+    src=np.asarray(inside).copy();new=src.copy();new[0:62]=src[46:108];new[62:98]=src[8:44];new[98:156]=src[98:156];inside=Image.fromarray(new,'RGBA')
+    floor=156-14;shelf=62+13 # where things stand: the cupboard's floor, and the middle of the shelf's top
+    for n,(left,sc) in {'yarn_ball':(34,.2),'mouse':(84,.16)}.items(): # a couple of the cat's toys below (all five are still on the tray)
         x,y,w,h=toys[n];t=cut(sh,x,y,w,h,sc,holes=True);inside.alpha_composite(t,(left,floor-t.height))
+    for n,(left,k) in {'rabbit_lantern':(32,.52),'blossom_jar':(82,.5)}.items(): # and a couple of the decorations above (decor/, tools/decor_build.py)
+        f=os.path.join(ROOT,'decor',n+'.png')
+        if not os.path.exists(f):continue
+        d=Image.open(f).convert('RGBA');d=d.resize((max(1,round(d.width*k)),max(1,round(d.height*k))),Image.LANCZOS);da=np.asarray(d).copy();da[...,3]=np.where(da[...,3]>=128,255,0);inside.alpha_composite(Image.fromarray(da,'RGBA'),(left,shelf-d.height))
     inside.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
     return {'cup_open':[inside.width,inside.height]}
 def build_frame():
