@@ -206,7 +206,7 @@ function fidgetDrawTop(){const U=ART_PX;for(const b of fBits){const x=Math.round
 /* Jackie, Nov 4: for now ONLY these wiggle, one item every 10 s, one at a time, under half a second each (4 frames x 110 ms):
    both lamps, the snow globe, the journal drawers, the SNACKS cupboard, the carafe and the readable books (the shelf the book menu opens from).
    Nov 16: the sampler on the top shelf joined them when its app was built. */
-const IDLE_ITEMS=[{n:'cup',x:966,y:588,w:32,h:34,k:'obj'},{n:'mini fridge',x:772,y:580,w:124,h:176,k:'plain'},
+const IDLE_ITEMS=[{n:'mini fridge',x:772,y:580,w:124,h:176,k:'plain'},
  {n:'floor lamp',x:134,y:248,w:194,h:224,k:'shade',key:'lamp'},{n:'desk lamp',x:1268,y:402,w:174,h:146,k:'obj'},
  {n:'desk drawers (journal)',x:1082,y:570,w:96,h:132,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
  {n:'sampler',x:1220,y:140,w:186,h:88,k:'obj'},

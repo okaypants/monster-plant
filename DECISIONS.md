@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No cup under the water cooler (Nov 25)
+
+- Jackie, after two rounds on the cup's size: "maybe no cup and it just appears when you click the water cooler".
+- Nothing stands under the taps now. Tap the water cooler and the cup is in your hand, filled, as before.
+
 ### Read any time (Nov 25)
 
 - Jackie: "you should be able to read whenever you want it'll just note if no one is listening".
