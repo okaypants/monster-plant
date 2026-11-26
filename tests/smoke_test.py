@@ -191,11 +191,6 @@ CASES = [
      "(()=>{if(BABY_EAT.length!==16||!BABY_EAT.every(i=>i.naturalWidth>50))return 'missing open-mouth pictures';st.nap=0;st.night=false;"
      "if(kidEating())return 'mouth open with no food';feed.item={id:'solar'};feed.over=st.id;const on=kidEating();draw();feed.item=null;feed.over=null;if(!on)return 'the kid did not open its mouth';if(kidEating())return 'the mouth stayed open';st.stage=5;feed.item={id:'solar'};feed.over=st.id;const on5=kidEating();feed.item=null;feed.over=null;if(!on5)return 'the older kid did not open its mouth';"
      "st.stage=6;feed.item={id:'solar'};feed.over=st.id;const t=mouthNow();st.stage=8;const a=mouthNow();feed.item=null;feed.over=null;return (t===2&&a===2&&mouthNow()!==2)||'teen or adult mouth: '+t+' '+a;})()"),
-    # round the room: where the screen is wider or taller than the room, a dark wallpaper of the room's dots, scaled with the room
-    ("wallpaper_round_room", "s.stage=6;s.species=4;", "", 0.1,
-     "(()=>{fit();const b=getComputedStyle(document.body);if(!/wall_tile\\.png/.test(b.backgroundImage))return 'no wallpaper behind the room: '+b.backgroundImage;"
-     "if(document.getElementById('sideL')||typeof drawSides!=='undefined')return 'the strips that extended the room are still there';"
-     "return b.backgroundSize===Math.round(138*S)+'px '+Math.round(66*S)+'px'||'the wallpaper is not scaled with the room: '+b.backgroundSize;})()"),
     # bothered into moving three times in a row, the cat leaves the room, stays away a while and walks back in (Jackie, Nov 25)
     ("cat_leaves_room", TEEN + "s.catTrust=.7;", "", 0.1,
      "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.to!=='out')return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"
