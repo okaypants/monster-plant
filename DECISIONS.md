@@ -2,6 +2,23 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon dial tells the moon's sign (Nov 25)
+
+- Jackie, on the dial that turned ahead a night at a time: "the moon thing is okay but i think it should also be tied to astrology and not advance in days".
+- The dial no longer turns ahead. Its face always shows tonight's moon.
+- First tap: tonight's phase and how long until the next full or new moon. Second tap: the sign the moon is in tonight and what that sign is like, in the same words the birth charts use. Third tap: when the moon moves into the next sign, and what that one is like. Then it starts over.
+- This replaces "can be turned" in the entry below.
+
+### Coins land in front of everything (Nov 25)
+
+- Jackie: "the coins bounce around the pumpkin weird", "they will do that with any object".
+- Coins are drawn over the whole room, so a coin that landed further back than something standing on the floor looked as if it was bouncing on that thing. Every coin now lands on the front strip of floor, nearer than anything that stands there, and is thrown to the right so none ends up under the name tag. They lie a little longer before they go.
+
+### The kid is smaller again (Nov 25)
+
+- Jackie: "the kid is a little too big imo". A kid is a tenth smaller than after the last change (the adult's height over 2.65, was 2.4).
+- The teen is left the size it was. Jackie only named the kid this time; earlier the teen was sized as one and a half kids, so say if it should shrink too.
+
 ### The cat is down inside its bed (Nov 25)
 
 - Jackie: "noodle sits a little too high on his bed", and after I lowered the cat a little: "the cat is still sitting in his bed weird".

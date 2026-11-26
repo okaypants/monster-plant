@@ -49,7 +49,7 @@ async def main():
         # every coin falls to the floor and comes to rest there (Jackie, Nov 25): never a line in mid-air, never the shelf
         await pg.evaluate("()=>{fBits.length=0}")
         await pg.evaluate(TAP, "box1")
-        await pg.evaluate("()=>__step(4.4,16)")  # small frames: the coins' fall is worked out sixty times a second; they last 4.5 s at least
+        await pg.evaluate("()=>__step(5.5,16)")  # small frames: the coins' fall is worked out sixty times a second; they last 7 s at least
         r = await pg.evaluate("()=>{const c=fBits.filter(b=>b.coin);return {n:c.length,off:c.filter(b=>Math.abs(b.y-b.fz)>3).length,low:c.filter(b=>b.fz<COIN_FLOOR[0]||b.fz>COIN_FLOOR[1]).length,moving:c.filter(b=>Math.abs(b.vy)>.5).length}}")
         check(r["n"] >= 6 and r["off"] == 0 and r["low"] == 0 and r["moving"] == 0, f"every coin should be at rest on the floor: {r}")
         await pg.screenshot(path=os.path.join(OUT, "coins_landed.png"), clip=await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return {x:r.left,y:r.top+380*S,width:520*S,height:520*S}}"))
@@ -57,13 +57,19 @@ async def main():
         await pg.evaluate(TAP, "moondial")
         await pg.evaluate("()=>__step(.3)")
         cap = await pg.evaluate("()=>capText.textContent")
-        check(cap.startswith("Tonight") and "Tap the dial again" in cap, f"tapping the moon dial should say tonight's moon and how to turn it: {cap!r}")
+        check(cap.startswith("Tonight") and "Tap the dial again" in cap, f"tapping the moon dial should say tonight's moon and that there is more: {cap!r}")
         await pg.evaluate(TAP, "moondial")
         await pg.evaluate("()=>__step(.2)")
         cap2 = await pg.evaluate("()=>capText.textContent")
-        check(cap2.startswith("Tomorrow night") and await pg.evaluate("()=>dialDay===1&&moonDialAt()>Date.now()"), f"a second tap should turn the dial on a night: {cap2!r}")
-        check(await pg.evaluate("()=>{const a=[];for(let n=0;n<30;n++)a.push(moonDialSay(n));return a.every(t=>/^(Tonight|Tomorrow night|In \\d+ nights) /.test(t)&&!/undefined|NaN/.test(t))&&new Set(a.map(t=>t.replace(/^(Tonight|Tomorrow night|In \\d+ nights)/,'').replace(/\\d+%/,''))).size>=8}"), "the dial should have something sensible to say for every night of the month")
-        await pg.evaluate("()=>{dialT=-1e9;dialDay=0}")
+        check(cap2.startswith("Tonight the moon is in ") and "The moon is about feelings" in cap2 and await pg.evaluate("()=>dialStep===1&&moonDialAt()===null"), f"a second tap should say the moon's sign tonight, and the dial should not turn ahead: {cap2!r}")
+        await pg.evaluate(TAP, "moondial")
+        await pg.evaluate("()=>__step(.2)")
+        cap3 = await pg.evaluate("()=>capText.textContent")
+        check(cap3.startswith("The moon moves into ") and not any(w in cap3 for w in ("undefined", "NaN", "Invalid")) and await pg.evaluate("()=>{const now=skyChart(Date.now()).moon,t=moonDialSay(2);return !t.includes('into '+now.name+' ')}"), f"a third tap should say when the moon changes sign: {cap3!r}")
+        await pg.evaluate(TAP, "moondial")
+        await pg.evaluate("()=>__step(.2)")
+        check((await pg.evaluate("()=>capText.textContent")).startswith("Tonight") and await pg.evaluate("()=>dialStep===0"), "a fourth tap should start over at tonight's phase")
+        await pg.evaluate("()=>{dialT=-1e9;dialStep=0}")
         check(await pg.evaluate("()=>/^moon[1-5]$/.test(moonDialPic())"), "the moon dial should show one of its five faces")
         await pg.evaluate("()=>{__step(5);capClear()}")
         # the crystal ball: mist gathers, it gives one of Melville's signs, and it clears again

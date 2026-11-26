@@ -103,28 +103,32 @@ function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ball
  setTimeout(()=>tell(ballCur.a+' '+ballCur.s,{kind:'info',key:'ballSign',now:true}),BALL_MS*.55);
  try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
-/* THE MOON DIAL (Jackie, Nov 25: "it's not that fun, I wish it had more info or interactivity"). A tap says what the moon is doing tonight: its
-   phase, how much of it is lit, and how many nights it is to the next full moon and the next new moon. Tap again while it is still showing
-   and the dial turns on one night, and says what the moon will be then, as many nights ahead as you care to tap (up to a month). Its face
-   shows the night it is talking about. Left alone for a few seconds it goes back to tonight. All worked out from the date (js/moon.js). */
-const DIAL_HOLD=7000;let dialT=-1e9,dialDay=0;
-function moonDialAt(){return performance.now()-dialT<DIAL_HOLD&&dialDay>0?Date.now()+dialDay*864e5:null;} // the night the dial is showing, if it has been turned ahead
-function moonDialSay(n){const t=Date.now()+n*864e5,name=moonName(t),lit=Math.round(moonLit(t)*100),a=moonAge(t),nights=x=>x===1?'tomorrow night':'in '+x+' nights';
- const when=n===0?'Tonight':n===1?'Tomorrow night':'In '+n+' nights',is=n===0?'is':'will be';
- let say=name==='new moon'?when+' '+is+' the new moon, when the sky is dark.':name==='full moon'?when+' '+is+' the full moon.':/quarter/.test(name)?when+' the moon '+is+' at its '+name+', half lit.':when+' the moon '+is+' a '+name+', '+lit+'% lit.';
- if(n===0){const half=MOON_MONTH/2,toFull=Math.round(((half-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH),toNew=Math.round(((MOON_MONTH-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH);
-  if(name!=='full moon'&&toFull>0&&toFull<=toNew)say+=' The full moon is '+nights(toFull)+'.';else if(name!=='new moon'&&toNew>0)say+=' The new moon is '+nights(toNew)+'.';
-  say+=' Tap the dial again to turn it on a night.';}
+/* THE MOON DIAL (Jackie, Nov 25: "it's not that fun, I wish it had more info or interactivity", then "the moon thing is okay but i think it
+   should also be tied to astrology and not advance in days"). Its face always shows tonight's moon. A tap says tonight's phase and how long it
+   is to the next full or new moon. Tap again while that is showing and it says which sign the moon is in tonight and what that sign is like
+   (the same words the birth charts use, js/charts.js); a third tap says when the moon moves into the next sign. Then it starts over. */
+const DIAL_HOLD=7000;let dialT=-1e9,dialStep=0;
+function moonDialAt(){return null;} // the dial is never turned ahead now
+function moonDialSay(n){const t=Date.now(),name=moonName(t),lit=Math.round(moonLit(t)*100),a=moonAge(t),nights=x=>x===1?'tomorrow night':'in '+x+' nights';
+ const sky=typeof skyChart==='function'?skyChart(t).moon:null;
+ if(n===1&&sky)return 'Tonight the moon is in '+sky.name+'. '+chartLine(null,'moon',{moon:sky});
+ if(n===2&&sky){let u=t,nx=sky;for(let h=1;h<=80&&nx.i===sky.i;h++){u=t+h*36e5;nx=skyChart(u).moon;}
+  const days=Math.round((new Date(u).setHours(0,0,0,0)-new Date(t).setHours(0,0,0,0))/864e5),when=days<=0?'later today':days===1?'tomorrow':'on '+new Date(u).toLocaleDateString(undefined,{weekday:'long'});
+  return 'The moon moves into '+nx.name+' '+when+'. '+nx.name+' is '+SIGN_IS[nx.i]+'.';}
+ let say=name==='new moon'?'Tonight is the new moon, when the sky is dark.':name==='full moon'?'Tonight is the full moon.':/quarter/.test(name)?'Tonight the moon is at its '+name+', half lit.':'Tonight the moon is a '+name+', '+lit+'% lit.';
+ const half=MOON_MONTH/2,toFull=Math.round(((half-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH),toNew=Math.round(((MOON_MONTH-a)%MOON_MONTH+MOON_MONTH)%MOON_MONTH);
+ if(name!=='full moon'&&toFull>0&&toFull<=toNew)say+=' The full moon is '+nights(toFull)+'.';else if(name!=='new moon'&&toNew>0)say+=' The new moon is '+nights(toNew)+'.';
+ if(sky)say+=' Tap the dial again for the moon’s sign.';
  return say;}
-function moonDialTap(){const now=performance.now();dialDay=now-dialT<DIAL_HOLD?Math.min(dialDay+1,29):0;dialT=now;sfx(dialDay?'tick':'chime');tell(moonDialSay(dialDay),{kind:'info',key:'moonDial',now:true});}
+function moonDialTap(){const now=performance.now();dialStep=now-dialT<DIAL_HOLD?(dialStep+1)%3:0;dialT=now;sfx(dialStep?'tick':'chime');tell(moonDialSay(dialStep),{kind:'info',key:'moonDial',now:true});}
 /* WHERE A SPILLED COIN LANDS (Jackie, Nov 25: "Gold coins don't bounce on regular surfaces", then "all the coins should hit the floor"). The coins
    used to bounce on one line at the height of the jar's shelf, right across the room, so they bounced in mid-air. Now every coin falls out of
    the jar, past the shelves, and lands on the floor, where it bounces and comes to rest. Each coin has its own bit of floor, a little nearer
    or further, so they do not all stop on one line. */
-const COIN_FLOOR=[800,870];
+const COIN_FLOOR=[902,930]; /* Jackie, Nov 25: "the coins bounce around the pumpkin weird", "they will do that with any object". Coins are drawn over everything, so one that landed further back than a thing on the floor looked as if it bounced on that thing. They now land on the front strip of floor, nearer than anything that stands on it, and are thrown to the right, clear of the name tag */
 function coinFloor(b){return b.fz;}
 function fidgetDo(p,x,y){const cx=p.x+p.w/2,add=o=>{fBits.push(o);if(fBits.length>160)fBits.shift();};
- if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(-2.6,3.4),vy:rnd(-4.2,-2),life:rnd(270,350),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fz:rnd(COIN_FLOOR[0],COIN_FLOOR[1])});sfx('pop');}
+ if(p.does==='coins'){openThing('jar',900);for(let i=0;i<6;i++)add({x:cx+rnd(-14,14),y:p.y+6,vx:rnd(.6,4.6),vy:rnd(-4.2,-2),life:rnd(420,500),c:COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],big:true,coin:true,fz:rnd(COIN_FLOOR[0],COIN_FLOOR[1])});sfx('pop');}
  else if(p.does==='safe'){openThing('lockbox',900);if(st.started&&st.stage>=0)setTimeout(()=>{if(!document.querySelector('.screen')&&typeof openJournal==='function')openJournal('safe')},220);}
  else if(p.does==='record'){if(typeof radioOn==='function'){if(!radio.on){radio.band='crates';radioOn(true);tell('You put a record from the crate on the radio.',{kind:'info',key:'crateRec'});}else if(radio.band!=='crates')radioBand('crates');else radioStep(1);}}
  else if(p.does==='moon'){if(typeof moonName==='function')moonDialTap();}
