@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;background:#19101b;overflow:hidden;font-family:'Nunito','Varela Round',system-ui,sans-serif;color:#fdebc9}
-#wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);clip-path:inset(var(--cut,0px) 0 0 0)} /* --cut: the ceiling trim's height on screen (TOP_CUT in js/core.js), clipped away */
 canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#19101b;color:#fdebc9;align-items:center;justify-content:center;text-align:center;font-size:22px;padding:30px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
@@ -28,7 +28,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 @media (prefers-reduced-motion:reduce){#loading .ldots i{animation:none}}
 #ui{position:absolute;inset:0;pointer-events:none}
 /* UI LOOK: Nunito text (Jackie, Nov 15; one step heavier than the old Fredoka weights); the colors and shapes of every word are in css/textstyle.css (Jackie, Nov 10). This block is layout. */
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(25,16,27,.84);pointer-events:auto;text-align:center;gap:16px;padding:20px;box-sizing:border-box}
+.screen{position:absolute;inset:var(--cut,0px) 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(25,16,27,.84);pointer-events:auto;text-align:center;gap:16px;padding:20px;box-sizing:border-box}
 .screen:not(.journal) h1{font-weight:700;font-size:52px;margin:0;color:#c8d145}
 .screen:not(.journal) p{margin:0;font-size:22px;max-width:600px}
 .screen:not(.journal) .opts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
@@ -311,9 +311,9 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .ttreat.tbook{width:86px;height:auto;flex-direction:column;justify-content:flex-start;gap:3px;padding:2px 2px 4px} /* a book's cover (books/, 42 x 60 with its outline) with its name under it */
 .ttreat.tbook{font:inherit}.tbname{font-size:14px;font-weight:700;line-height:1.1;text-align:center;color:#5B3A2E;pointer-events:none}
 .btray{border-radius:22px!important;padding:8px 10px!important;align-items:flex-start}
-#dbgBtn{position:absolute;right:6px;top:6px;z-index:50;pointer-events:auto;font:inherit;font-size:16px;padding:6px 12px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
+#dbgBtn{position:absolute;right:6px;top:calc(6px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:16px;padding:6px 12px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
 #dbgBtn:hover{opacity:1}
-#fsBtn{position:absolute;right:92px;top:6px;z-index:50;pointer-events:auto;font:inherit;font-size:18px;line-height:1;padding:6px 10px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
+#fsBtn{position:absolute;right:92px;top:calc(6px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:18px;line-height:1;padding:6px 10px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
 :fullscreen #fsBtn,:-webkit-full-screen #fsBtn{opacity:.4}
 /* debug drawer: slides in on the right; the room shrinks to fit beside it (FIT_RIGHT in core.js). Big touch targets for phones. */
 #dbg{position:fixed;top:0;right:0;bottom:0;z-index:60;display:none;box-sizing:border-box;background:#19101b;border-left:2px solid #6c61a4;border-radius:16px 0 0 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;

@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The ceiling trim is gone and the room shows a little larger (Nov 26)
+
+- Jackie: "Can we zoom the room slightly and get rid of the upper border".
+- The top 36 rows of the room's picture, the cream trim with its dark line, are no longer shown. The room is sized to fill the screen without them, so on a phone it comes out about 4% larger and the dark ends are narrower. Nothing else is cut: the wall starts where the trim ended.
+- The corner buttons, the captions and the full-screen pages (journal, tarot and the rest) start below the cut, so none of them lose their top edge. The room's picture file is unchanged.
+
 ### The dark ends of a wide screen are night sky (Nov 26)
 
 - Jackie: "the black bars around the sides that I was talking about, maybe we can put the little glimmering dots kind of like on the opening screen, so it looks like space or something back there".

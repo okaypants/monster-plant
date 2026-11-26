@@ -207,7 +207,7 @@ function radioPanelClose(){if(!radio.panel)return;radio.panel.remove();radio.pan
 function radioPanelPlace(){const el=radio.panel;if(!el)return;const w=el.offsetWidth,h=el.offsetHeight;
   let left,top=RADIO.y*S-h-10;
   if(top>=48)left=clamp((RADIO.x+RADIO.w/2)*S-w/2,4,W*S-w-4); // room above the radio
-  else{left=clamp(RADIO.x*S-w-10,4,W*S-w-4);top=clamp((RADIO.y+RADIO.h/2)*S-h/2,48,H*S-h-4)} // a short phone screen: beside it, so the radio stays tappable, below the corner buttons
+  else{left=clamp(RADIO.x*S-w-10,4,W*S-w-4);top=clamp((RADIO.y+RADIO.h/2)*S-h/2,48+TOP_CUT*S,H*S-h-4)} // a short phone screen: beside it, so the radio stays tappable, below the corner buttons
   el.style.left=Math.round(left)+'px';el.style.top=Math.round(top)+'px'}
 addEventListener('resize',()=>setTimeout(radioPanelPlace,60));
 function radioPanelName(s,line){const el=radio.panel;if(!el)return;const b=el.querySelector('.rname b'),sp=el.querySelector('.rname span'),pl=el.querySelector('.rname em');

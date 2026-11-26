@@ -3,8 +3,9 @@
 const W=1670,H=942; // book room v2 (Jackie's curated room)
 const cv=document.getElementById('c'),g=cv.getContext('2d');g.imageSmoothingEnabled=false;
 const wrap=document.getElementById('wrap'),ui=document.getElementById('ui');
+const TOP_CUT=36; /* the ceiling trim, the top 36 rows of the room's picture, is not shown (Jackie, Nov 26: "Can we zoom the room slightly and get rid of the upper border"): the room is sized to fit without it, so it comes out a little larger on a wide screen, and the rows are clipped away */
 let S=1,FIT_RIGHT=0; // FIT_RIGHT: screen width the debug drawer takes on the right; the room fits beside it instead of under it
-function fit(){const vw=(document.documentElement.clientWidth||innerWidth)-FIT_RIGHT,vh=document.documentElement.clientHeight||innerHeight;S=Math.min(vw/W,vh/H);wrap.style.setProperty('--S',S);wrap.style.setProperty('--u',Math.max(3,Math.round(5*S))+'px');/* --u: one outline 'pixel' of the caption bubble */cv.style.width=W*S+'px';cv.style.height=H*S+'px';wrap.style.width=W*S+'px';wrap.style.height=H*S+'px';wrap.style.left=vw/2+'px';}
+function fit(){const vw=(document.documentElement.clientWidth||innerWidth)-FIT_RIGHT,vh=document.documentElement.clientHeight||innerHeight;S=Math.min(vw/W,vh/(H-TOP_CUT));wrap.style.setProperty('--cut',TOP_CUT*S+'px');wrap.style.top=(vh-TOP_CUT*S)/2+'px';wrap.style.setProperty('--S',S);wrap.style.setProperty('--u',Math.max(3,Math.round(5*S))+'px');/* --u: one outline 'pixel' of the caption bubble */cv.style.width=W*S+'px';cv.style.height=H*S+'px';wrap.style.width=W*S+'px';wrap.style.height=H*S+'px';wrap.style.left=vw/2+'px';}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));addEventListener('load',fit);setInterval(fit,1000);fit(); // keep the whole room on screen on iPad/phones
 // LOADING SCREEN (Jackie, Nov 10): every picture asked for while the game's code loads is counted; the loading screen (#loading in index.html)
 // covers the room until each one has arrived (or failed, so it can never wait forever), then main.js starts the game.
@@ -91,7 +92,7 @@ function capSpeakerX(w){try{if(w==='cat'){const b=catBox();return b?b.x+b.w/2:nu
 function capFaces(){const F=[];try{eachPlant(()=>{if(st.stage<0)return;const b=plantBox();F.push({x0:b.x+b.w*.2,x1:b.x+b.w*.8,y0:b.y+b.h*.2,y1:b.y+b.h*.65});});}catch(e){}return F;}
 let capPlaceT=0;
 function capRight(){const fb=document.getElementById('fsBtn'),r=fb&&fb.getBoundingClientRect(),c=cv.getBoundingClientRect();return r&&r.width?(r.left-c.left)/S-12:W-8;} // keep clear of the buttons at the top right
-function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.8,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=Math.round(H*.03);
+function capPlace(force){const now=performance.now(),R=capRight();if(force)cap.style.maxWidth=Math.round(Math.min(W*.8,R-24)*S)+'px';const bw=cap.offsetWidth/S,bh=cap.offsetHeight/S;if(!bw)return;const top=Math.round(TOP_CUT+H*.02);
  if(force||now-capPlaceT>=400){capPlaceT=now;const F=capFaces();let best=Math.min(W/2,R-bw/2); // top centre, or the nearest place along the top that leaves every plant's face clear
   for(const c of[W/2,W*.36,W*.64,W*.25,W*.75]){const x0=c-bw/2,x1=c+bw/2;if(x0<8||x1>R)continue;if(!F.some(f=>f.x1>x0&&f.x0<x1&&f.y0<top+bh+20)){best=c;break;}}cap.dataset.cx=best;}
  const cx=+cap.dataset.cx||W/2;cap.style.left=Math.round((cx-bw/2)*S)+'px';cap.style.top=Math.round(top*S)+'px';

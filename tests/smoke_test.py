@@ -288,8 +288,8 @@ async def play(b, name, save, after, minutes, check, device=None):
         await pg.evaluate("()=>wake()")
         await pg.evaluate("s=>__step(s)", MINUTE)
         check = f"st.day==={day}+1&&!st.night||'morning did not come (day '+st.day+', night '+st.night+')'"
-    if device:  # phone: the whole room must fit on screen
-        check = "(()=>{const r=cv.getBoundingClientRect();return r.width<=innerWidth+1&&r.height<=innerHeight+1&&r.width>0})()||'room does not fit the phone screen'"
+    if device:  # phone: the whole room must fit on screen (all but the ceiling trim, which is cut off: TOP_CUT)
+        check = "(()=>{const r=cv.getBoundingClientRect();return r.width<=innerWidth+1&&r.height-TOP_CUT*S<=innerHeight+1&&r.bottom<=innerHeight+1&&r.top+TOP_CUT*S>=-1&&r.width>0})()||'room does not fit the phone screen'"
     res = await pg.evaluate("()=>" + check)
     if res is not True:
         probs.append(str(res))
