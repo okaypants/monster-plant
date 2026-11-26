@@ -10,7 +10,7 @@ const OBJ={};'frame frame_tilt frame_blink frame_glow cup coin trunk_open ball2 
    painted into the room is taken out of its cubby, and the frame stands there), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'frame',x:97,y:438,pic:()=>typeof framePic==='function'?framePic():'frame'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
+const THINGS=[{n:'frame',x:97,y:438,pic:()=>typeof decorInCubby==='function'&&decorInCubby()?null:typeof framePic==='function'?framePic():'frame'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
  
  {n:'moon',x:1355,y:367,pic:()=>moonDialPic()},{n:'ball',x:1561,y:299,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
  {n:'cupboard',x:1563,y:738,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},

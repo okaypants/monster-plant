@@ -4,7 +4,7 @@
    (art_src/decor/, cut by tools/decor_build.py into decor/). They are kept in the cupboard at the bottom of the right bookcase: open
    it, choose Decorations, and pick what to decorate for. You can put any of them up on any day, and take them down again. One set is
    up at a time. A set can have three kinds of thing (Jackie, Nov 25: "we need a floor, desk and garland/light decor ... for every occasion"): a garland
-   or string of lights in the window, behind the curtains; something on the desk; and something on the floor spot, where the pumpkin
+   or string of lights in the window, behind the curtains; something small on the bookcase shelf, where the framed cat stands; and something on the floor spot, where the pumpkin
    stands. Some sets also have a flat thing for the wall. Many sets do not have all three yet: their art is still to be drawn.
    The pumpkin used to come out by itself every autumn and the tree every winter; now the pumpkin is the Autumn set's floor decoration
    and the tree is Christmas's ("the floor decoration goes where the pumpkin is, who gets relegated to general fall").
@@ -22,8 +22,8 @@ const DECOR_SETS=[
 const DECOR_KIND={H:['ny_stars','lny_lanterns','valentine_hearts','vesak_lotus','juneteenth_bunting','diwali_lamps','halloween_bats','papel_picado','solstice_garland','xmas_lights','birthday_bunting'],
  W:['koinobori','midsummer_wreath','rangoli','harvest_corn','xmas_wreath','parol']};
 const decorKind=n=>DECOR_KIND.H.includes(n)?'H':DECOR_KIND.W.includes(n)?'W':'S';
-// where they go (room pixels). S: the middle of its bottom edge, both on the desk, the second under the desk lamp where only a short thing fits (they stood on the windowsill at first; Jackie, Nov 25: "the decoration should go on the desk instead of the window sill since the curtain closes"). W: the middle of its bottom edge, above the wall lamp and above the big picture.
-const DECOR_SPOT={S:[{x:1236,y:551},{x:1340,y:551}],W:[{x:980,y:152},{x:786,y:116}]};
+// where they go (room pixels). S: the middle of its bottom edge. The first stands in the cubby of the left bookcase, in the framed cat's place, and the frame is put away while it is there (Jackie, Nov 25: "the picture on the shelf of the cat is also replaceable"; asked if a decoration may stand there: "Yes on shelf - I don't think things sit nicely on the desk atm"). A second one, in the one set that has two, stands on the desk. W: the middle of its bottom edge, above the wall lamp and above the big picture.
+const DECOR_SPOT={S:[{x:97,y:438,cubby:true},{x:1236,y:551}],W:[{x:980,y:152},{x:786,y:116}]};
 const DECOR_IMG={};DECOR_SETS.forEach(s=>s.items.forEach(n=>DECOR_IMG[n]=img('decor/'+n+'.png')));DECOR_IMG.xmas_lights_dim=img('decor/xmas_lights_dim.png');
 // the string lights blink now and then: every 6 to 16 seconds they go dim and bright three times, a frame swap
 const LIGHTS_GAP=[6000,16000],LIGHTS_STEP=160;let lightsAt=0;
@@ -35,6 +35,8 @@ function decorBoxes(){const s=decorNow();if(!s)return [];const used={S:0,W:0},ou
   const sp=DECOR_SPOT[k][used[k]++];if(sp)out.push({n,im,x:sp.x-Math.round(w/2),y:sp.y-h,w,h});}
  return out;}
 // what stands on the floor spot for the set that is up: 'pumpkin', 'tree' (both drawn by js/seasonal.js, where they rock and sway) or the name of a decoration picture
+// true while a decoration stands in the bookcase cubby: the framed cat is put away (js/room.js) and cannot be tipped (js/fidgets.js)
+function decorInCubby(){const s=decorNow();return !!s&&s.items.some(n=>decorKind(n)==='S');}
 function decorFloor(){const s=decorNow();return s&&s.floor||null;}
 // the sets there is something to put up for: one with no pictures yet (Chuseok, until its art is drawn) is not offered
 function decorOffered(){return DECOR_SETS.filter(s=>s.items.length||s.floor);}

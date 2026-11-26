@@ -12,7 +12,7 @@ import scipy.ndimage as nd
 ROOT=rb.ROOT;SRC=os.path.join(ROOT,'art_src','decor');OUT=os.path.join(ROOT,'decor')
 SCALE={'S':.27,'W':.27} # the usual size of a desk or wall thing
 FIT_H=236 # every garland is exactly this wide: the width of the window's opening between the open curtains
-FIT={'S':(96,80),'W':(90,88)} # the most room a desk thing or a wall thing may take (width, height): about the radio's height on the desk
+FIT={'S':(78,80),'W':(90,88)} # the most room a standing thing or a wall thing may take (width, height): a standing thing has to fit the bookcase cubby where the framed cat stands
 WIN_BOX=(240,118,660,560) # the part of the room the window and its curtains are in
 TOL=110 # the paper banners have hot pink and purple panels, so only what is very near the sheet's magenta is background
 SHEETS={1:[('lny_lanterns','H'),('lny_oranges','S'),('valentine_hearts','H'),('holi_powder','S'),('nowruz_sprouts','S'),('hina_dolls','S'),('easter_eggs','S'),('koinobori','W'),('eid_lantern','S')],

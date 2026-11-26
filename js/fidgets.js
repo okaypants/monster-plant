@@ -40,7 +40,7 @@ function fidgetPoke(x,y){
   for(const v of FVINES)if(v.shelf){const d=Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2));if(d<70)v.vx+=dir*(2.2-d/50)*(.8+Math.random()*.4);}fplay('vine_rustle');return true;}
  for(const p of FP)if(fhit(p,x,y)){
   if(p.n==='crate'&&bassinetOut())continue; // the bassinet stands there instead
-  if(p.n==='frame'){frameTap();return true;} // the cat's framed picture tips for a moment (below)
+  if(p.n==='frame'){if(!(typeof decorInCubby==='function'&&decorInCubby()))frameTap();return true;} // the cat's framed picture tips for a moment (below)
   if(p.does)fidgetDo(p,x,y);
   const k=p.kick||{};p.vx+=(k.vx||0)*(x<p.x+p.w/2?1:-1);p.vy+=(k.vy||0);
   if(p.puff){const n=Math.max(2,Math.round(p.dust));for(let i=0;i<n;i++)fBits.push({x:p.x+p.w/2+rnd(-25,25),y:p.y+rnd(10,40),vx:rnd(-1.6,1.6),vy:rnd(-3.2,-.6),life:rnd(40,80),c:Math.random()<.5?'#f3e6c8':'#d9c6a0'});
