@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The crystal ball has visions (Nov 25)
+
+- Jackie asked to "make the crystal ball better and more fun and goofy". I offered four directions; Jackie had a better one: "it can offer famous predictions yet to come on specific dates with attributions almost like it's possessed with visions from the other side". Should they replace the yes and no answers? "Replace them". Shown the draft of 56: "Build them".
+- Jackie also wants the ball to reference something, as the cat will reference the cat in the film House. I suggested the television psychic Criswell, who began every forecast "I predict!", and an old object that has woken up. Jackie did not object, so every vision begins "I predict!". This is easy to change.
+- Tap the ball and its mist cuts from colour to colour, and then it delivers a vision: a real thing with a real date that is yet to come. There are three kinds: what astronomers have calculated (eclipses, comets, the 2038 clock), what a named person foretold or imagined for a stated year (Newton, Keynes, Tesla, the Maya count), and what people have set going that comes due on a known day (time capsules, a 639-year piece of organ music, a shrine rebuilt every twenty years).
+- Each vision is said once before any comes round again. They are kept on the Today page like the old answers.
+- "with glowing eyes sometime": one tap in four, a pair of green cat's eyes looks out of the mist at its fullest.
+- These are deliberately a little funny, which is an exception to the plain-prose rule for game text. Each is still made of short ordinary sentences.
+- Left out: anything credited to Baba Vanga, Mother Shipton or Saint Malachy, which are forged or were never said; predictions of particular disasters; Tesla's line on eugenics.
+- The research and its sources are in research_notes/visions/. Many dates were confirmed from an encyclopedia page and not from the first source. A vision whose date passes must be taken out; the earliest is in 2028.
+
 ### The moon page's lines are little rounded boxes (Nov 25)
 
 - Jackie: "I would like each little thing \"What it does tonight\" etc to be in its own cute little rounded box like on its own card in that card ... just a lot more kawaii AND cool".

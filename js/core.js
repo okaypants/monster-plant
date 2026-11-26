@@ -66,7 +66,7 @@ function tell(t,o={}){if(!t)return false;const kind=o.kind||'info',now=performan
  /* AN ANSWER TO A TAP (o.now; Jackie, Nov 25: the crystal ball's reading "isn't clear"). A line that answers something you just did, such as the
     crystal ball or the moon dial, is shown at once and every time: it takes the place of whatever caption is up, and it is not held back for
     having been said in the last ten minutes, as other lines are. Before this the ball answered once and then said nothing for ten minutes. */
- if(o.now){CAP.q=CAP.q.filter(x=>x.kind==='important');CAP.cur=null;CAP.until=0;CAP.nextAt=now;cap.classList.remove('show');CAP.q.unshift({t,rk:o.key||t,kind,who:o.who??null,dur:clamp(2+t.trim().split(/\s+/).length*.3,3,8)});return true;}
+ if(o.now){CAP.q=CAP.q.filter(x=>x.kind==='important');CAP.cur=null;CAP.until=0;CAP.nextAt=now;cap.classList.remove('show');CAP.q.unshift({t,rk:o.key||t,kind,who:o.who??null,dur:clamp(2+t.trim().split(/\s+/).length*.3,3,o.long?16:8)});return true;} // o.long: a long line, such as one of the crystal ball's visions, stays up long enough to read
  const rk=kind==='teach'?t:(o.key||t);if(kind!=='important'&&(capRecent(rk)||capRecent(t)))return false;
  if(CAP.q.some(i=>i.t===t)||(CAP.cur&&CAP.cur.t===t))return false;
  if(kind==='ambient'){if(!ambientOK())return false;CAP.lastAmb=now;CAP.ambGap=rnd(45,90);}

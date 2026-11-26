@@ -31,7 +31,7 @@ const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
 function moonDialPic(){const ahead=typeof moonDialAt==='function'?moonDialAt():null,f=typeof moonAge==='function'?moonAge(ahead??undefined)/MOON_MONTH:0; // tonight's moon, or the night the dial has been turned on to (js/fidgets.js) // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
  return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
-function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
+function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;if(typeof ballEyesOn==='function'&&ballEyesOn())return ballEyesPic();const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
 function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
 const roomReady=()=>ok(ROOM2);
 const mkCv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingEnabled=false;return c;};

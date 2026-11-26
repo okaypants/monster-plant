@@ -74,33 +74,35 @@ function framePic(){const now=performance.now();if(now-frameTipT<FRAME_TIP)retur
  if(now>=frameBlinkAt){if(now<frameBlinkAt+(frameGlow?FRAME_GLOW:FRAME_BLINK))return frameGlow?'frame_glow':'frame_blink';next();}
  return 'frame';}
 const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17: "I think lidded jar should be coins")
-/* THE CRYSTAL BALL (Jackie, Nov 17: "let's base it on something real"). The signs are John Melville's, from "Crystal-Gazing and
-   the Wonders of Clairvoyance" (1910), "Appearances in the Crystal": white clouds are good; black are bad; violet, green and blue
-   mean coming joy; red, crimson, orange and yellow mean danger or trouble; clouds that rise answer yes and clouds that sink answer no.
-   Bad signs stay in. The mist gathers in four frames and clears again. */
-/* THE CRYSTAL BALL'S ANSWERS (Jackie, Nov 25: "The reading isn't clear or fun enough"). Think of a question and tap. The mist swirls in the
-   colour of the answer and the ball gives a plain answer first, then what the mist did. The meanings are the old crystal-gazing ones: mist
-   rising is yes and sinking is no; white clouds are good and dark ones are not; green, blue and violet promise something happy; red and
-   yellow say take care. What it says is kept with the day's other readings (the moon box's Today page, js/tarot.js). */
-const BALL_SIGNS=[{a:'Yes.',s:'The mist rises and fills the ball.',tint:'white',fr:[2,3,4,5,5,5,5,4]},{a:'No.',s:'The mist sinks away to nothing.',tint:'white',fr:[5,5,4,4,3,3,2,2]},
- {a:'It looks good.',s:'White clouds fill the ball.',tint:'white'},{a:'Not now.',s:'Dark clouds fill the ball.',tint:'dark'},
- {a:'Something happy is coming.',s:'Green clouds drift through the ball.',tint:'green'},{a:'Something happy is coming.',s:'Blue clouds drift through the ball.',tint:'blue'},
- {a:'Something happy is coming.',s:'Violet clouds drift through the ball.',tint:null},{a:'Take care for a while.',s:'Red clouds flicker in the ball.',tint:'red'},
- {a:'Take care for a while.',s:'Yellow clouds flicker in the ball.',tint:'yellow'}];
-const BALL_TINT={white:[236,236,242],dark:[74,72,92],green:[70,186,112],blue:[66,140,232],red:[226,70,74],yellow:[242,206,62]},BALL_KEY='mp-ball';
-const BALL_MS=2600;let ballT=-1e9,ballCur=null;
-function ballFrame(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?1:((ballCur&&ballCur.fr)||[2,3,4,5,5,4,3,2])[Math.floor(d/(BALL_MS/8))]||1;}
-function ballTint(){return ballCur&&performance.now()-ballT<BALL_MS?ballCur.tint:null;} // the colour of the mist while it swirls (js/room.js ballPic)
+/* THE CRYSTAL BALL. Tap it and it fills with mist that cuts from colour to colour, and then it delivers one of its visions
+   (js/visions.js): a real thing with a real date that is yet to come. Now and then a pair of green cat's eyes looks out of the mist.
+   It used to give yes and no answers by the colour of the mist, after John Melville's 1910 book on crystal gazing; Jackie had those
+   replaced (Nov 25). What it says is kept with the day's other readings (the moon box's Today page, js/tarot.js). */
+const BALL_TINT={white:[236,236,242],dark:[74,72,92],green:[70,186,112],blue:[66,140,232],red:[226,70,74],yellow:[242,206,62]},BALL_KEY='mp-ball2',BALL_BAG='mp-ball-bag';
+const BALL_MS=3200,BALL_EYES=.25;let ballT=-1e9,ballCur=null; /* what the ball is doing now: {i: which vision, tints: the mist's colour in each of its eight steps (a hard cut from one to the next), eyes: whether a pair of cat's eyes shows in the middle of it} */
+function ballStep(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?-1:Math.floor(d/(BALL_MS/8));}
+function ballFrame(){const k=ballStep();return k<0?1:[2,3,4,5,5,4,3,2][k]||1;}
+function ballTint(){const k=ballStep();return k<0||!ballCur?null:ballCur.tints[k];} // the colour of the mist at this step (js/room.js ballPic)
+function ballEyesOn(){const k=ballStep();return !!ballCur&&ballCur.eyes&&(k===3||k===4);} // the two fullest steps
+// the ball full of dark mist with a pair of green cat's eyes in it (Jackie, Nov 25: "with glowing eyes sometime"): made once from the dark mist picture
+function ballEyesPic(){const base=OBJ[ballTinted(5,'dark')];if(OBJ.ball_eyes)return 'ball_eyes';if(!base||!(base.naturalWidth||base.width))return ballTinted(5,'dark');
+ const c=document.createElement('canvas');c.width=base.naturalWidth||base.width;c.height=base.naturalHeight||base.height;const x=c.getContext('2d');x.drawImage(base,0,0);
+ const cx=Math.round(c.width/2),cy=Math.round(c.height*.36);for(const dx of[-12,5]){x.fillStyle='#96ff46';x.fillRect(cx+dx,cy,8,5);x.fillRect(cx+dx+1,cy-1,6,7);x.fillStyle='#14091c';x.fillRect(cx+dx+3,cy-1,2,7);}
+ c.naturalWidth=c.width;c.naturalHeight=c.height;c.complete=true;OBJ.ball_eyes=c;return 'ball_eyes';}
 // a mist picture in another colour: only the glass changes (its violets and lilacs), by how light each pixel is; the gold stand and the white glints stay
 function ballTinted(f,tint){const base=OBJ['ball'+f],name='ball'+f+'_'+tint;if(OBJ[name])return name;if(!ok(base)||!BALL_TINT[tint])return 'ball'+f;
  const c=document.createElement('canvas');c.width=base.naturalWidth;c.height=base.naturalHeight;const x=c.getContext('2d');x.drawImage(base,0,0);let d;try{d=x.getImageData(0,0,c.width,c.height);}catch(e){return 'ball'+f;}
  const D=d.data,[tr2,tg,tb]=BALL_TINT[tint];for(let i=0;i<D.length;i+=4){const r=D[i],g=D[i+1],b=D[i+2];if(!D[i+3]||!(b>g+18&&r>g+4)||(r>232&&g>226))continue;const k=Math.min(1.25,(r+g+b)/3/150);D[i]=Math.min(255,tr2*k);D[i+1]=Math.min(255,tg*k);D[i+2]=Math.min(255,tb*k);}
  x.putImageData(d,0,0);c.naturalWidth=c.width;c.naturalHeight=c.height;c.complete=true;OBJ[name]=c;return name;}
 function ballLog(){try{const s=JSON.parse(localStorage.getItem(BALL_KEY)||'{}');return s.day===tarotToday()&&Array.isArray(s.looks)?s:{day:tarotToday(),looks:[]}}catch(e){return {day:tarotToday(),looks:[]}}}
-function ballToday(){return ballLog().looks.filter(l=>BALL_SIGNS[l[1]]).map(l=>{const h=Math.floor(l[0]/60),m=l[0]%60;return {when:((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' am':' pm'),say:BALL_SIGNS[l[1]].a+' '+BALL_SIGNS[l[1]].s}}).reverse();}
-function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS)return;ballT=now;const i=Math.floor(Math.random()*BALL_SIGNS.length);ballCur=BALL_SIGNS[i];sfx('chime');
- if(!st.ballMet){st.ballMet=1;tell('Think of a question for the crystal ball, then tap it.',{kind:'info',key:'ballHi'});}
- setTimeout(()=>tell(ballCur.a+' '+ballCur.s,{kind:'info',key:'ballSign',now:true}),BALL_MS*.55);
+function ballToday(){return ballLog().looks.filter(l=>BALL_VISIONS[l[1]]).map(l=>{const h=Math.floor(l[0]/60),m=l[0]%60;return {when:((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' am':' pm'),say:BALL_VISIONS[l[1]]}}).reverse();}
+// which vision comes next: each is said once before any comes round again (the ones still to come are kept, shuffled, in localStorage)
+function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)||'[]')}catch(e){}bag=Array.isArray(bag)?bag.filter(i=>Number.isInteger(i)&&i>=0&&i<BALL_VISIONS.length):[];
+ if(!bag.length)bag=BALL_VISIONS.map((_,i)=>i);const k=Math.floor(Math.random()*bag.length),i=bag.splice(k,1)[0];try{localStorage.setItem(BALL_BAG,JSON.stringify(bag))}catch(e){}return i;}
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
+ ballCur={i,tints:Array.from({length:8},()=>T[Math.floor(Math.random()*T.length)]),eyes:Math.random()<BALL_EYES};sfx('chime');
+ if(!st.ballMet){st.ballMet=1;tell('The crystal ball has visions of things to come.',{kind:'info',key:'ballHi'});}
+ setTimeout(()=>tell(BALL_VISIONS[i],{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);
  try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
 /* THE MOON DIAL: its face shows tonight's moon, and a tap opens the moon page (js/moonpage.js), one card about tonight's moon. */
