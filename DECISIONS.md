@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Crates say what you are about to hear (Nov 26)
+
+- Jackie: "I don't like that it says sent from the sampler when you go listen to crates on the radio. I feel like it should have a slightly better description, just telling people like what they're about to listen to, which it basically does".
+- The radio's panel for the Crates now reads "Old records from 1925 and earlier" with "And now and then a song you made" under it. The year moves on by itself each January, as the records that are free for everyone do.
+- While something plays, the panel shows its name, and under it either "An old 78 record" or "A song you made".
+- The static line now ends "or a song you made in the sampler".
+
 ### The moon page shows Hevelius's engraving for the night (Nov 25)
 
 - Jackie: "find images to represent the moon from classic public domain", meaning a picture "of the moon phase", "to replace the shitty one of for instance a waning gibbous". Shown the candidates, with a complete set by Hevelius, Galileo's ink washes, Eimmart's pastel and al-Biruni's diagram: "Yes, Hevelius".

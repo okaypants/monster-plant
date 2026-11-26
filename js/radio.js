@@ -31,7 +31,7 @@ async function radioNext(){
   if(tok!==radio.tok)return;
   if(songs.length&&await radioSong(songs,tok))return; // no internet: your songs only
   if(tok!==radio.tok)return;
-  tell('Only static. The radio needs the internet, or a song of yours sent from the sampler.',{kind:'info',key:'radioStatic'});radioOff(false)}
+  tell('Only static. The radio needs the internet, or a song you made in the sampler.',{kind:'info',key:'radioStatic'});radioOff(false)}
 // one of your songs, played from the phone's storage
 async function radioSong(songs,tok){
   try{const pick=songs.length>1?songs.filter(s=>s.id!==radio.last):songs,m=pick[Math.floor(Math.random()*pick.length)];
@@ -222,7 +222,12 @@ function radioPanelShow(msg){const el=radio.panel;if(!el)return;
   if(msg==='…')return radioPanelName(null);
   if(!radio.on)return radioPanelName(null,'Off. Tap ON, or pick a band.');
   if(radio.band==='world')return radioPanelName(WORLD[radio.wi],msg);
-  el.querySelector('.rname b').textContent='The Crates';el.querySelector('.rname span').textContent=msg||'Old 78s and your own songs';el.querySelector('.rname em').textContent=msg?'':'Sent from the sampler'}
+  /* what you are about to hear, in plain words (Jackie, Nov 26: "I don't like that it says sent from the sampler ... it should have a slightly
+     better description, just telling people like what they're about to listen to"). With nothing named yet: what the band plays. With a
+     record or a song of yours playing: its name, and under it which of the two it is. */
+  const mine=!!msg&&/, by you!$/.test(msg),rec=!!msg&&msg.startsWith('“');
+  el.querySelector('.rname b').textContent='The Crates';el.querySelector('.rname span').textContent=msg||'Old records from '+RADIO_CUT+' and earlier';
+  el.querySelector('.rname em').textContent=mine?'A song you made':rec?'An old 78 record':msg?'':'And now and then a song you made'}
 
 /* ---------- five presets, like an old car radio (Jackie, Nov 16) ----------
    Tap a number to jump to the station kept on it; hold it (half a second or more) to keep the station you're on there.
