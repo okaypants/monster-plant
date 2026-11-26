@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Looking through the viewer shows the whole photograph (Nov 26)
+
+- Jackie: "The stereo image doesn't look very good for the viewfinder images when they're combined" and "It's just arbitrarily zoomed in".
+- The view took one photograph from the card, cut off its top and bottom and blew it up about four times to fill a double-lens shape. Now the whole photograph shows, in its own shape, in a plain dark frame as tall as the screen allows. The double-lens outline is gone, because a photograph that is taller than it is wide cannot fill it without being cut.
+
 ### The floor piece is on the floor; two tries at filling a wide screen's ends, both undone (Nov 26)
 
 - Jackie: "Would it be easy to expand the width of the room to full width, cause it's gonna cut off on my phone or, if that's too much we could put a little background wallpaper on those black ends?"
