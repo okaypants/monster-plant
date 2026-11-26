@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A framed picture of the cat replaces the wind-up cat (Nov 25)
+
+- Jackie: "i kind of want to replace the wind up toy with a framed image of the cat". Asked whether to reuse the sleeping portrait or draw a new one: "New drawing". Jackie made it (art_src/room2/sheet6.webp): the cat sitting upright in a gold frame on navy with two stars, and the same frame tipped.
+- "I would like it to blink every once in awhile", then "like very infrequently": the cat in the picture shuts its eyes for a moment once every one to three minutes. The shut-eye picture is Jackie's upright one with each eye painted over in fur and a short dark line drawn in its place.
+- The wind-up cat is gone, with its winding, its run along the floor and its "has run down" line. The frame stands in its cubby in the left bookcase. A tap tips it for a moment.
+
 ### No cup under the water cooler (Nov 25)
 
 - Jackie, after two rounds on the cup's size: "maybe no cup and it just appears when you click the water cooler".

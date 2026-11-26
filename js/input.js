@@ -40,7 +40,6 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks(bookZone(x,y).books);return;} // any book: both bookcases, the crate book, the book stack
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,SAMPLER)){openSampler();return;} // the sampler on the top shelf opens its own app (js/sampler.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,RADIO)){radioTap();fidgetPoke(x,y);return;} // the radio on the desk: on or off (js/radio.js), day or night
- if(!held.tool&&!onPlantPx(x,y)&&toyHit(x,y)){toyPutBack();return;} // the wind-up cat, out of its cubby: a tap puts it back (js/fidgets.js)
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
  if(st.night){ // night: lights and curtains still work; wake only on purpose
   if(inR(x,y,FLOOR)||inR(x,y,FLOOR_POLE)){st.lamp=!st.lamp;sfx(st.lamp?'chime':'sigh');save();return;}

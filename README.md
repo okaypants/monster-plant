@@ -187,7 +187,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
   | `radio.js` | The radio on the desk and its dial: CRATES (old free records and your songs from the sampler) and WORLD (81 live stations, `WORLD`), with the tuning sound between stations |
 | `cratesdb.js` | Where the sampler keeps what you save on purpose (the work in progress and finished songs), shared with the radio; never the game's save |
 | `sampler.js` | The sampler on the top shelf: tapping it opens its own app, `sampler.html`, in a frame over the room, and closing it throws the app away |
-  | `fidgets.js` | Springy props, the crystal ball's signs, the wind-up cat, vines, book spines, bouncing treats (sound slots `fplay`) |
+  | `fidgets.js` | Springy props, the crystal ball's signs, the cat's framed picture, vines, book spines, bouncing treats (sound slots `fplay`) |
   | `seasonal.js` | Autumn leaves past the window; the pumpkin (autumn) and the tree with ornaments (winter) on the milk crate |
   | `books/` | The twelve book covers, 42 x 60 each, cut from Jackie's sheet (`covers_sheet.png`); `care.js` draws them (BOOK_COVER, bookPix) |
   | `stories.js` | What's inside the twelve books: many real reads each (old poems word for word, Sloth's Almanac facts, folklore), cycled in a shuffled order; how to add one is at the top of the file. The Song book's reads each name a real record in the crates (`rec`); `care.js` adds the Play the record button |
@@ -215,7 +215,7 @@ Run `python tests/smoke_test.py` from this folder: it plays 16 cases (also a tee
 | `room2.png` | The room, drawn once in daylight with every lamp off; its window panes are see-through. Built from `art_src/room2/` by `tools/room_build.py`, which also applies the colour changes Jackie asked for |
 | `view_<season>.png`, `viewfg_<season>.png` | The view from the window by day, and the same with its sky taken out (for a sunset or night sky behind the tree) |
 | `curtains2.png`, `sash2.png` | The closed curtains (a whole-room layer) and the bars of the window's bottom row, which slide up for Sloth's paw |
-| `obj_*.png`, `carry_cup_*.png` | The few things drawn on top of the room (the wind-up cat's frames, the cup, the moon dial's faces, the crystal ball's mist, the trunk's lifted lid, a coin, the bassinet with and without its blanket, and the patch of wall behind the milk crate) and the cup as it is carried |
+| `obj_*.png`, `carry_cup_*.png` | The few things drawn on top of the room (the cat's framed picture, the cup, the moon dial's faces, the crystal ball's mist, the trunk's lifted lid, a coin, the bassinet with and without its blanket, and the patch of wall behind the milk crate) and the cup as it is carried |
 | `<time>_floorlamp_off.png`, `<time>_desklamp_off.png`, `<time>_curtains_closed.png` | Lamp and curtain pieces |
 | `room_*.png`, `day_/golden_/night_*.png`, `lampoff_*.png`, `stool_empty.png`, `window_glass.png` | The old room's thirty pictures: no longer loaded, kept until the new room is live |
 | `leaf_<maple/redmaple/ginkgo/oak/twig/round>.png` | Autumn leaves that drift past the window (cut from `season_leaves.png`; its leaf piles wait for an outdoor space) |

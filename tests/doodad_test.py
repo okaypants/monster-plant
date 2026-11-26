@@ -36,8 +36,8 @@ async def main():
         await pg.click(".screen button[data-k=go]")
         await pg.evaluate("()=>{__step(2);capClear();}")
         names = await pg.evaluate("()=>FP.map(p=>p.n)")
-        check(all(n in names for n in ["crate", "deskchair", "forks", "ball", "moondial", "viewer", "toy"]), f"the new room's things should be touchable: {names}")
-        own = await pg.evaluate("()=>FP.filter(p=>!p.does&&!p.puff&&p.n!=='toy').map(p=>p.n)")
+        check(all(n in names for n in ["crate", "deskchair", "forks", "ball", "moondial", "viewer", "frame"]), f"the new room's things should be touchable: {names}")
+        own = await pg.evaluate("()=>FP.filter(p=>!p.does&&!p.puff&&p.n!=='frame').map(p=>p.n)")
         check(set(own) <= {"pillow", "drum", "radio", "petbed", "deskchair"}, f"only furniture and things with their own app should be bounce-only: {own}")
         for n, kind in [("box1", "coin"), ("catpic", "heart"), ("bigpic", "petal")]:
             await pg.evaluate(TAP, n)
@@ -49,7 +49,7 @@ async def main():
         # every coin falls to the floor and comes to rest there (Jackie, Nov 25): never a line in mid-air, never the shelf
         await pg.evaluate("()=>{fBits.length=0}")
         await pg.evaluate(TAP, "box1")
-        await pg.evaluate("()=>__step(4,16)")  # small frames: the coins' fall is worked out sixty times a second
+        await pg.evaluate("()=>__step(4.4,16)")  # small frames: the coins' fall is worked out sixty times a second; they last 4.5 s at least
         r = await pg.evaluate("()=>{const c=fBits.filter(b=>b.coin);return {n:c.length,off:c.filter(b=>Math.abs(b.y-b.fz)>3).length,low:c.filter(b=>b.fz<COIN_FLOOR[0]||b.fz>COIN_FLOOR[1]).length,moving:c.filter(b=>Math.abs(b.vy)>.5).length}}")
         check(r["n"] >= 6 and r["off"] == 0 and r["low"] == 0 and r["moving"] == 0, f"every coin should be at rest on the floor: {r}")
         await pg.screenshot(path=os.path.join(OUT, "coins_landed.png"), clip=await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return {x:r.left,y:r.top+380*S,width:520*S,height:520*S}}"))
@@ -77,17 +77,13 @@ async def main():
         check(await pg.evaluate("()=>ballToday().length>=1&&/ [ap]m$/.test(ballToday()[0].when)&&(!ballCur.tint||thingBy('ball').pic()===null||true)&&Object.keys(BALL_TINT).every(t=>ballTinted(3,t)==='ball3_'+t&&OBJ['ball3_'+t].naturalWidth===OBJ.ball3.naturalWidth)"), "what the ball says should be kept for Today, and its mist should come in every colour it names")
         await pg.evaluate("()=>{__step(4);capClear()}")
         check(await pg.evaluate("()=>ballFrame()===1"), "the crystal ball should clear again")
-        # the wind-up cat: wound, it leaves its cubby, runs along the floor, winds down, and a tap puts it back
-        await pg.evaluate(TAP, "toy")
-        check(await pg.evaluate("()=>toy.ph==='wind'&&toy.home"), "a tap should wind the toy cat in its cubby")
-        await pg.evaluate("()=>__step(6)")
-        check(await pg.evaluate("()=>toy.ph==='run'&&!toy.home&&toyPic()===null&&toy.y===TOY_FLOOR"), "the wound toy cat should be out on the floor, its cubby empty")
-        await pg.screenshot(path=os.path.join(OUT, "toy_out.png"))
-        await pg.evaluate("()=>__step(TOY_RUN+1)")
-        check(await pg.evaluate("()=>toy.ph==='stopped'"), "the toy cat should wind down and stop")
-        check(await pg.evaluate("()=>/put it back/.test(capText.textContent)"), "the game should say how to put the toy cat back")
-        await pg.evaluate("()=>{const b=toyBox(),r=cv.getBoundingClientRect();capClear();cv.dispatchEvent(new MouseEvent('click',{clientX:r.left+(b.x+b.w/2)*S,clientY:r.top+(b.y+b.h/2)*S,bubbles:true}));}")
-        check(await pg.evaluate("()=>toy.home&&toy.ph==='home'&&toyPic()==='toy_h1'"), "a tap on the stopped toy cat should put it back in its cubby")
+        # the cat's framed picture in the bookcase: a tap tips it for a moment, and the cat in it blinks once in a long while
+        check(await pg.evaluate("()=>thingBy('frame').pic()==='frame'&&['frame','frame_tilt','frame_blink'].every(n=>OBJ[n].naturalWidth>40)"), "the framed cat should stand upright in its cubby")
+        await pg.evaluate(TAP, "frame")
+        check(await pg.evaluate("()=>framePic()==='frame_tilt'"), "a tap should tip the frame")
+        await pg.evaluate("()=>__step(1)")
+        check(await pg.evaluate("()=>framePic()==='frame'"), "the frame should stand straight again")
+        check(await pg.evaluate("()=>{if(FRAME_GAP[0]<60000)return false;frameBlinkAt=performance.now()-10;const b=framePic()==='frame_blink';__step(1);const after=framePic(),gap=frameBlinkAt-performance.now();return b&&after==='frame'&&gap>=FRAME_GAP[0]-2000&&gap<=FRAME_GAP[1]}"), "the cat in the frame should blink for a moment, a minute or more apart")
         for n in ["forks", "deskchair", "crate"]:
             await pg.evaluate(TAP, n)
             await pg.evaluate("()=>__step(.05)")

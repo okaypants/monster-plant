@@ -5,7 +5,7 @@
 // 'thing' = the room thing (js/room.js THINGS) this box belongs to: while it bounces, its own picture is drawn moved, never a copy over it
 const FP=[
  {n:'ammonite',x:1094,y:146,w:108,h:84,k:.18,d:.12,kick:{vy:-4},puff:true},
- {n:'toy',x:52,y:350,w:90,h:90,k:.10,d:.10},
+ {n:'frame',x:56,y:350,w:84,h:90,k:.10,d:.10},
  {n:'pillow',x:582,y:532,w:122,h:116,k:.14,d:.16,kick:{vy:5}},
  {n:'drum',x:1220,y:140,w:186,h:88,k:.25,d:.18,kick:{vy:3}},
  {n:'moondial',x:1304,y:266,w:102,h:104,k:.16,d:.06,does:'moon'},
@@ -40,7 +40,7 @@ function fidgetPoke(x,y){
   for(const v of FVINES)if(v.shelf){const d=Math.hypot(x-(v.x+v.w/2),y-(v.y+v.h/2));if(d<70)v.vx+=dir*(2.2-d/50)*(.8+Math.random()*.4);}fplay('vine_rustle');return true;}
  for(const p of FP)if(fhit(p,x,y)){
   if(p.n==='crate'&&bassinetOut())continue; // the bassinet stands there instead
-  if(p.n==='toy'){if(!toy.home)return false;toyWind();return true;} // the wind-up cat: wound, it climbs out (below)
+  if(p.n==='frame'){frameTap();return true;} // the cat's framed picture tips for a moment (below)
   if(p.does)fidgetDo(p,x,y);
   const k=p.kick||{};p.vx+=(k.vx||0)*(x<p.x+p.w/2?1:-1);p.vy+=(k.vy||0);
   if(p.puff){const n=Math.max(2,Math.round(p.dust));for(let i=0;i<n;i++)fBits.push({x:p.x+p.w/2+rnd(-25,25),y:p.y+rnd(10,40),vx:rnd(-1.6,1.6),vy:rnd(-3.2,-.6),life:rnd(40,80),c:Math.random()<.5?'#f3e6c8':'#d9c6a0'});
@@ -61,28 +61,18 @@ function fidgetPoke(x,y){
      the moon trunk                        its lid lifts, and the moon box opens
      the cat's picture                     little hearts
      the big picture                       a few gold stars
-     the wind-up cat                       wound up, it climbs out of its cubby and runs about until it winds down
+     the framed cat in the bookcase        it tips for a moment; left alone, the cat in it blinks once in a long while
    The shell puffs dust; the pillow, the cat bed and the desk chair wobble like the other furniture. */
-/* THE WIND-UP CAT (Jackie, Nov 17 and 18: "it climbs out when wound ... down to the floor and has to be put back", "the key had to
-   turn"). A tap winds it: the key turns for a moment in its cubby. Then it climbs head-first down the front of the bookcase and
-   runs back and forth along the floor until it winds down, its key turning all the way (two frames). It stays where it stopped
-   until you tap it, which puts it back on its shelf; its cubby is empty while it is out. Whole pixels, frame swaps only.
-   Not saved: it is always home when the game opens. */
-const TOY_HOME={x:97,y:438},TOY_FLOOR=812,TOY_L=120,TOY_R=1390,TOY_V=95,TOY_RUN=18,TOY_WIND=1.2,TOY_SWAP=.16;
-const toy={home:true,ph:'home',x:TOY_HOME.x,y:TOY_HOME.y,t:0,dir:1,left:0};
-function toyFrame(){return Math.floor(toy.t/TOY_SWAP)%2?2:1;}
-function toyPic(){return !toy.home?null:toy.ph==='wind'?'toy_h'+toyFrame():'toy_h1';} // in its cubby (Jackie, Nov 18: the toy cats from her own sheet, not the one painted into the room); its key turns while it is wound
-function toyWind(){if(toy.ph!=='home')return;toy.ph='wind';toy.t=0;fplay('toy_wind');}
-function toyStep(dt){if(toy.ph==='home'||toy.ph==='stopped')return;const f0=toyFrame();toy.t+=dt;if(toyFrame()!==f0&&toy.ph!=='wind')sfx('tick');
- if(toy.ph==='wind'){if(toyFrame()!==f0)sfx('tick');if(toy.t>=TOY_WIND){toy.ph='down';toy.home=false;toy.x=TOY_HOME.x+12;toy.y=TOY_HOME.y+60;toy.t=0;}}
- else if(toy.ph==='down'){toy.y+=TOY_V*dt;if(toy.y>=TOY_FLOOR){toy.y=TOY_FLOOR;toy.ph='run';toy.dir=1;toy.left=TOY_RUN;}}
- else if(toy.ph==='run'){toy.x+=toy.dir*TOY_V*dt;toy.left-=dt;if(toy.x>=TOY_R){toy.x=TOY_R;toy.dir=-1;}else if(toy.x<=TOY_L){toy.x=TOY_L;toy.dir=1;}
-  if(toy.left<=0){toy.ph='stopped';tell('The wind-up cat has run down. Tap it to put it back on its shelf.',{kind:'info',key:'toyDown'});}}}
-function toyBox(){if(toy.home)return null;const n=toy.ph==='down'?'toy_d'+toyFrame():'toy_'+(toy.dir>0?'r':'l')+(toy.ph==='stopped'?1:toyFrame()),im=OBJ[n];if(!ok(im))return null;
- return {im,x:Math.round(toy.x-im.naturalWidth/2),y:Math.round(toy.y-im.naturalHeight),w:im.naturalWidth,h:im.naturalHeight};}
-function drawToy(){const b=toyBox();if(b)g.drawImage(litPic(b.im,lightAt(toy.x,toy.y)),b.x,b.y);} // behind the monsters and Tofu (js/room.js draw)
-function toyHit(x,y){const b=toyBox();return !!b&&x>=b.x-10&&x<b.x+b.w+10&&y>=b.y-10&&y<b.y+b.h+10;}
-function toyPutBack(){toy.home=true;toy.ph='home';toy.x=TOY_HOME.x;toy.y=TOY_HOME.y;sfx('pop');}
+/* THE FRAMED CAT (Jackie, Nov 25: "i kind of want to replace the wind up toy with a framed image of the cat", then "I would like it to
+   blink every once in awhile", "like very infrequently"). It stands in the bookcase where the wind-up cat was. A tap tips it for a
+   moment. Left alone, the cat in the picture blinks once every one to three minutes. Frame swaps only. */
+const FRAME_TIP=350,FRAME_BLINK=180,FRAME_GAP=[60000,180000];
+let frameTipT=-1e9,frameBlinkAt=0;
+function frameTap(){frameTipT=performance.now();sfx('tick');}
+function framePic(){const now=performance.now();if(now-frameTipT<FRAME_TIP)return 'frame_tilt';
+ if(!frameBlinkAt)frameBlinkAt=now+rnd(FRAME_GAP[0],FRAME_GAP[1]);
+ if(now>=frameBlinkAt){if(now<frameBlinkAt+FRAME_BLINK)return 'frame_blink';frameBlinkAt=now+rnd(FRAME_GAP[0],FRAME_GAP[1]);}
+ return 'frame';}
 const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17: "I think lidded jar should be coins")
 /* THE CRYSTAL BALL (Jackie, Nov 17: "let's base it on something real"). The signs are John Melville's, from "Crystal-Gazing and
    the Wonders of Clairvoyance" (1910), "Appearances in the Crystal": white clouds are good; black are bad; violet, green and blue
@@ -151,7 +141,6 @@ cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
  fDrag.last={x,y};});
 function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox+=p.vx;p.oy+=p.vy;if(Math.abs(p.ox)<.3&&Math.abs(p.vx)<.2){p.ox=0;p.vx=0;}if(Math.abs(p.oy)<.3&&Math.abs(p.vy)<.2){p.oy=0;p.vy=0;}}
 function fidgetStep(){
- toyStep(1/60);
  for(const p of FP){
   fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
  for(const s of fSpines){s.vy+=-.14*s.oy;s.vy*=.9;s.oy+=s.vy;}fSpines=fSpines.filter(s=>Math.abs(s.oy)>.3||Math.abs(s.vy)>.2);
@@ -217,7 +206,7 @@ const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds be
 let idleNext=0,idleOn=null,pointerHeld=false;const idleLog=[];
 cv.addEventListener('pointerdown',()=>{pointerHeld=true;});addEventListener('pointerup',()=>{pointerHeld=false;});addEventListener('pointercancel',()=>{pointerHeld=false;});
 function touching(){return pointerHeld||drag.down||drag.on||!!held.tool||!!feed.item||!!bookDrag.item||!!bubble||!!document.querySelector('.screen');}
-function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||fBits.length>0||toy.ph==='wind'||toy.ph==='down'||toy.ph==='run'||!!(BOING.oy||BOING.vy);}
+function somethingMoving(){return FP.some(p=>p.ox||p.oy||p.vx||p.vy)||fSpines.length>0||fBits.length>0||!!(BOING.oy||BOING.vy);}
 function idleTick(now){if(idleOn){if(now-idleOn.t0>=IDLE_FRAMES.length*IDLE_MS||touching())idleOn=null;return;}
  if(!idleNext)idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;if(now<idleNext)return;idleNext=now+rnd(IDLE_GAP[0],IDLE_GAP[1])*1000;
  if(!st.started||touching()||somethingMoving()){idleNext=now+1000;return;} // busy: try again in a second, so the 10 s rhythm holds

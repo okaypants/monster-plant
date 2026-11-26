@@ -5,12 +5,12 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'toy_h1 toy_h2 toy_r1 toy_r2 toy_l1 toy_l2 toy_d1 toy_d2 cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
-/* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the wind-up cat (the one
-   painted into the room is taken out, so its cubby can be empty, and the toy cats from Jackie's sheet are used), the cup you carry, and the faces that change: the moon dial's phase, the crystal
+const OBJ={};'frame frame_tilt frame_blink cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+/* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the cat's framed picture in the bookcase (the wind-up cat
+   painted into the room is taken out of its cubby, and the frame stands there), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'toy',x:96,y:438,pic:()=>typeof toyPic==='function'?toyPic():'toy_h1'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
+const THINGS=[{n:'frame',x:97,y:438,pic:()=>typeof framePic==='function'?framePic():'frame'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
  
  {n:'moon',x:1355,y:367,pic:()=>moonDialPic()},{n:'ball',x:1561,y:299,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
  {n:'cupboard',x:1563,y:738,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
@@ -218,7 +218,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  // SIMPLE RULE (Jackie: web + DS friendly): frame swaps and whole-pixel moves only; no fades, rotation, gradients or smooth scaling
  let b=null;
  if(drag.on){const gp=stageGroup();for(const k of gp==='seed'?GROUPS.seed:PERCH[ageName()].filter(k=>!perchTaken(k))){const sp=SPOT[k],pulse=Math.floor(T*2)%2?.35:.22;g.fillStyle=`rgba(255,240,200,${pulse})`;g.beginPath();g.ellipse(sp.x,sp.y-4,k==='chair'?110:gp==='seed'?44:70,12,0,0,Math.PI*2);g.fill();}}
- drawSill();if(typeof drawToy==='function')drawToy(); // what Sloth's paw brought, and the paw itself, behind plants and the cat (js/paw.js)
+ drawSill(); // what Sloth's paw brought, and the paw itself, behind plants and the cat (js/paw.js)
  if(st.started){for(const q of parts)if(q.k==='drop')fx('drops',q.x,q.y,6);
   const L=[];eachPlant(i=>{if(st.stage>=0)L.push({i,y:baseY()});});L.sort((p,q)=>p.y-q.y);let catDone=false;
   for(const e of L){if(!catDone&&cat.y<e.y){drawCat();catDone=true;}if(e.i<0)drawOnePlant();else{swapIn(e.i);try{drawOnePlant();}finally{swapIn(e.i);}}}

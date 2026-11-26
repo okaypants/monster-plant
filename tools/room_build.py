@@ -124,8 +124,6 @@ def build_room():
 CUTS={'trunk_open':(1,465,286,254,207,.42),
  'ball2':(2,273,62,149,177,.475),'ball3':(2,486,62,150,177,.475),'ball4':(2,697,62,150,177,.475),'ball5':(2,908,62,150,177,.475),
  'moon1':(2,58,298,177,169,.56),'moon2':(2,285,298,178,169,.56),'moon3':(2,505,298,178,169,.56),'moon4':(2,727,298,178,168,.56),'moon5':(2,948,298,178,169,.56),
- 'toy_h1':(2,41,516,170,153,.56),'toy_h2':(2,253,514,169,155,.56), # in its cubby: as big as the cubby allows
- 'toy_r1':(2,41,516,170,153,.82),'toy_r2':(2,253,514,169,155,.82),'toy_l1':(2,448,516,169,153,.82),'toy_l2':(2,648,514,169,155,.82),'toy_d1':(2,880,514,105,160,.82),'toy_d2':(2,1070,516,106,158,.82), # out of it: bigger (Jackie, Nov 18)
  'cup':(2,1221,305,135,151,.19),'coin':(2,681,735,147,150,.14)}
 def cut(sheet,x,y,w,h,sc,pad=6,holes=False): # holes: magenta shut in by the thing (the gap under the bassinet) is background too
     a=sheet[max(0,y-pad):y+h+pad,max(0,x-pad):x+w+pad];bg=magenta(a,200)
@@ -276,6 +274,20 @@ def build_cupboard():
         x,y,w,h=toys[n];t=cut(sh,x,y,w,h,sc,holes=True);inside.alpha_composite(t,(left,floor-t.height))
     inside.save(os.path.join(ROOT,'obj_cup_open.png'),optimize=True)
     return {'cup_open':[inside.width,inside.height]}
+def build_frame():
+    """The framed picture of the cat that stands in the bookcase where the wind-up cat was (sheet6.webp; Jackie, Nov 25): upright, tipped
+    (for when it is tapped), and upright with its eyes shut for a blink. The blink is the upright one with each eye painted over in the
+    fur above it and one short dark line drawn where the eye was."""
+    sh=load('sheet6.webp');sc=.193 # as big as the cubby allows
+    up=cut(sh,142,417,398,444,sc);up.save(os.path.join(ROOT,'obj_frame.png'),optimize=True)
+    cut(sh,684,410,438,464,sc).save(os.path.join(ROOT,'obj_frame_tilt.png'),optimize=True)
+    a=np.asarray(up).copy();rgb=a[...,:3].astype(int);reg=box(a.shape,24,27,50,38)&(rgb.sum(2)<150)
+    lab,n=nd.label(reg);eyes=[i for i in range(1,n+1) if (lab==i).sum()>=9];assert len(eyes)==2,('eyes',[(lab==i).sum() for i in range(1,n+1)])
+    for i in eyes:
+        ys,xs=np.where(lab==i);cy,cx=int(round(ys.mean())),int(round(xs.mean()));fur=a[cy-5,cx,:3].copy() # the plain fur of the forehead above the eye
+        a[cy-3:cy+4,cx-3:cx+4,:3]=fur;a[cy+1,cx-2:cx+3,:3]=(40,16,12)
+    Image.fromarray(a,'RGBA').save(os.path.join(ROOT,'obj_frame_blink.png'),optimize=True)
+    return {'frame':list(up.size)}
 if __name__=='__main__':
-    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard())
+    room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard());meta.update(build_frame())
     print(json.dumps(meta))

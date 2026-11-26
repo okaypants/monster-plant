@@ -139,7 +139,7 @@ addEventListener('resize',()=>setTimeout(placeTray,50));
    eyes open (kid, teen or adult); let go there and it reads in the room: an open book in front of it, a page flipping every
    moment (a 2-frame swap), a few tiny symbols from that book rising on whole pixels, for about 8 s. Then the book closes and
    hops back to the shelf. Let go anywhere else and the book just goes back to the tray. Same feel as the treat tray. */
-// tap areas: the rows of books on both bookcases, kept clear of the wind-up cat, the jar, the lockbox, the floor lamp, the crystal ball and the moon trunk
+// tap areas: the rows of books on both bookcases, kept clear of the cat's framed picture, the jar, the lockbox, the floor lamp, the crystal ball and the moon trunk
 // Each place holds its own four books (Jackie, Nov 15: only four at a time, depending on where you tap): every book can be found in three or four places.
 const BOOK_ZONES=[
  {x:4,y:140,w:208,h:86,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row */,{x:4,y:246,w:134,h:86,books:['songs','stars','letters','field']},
