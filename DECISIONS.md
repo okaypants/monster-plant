@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A second garland hangs on the right-hand wall (Nov 26)
+
+- Jackie: "I thought we were putting garland on the right side of the room? But it also has to look cute, like not cover everything, I guess and we can always make some more garland if something else seems like appropriate for the occasion".
+- The set's garland hangs a second time on the bare wall above the right-hand shelves, just under the ceiling trim. It is drawn only where that wall is bare wallpaper (decor/wallmask.png), so a long one tucks behind the shell and the sampler and nothing is covered. Its bulbs blink together with the window's.
+- It is the same picture as the window garland for now. A different garland for the wall on some occasions would need new drawings.
+
 ### Only real lights blink on a garland (Nov 26)
 
 - Jackie: "Make it so that only actual lights light up up as far as the garland flags, like don't turn weird things into lights."

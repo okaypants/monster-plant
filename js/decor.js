@@ -36,10 +36,17 @@ function lightsDim(){const now=performance.now();if(!lightsAt)lightsAt=now+rnd(L
 /* INSIDE THE WINDOW (Jackie: "garland and stuff should go behind the curtains, but in front of the windows ... they're like inside").
    The garland is drawn only through the shape of the window's opening between the open curtains (decor/winmask.png), and before the
    closed curtains are drawn, so cloth always covers it. */
-const WIN_AT={x:240,y:118,cx:444,top:150},WIN_MASK=img('decor/winmask.png'),winCv=document.createElement('canvas');
-function drawDecorWindow(){if(!st.started)return;const s=decorNow();if(!s||!ok(WIN_MASK))return;
+const WIN_AT={x:240,y:118,cx:444,top:150},WIN_MASK=img('decor/winmask.png');
+/* ON THE RIGHT-HAND WALL (Jackie: "I thought we were putting garland on the right side of the room? But it also has to look cute, like
+   not cover everything"). The same garland hangs a second time on the bare wall above the right-hand shelves, drawn only through the
+   shape of that bare wall (decor/wallmask.png), so it sits behind the shell, the sampler and the plant and covers nothing. */
+const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png');
+const GARLANDS=[[WIN_AT,WIN_MASK,document.createElement('canvas')],[WALL_AT,WALL_MASK,document.createElement('canvas')]];
+function drawGarland(n){if(!st.started)return;const s=decorNow(),[at,mask,cv]=GARLANDS[n];if(!s||!ok(mask))return;
  const dimmed=DECOR_IMG[s.id+'_w_dim'],im=lightsDim()&&ok(dimmed)&&!tsCalm()?dimmed:DECOR_IMG[s.id+'_w'];if(!ok(im))return;
- if(winCv.width!==WIN_MASK.naturalWidth){winCv.width=WIN_MASK.naturalWidth;winCv.height=WIN_MASK.naturalHeight;}const x=winCv.getContext('2d');
- x.globalCompositeOperation='source-over';x.clearRect(0,0,winCv.width,winCv.height);x.drawImage(litPic(im,lightAt(WIN_AT.cx,WIN_AT.top+im.naturalHeight)),WIN_AT.cx-WIN_AT.x-Math.round(im.naturalWidth/2),WIN_AT.top-WIN_AT.y);
- x.globalCompositeOperation='destination-in';x.drawImage(WIN_MASK,0,0);g.drawImage(winCv,WIN_AT.x,WIN_AT.y);}
+ if(cv.width!==mask.naturalWidth){cv.width=mask.naturalWidth;cv.height=mask.naturalHeight;}const x=cv.getContext('2d');
+ x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.drawImage(litPic(im,lightAt(at.cx,at.top+im.naturalHeight)),at.cx-at.x-Math.round(im.naturalWidth/2),at.top-at.y);
+ x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);g.drawImage(cv,at.x,at.y);}
+function drawDecorWindow(){drawGarland(0);}
+function drawDecorWall(){drawGarland(1);}
 function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'The room is decorated for '+s.name+'.':'The decorations are back in the cupboard.',{kind:'info',key:'decor',now:true});save();}

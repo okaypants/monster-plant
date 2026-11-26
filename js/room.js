@@ -211,6 +211,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  fidgetDrawProps(rm);
  drawSeasonItem(); // the pumpkin (autumn) or the tree (winter) on the book stack (js/seasonal.js)
  drawPlacard(tk+'|'+lk+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
+ if(typeof drawDecorWall==='function')drawDecorWall(); // the same garland on the bare wall above the right-hand shelves (js/decor.js)
  if(typeof drawDecorWindow==='function')drawDecorWindow(); // a garland inside the window, behind the curtains (js/decor.js)
  curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01)drawCurtains(curK);
  if(typeof drawDecor==='function')drawDecor(); // holiday decorations (js/decor.js), in front of the curtains

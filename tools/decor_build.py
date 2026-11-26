@@ -55,6 +55,17 @@ def lights(im,occ=''):
 def dim(im,occ=''):
     """The garland with its lights gone dim (see lights). A garland with no lights comes back unchanged, so it never blinks."""
     a=np.asarray(im).astype(float);m=lights(im,occ);a[...,:3][m]=a[...,:3][m]*.45+np.array([24,18,30]);return Image.fromarray(a.astype(np.uint8),'RGBA')
+WALL_BOX=(1040,34,1440,236) # the bare wall above the right-hand shelves, down to the top shelf
+def wall_mask(room=None):
+    """decor/wallmask.png: where that stretch of wall is bare wallpaper. The second garland is drawn only through it, so it hangs
+    on the wall behind the shell, the sampler and the plant's leaves and never covers them."""
+    if room is None:room=np.asarray(Image.open(os.path.join(ROOT,'room2.png')).convert('RGBA')).astype(int)
+    x0,y0,x1,y1=WALL_BOX;s=room[y0:y1,x0:x1];r,g,b=s[...,0],s[...,1],s[...,2]
+    paper=(r<95)&(g>35)&(g<150)&(b>55)&(b<175)&(b>r+12)&(g>r) # the wallpaper's blue-greens, dots included
+    paper=nd.binary_opening(nd.binary_closing(paper,iterations=2),iterations=2)
+    lab,cnt=nd.label(paper);m=lab==np.bincount(lab[paper]).argmax() # the one big stretch of wall, not blue-green bits inside things
+    m=nd.binary_erosion(nd.binary_fill_holes(m)&paper|m,iterations=1)
+    out=np.zeros(s.shape[:2]+(4,),np.uint8);out[m]=255;Image.fromarray(out,'RGBA').save(os.path.join(OUT,'wallmask.png'),optimize=True)
 def build():
     os.makedirs(OUT,exist_ok=True);meta={}
     for n,occ in enumerate(SHEETS,1):
@@ -90,5 +101,6 @@ def build():
     glass=(s[...,3]==0)|((r>200)&(b>200)&(g<80));frame=(r>190)&(g>80)&(g<175)&(b<95)&(r-g>55)
     lab,cnt=nd.label(nd.binary_closing(glass|frame,iterations=2));m=nd.binary_fill_holes(lab==np.bincount(lab[glass]).argmax())
     out=np.zeros(s.shape[:2]+(4,),np.uint8);out[m]=255;Image.fromarray(out,'RGBA').save(os.path.join(OUT,'winmask.png'),optimize=True)
+    wall_mask(room)
     print(json.dumps(meta));return meta
 if __name__=='__main__':build()
