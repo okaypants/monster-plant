@@ -10,19 +10,21 @@ sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import room_build as rb
 import scipy.ndimage as nd
 ROOT=rb.ROOT;SRC=os.path.join(ROOT,'art_src','decor');OUT=os.path.join(ROOT,'decor')
-SCALE={'S':.27,'W':.27} # the usual size of a desk or wall thing
+SCALE={'S':.27,'W':.27,'F':.4} # the usual size of a desk or wall thing, and of a floor thing
 FIT_H=236 # every garland is exactly this wide: the width of the window's opening between the open curtains
-FIT={'S':(78,80),'W':(90,88)} # the most room a standing thing or a wall thing may take (width, height): a standing thing has to fit the bookcase cubby where the framed cat stands
+FIT={'S':(78,80),'W':(90,88),'F':(118,128)} # the most room a standing thing or a wall thing may take (width, height): a standing thing has to fit the bookcase cubby where the framed cat stands
 WIN_BOX=(240,118,660,560) # the part of the room the window and its curtains are in
 TOL=110 # the paper banners have hot pink and purple panels, so only what is very near the sheet's magenta is background
 SHEETS={1:[('lny_lanterns','H'),('lny_oranges','S'),('valentine_hearts','H'),('holi_powder','S'),('nowruz_sprouts','S'),('hina_dolls','S'),('easter_eggs','S'),('koinobori','W'),('eid_lantern','S')],
  2:[('vesak_lotus','H'),('tanabata_bamboo','S'),('midsummer_wreath','W'),('obon_lantern','S'),('midautumn_cakes','S'),('rabbit_lantern','S'),('diwali_lamps','H'),('rangoli','W'),('halloween_bats','H')],
  3:[('papel_picado','H'),('marigolds','S'),('harvest_corn','W'),('menorah','S'),('xmas_wreath','W'),('xmas_lights','H'),('parol','W'),('kinara','S'),('solstice_garland','H')],
- 4:[('ny_stars','H'),('kagami_mochi','S'),('birthday_bunting','H'),('birthday_cake','S'),('songkran_bowl','S'),('pride_flag','S'),('juneteenth_bunting','H'),('advent_candles','S'),('blossom_jar','S')]}
+ 4:[('ny_stars','H'),('kagami_mochi','S'),('birthday_bunting','H'),('birthday_cake','S'),('songkran_bowl','S'),('pride_flag','S'),('juneteenth_bunting','H'),('advent_candles','S'),('blossom_jar','S')],
+ 5:[('f_newyear','F'),('f_lny','F'),('f_valentine','F'),('f_hina','F'),('f_holi','F'),('f_nowruz','F'),('f_blossom','F'),('f_easter','F'),('f_songkran','F')]}
 def build():
     os.makedirs(OUT,exist_ok=True);meta={}
     for n,items in SHEETS.items():
         p=os.path.join(SRC,f'sheet{n}.webp')
+        if not os.path.exists(p):p=os.path.join(SRC,f'sheet{n}.png')
         if not os.path.exists(p):continue
         a=np.asarray(Image.open(p).convert('RGB')).astype(np.int32);H,W=a.shape[:2];fg=~rb.magenta(a,TOL)
         # the nine objects: what is not magenta, with close parts joined (a bowl beside its sprouts), then read left to right in three rows

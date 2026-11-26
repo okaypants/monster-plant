@@ -10,9 +10,9 @@
    and the tree is Christmas's ("the floor decoration goes where the pumpkin is, who gets relegated to general fall").
    They are decoration only: nothing here can be tapped or played with, since several are sacred to the people who keep the day. */
 const DECOR_SETS=[
- {id:'newyear',name:'New Year',items:['ny_stars','kagami_mochi']},{id:'lny',name:'Lunar New Year',items:['lny_lanterns','lny_oranges']},{id:'valentine',name:'Valentine’s Day',items:['valentine_hearts']},
- {id:'hina',name:'Hinamatsuri',items:['hina_dolls']},{id:'holi',name:'Holi',items:['holi_powder']},{id:'nowruz',name:'Nowruz',items:['nowruz_sprouts']},{id:'blossom',name:'First day of spring',items:['blossom_jar']},
- {id:'easter',name:'Easter',items:['easter_eggs']},{id:'songkran',name:'Songkran',items:['songkran_bowl']},{id:'eid',name:'Eid',items:['eid_lantern']},{id:'kodomo',name:'Children’s Day',items:['koinobori']},{id:'vesak',name:'Vesak',items:['vesak_lotus']},
+ {id:'newyear',name:'New Year',items:['ny_stars','kagami_mochi'],floor:'f_newyear'},{id:'lny',name:'Lunar New Year',items:['lny_lanterns','lny_oranges'],floor:'f_lny'},{id:'valentine',name:'Valentine’s Day',items:['valentine_hearts'],floor:'f_valentine'},
+ {id:'hina',name:'Hinamatsuri',items:['hina_dolls'],floor:'f_hina'},{id:'holi',name:'Holi',items:['holi_powder'],floor:'f_holi'},{id:'nowruz',name:'Nowruz',items:['nowruz_sprouts'],floor:'f_nowruz'},{id:'blossom',name:'First day of spring',items:['blossom_jar'],floor:'f_blossom'},
+ {id:'easter',name:'Easter',items:['easter_eggs'],floor:'f_easter'},{id:'songkran',name:'Songkran',items:['songkran_bowl'],floor:'f_songkran'},{id:'eid',name:'Eid',items:['eid_lantern']},{id:'kodomo',name:'Children’s Day',items:['koinobori']},{id:'vesak',name:'Vesak',items:['vesak_lotus']},
  {id:'juneteenth',name:'Juneteenth',items:['juneteenth_bunting']},{id:'midsummer',name:'Midsummer',items:['midsummer_wreath']},{id:'pride',name:'Pride',items:['pride_flag']},{id:'tanabata',name:'Tanabata',items:['tanabata_bamboo']},
  {id:'obon',name:'Obon',items:['obon_lantern']},{id:'autumn',name:'Autumn',items:[],floor:'pumpkin'},{id:'midautumn',name:'Mid-Autumn',items:['rabbit_lantern','midautumn_cakes']},{id:'chuseok',name:'Chuseok',items:[]},{id:'diwali',name:'Diwali',items:['diwali_lamps','rangoli']},
  {id:'halloween',name:'Halloween',items:['halloween_bats']},{id:'muertos',name:'Day of the Dead',items:['papel_picado','marigolds']},{id:'harvest',name:'Harvest and Thanksgiving',items:['harvest_corn']},
@@ -24,7 +24,7 @@ const DECOR_KIND={H:['ny_stars','lny_lanterns','valentine_hearts','vesak_lotus',
 const decorKind=n=>DECOR_KIND.H.includes(n)?'H':DECOR_KIND.W.includes(n)?'W':'S';
 // where they go (room pixels). S: the middle of its bottom edge. The first stands in the cubby of the left bookcase, in the framed cat's place, and the frame is put away while it is there (Jackie, Nov 25: "the picture on the shelf of the cat is also replaceable"; asked if a decoration may stand there: "Yes on shelf - I don't think things sit nicely on the desk atm"). A second one, in the one set that has two, stands on the desk. W: the middle of its bottom edge, above the wall lamp and above the big picture.
 const DECOR_SPOT={S:[{x:97,y:438,cubby:true},{x:1236,y:551}],W:[{x:980,y:152},{x:786,y:116}]};
-const DECOR_IMG={};DECOR_SETS.forEach(s=>s.items.forEach(n=>DECOR_IMG[n]=img('decor/'+n+'.png')));DECOR_IMG.xmas_lights_dim=img('decor/xmas_lights_dim.png');
+const DECOR_IMG={};DECOR_SETS.forEach(s=>s.items.concat(s.floor&&s.floor.startsWith('f_')?[s.floor]:[]).forEach(n=>DECOR_IMG[n]=img('decor/'+n+'.png')));DECOR_IMG.xmas_lights_dim=img('decor/xmas_lights_dim.png');
 // the string lights blink now and then: every 6 to 16 seconds they go dim and bright three times, a frame swap
 const LIGHTS_GAP=[6000,16000],LIGHTS_STEP=160;let lightsAt=0;
 function lightsDim(){const now=performance.now();if(!lightsAt)lightsAt=now+rnd(LIGHTS_GAP[0],LIGHTS_GAP[1]);if(now<lightsAt)return false;const k=Math.floor((now-lightsAt)/LIGHTS_STEP);if(k>=6){lightsAt=now+rnd(LIGHTS_GAP[0],LIGHTS_GAP[1]);return false;}return k%2===0;}
