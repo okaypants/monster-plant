@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon page shows Hevelius's engraving for the night (Nov 25)
+
+- Jackie: "find images to represent the moon from classic public domain", meaning a picture "of the moon phase", "to replace the shitty one of for instance a waning gibbous". Shown the candidates, with a complete set by Hevelius, Galileo's ink washes, Eimmart's pastel and al-Biruni's diagram: "Yes, Hevelius".
+- Johannes Hevelius engraved the moon night by night through a month for Selenographia (Danzig, 1647). The 28 plates are kept with the game, each cut to the moon and otherwise untouched: never pixelated or recoloured, as with the viewfinder's cards. The scans are the Bibliothèque nationale de France's, by way of Wikimedia Commons, and are in the public domain.
+- The moon page shows the plate nearest tonight's moon, with "Johannes Hevelius, 1647" under it, in place of the small pixel moon.
+- Which night each plate shows is taken from its place in the book's order, spaced evenly along each half of the month. Measuring the lit part of each engraving was tried and was not dependable. So the picture is right to about a day, and a few plates Hevelius drew at a different tilt come slightly out of step.
+- South of the equator the picture is turned upside down, which is how the moon looks from there. This goes by the place the charts use for where you play.
+
 ### Decorations started over for four spaces (Nov 25)
 
 - Jackie: "I think we need to rethink all of the decorations now that we have 4 stable spaces", then "I think we start over completely with decorations with a fresh prompt and all new categories based on fit". The four spaces, in her words: "Desk, window hanging, shelves, and floor where pumpkin is". Four pieces for every occasion? "Every". I listed all thirty occasions with a proposed piece for each space; Jackie: "Cool prompt me", and drew all ten sheets (art_src/decor/).

@@ -5,6 +5,15 @@
    is in several traditions, Western astrology among them, each on the same footing (js/moonlore.js). A festival is listed only on its own night. Nothing is sent anywhere:
    it is all worked out on the phone from the date. */
 let moonEl=null;
+/* THE MOON'S PICTURE (Jackie, Nov 25: "find images to represent the moon from classic public domain", "to replace the shitty one of for
+   instance a waning gibbous"; shown the candidates: "Yes, Hevelius"). Johannes Hevelius watched the moon from a rooftop in Danzig and
+   engraved it night by night through a whole month for the book Selenographia (1647). The 28 plates are kept with the game, each cut
+   to the moon and otherwise untouched (moon/hNN.jpg, tools/moon_plates.py; scans from the Bibliothèque nationale de France, public
+   domain). The page shows the plate nearest tonight's moon, by its age in days. Hevelius drew the moon as it stands in the northern
+   sky; south of the equator the picture is turned upside down, which is how the moon looks from there. */
+const MOON_PLATE_AGE=[0.0, 1.09, 2.18, 3.28, 4.37, 5.46, 6.55, 7.65, 8.74, 9.83, 10.92, 12.02, 13.11, 14.2, 15.3, 16.25, 17.19, 18.14, 19.08, 20.03, 20.98, 21.92, 22.87, 23.82, 24.76, 25.71, 26.65, 27.6];
+function moonPlate(t){const a=moonAge(t);let best=0,bd=99;MOON_PLATE_AGE.forEach((p,i)=>{const d=Math.min(Math.abs(p-a),MOON_MONTH-Math.abs(p-a));if(d<bd){bd=d;best=i;}});return 'moon/h'+String(best+1).padStart(2,'0')+'.jpg';}
+function moonSouth(){try{const h=typeof homePlace==='function'?homePlace():null;return !!h&&h.lat<0;}catch(e){return false;}}
 // Only tonight (Jackie, Nov 25: "stay in the present and skip any reference to tomorrow's moon unless it explicitly affects today's reading"):
 // no countdown to the next full or new moon, and no word on when the moon changes sign.
 function moonPhaseLines(t){const name=moonName(t),lit=Math.round(moonLit(t)*100);
@@ -27,7 +36,7 @@ function openMoonPage(){if(moonEl)return;const t=Date.now(),el=document.createEl
  const x=add(el,'button','tsb mpx','×');x.type='button';x.setAttribute('aria-label','Close');
  const card=add(el,'div','tsb mpcard');
  const top=add(card,'div','mptop');
- try{const c=moonPic(seasonNow(),moonAge(t)),im=add(top,'img','mppic');im.alt='';im.draggable=false;im.src=c.toDataURL();}catch(e){}
+ const fig=add(top,'div','mpfig'),im=add(fig,'img','mppic');im.alt='';im.draggable=false;im.src=moonPlate(t);if(moonSouth())im.classList.add('mpsouth');add(fig,'div','mpcredit','Johannes Hevelius, 1647');
  const tt=add(top,'div','mptt');const nm=moonName(t);add(tt,'h2','mph',nm[0].toUpperCase()+nm.slice(1));
  for(const s of moonPhaseLines(t))add(tt,'p','',s);
  /* Each line sits in its own little rounded box with a coloured tag saying what it is about (Jackie, Nov 25: "each little thing ... in its

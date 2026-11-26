@@ -56,7 +56,7 @@ async def main():
         # the moon dial says tonight's moon and shows a face for it
         await pg.evaluate(TAP, "moondial")
         await pg.evaluate("()=>__step(.4)")
-        page = await pg.evaluate("()=>{const e=document.querySelector('.screen.moonpg');return e?{text:e.innerText,pic:!!e.querySelector('.mppic[src^=\"data:image\"]'),subs:[...e.querySelectorAll('.mpsub')].map(h=>h.textContent)}:null}")
+        page = await pg.evaluate("()=>{const e=document.querySelector('.screen.moonpg');return e?{text:e.innerText,pic:/moon\\/h\\d\\d\\.jpg$/.test(e.querySelector('.mppic').getAttribute('src'))&&/Hevelius, 1647/.test(e.querySelector('.mpcredit').textContent),subs:[...e.querySelectorAll('.mpsub')].map(h=>h.textContent)}:null}")
         check(page and page["pic"] and "Tonight’s moon in different traditions" in page["subs"] and "Today’s date" in page["subs"] and "What it does tonight" in page["subs"] and "tides" in page["text"] and "tomorrow" not in page["text"].lower() and await pg.evaluate("()=>['new moon','waxing crescent','first quarter','waxing gibbous','full moon','waning gibbous','last quarter','waning crescent'].every(k=>MOON_DOES[k]&&MOON_DOES[k].length===3)") and "elsewhere" not in page["text"].lower() and "In Western astrology the moon is in " in page["text"] and "In the Hawaiian moon calendar tonight is about " in page["text"] and "In Arabic astrology the moon is in " in page["text"] and not any(w in page["text"] for w in ("undefined", "NaN", "Invalid", "null")), f"tapping the moon dial should open the moon page with the phase, the sign and tonight elsewhere: {page}")
         # every night of two years: each tradition has a line, nothing is missing, and the festivals land on their nights
         yr = await pg.evaluate("""()=>{const bad=[],fest=new Set(),hw=new Set(),nk=new Set(),mz=new Set(),jp=new Set();const t0=Date.UTC(2026,0,1,20);
@@ -65,6 +65,9 @@ async def main():
             if(moonPhaseLines(t).some(s=>/undefined|NaN/.test(s))||moonSignLines(t).some(s=>/undefined|NaN|Invalid/.test(s)))bad.push('p'+d);}
           return {bad:bad.slice(0,5),fest:fest.size,hw:hw.size,nk:nk.size,mz:mz.size,jp:jp.size}}""")
         check(not yr["bad"] and yr["hw"] == 30 and yr["nk"] == 27 and yr["mz"] == 28 and yr["jp"] in (8, 9) and yr["fest"] >= 12, f"over two years every night should have its lines, every name should come up and the festivals should appear: {yr}")
+        check(await pg.evaluate("()=>{const day=864e5,seen=new Set();for(let d=0;d<30;d++)seen.add(moonPlate(MOON_NEW0+d*day));const full=moonPlate(MOON_NEW0+14.77*day),nw=moonPlate(MOON_NEW0+.1*day),q=moonPlate(MOON_NEW0+7.4*day);return MOON_PLATE_AGE.length===28&&seen.size>=24&&nw==='moon/h01.jpg'&&(full==='moon/h14.jpg'||full==='moon/h15.jpg')&&(q==='moon/h07.jpg'||q==='moon/h08.jpg')}"), "the moon page should show Hevelius's plate for the night: the empty circle at new moon, a full one at full, a half at the quarter")
+        missing = [f for f in ["h%02d.jpg" % i for i in range(1, 29)] if not os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "moon", f))]
+        check(not missing, f"moon plates missing from moon/: {missing}")
         await pg.click(".screen.moonpg .mpx")
         check(await pg.evaluate("()=>!document.querySelector('.screen.moonpg')&&moonDialAt()===null"), "the moon page should close")
         check(await pg.evaluate("()=>/^moon[1-5]$/.test(moonDialPic())"), "the moon dial should show one of its five faces")
