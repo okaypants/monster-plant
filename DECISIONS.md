@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat is down inside its bed (Nov 25)
+
+- Jackie: "noodle sits a little too high on his bed", and after I lowered the cat a little: "the cat is still sitting in his bed weird".
+- The cat was standing on the bed's front rim, drawn over the whole bed. The cat now rests lower, on the cushion in the hollow, and the bed's front rim is drawn again over the cat, cut along the curve of the hollow. Sleeping or sitting up, the cat's feet are behind the rim.
+
 ### A framed picture of the cat replaces the wind-up cat (Nov 25)
 
 - Jackie: "i kind of want to replace the wind up toy with a framed image of the cat". Asked whether to reuse the sleeping portrait or draw a new one: "New drawing". Jackie made it (art_src/room2/sheet6.webp): the cat sitting upright in a gold frame on navy with two stars, and the same frame tipped.
