@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The dark ends of a wide screen are night sky (Nov 26)
+
+- Jackie: "the black bars around the sides that I was talking about, maybe we can put the little glimmering dots kind of like on the opening screen, so it looks like space or something back there".
+- The page behind the room has the opening screen's small cream and purple stars, spread evenly, some of them twinkling. Whatever shows past the room's edges, at the sides on a phone or above and below on a squarer screen, is that sky. They hold still with reduced motion.
+- This follows two tries that were undone the same day (the room carried on past its edges, then a dotted wallpaper).
+
 ### A second garland hangs on the right-hand wall (Nov 26)
 
 - Jackie: "I thought we were putting garland on the right side of the room? But it also has to look cute, like not cover everything, I guess and we can always make some more garland if something else seems like appropriate for the occasion".
