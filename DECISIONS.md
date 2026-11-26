@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Lamps show by day when the curtains are shut (Nov 26)
+
+- Jackie: "When I turn on lights during the day and with blinds closed it doesn't seem to impact anything. They turn on but don't change anything".
+- By day a lamp added no light at all, and shut curtains only dimmed the room a touch, so switching a lamp on changed nothing but its shade. Now shut curtains dim the daytime room clearly, and a lamp that is on brings its part of the room back to warm full colour, the same way lamps work at night.
+- With the curtains open by day a lamp still only lights its own shade, because the room is already in full daylight.
+
 ### The ceiling trim is gone and the room shows a little larger (Nov 26)
 
 - Jackie: "Can we zoom the room slightly and get rid of the upper border".

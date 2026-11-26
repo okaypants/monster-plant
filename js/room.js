@@ -41,9 +41,10 @@ function sceneDay(){if(!roomReady())return null;const key=THINGS.map(t=>thingMov
  dayCv=dayCv||mkCv();dayKey=key;const x=dayCv.getContext('2d');x.clearRect(0,0,W,H);x.drawImage(ROOM2,0,0);
  for(const t of THINGS){if(thingMoving(t.n))continue;const b=thingBox(t);if(b)x.drawImage(b.im,b.x,b.y);}dayCv.src='day|'+key;return dayCv;}
 /* THE LIGHT. Each time of day is one flat tint over the whole room. A lamp that is on gives back the daytime colours, a little
-   warmer: strongest by the lamp and fading smoothly away, and a little over the whole room; its shade glows. Shut curtains dim the daytime a touch. */
-const GRADE={day:null,golden:'rgb(255,206,158)',night:'rgb(92,104,178)'},GRADE_SHUT={day:'rgb(226,220,208)',golden:'rgb(232,190,150)',night:'rgb(86,98,170)'};
+   warmer: strongest by the lamp and fading smoothly away, and a little over the whole room; its shade glows. Shut curtains dim the daytime enough that a lamp shows. */
+const GRADE={day:null,golden:'rgb(255,206,158)',night:'rgb(92,104,178)'},GRADE_SHUT={day:'rgb(200,194,190)',golden:'rgb(232,190,150)',night:'rgb(86,98,170)'};
 const LAMP_K={day:.0,golden:.55,night:1}; // how much a lamp's glow shows: nothing to add in daylight
+const LAMP_K_SHUT={day:.8,golden:.75,night:1}; // with the curtains shut the room is dimmer by day, so a lamp shows then too (Jackie, Nov 26: "When I turn on lights during the day and with blinds closed ... They turn on but don't change anything")
 const LAMP_ROOM=.2,LAMP_ROOM_MAX=.5,LAMP_REACH=2.1,LAMP_FALL=[[0,.95],[.18,.86],[.4,.56],[.65,.26],[.85,.08],[1,0]],LAMP_WARM='rgb(255,240,214)',lampCv=[]; // each lamp's lift to the whole room and its cap; how far its own light reaches (times its radius) and how it fades; the warmth of lamp light
 const GLOWS={lamp:{x:236,y:600,r:400,shade:[231,360,97,112],seed:[230,360]},desk:{x:1320,y:610,r:350,shade:[1318,446,50,44]},wall:{x:980,y:400,r:300,shade:[980,207,58,37],seed:[980,205]}}; // key = the lamp's on/off field in the save
 function lampsKey(){return LAMPS.map(p=>lampOn(p)?'1':'0').join('');}
@@ -56,7 +57,7 @@ function litLayer(name,src,srcKey){if(!src)return null;const tk=timeKey(),shut=s
     does two things. It lifts the whole room a little toward its daytime colours, and more with each lamp, so a room with its lamps on is a
     lit room. And around the lamp itself the light is strongest and fades away smoothly with distance (RULES 1: light itself may blend):
     no rings and no edge. The light is a mask (how lit each bit of the room is) and the warm daytime room is laid over the night room through it. */
- const k=LAMP_K[tk],on=LAMPS.filter(p=>lampOn(p)&&GLOWS[p.key]);
+ const k=(shut?LAMP_K_SHUT:LAMP_K)[tk],on=LAMPS.filter(p=>lampOn(p)&&GLOWS[p.key]);
  if(k>0&&on.length){const mk=lampCv[0]=lampCv[0]||mkCv(),mx=mk.getContext('2d');mx.globalCompositeOperation='source-over';mx.clearRect(0,0,W,H);
   mx.globalAlpha=1;mx.fillStyle='rgba(255,255,255,'+(k*Math.min(LAMP_ROOM_MAX,LAMP_ROOM*on.length)).toFixed(3)+')';mx.fillRect(0,0,W,H);
   for(const p of on){const G=GLOWS[p.key],R=G.r*LAMP_REACH,gr=mx.createRadialGradient(G.x,G.y,0,G.x,G.y,R);
