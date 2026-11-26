@@ -8,9 +8,14 @@ const CATF={};['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pe
 // The new cat's PNGs stay as they are; set OLD_CAT=false to bring him back. Since Nov 18 the old cat has his own drawing for every pose
 // the new cat had except the back-scratcher; walking left mirrors his walk (as the old cat always did).
 const OLD_CAT=true;
+/* THE WHITE CAT (Jackie, Nov 26: "now lets make the cat from house"): a white long-haired cat after the one in the film House, cut from
+   Jackie's sheet (tools/house_cat_cut.py) pose for pose at the old cat's size, so it uses the old cat's code. CAT_DIR='old_cat' brings the
+   orange cat back. The white cat's petted frames have no back-scratcher drawn in, and there is a spare frame with glowing green eyes. */
+const CAT_DIR='house_cat';
 if(OLD_CAT){const OLD=['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn',
   'stand_side','stalk','pounce','playbow','leap_r','leap_l','groom1','groom2','annoyed','back','belly','eat']; // the second row: Jackie's extra poses in the old cat's style (Nov 18; tools/tofu_cut.py)
- for(const n of OLD){CATF[n]=img('old_cat/cat_'+n+'.png');CATF[n].catName=n;CATF[n].old=true;}
+ for(const n of OLD){CATF[n]=img(CAT_DIR+'/cat_'+n+'.png');CATF[n].catName=n;CATF[n].old=true;}
+ if(CAT_DIR==='house_cat'){CATF.glow=img(CAT_DIR+'/cat_glow.png');CATF.glow.catName='glow';CATF.glow.old=true;}
  Object.assign(CATF,{walkL1:CATF.walk1,walkL2:CATF.walk2,stand_front:CATF.sit1});} // walking left mirrors his walk; standing to face you is his sit
 // SIZE: one cat scale. The new cat is drawn smaller than the old one, so CAT_K brings him back to the old size in the room (old sit 218 px tall, new 168).
 // cat_poses.png (and the back-scratcher drawn to match it) is drawn bigger than cat_design.png (sit-blink 204 px vs sit 168), so its frames get POSES_K on top: every frame is the same cat size.
@@ -112,7 +117,7 @@ const catPetF=()=>Math.floor(T*4)%2; // petted frame; the back-scratcher rocks w
 // BREATHING (Jackie, calm-down): almost completely still. Once every ~4.6 s the body (not the paws) rises 1 px for about 1.8 s, then settles back.
 // Whole pixels only; never more than 1 px. Drawn by repeating one row low in the body, so he stays on his surface.
 const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.7?1:0;};
-function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
+function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&CAT_DIR==='old_cat'&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
 function catPose(){if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return 'sit';if(cat.state==='settle')return 'sit';if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
 let catLit=null; // the room's light where the cat is (js/light.js), set by drawCat

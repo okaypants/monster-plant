@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat is a white long-haired cat, after the one in the film House (Nov 26)
+
+- Jackie: "now lets make the cat from house". She had ChatGPT redraw the cat's sheet pose for pose as a fluffy white long-haired cat with green eyes, from a numbered sample sheet of the 25 poses the orange cat had.
+- The 26 poses are cut from her sheet (tools/house_cat_cut.py, into house_cat/) at the orange cat's size, so the white cat does everything the orange cat did. `CAT_DIR='old_cat'` in js/cat.js brings the orange cat back; its pictures are all kept.
+- The white cat's petted poses have no back-scratcher drawn in. A 26th pose, sitting with glowing green eyes, is cut and kept but not yet used in the room.
+- The cat's pictures. Jackie: "I guess we need to change his pictures too", then "i want the photos of him to be good though like maybe a portrait painting and one of him just in the room somewhere, maybe a screenshot for both". The bookcase frame is now a close portrait from the sitting pose (it still blinks, and its eyes still glow now and then). The small frame on the wall is a snapshot of the cat on the armchair, cut from a screenshot of the game (tools/house_pictures.py).
+- Not changed yet: the orange cat face on the fridge magnet, and the cat's name.
+
 ### The top shelf's edge under the fossil is back (Nov 26)
 
 - Jackie: "the shelf is kind of messed up", "under the fossil".
