@@ -30,7 +30,7 @@ function cubToys(){const el=cubTray();el.dataset.k='toys';
  cubPlace();cub.t=performance.now();}
 // the list of what to decorate for: the one that is up is marked, and the last button takes everything down
 function cubDecor(){const el=cubTray();el.dataset.k='decor';el.classList.add('cubdecor');
- for(const s of DECOR_SETS){const b=cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':'');b.dataset.id=s.id;el.appendChild(b);}
+ for(const s of decorOffered()){const b=cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':'');b.dataset.id=s.id;el.appendChild(b);}
  if(st.decor)el.appendChild(cubBtn('Take them down',()=>{decorSet(null);cubClose();},'cubdown'));
  cubPlace();cub.t=performance.now();}
 function cubPlace(){if(!cubEl)return;const w=cubEl.offsetWidth,h=cubEl.offsetHeight;if(cubEl.dataset.k==='decor'){cubEl.style.left=Math.round(clamp((CUPBOARD.x+CUPBOARD.w)*S-w,4,W*S-w-4))+'px';cubEl.style.top=Math.round(Math.max(48,(H*S-h)/2))+'px';return;} // the long list stands beside the cupboard, in the middle of the screen's height

@@ -36,22 +36,24 @@ function drawFallingLeaves(tk){const now=performance.now();
  g.drawImage(leafCv,GLASS_AT.x,GLASS_AT.y);}
 
 /* ---------- the pumpkin (autumn) and the tree (winter) on the milk crate ---------- */
-function seasonOut(){const s=seasonNow();return s==='autumn'?'pumpkin':s==='winter'?'tree':null;} // whose season it is
+function seasonOut(){return typeof decorFloor==='function'?decorFloor():null;} // what stands on the floor spot: the pumpkin (the Autumn decorations), the tree (Christmas) or another set's floor decoration (js/decor.js). Until Nov 25 the pumpkin came out by itself in autumn and the tree in winter
 // out on the crate unless a plant sits there (the cat leaves the crate to it)
 function seasonItem(){const k=seasonOut();if(!k||cat.spot==='crate')return null;if(bassinetOut())return k; // on the floor while the bassinet stands in the crate's place
  let onStack=false;eachPlant(()=>{if(st.stage>=0&&spotKey()==='crate')onStack=true;});return onStack?null:k;}
 function stackOff(){const p=!bassinetOut()&&FP.find(q=>q.n==='crate');return p?{x:Math.round(p.ox),y:Math.round(p.oy)}:{x:0,y:0};} // rides along when the crate bounces
 function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now()):0;}
-function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:TREE[0];if(!ok(f))return null;const at=seasonAt(),sc=(k==='pumpkin'?PUMPKIN_SC:TREE_SC)*at.k,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
+function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:k==='tree'?TREE[0]:DECOR_IMG[k];if(!ok(f))return null;const at=seasonAt(),sc=(k==='pumpkin'?PUMPKIN_SC:k==='tree'?TREE_SC:1)*at.k,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
  return {k,sc,osc:ORN_SC*at.k,x:at.x-Math.round(w/2),y:at.y-h,w,h};}
 function drawSeasonItem(){const b=seasonBox();if(!b)return;const now=performance.now(),o=stackOff(),x0=b.x+o.x+seasonIdle(b.k),y0=b.y+o.y;
  const L=lightAt(b.x+b.w/2,b.y+b.h),put=(im,x,y,sc)=>{if(ok(im))g.drawImage(litPic(im,L),Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
  if(b.k==='pumpkin'){const rock=now<sRock?1+Math.floor((sRock-now)/SWAP_MS)%2:0;put(PUMPKIN[rock],x0,y0,b.sc);return;}
+ if(b.k!=='tree'){put(DECOR_IMG[b.k],x0,y0,b.sc);return;} // another set's floor decoration: one still picture
  put(TREE[now<sSway?Math.floor((sSway-now)/SWAP_MS)%2:0],x0,y0,b.sc);
  for(const o2 of ORNAMENTS){const f=o2.f[now<o2.swing?Math.floor((o2.swing-now)/SWAP_MS)%2:0];if(!ok(f))continue;
   put(f,x0+o2.x*b.sc-o2.hx*b.osc,y0+o2.y*b.sc,b.osc);}}
 // a tap: the pumpkin rocks (6 frames); the tree sways and every ornament swings, each a beat apart
 function seasonPoke(x,y){const b=seasonBox();if(!b||x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const now=performance.now();
  if(b.k==='pumpkin'){sRock=now+6*SWAP_MS;fplay('pumpkin_rock');}
+ else if(b.k!=='tree')return false;
  else{sSway=now+4*SWAP_MS;ORNAMENTS.forEach((o2,i)=>{o2.swing=now+(4+i%3)*SWAP_MS;});fplay('tree_jingle');}
  return true;}

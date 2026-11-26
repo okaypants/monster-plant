@@ -19,6 +19,12 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - "also move the shelf inside the cabinet down so you can put a couple decorations on top and then have a couple cat things below". The open cupboard's shelf is in the middle now, with the rabbit lantern and the jar of blossom on it and the ball of yarn and the felt mouse underneath.
 - "i also want lights and garland on the inside of the window behind the curtains". The set's garland also hangs across the top of the window, inside the room. It is drawn only in the window's opening between the open curtains, and before the closed curtains, so cloth always covers it.
 - Jackie also said "the picture on the shelf of the cat is also replaceable". I have not acted on this yet; I am not sure whether it means a decoration may stand in the framed cat's place, or that the picture itself can be swapped.
+- "we need a floor, desk and garland/light decor w 1 light animation for every occasion", "the floor decoration goes where the pumpkin is, who gets relegated to general fall", "make the garland just the window actually", "break up chuseok and autumn and put the pumpkin there". So:
+  - A set is now a garland or lights in the window (behind the curtains), a thing on the desk and a thing on the floor spot. The garlands across the ceiling are gone; they lasted one round.
+  - The pumpkin no longer comes out by itself every autumn, nor the tree every winter. The pumpkin is the floor decoration of a new set, Autumn, and I made the tree Christmas's floor decoration by the same reasoning. Both still rock and sway when tapped.
+  - "Mid-Autumn and Chuseok" is now three sets: Mid-Autumn (the mooncakes and the rabbit lantern), Chuseok (nothing drawn for it yet, so it is not offered) and Autumn.
+  - Most sets do not have all three kinds yet. I wrote a prompt for the 59 missing drawings.
+  - "1 light animation": only the Christmas lights blink so far. Each new garland is asked for with small lights on it so the same blink can be made for every set.
 - They cannot be tapped or played with. Several are sacred to people who keep the day (the Hanukkah and Kwanzaa candle holders, the Diwali lamps), so they are shown plainly as decoration.
 - Which holidays the list has, and which decorations go together (Christmas has the lights, the wreath and the star lantern from the Philippines; Diwali has the lamps and the rangoli), is my grouping.
 - Not done: nothing goes up by itself on the holiday, and the list does not mark which holiday is today.
