@@ -43,7 +43,7 @@ const NEWART={1:{teen:img('teen_01.png'),adult:img('adult_01.png'),face:{teen:[0
 // AGE SIZES at the front of the rug (100%); depthK shrinks them farther back. A teen is 1.45x a kid, an adult 1.9x (adult = 60% of the room, as Jackie set).
 // Every kid is the same height (they only ever sit around 2/3 depth, so none is drawn bigger than its PNG). A teen or adult drawing
 // shorter than AGE_REF isn't blown up to full height (squat ones stay squat, as Jackie decided), so those come out a little under 1.45x / 1.9x.
-const KID_DIV=2.65,TEEN_X=1.5; /* Jackie, later on Nov 25: "the kid is a little too big", then "Shrink the teen too". A tenth smaller again, and the teen is one and a half kids as before */ /* Jackie, Nov 25: "kids should be smaller, and teens relative to them". A kid was the adult's height over 1.9 and is now over 2.4 (about a fifth smaller); a teen is one and a half kids, so it shrank with them. Adults are unchanged. */
+const KID_DIV=2.9,TEEN_X=1.5; /* Jackie, later on Nov 25: "the kid is a little too big", then "Shrink the teen too". A tenth smaller again, and the teen is one and a half kids as before */ /* Jackie, Nov 25: "kids should be smaller, and teens relative to them". A kid was the adult's height over 1.9 and is now over 2.4 (about a fifth smaller); a teen is one and a half kids, so it shrank with them. Adults are unchanged. */
 const AGE_H={kid:.60*942/KID_DIV,teen:.60*942*TEEN_X/KID_DIV,adult:.60*942},AGE_REF={kid:229,teen:460,adult:740},TARGET_H={teen:AGE_H.teen,adult:AGE_H.adult};
 function plantDepth(){return onChair()?DEPTH.chair:spotDepth(spotKey());}
 function ageArt(){const n=NEWART[st.species+1];if(!n||st.stage<6)return null;const k=st.stage>=8?'adult':'teen';return ok(n[k])?{im:n[k],k,face:n.face[k]}:null;}
@@ -60,7 +60,7 @@ function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantS
 // SLEEPING IN THE ARMCHAIR (Jackie): asleep plants sit on the seat, sized by the chair's depth like any spot
 const CHAIR_SEAT={x:610,y:SURFACE.chair};
 // the chair's arms and seat front are redrawn over the sleeping plant so it nestles INTO the seat
-const CHAIR_FRONT=[[440,598,84,160],[686,598,76,160],[520,690,170,64]];
+const CHAIR_FRONT=[[440,598,84,160],[686,598,76,160],[520,650,170,104]]; /* the arms, and the seat from its front lip down: a pot sits back on the seat, so the lip hides its bottom edge (Jackie, Nov 25: "the kid should sit on the chair better") */
 let chairId=null,ACT=null;function onChair(){return st.stage>=4&&(st.nap>0||st.night)&&!(drag.on&&st.id===drag.id)&&st.id===chairId;} // only the plant you're dragging leaves the chair
 function inChair(){return onChair()||(!(drag.on&&st.id===drag.id)&&st.stage>=4&&spotKey()==='chair');} // napping there, or sitting there awake
 function pickChair(){const p=allRaw().find(q=>q.perch==='chair'&&q.stage>=6&&q.stage>=0);if(p){chairId=p.id;return;} /* someone sits in it awake: it's theirs */const c=allRaw().filter(p=>p.stage>=4&&(p.nap>0||st.night)&&!(p.perch==='crate'&&bassinetOut()));/* a kid in the bassinet sleeps there */c.sort((a,b)=>(b.nap>0)-(a.nap>0)||a.id-b.id);chairId=c.length?c[0].id:null;}
