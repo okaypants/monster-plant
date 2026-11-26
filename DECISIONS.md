@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The drawn curtains hang behind the armchair (Nov 25)
+
+- Jackie: "I don't think the curtains should cover the chair".
+- With the curtains drawn, the cloth hung over the top of the armchair's back. It was meant to stay behind the chair already, but the tool looked for the chair starting from a point on its dark pillow and found nothing, without saying so. It now starts on the yellow, counts the pillow as part of the chair, and stops with an error if it ever finds nothing again.
+
 ### The moon dial tells the moon's sign (Nov 25)
 
 - Jackie, on the dial that turned ahead a night at a time: "the moon thing is okay but i think it should also be tied to astrology and not advance in days".

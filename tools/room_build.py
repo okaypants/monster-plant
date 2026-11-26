@@ -181,11 +181,13 @@ def build_curtains(room):
     # from a point inside it without crossing its dark outline, plus that outline.
     opaque=room[...,3]>0;lit=(a.sum(2)>300)&opaque
     def shape(seed,box):
-        x0,y0,x1,y1=box;sub=lit[y0:y1,x0:x1];lab,n=nd.label(sub);l=lab[seed[1]-y0,seed[0]-x0];m=np.zeros((H,W),bool)
-        if l and (lab==l).sum()<sub.size*.85:m[y0:y1,x0:x1]=nd.binary_dilation(lab==l,iterations=4)
+        x0,y0,x1,y1=box;sub=lit[y0:y1,x0:x1];lab,n=nd.label(sub);m=np.zeros((H,W),bool);ys,xs=np.where(lab>0);d=(ys-(seed[1]-y0))**2+(xs-(seed[0]-x0))**2;k=int(np.argmin(d));l=lab[ys[k],xs[k]] if d[k]<=100 else 0 # the lit part at the seed, or the nearest one within 10 px if the seed is on an outline
+        assert l and (lab==l).sum()<sub.size*.85,('nothing found in front of the cloth at',seed)
+        m[y0:y1,x0:x1]=nd.binary_dilation(lab==l,iterations=4)
         return m
     front=shape((230,360),(130,244,332,476))|shape((232,242),(200,218,264,264))|shape((231,500),(204,452,262,566)) # the floor lamp: shade, top, pole
-    front|=shape((600,540),(436,466,770,566))|shape((470,560),(424,520,520,566)) # the armchair's back, and the throw over its arm
+    front|=shape((520,490),(436,466,770,566))|shape((500,562),(424,540,560,566)) # the armchair's back, and the throw over its arm (seeds on the yellow and on the cream: a seed on the pillow or an outline finds nothing, and the cloth then hung over the chair)
+    sub=front[440:567,424:770].copy();sub[-1]=True;front[440:566,424:770]=nd.binary_fill_holes(sub)[:-1] # the dark pillow on the chair is part of the chair (it runs on below the cloth, so the bottom row is closed off first)
     assert front.sum()>20000,front.sum()
     r_,g_,b_=a[...,0],a[...,1],a[...,2];leaf=((g_>r_+8)&(g_>b_+40))&(xx<300)&(yy<340);front|=nd.binary_dilation(leaf,iterations=4) # the vine
     out[front&(room[...,3]>0),3]=0 # never a gap of bare window: where the glass is, the cloth always hangs
