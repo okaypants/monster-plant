@@ -6,7 +6,7 @@
    Every occasion has one thing for each (art_src/decor/, cut and sized by tools/decor_build.py into decor/<id>_<space>.png):
      w  the window: a garland with little lights, hung across the top of the window, in front of the glass and behind the curtains
      s  the shelf: a small upright thing in the cubby of the left bookcase, in the framed cat's place (the frame is put away meanwhile)
-     d  the desk: a low, wide thing between the radio and the desk lamp
+     d  the desk: a low, wide thing between the radio and the desk lamp (drawn, but not put up: see DECOR_USE)
      f  the floor: a large thing on the crate, or in the front corner while the bassinet is out. Autumn's is the pumpkin and
         Christmas's is the tree, which rock and sway when tapped (js/seasonal.js)
    The garland's lights blink now and then. Nothing else here can be tapped or played with: several of these things are sacred to
@@ -16,13 +16,13 @@ const DECOR_SETS=[['newyear','New Year'],['lny','Lunar New Year'],['valentine','
  ['midautumn','Mid-Autumn'],['chuseok','Chuseok'],['diwali','Diwali'],['halloween','Halloween'],['muertos','Day of the Dead'],['harvest','Harvest and Thanksgiving'],['advent','Advent and St. Lucia'],['hanukkah','Hanukkah'],
  ['solstice','Winter solstice'],['christmas','Christmas'],['kwanzaa','Kwanzaa'],['birthday','A birthday']].map(([id,name])=>({id,name,floor:id==='autumn'?'pumpkin':id==='christmas'?'tree':id+'_f'}));
 // where they go (room pixels): the middle of each thing's bottom edge
-const DECOR_SPOT={s:{x:97,y:438},d:{x:1264,y:551}};
-const DECOR_IMG={};for(const s of DECOR_SETS){for(const k of ['w','w_dim','s','d'])DECOR_IMG[s.id+'_'+k]=img('decor/'+s.id+'_'+k+'.png');if(s.floor.endsWith('_f'))DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');}
+const DECOR_SPOT={s:{x:97,y:438},d:{x:1264,y:551}},DECOR_USE=['s']; /* which of the shelf and desk pieces are put up. The desk pieces are drawn and cut (decor/<id>_d.png) but not used: Jackie, publishing this, Nov 25: "Publish but no shelf decor or desk", then "Jk shelf is ok". Add 'd' here to bring them back */
+const DECOR_IMG={};for(const s of DECOR_SETS){for(const k of ['w','w_dim'].concat(DECOR_USE))DECOR_IMG[s.id+'_'+k]=img('decor/'+s.id+'_'+k+'.png');if(s.floor.endsWith('_f'))DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');}
 function decorNow(){return DECOR_SETS.find(s=>s.id===st.decor)||null;}
 function decorOffered(){return DECOR_SETS;}
 // the shelf thing and the desk thing of the set that is up, with their places: {n, k, im, x, y, w, h}
 function decorBoxes(){const s=decorNow();if(!s)return [];const out=[];
- for(const k of ['s','d']){const n=s.id+'_'+k,im=DECOR_IMG[n],sp=DECOR_SPOT[k];if(!ok(im))continue;const w=im.naturalWidth,h=im.naturalHeight;out.push({n,k,im,x:sp.x-Math.round(w/2),y:sp.y-h,w,h});}
+ for(const k of DECOR_USE){const n=s.id+'_'+k,im=DECOR_IMG[n],sp=DECOR_SPOT[k];if(!ok(im))continue;const w=im.naturalWidth,h=im.naturalHeight;out.push({n,k,im,x:sp.x-Math.round(w/2),y:sp.y-h,w,h});}
  return out;}
 // what stands on the floor spot for the set that is up: 'pumpkin', 'tree' or the name of a decoration picture (drawn by js/seasonal.js)
 function decorFloor(){const s=decorNow();return s?s.floor:null;}

@@ -11,6 +11,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
   - the desk: a low, wide piece between the radio and the desk lamp.
   - the floor: a large piece on the crate, or in the front corner while the bassinet is out. Autumn's is the pumpkin and Christmas's is the tree, which Jackie's sheets leave out on purpose.
 - The wall is no longer used.
+- Asked whether to publish, Jackie: "Publish but no shelf decor or desk", then "Jk shelf is ok". The desk pieces are not put up. They are still drawn and cut, and one word in js/decor.js brings them back. So a set is three pieces for now: window, shelf and floor.
 - "1 light animation for every occasion": every garland's little lights go dim and bright three times every 6 to 16 seconds. The dim picture is made by the tool from the garland itself.
 - The thirty occasions and what stands for each were my proposal, which Jackie accepted as it stood. The ones I was least sure of are Holi's water squirter, Juneteenth's food, Chuseok's vase of cosmos, Kwanzaa's cup and New Year's bell.
 - The Hanukkah pieces came back with six-pointed stars on them, which the prompt did not ask for. They are in as drawn.
