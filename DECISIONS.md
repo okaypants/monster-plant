@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The radio dial runs by type, then country (Nov 25)
+
+- Jackie: "I feel like the stations should be in a better order", then "radio station order by type (talk, misc, and music) and country".
+- The dial now starts with talk (3 stations), then stations that play a bit of everything (27), then music (41). Inside each type the stations run by country from A to Z, with the ones that live only online at the end. It used to run west to east round the world.
+- Which type a station is in is my sorting. "Misc" holds the freeform, underground, experimental and community stations; "music" holds the ones that keep to one kind of music. The Kurdish folk station broadcasts from France and is filed under Kurdistan.
+- A saved preset remembers its station by name, so presets still work.
+
 ### The crystal ball has visions (Nov 25)
 
 - Jackie asked to "make the crystal ball better and more fun and goofy". I offered four directions; Jackie had a better one: "it can offer famous predictions yet to come on specific dates with attributions almost like it's possessed with visions from the other side". Should they replace the yes and no answers? "Replace them". Shown the draft of 56: "Build them".

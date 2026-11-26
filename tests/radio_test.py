@@ -93,7 +93,7 @@ async def main():
         check(any("static" in t for t in log), f"no songs and no internet should say static, log {log}")
         await pg.screenshot(path=os.path.join(OUT, "static.png"))
         # WORLD: no internet here, so each station has no signal
-        check(await pg.evaluate("()=>WORLD.length>=50&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p)"), "WORLD should have 50 or more https stations, each with a name, what it plays and where")
+        check(await pg.evaluate("()=>WORLD.length>=50&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p&&w.c&&['talk','misc','music'].includes(w.g))&&WORLD.map(w=>['talk','misc','music'].indexOf(w.g)).every((g,i,a)=>!i||g>=a[i-1])&&WORLD.every((w,i,a)=>!i||w.g!==a[i-1].g||w.c==='Online'||(a[i-1].c!=='Online'&&w.c.localeCompare(a[i-1].c)>=0))"), "WORLD should have 50 or more https stations, each with a name, what it plays and where")
         await pg.evaluate("()=>{capClear();CAP.log=[];}")
         check(await pg.evaluate("()=>!!radio.panel"), "the dial should stay open when the radio switches itself off")
         await pg.click(".rpanel [data-b=world]")
