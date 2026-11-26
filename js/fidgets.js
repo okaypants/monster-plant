@@ -95,14 +95,14 @@ function ballTinted(f,tint){const base=OBJ['ball'+f],name='ball'+f+'_'+tint;if(O
  const D=d.data,[tr2,tg,tb]=BALL_TINT[tint];for(let i=0;i<D.length;i+=4){const r=D[i],g=D[i+1],b=D[i+2];if(!D[i+3]||!(b>g+18&&r>g+4)||(r>232&&g>226))continue;const k=Math.min(1.25,(r+g+b)/3/150);D[i]=Math.min(255,tr2*k);D[i+1]=Math.min(255,tg*k);D[i+2]=Math.min(255,tb*k);}
  x.putImageData(d,0,0);c.naturalWidth=c.width;c.naturalHeight=c.height;c.complete=true;OBJ[name]=c;return name;}
 function ballLog(){try{const s=JSON.parse(localStorage.getItem(BALL_KEY)||'{}');return s.day===tarotToday()&&Array.isArray(s.looks)?s:{day:tarotToday(),looks:[]}}catch(e){return {day:tarotToday(),looks:[]}}}
-function ballToday(){return ballLog().looks.filter(l=>BALL_VISIONS[l[1]]).map(l=>{const h=Math.floor(l[0]/60),m=l[0]%60;return {when:((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' am':' pm'),say:BALL_VISIONS[l[1]]}}).reverse();}
+function ballToday(){return ballLog().looks.filter(l=>BALL_VISIONS[l[1]]).map(l=>{const h=Math.floor(l[0]/60),m=l[0]%60;return {when:((h+11)%12+1)+':'+String(m).padStart(2,'0')+(h<12?' am':' pm'),say:ballSay(BALL_VISIONS[l[1]])}}).reverse();}
 // which vision comes next: each is said once before any comes round again (the ones still to come are kept, shuffled, in localStorage)
 function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)||'[]')}catch(e){}bag=Array.isArray(bag)?bag.filter(i=>Number.isInteger(i)&&i>=0&&i<BALL_VISIONS.length):[];
  if(!bag.length)bag=BALL_VISIONS.map((_,i)=>i);const k=Math.floor(Math.random()*bag.length),i=bag.splice(k,1)[0];try{localStorage.setItem(BALL_BAG,JSON.stringify(bag))}catch(e){}return i;}
 function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
  ballCur={i,tints:Array.from({length:8},()=>T[Math.floor(Math.random()*T.length)]),eyes:Math.random()<BALL_EYES};sfx('chime');
  if(!st.ballMet){st.ballMet=1;tell('The crystal ball has visions of things to come.',{kind:'info',key:'ballHi'});}
- setTimeout(()=>tell(BALL_VISIONS[i],{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);
+ setTimeout(()=>tell(ballSay(BALL_VISIONS[i]),{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);
  try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
 /* THE MOON DIAL: its face shows tonight's moon, and a tap opens the moon page (js/moonpage.js), one card about tonight's moon. */
