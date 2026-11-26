@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Charts: your tab is only about you; the sign icons are drawn (Nov 25)
+
+- Jackie: "in horoscopes, i don't want my horoscope page to say anything about the other guys on my individual tab only theirs".
+- Your own tab no longer has a "Together" part. How you get on with the cat or a monster is on their tab, where it already was.
+- "i want the horoscope sign icons through the page to be cuter and more even in size in relation to each other, and spacing in relation with the text". The signs were the font's own zodiac characters, which every phone draws at a different size and weight. Each of the twelve signs and eight bodies is now a small drawing with the same round line, in a round chip as tall as the text beside it, with the same gap before the text everywhere. A sign's chip is coloured by its element: fire pink, earth green, air lilac, water blue.
+- Each line of "The whole chart" now starts with the body's chip and the sign's chip.
+
 ### The radio dial runs by type, then country (Nov 25)
 
 - Jackie: "I feel like the stations should be in a better order", then "radio station order by type (talk, misc, and music) and country".

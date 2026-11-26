@@ -95,6 +95,7 @@ async def main():
         check(await pg.evaluate("()=>st.you.place.tz==='Asia/Manila'&&JSON.parse(localStorage.getItem(KEY)).you.date==='1990-07-14'"), "your birth details should be saved")
         texts.append(you)
         await pg.evaluate("()=>capClear()")
+        check(await pg.evaluate("()=>{const t=document.querySelector('.chcard').innerText;return !/TOGETHER/.test(t)&&!/Tofu|Zib|Pip/.test(t)&&/TODAY/.test(t)&&document.querySelectorAll('.chcard .zchip svg').length>=20&&[...document.querySelectorAll('.chcard .chs .zchip')].every(c=>Math.abs(c.getBoundingClientRect().width-c.getBoundingClientRect().height)<1)&&new Set([...document.querySelectorAll('.chcard .chs .zchip')].map(c=>Math.round(c.getBoundingClientRect().width))).size===1&&!/[♈-♓]/.test(t)}"), "your own tab should say nothing about the others, and every sign should have a round drawn icon of the same size")
         await pg.screenshot(path=os.path.join(OUT, "you.png"))
         bad = [m.group(0) for t in texts for m in re.finditer(r"\b(he|she|his|her|him|hers)\b", t, re.I)]
         check(not bad, f"no he or she in the charts: {bad}")
