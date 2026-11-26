@@ -48,7 +48,7 @@ async def main():
         x, y = await pg.evaluate("()=>{const r=cv.getBoundingClientRect();return [r.left+(MOONBOX.x+MOONBOX.w/2)*S,r.top+(MOONBOX.y+MOONBOX.h/2)*S];}")
         await pg.mouse.click(x, y)
         menu = await pg.evaluate("()=>[...document.querySelectorAll('.tmenu .tmitem')].map(b=>b.dataset.k)")
-        check(menu == ["tarot", "charts", "iching", "today"], f"the box's menu should offer tarot, charts, the I Ching and today's readings: {menu}")
+        check(menu == ["tarot", "charts", "iching"], f"the box's menu should offer tarot, charts and the I Ching: {menu}")
         await pg.evaluate("()=>capClear()")
         await pg.screenshot(path=os.path.join(OUT, "0_menu.png"))
         await pg.click(".tmitem[data-k=iching]")
@@ -133,11 +133,6 @@ async def main():
         for f in [[2, 2, 3]] * 6:
             await pg.evaluate("(f)=>{ichingToss(f);__step(.7)}", f)
         check(await pg.evaluate("()=>{const c=JSON.parse(localStorage.getItem('mp-iching')).casts;return Object.keys(c).sort().join()==='all,work'&&c.work.join()==='7,7,7,7,7,7'&&ichingToday().length===2}"), "a second hexagram, about work, should be kept beside the first, and both listed for Today")
-        # Today lists the hexagrams even before the I Ching has been opened in this visit (its text loads when first needed)
-        await pg.evaluate("()=>{ICH=null;ichP=null;tarotMenu()}")
-        await pg.click(".tmitem[data-k=today]")
-        await pg.wait_for_selector(".ttrow b:has-text('I Ching')")
-        check(await pg.evaluate("()=>[...document.querySelectorAll('.ttrow b')].filter(b=>b.textContent.startsWith('I Ching')).length===2"), "Today should list both hexagrams without the I Ching having been opened")
         # the next day: the coins are back
         await pg.evaluate("()=>{const s=JSON.parse(localStorage.getItem('mp-iching'));s.day='2000-01-01';localStorage.setItem('mp-iching',JSON.stringify(s));tarotMenu()}")
         await pg.click(".tmitem[data-k=iching]")

@@ -69,15 +69,14 @@ function openTarot(){if(tarotEl)return;sfx('tick');
   tarotEl.querySelector('.tx').addEventListener('click',e=>{e.stopPropagation();closeTarot()});
   // BACK (Jackie, Nov 17: "a back button more similar to the x button not like a bubble menu"): a square button beside the close
   // button. It closes a card's or hexagram's page if one is open; otherwise it goes back to the box's menu. Hidden on the menu.
-  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');if(tr.from==='today'){todayShow();return} /* opened from Today: back there */if(SPREADS[tr.k]){if(tr.step==='deck')tarotChoose();else tarotDeck(tr.k)} /* from a reading, back to what this spread can be about; from there, back to the spreads */else if(tr.k==='iching'&&typeof ichingBack==='function'&&ichingBack())return;else tarotMenu()});
+  tarotEl.querySelector('.tbk').addEventListener('click',e=>{e.stopPropagation();const pg=tarotEl.querySelector('.tread');if(pg){sfx('tick');pg.remove();return}if(!tr||tr.step==='shuffling'||tr.k==='menu')return;sfx('tick');if(SPREADS[tr.k]){if(tr.step==='deck')tarotChoose();else tarotDeck(tr.k)} /* from a reading, back to what this spread can be about; from there, back to the spreads */else if(tr.k==='iching'&&typeof ichingBack==='function'&&ichingBack())return;else tarotMenu()});
   ui.appendChild(tarotEl);tarotMenu()}
 // THE BOX'S MENU (Jackie, Nov 17: "when you open the box you can select from tarot, charts, or I Ching"): the box opens on its
 // choices, each a big button with a picture, its name and one line. The back button beside the close button comes back here.
-const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'},{k:'today',n:'Today',d:'Every reading you have had today.'}];
+const BOX_MENU=[{k:'tarot',n:'Tarot',d:'A card reading with the deck of 1909.'},{k:'charts',n:'Charts',d:'Birth charts and today’s sky.'},{k:'iching',n:'I Ching',d:'Toss three coins for one of 64 hexagrams.'}];
 function tarotMenuIcon(k){const d=document.createElement('div');d.className='tmicon';
   if(k==='tarot'){const b=tarotImg('back');d.appendChild(b)}
   else if(k==='charts'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☉';d.appendChild(g)}
-  else if(k==='today'){const g=document.createElement('span');g.className='tmglyph';g.textContent='☾';d.appendChild(g)}
   else if(typeof ichingIcon==='function')d.appendChild(ichingIcon());
   return d}
 function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySelector('.tpick').innerHTML='';tBoxMode();const st0=tStage();st0.innerHTML='';
@@ -85,7 +84,7 @@ function tarotMenu(){tr={k:'menu',step:'menu',cards:[],open:[]};tarotEl.querySel
   const m=document.createElement('div');m.className='tmenu';
   for(const it of BOX_MENU){const b=document.createElement('button');b.type='button';b.className='tsb tmitem';b.dataset.k=it.k;
     const n=document.createElement('b');n.textContent=it.n;const d=document.createElement('span');d.className='tmd';d.textContent=it.d;b.append(tarotMenuIcon(it.k),n,d);
-    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotChoose();else if(it.k==='charts')tarotStart('charts');else if(it.k==='today')todayShow();else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
+    b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');if(it.k==='tarot')tarotChoose();else if(it.k==='charts')tarotStart('charts');else if(typeof ichingShow==='function')ichingShow()});m.appendChild(b)}
   st0.appendChild(m);tSay('')}
 function closeTarot(){if(tarotEl){tarotEl.remove();tarotEl=null;tr=null}}
 function tStage(){return tarotEl&&tarotEl.querySelector('.tstage')}
@@ -247,17 +246,7 @@ function tarotRead(i){const x=tr.cards[i],s=SPREADS[tr.k].pos[i],old=tarotEl.que
   r.append(big,txt);r.addEventListener('click',e=>e.stopPropagation());
   tarotEl.querySelector('.tbox').appendChild(r)}
 
-/* TODAY (Jackie, Nov 25): the fourth choice in the box. Every reading you have had today, newest kind first as they are listed in the box:
-   each tarot spread and what it was about, each I Ching hexagram and what it was about, and what the crystal ball has said. Tap a tarot or
-   I Ching line to open that reading again; the back button comes back here. It empties at midnight, as the readings do. */
-function todayShow(){if(typeof ICH!=='undefined'&&!ICH&&Object.keys(ichingLog()).length)ichingLoad().then(()=>{if(tarotEl&&tr&&tr.k==='today')todayShow()}).catch(()=>{}); /* the I Ching's text loads when first needed; today's casts are listed as soon as it is in */
-  tr={k:'today',step:'today',cards:[],open:[]};tarotTabs();const st0=tStage();st0.innerHTML='';const old=tarotEl.querySelector('.tread');if(old)old.remove();
-  const L=document.createElement('div');L.className='ttoday';let n=0;
-  const row=(head,sub,fn)=>{const b=document.createElement(fn?'button':'div');if(fn){b.type='button';b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');fn()})}b.className='tsb ttrow'+(fn?'':' ttplain');
-    const h=document.createElement('b');h.textContent=head;const d=document.createElement('span');d.className='tmd';d.textContent=sub;b.append(h,d);L.appendChild(b);n++};
-  for(const [k,S] of Object.entries(SPREADS))for(const t of Object.keys(TOPICS)){const c=tarotDone(k,t);if(!c)continue;
-    row('Tarot, '+S.name.toLowerCase()+', '+TOPICS[t].n.toLowerCase(),c.map(x=>x.c.n+(x.rev?' (reversed)':'')).join(', ')+'.',()=>{tarotPick=k;tarotShow(k,c,t,'today')})}
-  if(typeof ichingToday==='function')for(const e of ichingToday())row('I Ching, '+TOPICS[e.topic].n.toLowerCase(),e.name+'.',()=>ichingShow(e.topic,'today'));
-  if(typeof ballToday==='function')for(const e of ballToday())row('Crystal ball, '+e.when,e.say);
-  if(!n){const p=document.createElement('p');p.className='ttnone';p.textContent='No readings yet today. The tarot, the I Ching and the crystal ball on the shelf above are all kept here once you have one.';L.appendChild(p)}
-  st0.appendChild(L);tSay(n?'Tap a tarot or I Ching reading to open it again. They are kept until midnight.':'')}
+/* There was a Today page here for one afternoon (Nov 25), listing the day's readings. Jackie: "remove the 'today' part of the tarot box and
+   instead just make it easy to get a reading for all your options (everything, work etc) and go back and look at them for the day".
+   That is what the deck screen does: each thing a reading can be about has its own reading every day, and one you have had is ticked
+   and opens again at a tap. The I Ching works the same way. */

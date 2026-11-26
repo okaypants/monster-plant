@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No Today page in the moon box (Nov 25)
+
+- Jackie: "remove the 'today' part of the tarot box and instead just make it easy to get a reading for all your options (everything work etc) and go back and look at them for the day."
+- The Today page is gone from the box's menu. Getting a reading for each topic and looking at it again is done where the readings are made: on the deck screen each topic has its own reading every day, one you have had shows a tick, and tapping it opens that reading again. The I Ching's coins screen works the same way.
+- The crystal ball's predictions are no longer listed anywhere after they are said.
+
 ### Every age opens its mouth to eat (Nov 25)
 
 - Jackie: "make the kid's mouth open when it eats also baby and then everyone".

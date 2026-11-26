@@ -34,8 +34,8 @@ function ichingLog(){let s=null;try{s=JSON.parse(localStorage.getItem(ICHING_KEY
   const okL=l=>Array.isArray(l)&&l.length===6&&l.every(v=>v>=6&&v<=9),c={};if(okL(s.lines))c.all=s.lines;for(const t in (s.casts||{}))if(TOPICS[t]&&okL(s.casts[t]))c[t]=s.casts[t];return c}
 function ichingKeep(topic,lines){const c=ichingLog();c[topic]=lines;try{localStorage.setItem(ICHING_KEY,JSON.stringify({day:tarotToday(),casts:c}))}catch(e){}}
 function ichingToday(){if(!ICH)return [];const c=ichingLog();return Object.keys(TOPICS).filter(t=>c[t]).map(t=>({topic:t,name:ichingName(ichingPair(c[t]).first)+', '+ichingPair(c[t]).first.en}))}
-// back from a hexagram: to the coins and what to ask about (or to Today, if it was opened from there). false = nothing to go back to here
-function ichingBack(){if(!ich||ich.lines.length!==6)return false;if(ich.from==='today'){todayShow();return true}ichingShow();return true}
+// back from a hexagram: to the coins and what to ask about. false = nothing to go back to here
+function ichingBack(){if(!ich||ich.lines.length!==6)return false;ichingShow();return true}
 // the two hexagrams of a reading: the one thrown, and (if any lines are changing) the one it turns into
 function ichingPair(lines){const a=lines.map(v=>v%2?'1':'0').join(''),chg=lines.map((v,i)=>v===6||v===9?i:-1).filter(i=>i>=0);
   const b=lines.map(v=>v===6?'1':v===9?'0':v%2?'1':'0').join('');return {first:ichingHex(a),second:chg.length?ichingHex(b):null,chg}}
