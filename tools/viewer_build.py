@@ -15,17 +15,17 @@ def stereo(path):
     farther things shift, which is what gives the picture its depth."""
     im=Image.open(path).convert('L');W,H=im.size;hw=W//2;a=np.asarray(im,float)
     x0,x1,y0,y1=int(hw*.20),int(hw*.83),int(H*.15),int(H*.82);L=a[y0:y1,x0:x1];L=L-L.mean();best=(-9,0,0)
-    for dy in range(-10,11,2):
-        for dx in range(-int(hw*.09),int(hw*.09)+1,2):
+    for dy in range(-16,17,2):
+        for dx in range(-int(hw*.3),int(hw*.16)+1,2): # a wide search: on many cards the right picture sits well to the left of where a cut down the middle puts it
             xa,ya=hw+x0+dx,y0+dy
-            if xa<hw or xa+(x1-x0)>W or ya<0 or ya+(y1-y0)>H:continue
+            if xa<x1 or xa+(x1-x0)>W or ya<0 or ya+(y1-y0)>H:continue
             R=a[ya:ya+(y1-y0),xa:xa+(x1-x0)];R=R-R.mean();c=float((L*R).sum()/((L*L).sum()**.5*(R*R).sum()**.5+1e-9))
             if c>best[0]:best=(c,dx,dy)
     c,dx,dy=best
     for ddy in (-1,0,1): # then to the single pixel
         for ddx in (-1,0,1):
             xa,ya=hw+x0+dx+ddx,y0+dy+ddy
-            if xa<hw or xa+(x1-x0)>W or ya<0 or ya+(y1-y0)>H:continue
+            if xa<x1 or xa+(x1-x0)>W or ya<0 or ya+(y1-y0)>H:continue
             R=a[ya:ya+(y1-y0),xa:xa+(x1-x0)];R=R-R.mean();cc=float((L*R).sum()/((L*L).sum()**.5*(R*R).sum()**.5+1e-9))
             if cc>c:c,bx,by=cc,dx+ddx,dy+ddy
             else:bx,by=locals().get('bx',dx),locals().get('by',dy)

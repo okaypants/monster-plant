@@ -119,7 +119,7 @@ async def main():
         check(look and look["w"] == look["s"][4] and look["h"] == look["s"][5] and look["still"] and look["drawn"], f"tapping the card should look through the viewer at one still picture: {look}")
         await pg.screenshot(path=os.path.join(OUT, "viewer_look.png"))
         await pg.click(".vwlook")
-        check(await pg.evaluate("()=>!document.querySelector('.vwlook')&&!viewLookT&&!!document.querySelector('.screen.viewer')&&VIEW_CARDS.every(v=>v.s&&v.s.length===6&&v.s[4]>100)"), "a tap should step back to the card, and every card should have its two pictures lined up")
+        check(await pg.evaluate("()=>!document.querySelector('.vwlook')&&!viewLookT&&!!document.querySelector('.screen.viewer')&&VIEW_CARDS.every(v=>v.s&&v.s.length===6&&v.s[4]>100&&v.s[2]>=v.s[0]+v.s[4])"), "a tap should step back to the card, and every card should have its two pictures lined up")
         check(await pg.evaluate("()=>VIEW_CARDS.length>=60&&VIEW_CARDS.every(v=>v.t&&v.by&&v.d)"), "the viewfinder should have at least sixty titled, credited cards")
         missing = [f for f in await pg.evaluate("()=>VIEW_CARDS.map(v=>v.f)") if not os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "viewer", f))]
         check(not missing, f"viewfinder cards missing from viewer/: {missing}")

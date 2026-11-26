@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Looking through the viewer layers the card's two photographs (Nov 26)
+
+- Jackie: "Can we make it look kind of 3d". I offered a look-around view that shifts when you tilt the phone; Jackie: "I want to layer".
+- The right photograph is laid over the left at half strength. Whatever the two were lined up on is sharp, and nearer and farther things double a little.
+- An earlier layering trial ghosted badly because the line-up was wrong on most cards: the search for where the right photograph sits stopped about 40 pixels short. The search is wider now and all 65 cards were lined up again (tools/viewer_build.py).
+
 ### Looking through the viewer shows the whole photograph (Nov 26)
 
 - Jackie: "The stereo image doesn't look very good for the viewfinder images when they're combined" and "It's just arbitrarily zoomed in".

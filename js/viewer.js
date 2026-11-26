@@ -35,10 +35,10 @@ function closeViewer(){if(!viewEl)return;viewLookEnd(true);viewEl.remove();viewE
    near things shift while far things hold still. Tap the card and the screen goes dark but for the shape you see through a pair of
    lenses, with the one picture filling it. Tap again to step back to the card. A frame swap only; with reduced motion the left
    picture is shown still. Where the two pictures line up on each card is worked out by tools/viewer_build.py (the card's 's'). */
-const VIEW_SWAP=0; /* 0 = the view holds still (Jackie, Nov 25: "I don't like the viewing experience, it would be more 3d not moving"); it was 240 ms between swaps */let viewLookT=0,viewEye=0;
+const VIEW_SWAP=0; /* 0 = the view holds still (Jackie, Nov 25: "I don't like the viewing experience, it would be more 3d not moving"); it was 240 ms between swaps */const VIEW_LAYER=.5; /* how strongly the right photograph lies over the left (Jackie, Nov 26: "I want to layer") */let viewLookT=0,viewEye=0;
 function viewLookDraw(){const lk=viewEl&&viewEl.querySelector('.vwlook');if(!lk)return;const v=VIEW_CARDS[viewI],im=viewEl.querySelector('.vwpic'),c=lk.querySelector('canvas');if(!v.s||!im.naturalWidth)return;
  const[lx,ly,rx,ry,w,h]=v.s;if(c.width!==w||c.height!==h){c.width=w;c.height=h;}c.parentNode.style.setProperty('--ar',(w/h).toFixed(4)); // the frame takes the photograph's own shape, so all of it shows
- c.getContext('2d').drawImage(im,viewEye?rx:lx,viewEye?ry:ly,w,h,0,0,w,h);}
+ const g=c.getContext('2d');g.globalAlpha=1;g.drawImage(im,lx,ly,w,h,0,0,w,h);g.globalAlpha=VIEW_LAYER;g.drawImage(im,rx,ry,w,h,0,0,w,h);g.globalAlpha=1;} // the card's two photographs, one laid over the other where they line up: what is at the matched distance is sharp, nearer and farther things double a little
 function viewLook(){if(!viewEl||viewEl.querySelector('.vwlook'))return;const v=VIEW_CARDS[viewI];if(!v.s)return;sfx('tick');
  const lk=document.createElement('div');lk.className='vwlook';lk.innerHTML='<div class="vwhood"><canvas></canvas></div>';
  lk.addEventListener('click',e=>{e.stopPropagation();viewLookEnd();});viewEl.appendChild(lk);viewEye=0;viewLookDraw();
