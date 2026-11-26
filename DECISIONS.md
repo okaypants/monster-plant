@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The room carries on past its edges; the floor piece is on the floor (Nov 26)
+
+- Jackie: "Would it be easy to expand the width of the room to full width, cause it's gonna cut off on my phone or, if that's too much we could put a little background wallpaper on those black ends?"
+- Making the room itself wider would mean new art at both ends and moving everything in it, so I did the second thing. A strip at each side carries the room's wall, ceiling trim, panelling and floorboards on past its edges. The wallpaper's dots keep the same grid across the join. The strips are lit as the room's edge beside them is lit, so they go dark with it at night. Nothing can be put or tapped there; the room is as wide as it was. On a screen no wider than the room nothing changes.
+- "i'm curious why the big decoration that's supposed to be on the floor is on the crate every time. which won't work if there's a baby there, obviously". It stood on the crate because that is where the pumpkin always stood, and only moved to the floor while the bassinet was out. The floor piece, the pumpkin and the tree now always stand on the floor in the front left corner.
+- "I feel like the right side is a little barren of decoration, so I could use tips there": not built. I gave ideas and asked.
+
 ### The Crates say what you are about to hear (Nov 26)
 
 - Jackie: "I don't like that it says sent from the sampler when you go listen to crates on the radio. I feel like it should have a slightly better description, just telling people like what they're about to listen to, which it basically does".

@@ -191,6 +191,12 @@ CASES = [
      "(()=>{if(BABY_EAT.length!==16||!BABY_EAT.every(i=>i.naturalWidth>50))return 'missing open-mouth pictures';st.nap=0;st.night=false;"
      "if(kidEating())return 'mouth open with no food';feed.item={id:'solar'};feed.over=st.id;const on=kidEating();draw();feed.item=null;feed.over=null;if(!on)return 'the kid did not open its mouth';if(kidEating())return 'the mouth stayed open';st.stage=5;feed.item={id:'solar'};feed.over=st.id;const on5=kidEating();feed.item=null;feed.over=null;if(!on5)return 'the older kid did not open its mouth';"
      "st.stage=6;feed.item={id:'solar'};feed.over=st.id;const t=mouthNow();st.stage=8;const a=mouthNow();feed.item=null;feed.over=null;return (t===2&&a===2&&mouthNow()!==2)||'teen or adult mouth: '+t+' '+a;})()"),
+    # beside the room: two strips carry its wall and floor on past the edges, the same height as the room and drawn from their pictures
+    ("sides_carry_on", "s.stage=6;s.species=4;", "", 0.1,
+     "(()=>{draw();const L=document.getElementById('sideL'),R=document.getElementById('sideR');if(!L||!R)return 'no side strips';if(!ok(SIDE_IMG.L)||!ok(SIDE_IMG.R)||SIDE_IMG.L.naturalHeight!==H)return 'side pictures missing or the wrong height';"
+     "const px=c=>c.getContext('2d').getImageData(c.width-3,300,1,1).data,wall=g.getImageData(1666,300,1,1).data,p=px(R.width?L:L);if(p[3]!==255)return 'the left strip was not drawn';"
+     "const r=R.getContext('2d').getImageData(2,900,1,1).data,fl=g.getImageData(1667,900,1,1).data;if(Math.abs(r[0]-fl[0])+Math.abs(r[1]-fl[1])+Math.abs(r[2]-fl[2])>40)return 'the right strip floor does not match the room: '+[...r]+' '+[...fl];"
+     "return Math.abs(parseFloat(L.style.height)-H*S)<1||'the strips are not the height of the room';})()"),
     # bothered into moving three times in a row, the cat leaves the room, stays away a while and walks back in (Jackie, Nov 25)
     ("cat_leaves_room", TEEN + "s.catTrust=.7;", "", 0.1,
      "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.to!=='out')return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"

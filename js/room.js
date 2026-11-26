@@ -31,6 +31,15 @@ const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
 function moonDialPic(){const ahead=typeof moonDialAt==='function'?moonDialAt():null,f=typeof moonAge==='function'?moonAge(ahead??undefined)/MOON_MONTH:0; // tonight's moon, or the night the dial has been turned on to (js/fidgets.js) // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
  return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
+/* BESIDE THE ROOM (Jackie, Nov 26: on a phone the room is "gonna cut off", "we could put a little background wallpaper on those black
+   ends"). A phone held sideways is wider than the room, which left a dark bar at each end. Two strips now carry the room's wall, ceiling
+   trim, panelling and floorboards on past its edges (side_l.png and side_r.png, made by tools/room_build.py from the room's own right-hand
+   edge). They are two small canvases outside the room's own, lit as the room's edge beside them is lit, and drawn again only when the
+   light changes. Nothing can be put or tapped there: the room itself is as wide as it was. */
+const SIDE_IMG={L:img('side_l.png'),R:img('side_r.png')};let sideKey={L:'',R:''};
+function drawSides(){for(const k of ['L','R']){const c=document.getElementById('side'+k),im=SIDE_IMG[k];if(!c||!ok(im))continue;
+  const L=lightAt(k==='L'?6:W-6,300),key=(L&&L.dim?L.key:'full');if(sideKey[k]===key)continue;sideKey[k]=key;
+  const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.drawImage(litPic(im,L),0,0);}}
 function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;if(typeof ballEyesOn==='function'&&ballEyesOn())return ballEyesPic();const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
 function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
 const roomReady=()=>ok(ROOM2);
@@ -210,6 +219,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
  if(st.started&&typeof drawSash==='function')drawSash(tk+lk,rm); // the lower sash slides up for Sloth's paw (js/paw.js)
  fidgetDrawProps(rm);
  drawSeasonItem(); // the pumpkin (autumn) or the tree (winter) on the book stack (js/seasonal.js)
+ drawSides(); // the strips of wall and floor beside the room, for wide screens
  drawPlacard(tk+'|'+lk+'|'+Math.round(curK*4)); // the FILES sign on the desk drawers, lit like the wood around it
  if(typeof drawDecorWindow==='function')drawDecorWindow(); // a garland inside the window, behind the curtains (js/decor.js)
  curK+=((st.curtain==='closed'?1:0)-curK)*Math.min(1,dtDraw*5);if(curK>.01)drawCurtains(curK);

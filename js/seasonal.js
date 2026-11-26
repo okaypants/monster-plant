@@ -17,7 +17,7 @@ const STACK_TOP={x:336,y:660}; // the middle of the milk crate's top (room art),
 /* While the bassinet stands in the crate's place (Jackie, Nov 23: "Find them a spot") the item stands on the floor in the front left
    corner, in front of the bookcase. That is the front of the room, so it is drawn larger there, by the same rule as everything else. */
 const SEASON_FLOOR={x:100,y:886,k:1.4}; // clear of the name tag in the bottom left corner
-function seasonAt(){return bassinetOut()?SEASON_FLOOR:{x:STACK_TOP.x,y:STACK_TOP.y,k:1};}
+function seasonAt(){return SEASON_FLOOR;} /* always on the floor, in the front left corner (Jackie, Nov 26: "i'm curious why the big decoration that's supposed to be on the floor is on the crate every time. which won't work if there's a baby there"). It used to stand on the milk crate and only move to the floor while the bassinet stood in the crate's place */
 const SWAP_MS=150; // one frame of a rock, sway or swing
 let sLeaves=[],sLeafNext=0,sRock=0,sSway=0;const leafCv=document.createElement('canvas');leafCv.width=GLASS_W;leafCv.height=GLASS_H;const leafG=leafCv.getContext('2d');leafG.imageSmoothingEnabled=false;
 
@@ -38,9 +38,8 @@ function drawFallingLeaves(tk){const now=performance.now();
 /* ---------- the pumpkin (autumn) and the tree (winter) on the milk crate ---------- */
 function seasonOut(){return typeof decorFloor==='function'?decorFloor():null;} // what stands on the floor spot: the pumpkin (the Autumn decorations), the tree (Christmas) or another set's floor decoration (js/decor.js). Until Nov 25 the pumpkin came out by itself in autumn and the tree in winter
 // out on the crate unless a plant sits there (the cat leaves the crate to it)
-function seasonItem(){const k=seasonOut();if(!k||cat.spot==='crate')return null;if(bassinetOut())return k; // on the floor while the bassinet stands in the crate's place
- let onStack=false;eachPlant(()=>{if(st.stage>=0&&spotKey()==='crate')onStack=true;});return onStack?null:k;}
-function stackOff(){const p=!bassinetOut()&&FP.find(q=>q.n==='crate');return p?{x:Math.round(p.ox),y:Math.round(p.oy)}:{x:0,y:0};} // rides along when the crate bounces
+function seasonItem(){return seasonOut()||null;} // out whenever a set with a floor piece is up: it is on the floor, so nothing on the crate is in its way
+function stackOff(){return {x:0,y:0};} // it no longer rides on the crate
 function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now()):0;}
 function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:k==='tree'?TREE[0]:DECOR_IMG[k];if(!ok(f))return null;const at=seasonAt(),sc=(k==='pumpkin'?PUMPKIN_SC:k==='tree'?TREE_SC:1)*at.k,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
  return {k,sc,osc:ORN_SC*at.k,x:at.x-Math.round(w/2),y:at.y-h,w,h};}
