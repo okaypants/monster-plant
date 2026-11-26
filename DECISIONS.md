@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The top shelf's edge under the fossil is back (Nov 26)
+
+- Jackie: "the shelf is kind of messed up", "under the fossil".
+- When the wallpaper's dots were repainted on Nov 25, the top edge of the upper wall shelf, from its left end to the drum machine, was painted over with wallpaper blue. Those pixels are put back from the room picture as it was before the repaint. Nothing else in the picture changed.
+- The wall garland's mask was rebuilt from the repaired picture.
+
 ### Lamps show by day when the curtains are shut (Nov 26)
 
 - Jackie: "When I turn on lights during the day and with blinds closed it doesn't seem to impact anything. They turn on but don't change anything".
