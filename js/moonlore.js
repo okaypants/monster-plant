@@ -1,5 +1,5 @@
 'use strict';
-/* WHAT TONIGHT'S MOON IS CALLED ELSEWHERE (Jackie, Nov 25: the moon card should carry "the evening's astrological significance or
+/* WHAT TONIGHT'S MOON IS CALLED IN DIFFERENT TRADITIONS (Jackie, Nov 25: the moon card should carry "the evening's astrological significance or
    features in different cultures"). Everything here is worked out from the date and where the moon is, and every line only
    describes: it names the night and says what a tradition holds about it. Nothing is predicted and nobody is told what to do.
 
@@ -73,12 +73,12 @@ function calParts(cal,t){try{const p=new Intl.DateTimeFormat('en-u-ca-'+cal,{day
 function hawaiiNight(t){const n=Math.round(moonAge(t));return n<1||n>29?30:n;} // 1 to 30
 function nakshatraAt(t){const y=new Date(t).getUTCFullYear()+new Date(t).getUTCMonth()/12,ay=23.853+.013969*(y-2000),lon=((skyLon('moon',t)-ay)%360+360)%360;return Math.floor(lon/(360/27))%27;}
 function manzilAt(t){const lon=((skyLon('moon',t))%360+360)%360;return Math.floor(lon/(360/28))%28;}
-function moonElsewhere(t){t=t??Date.now();const out=[];
+function moonTraditions(t){t=t??Date.now();const out=[];
  const h=HAWAII_NIGHTS[hawaiiNight(t)-1];out.push({where:'Hawaiʻi',say:'In the Hawaiian moon calendar tonight is '+h[0]+', '+h[1]+'.'});
  const ch=calParts('chinese',t);
  if(ch&&!ch.leap&&JAPAN_NIGHTS[ch.day]){const j=JAPAN_NIGHTS[ch.day];out.push({where:'Japan',say:'In Japan tonight’s moon is called '+j[0]+', '+j[1]+'.'});}
  const nk=NAKSHATRAS[nakshatraAt(t)];out.push({where:'India',say:'In Indian astrology the moon is in '+nk[0]+', '+nk[1]+'. It is one of 27 lunar mansions.'});
- const mz=MANAZIL[manzilAt(t)];out.push({where:'Arabic',say:'In the Arabic lunar mansions it is in '+mz[0]+', '+mz[1]+'.'});
+ const mz=MANAZIL[manzilAt(t)];out.push({where:'Arabic',say:'In the Arabic lunar mansions the moon is in '+mz[0]+', '+mz[1]+'.'});
  const he=calParts('hebrew',t),is=calParts('islamic-umalqura',t),d=[];
  if(ch)d.push('the '+ORD(ch.day)+' day of the '+ORD(ch.month)+(ch.leap?' (leap)':'')+' month in the Chinese calendar');
  if(he)d.push('the '+ORD(he.day)+' of '+he.name+' in the Hebrew calendar');

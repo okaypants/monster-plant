@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon page: no "elsewhere", only tonight, and why it matters (Nov 25)
+
+- Jackie, on the heading "Tonight elsewhere": "\"Elsewhere\" assumes that everyone is from Florida". No tradition is the default now. Western astrology is one line among the others, under "Tonight's moon in different traditions", in A to Z order of where each comes from. The calendar dates have their own heading, "Today's date".
+- "We can also stay in the present and skip any reference to tomorrow's moon unless it explicitly affects today's reading": the countdown to the next full or new moon and the line about when the moon changes sign are gone.
+- "Also I love significance -- I need to care why the new moon is in 13 nights -- what does that affect? tides? moods?": a new part, "What it does tonight", has three lines for tonight's phase. They cover the tides (strongest at new and full moon, gentlest at the half moons), when the moon is up and how dark the night is, and what astrologers hold the phase to be good for, said as their view. The full moon's line adds that studies mostly have not found it causes restless nights.
+- These change the entry below where they differ.
+
 ### The moon dial opens a moon page (Nov 25)
 
 - Jackie: "Let's redo the moon thing." Of four directions she picked the first, a page instead of captions, "plus the evening's astrological significance or features in different cultures", and after we talked it through: "do it".
