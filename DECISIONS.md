@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The wallpaper's pattern is repainted evenly (Nov 25)
+
+- Jackie: "I think you also need to repaint some of the wallpaper again / there are a lot of light colored dots and inconsistent patterning".
+- Two things were wrong. Where a dot touched a picture frame, a lamp or a shelf it had been missed when the dots were turned blue, so it was still cream. And the drawing's dots wandered: some rows had them 60 pixels apart and others 70.
+- Every dot is now taken off the wall and the pattern is stamped again from one good dot of the drawing, on an exact grid: rows 33 pixels apart, dots 69 apart, every other row shifted half a step. Furniture still cuts across the dots behind it, and a dot that would show less than half is left out so no slivers peep round the frames.
+- Only the room picture changed. The dots' colour is the same blue as before.
+
 ### No Today page in the moon box (Nov 25)
 
 - Jackie: "remove the 'today' part of the tarot box and instead just make it easy to get a reading for all your options (everything work etc) and go back and look at them for the day."

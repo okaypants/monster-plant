@@ -73,6 +73,54 @@ def wall_dots(a):
         t=((r-bg)*(cream-bg)).sum(2)/((cream-bg)**2).sum();off=np.sqrt(((r-(bg+t[...,None]*(cream-bg)))**2).sum(2)) # how far along from wall to cream each pixel is
         m=(off<60)&(t>.08)&nd.binary_dilation(island[y0:y1,x0:x1]==i,iterations=2);out[y0:y1,x0:x1][m]=(bg+np.clip(t,0,1)[...,None]*(dst-bg))[m]
     return out
+def wallpaper(a):
+    """Repaints the wallpaper's pattern so it is even (Jackie, Nov 25: "you also need to repaint some of the wallpaper again / there are a lot
+    of light colored dots and inconsistent patterning"). Two things were wrong. Where a dot touched a picture frame, a lamp or a shelf it
+    had been missed when the dots were turned blue, so it was still cream; and the drawing's dots wander, some rows 60 pixels apart and
+    some 70. So every dot is taken off the wall (each takes the plain wall colour nearest to it) and the pattern is stamped again from
+    one good dot of the drawing, on an exact grid: rows 33 apart, dots 69 apart, every other row shifted half a step. A dot is only
+    drawn on wall, so furniture still cuts across the ones behind it; one that would show less than half is left out."""
+    a=a.astype(float);bg,cream,dst=hx('#024359'),hx('#FCE6B7'),hx('#2A6A80');top,bot=36,548;H_,W_=a.shape[:2]
+    band=np.zeros((H_,W_),bool);band[top:bot]=True;far=np.sqrt(((a-bg)**2).sum(2));plain=(far<28)&band
+    isl,n=nd.label((far>=28)&band);size=nd.sum(np.ones((H_,W_)),isl,range(1,n+1));dots=np.zeros((H_,W_),bool);good=[]
+    for i,sl in enumerate(nd.find_objects(isl),1):
+        if size[i-1]<520 and sl[0].start>top and sl[0].stop<bot:
+            dots|=isl==i;ys,xs=np.where(isl[sl]==i)
+            if 150<size[i-1]<230:good.append((sl[1].start+xs.mean(),sl[0].start+ys.mean(),i))
+    # what is left of a dot where it runs into something: a small patch of cream, or of the dots' own blue, right beside plain wall
+    t=((a-bg)*(dst-bg)).sum(2)/((dst-bg)**2).sum();off=np.sqrt(((a-(bg+t[...,None]*(dst-bg)))**2).sum(2));blue=(off<26)&(t>.3)&(t<1.4)&band&~plain&~dots
+    crm=(np.sqrt(((a-cream)**2).sum(2))<95)&band;near=nd.binary_dilation(plain,iterations=4)
+    for m in (crm,blue):
+        lab,k=nd.label(m);sz=nd.sum(np.ones((H_,W_)),lab,range(1,k+1));touch=nd.sum(near,lab,range(1,k+1))
+        ok=np.array([0]+[1 if sz[j]<170 and touch[j]>=sz[j]*.5 else 0 for j in range(k)],bool);dots|=ok[lab]
+    dots=nd.binary_dilation(dots,iterations=2)&band&~plain|dots;gap=nd.binary_closing(dots,iterations=2)&band # with each dot's dark middle
+    gap=nd.binary_dilation(gap,iterations=3)&band&(plain|gap) # and the soft edge round it
+    wall=plain|gap;clean=(plain&~gap).astype(float);sm=np.dstack([nd.gaussian_filter(a[...,c]*clean,14) for c in range(3)])/np.maximum(nd.gaussian_filter(clean,14),1e-6)[...,None];a[gap]=sm[gap] # each takes the wall's own colour round about it, smoothed, so no ghost of the old dot is left
+    # the grid, from the drawing's own good dots
+    G=np.array([(x,y) for x,y,_ in good]);DY,DX=33.0,69.1;y0=float(np.median((G[:,1]-47)%DY))+47-DY*round((np.median((G[:,1]-47)%DY))/DY)
+    r=np.round((G[:,1]-y0)/DY);xs_=(G[:,0]-(r%2)*DX/2)%DX;ang=np.angle(np.exp(2j*np.pi*xs_/DX).mean());x0=(ang/(2*np.pi)*DX)%DX
+    # one good dot as the stamp: the one whose size is nearest the usual
+    med=np.median([size[i-1] for _,_,i in good]);R=13;src=recolour(fit(load('filled.png'))).astype(float);sfar=np.sqrt(((src-bg)**2).sum(2))>=24
+    alone=[q for q in good if 120<q[1]<bot-60 and R<q[0]<W_-R and sfar[int(round(q[1]))-R:int(round(q[1]))+R+1,int(round(q[0]))-R:int(round(q[0]))+R+1].sum()<=size[q[2]-1]*1.25] # a dot with nothing else near it
+    gx,gy,gi=min(alone,key=lambda q:abs(size[q[2]-1]-med));cx,cy=int(round(gx)),int(round(gy))
+    patch=src[cy-R:cy+R+1,cx-R:cx+R+1].copy();pm=nd.binary_dilation(sfar[cy-R:cy+R+1,cx-R:cx+R+1],iterations=1)
+    y=y0-DY*int(y0//DY)
+    row=int(round((y-y0)/DY))
+    while y<bot+R:
+        x=x0+(row%2)*DX/2-DX
+        while x<W_+R:
+            px,py=int(round(x)),int(round(y))
+            yy0,yy1,xx0,xx1=max(top,py-R),min(bot,py+R+1),max(0,px-R),min(W_,px+R+1);sub=pm[yy0-(py-R):yy1-(py-R),xx0-(px-R):xx1-(px-R)] if yy1>yy0 and xx1>xx0 else None
+            if sub is None or (sub&wall[yy0:yy1,xx0:xx1]).sum()<pm.sum()*.5:x+=DX;continue # less than half of it would show: leave it out, so no slivers peep round the furniture
+            for dy in range(-R,R+1):
+                yy=py+dy
+                if yy<top or yy>=bot:continue
+                for dx in range(-R,R+1):
+                    xx=px+dx
+                    if 0<=xx<W_ and pm[dy+R,dx+R] and wall[yy,xx]:a[yy,xx]=patch[dy+R,dx+R]
+            x+=DX
+        y+=DY;row+=1
+    return a.clip(0,255).astype(np.int32)
 def recolour(a):
     a=a.astype(float);sh=a.shape
     a=greens(a,box(sh,0,20,300,345)|box(sh,1405,30,1670,480)|box(sh,1160,262,1302,495)) # the two pothos and the shelf plant
@@ -92,7 +140,7 @@ def nudge(a,x0,y0,x1,y1,dx):
     wall=np.median(reg[far<30],0);piece=reg[m].copy();a[y0:y1,x0:x1][nd.binary_dilation(m,iterations=5)]=wall;a[y0:y1,x0+dx:x1+dx][m]=piece;return a # the gap takes the wall's own colour just there, a little past the thing's edge
 TOY=(54,352,140,438) # the wind-up cat's place in its cubby (left, top, right, bottom)
 def build_room():
-    a=recolour(fit(load('filled.png')));a=nudge(a,1054,140,1176,227,34);m=magenta(a);m=nd.binary_opening(m,iterations=1)
+    a=recolour(fit(load('filled.png')));a=nudge(a,1054,140,1176,227,34);a=wallpaper(a);m=magenta(a);m=nd.binary_opening(m,iterations=1)
     lab,n=nd.label(m);keep=np.zeros_like(m);frames=[]
     for i,s in enumerate(nd.find_objects(lab),1):
         if (lab[s]==i).sum()<400:continue
