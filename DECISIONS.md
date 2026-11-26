@@ -22,7 +22,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 ### The kid is smaller again (Nov 25)
 
 - Jackie: "the kid is a little too big imo". A kid is a tenth smaller than after the last change (the adult's height over 2.65, was 2.4).
-- The teen is left the size it was. Jackie only named the kid this time; earlier the teen was sized as one and a half kids, so say if it should shrink too.
+- I first left the teen the size it was and asked. Jackie: "Shrink the teen too". The teen is one and a half kids again, so it is a tenth smaller as well.
 
 ### The cat is down inside its bed (Nov 25)
 
