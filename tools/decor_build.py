@@ -34,14 +34,27 @@ def tidy(im,fit=None):
     if fit and (out.width>fit[0] or out.height>fit[1]):
         k=min(fit[0]/out.width,fit[1]/out.height);out=out.resize((max(1,int(out.width*k)),max(1,int(out.height*k))),Image.NEAREST)
     return out
-def dim(im):
-    """The garland with its lights gone dim. The lights are the small pale balls strung just under the cord; where a garland has none
-    (the Christmas one is all coloured bulbs) its bright bulbs are the lights."""
-    a=np.asarray(im).astype(float);rgb=a[...,:3];al=a[...,3]>0;H=a.shape[0];yy=np.arange(H)[:,None]
-    pale=al&(rgb[...,0]>225)&(rgb[...,1]>215)&(rgb[...,2]>150)&(rgb[...,2]<236)&(yy<H*.5)
-    if pale.sum()<40:
-        gold=(rgb[...,0]>200)&(rgb[...,1]>150)&(rgb[...,2]<110);pale=al&(rgb.sum(2)>170)&~gold&(yy>H*.3)
-    rgb[pale]=rgb[pale]*.45+np.array([24,18,30]);return Image.fromarray(a.astype(np.uint8),'RGBA')
+def lights(im,occ=''):
+    """Which pixels of a garland are lights. Only real lights count: the small pale round bulbs strung on the cord, and on the
+    Christmas garland its coloured bulbs. Flags, flowers, lanterns, paper banners and the rest are not lights, however pale.
+    A bulb is a small, round, filled, pale blob that hangs within a few pixels of the gold cord. The garlands are drawn evenly
+    left and right, so where a bulb is found its twin on the other side counts too, even if it touches something pale."""
+    a=np.asarray(im).astype(int);rgb=a[...,:3];al=a[...,3]>0;H,W=al.shape;out=np.zeros((H,W),bool)
+    if occ=='christmas':
+        yy=np.arange(H)[:,None];gold=(rgb[...,0]>200)&(rgb[...,1]>150)&(rgb[...,2]<110);return al&(rgb.sum(2)>170)&~gold&(yy>H*.3)
+    gold=al&(rgb[...,0]>200)&(rgb[...,1]>140)&(rgb[...,2]<120)&(rgb[...,0]-rgb[...,2]>110)
+    top=np.array([np.argmax(gold[:,x]) if gold[:,x].any() else -1 for x in range(W)],float)
+    pale=al&(rgb[...,0]>215)&(rgb[...,1]>185)&(rgb[...,2]>60)&~gold;lab,n=nd.label(pale);found=[]
+    for i,sl in enumerate(nd.find_objects(lab),1):
+        m=lab[sl]==i;h,w=m.shape;t=top[sl[1]];t=t[t>=0]
+        if 9<=w<=16 and 9<=h<=16 and abs(w-h)<=3 and m.sum()>=.6*w*h and len(t) and sl[0].start-np.median(t)<=12:out[sl]|=m;found.append(sl)
+    for sl in found:
+        tw=(sl[0],slice(W-sl[1].stop,W-sl[1].start));m=pale[tw]
+        if not out[tw].any() and m.sum()>=.6*m.size:out[tw]|=m
+    return out
+def dim(im,occ=''):
+    """The garland with its lights gone dim (see lights). A garland with no lights comes back unchanged, so it never blinks."""
+    a=np.asarray(im).astype(float);m=lights(im,occ);a[...,:3][m]=a[...,:3][m]*.45+np.array([24,18,30]);return Image.fromarray(a.astype(np.uint8),'RGBA')
 def build():
     os.makedirs(OUT,exist_ok=True);meta={}
     for n,occ in enumerate(SHEETS,1):
@@ -72,7 +85,7 @@ def build():
             for kind,(bx,by,bw,bh) in zip('wsdf',sorted(r,key=lambda b:b[0])):
                 sc=FIT_W/bw if kind=='w' else min(BASE[kind],FIT[kind][0]/bw,FIT[kind][1]/bh)
                 im=tidy(rb.cut(a,bx,by,bw,bh,sc,holes=True,tol=220 if (o,kind) in PINK_GLOW else TOL),(FIT_W+4,400) if kind=='w' else FIT[kind]);im.save(os.path.join(OUT,f'{o}_{kind}.png'),optimize=True);meta[f'{o}_{kind}']=[im.width,im.height]
-                if kind=='w':dim(im).save(os.path.join(OUT,f'{o}_w_dim.png'),optimize=True)
+                if kind=='w':dim(im,o).save(os.path.join(OUT,f'{o}_w_dim.png'),optimize=True)
     room=np.asarray(Image.open(os.path.join(ROOT,'room2.png')).convert('RGBA')).astype(int);x0,y0,x1,y1=WIN_BOX;s=room[y0:y1,x0:x1];r,g,b=s[...,0],s[...,1],s[...,2]
     glass=(s[...,3]==0)|((r>200)&(b>200)&(g<80));frame=(r>190)&(g>80)&(g<175)&(b<95)&(r-g>55)
     lab,cnt=nd.label(nd.binary_closing(glass|frame,iterations=2));m=nd.binary_fill_holes(lab==np.bincount(lab[glass]).argmax())

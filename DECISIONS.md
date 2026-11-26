@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Only real lights blink on a garland (Nov 26)
+
+- Jackie: "Make it so that only actual lights light up up as far as the garland flags, like don't turn weird things into lights."
+- The blink used to dim anything pale in the top half of a garland, which caught birthday flags, the cut-paper banners, flower petals, lantern bands and the harvest corn. Now only the small round bulbs on the cord blink, and on the Christmas garland its coloured bulbs. A garland with no bulbs (birthday, harvest, Day of the Dead, Kwanzaa, solstice, Advent) does not blink at all.
+
 ### Looking through the viewer layers the card's two photographs (Nov 26)
 
 - Jackie: "Can we make it look kind of 3d". I offered a look-around view that shifts when you tilt the phone; Jackie: "I want to layer".
