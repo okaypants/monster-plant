@@ -1,66 +1,41 @@
 'use strict';
 /* THE CRYSTAL BALL'S VISIONS (Jackie, Nov 25: the ball should "offer famous predictions yet to come on specific dates with attributions
    almost like it's possessed with visions from the other side"; asked whether they should replace its yes and no answers: "Replace
-   them"; shown this list: "Build them"). Every one is a real thing with a real date: something astronomers have calculated, something a
-   named person foretold or imagined for a stated year, or something people have set going that comes due on a known day. The ball
-   delivers them all with the same solemn "I predict!", in the manner of the television psychics of the 1950s.
-   The sources for each are in research_notes/visions/ (sky.md, prophets.md, set_in_motion.md). Left out on purpose: anything credited to
-   Baba Vanga, Mother Shipton or Saint Malachy (forged or never said), and predictions of particular disasters.
-   A vision whose date has passed should be taken out: the earliest here is in 2028. */
+   them"). Every one is a REAL PREDICTION: something a named person, or a named tradition, foretold, wagered or dreamed for a stated
+   year that is still to come. A first version also had things astronomers have calculated (eclipses, comets) and things people have
+   scheduled (time capsules, long pieces of music); Jackie: "For the crystal ball I want REAL predictions though", so those are out.
+   The ball delivers them all with the same solemn "I predict!", in the manner of the television psychics of the 1950s.
+   Sources are in research_notes/visions/prophets.md (and set_in_motion.md for the public bets). Left out on purpose: anything
+   credited to Baba Vanga, Mother Shipton or Saint Malachy (forged or never said), and predictions of particular disasters.
+   A vision whose date has passed should be taken out: the earliest here is in 2029. */
 const BALL_VISIONS=[
- "I predict! On the last night of 2028 the moon will turn red. It is a total eclipse of a blue moon on New Year’s Eve. The astronomers have already done the sums.",
- "I predict! On Friday the 13th of April, 2029, an asteroid named Apophis will pass closer to Earth than the television satellites. NASA says it will miss. The ball agrees.",
- "I predict! On August 20, 2028, there will be a black moon. Nobody will see it. That is what a black moon is.",
- "I predict! In November 2035 the spacecraft Voyager 2 will be so far away that a hello takes a whole day to reach it.",
- "I predict! On January 19, 2038, at seven seconds past 3:14 in the morning, old computers will run out of numbers and believe it is 1901.",
- "I predict! In 2038 Easter will fall on April 25. It cannot fall any later. The rule was written in 1582.",
- "I predict! Saturn’s rings will vanish three times between October 2038 and July 2039. They will come back each time. They are only turning sideways.",
- "I predict! On July 28, 2061, Halley’s Comet returns. Edmond Halley worked out its timetable in 1705 and it has not been late yet.",
- "I predict! On November 22, 2065, Venus will pass in front of Jupiter. No planet has crossed another since 1818. It will happen too close to the sun for anyone to watch.",
- "I predict! On July 15, 2067, Mercury will hide Neptune. The nearest planet to the sun will cover the farthest.",
- "I predict! On November 10, 2084, anyone standing on Mars will see the Earth cross the face of the sun as a small black dot.",
- "I predict! The 29th of February, 2092, reads the same backwards as forwards: 29-02-2092. It is the last leap day this century that can say so.",
- "I predict! There will be no February 29 in the year 2100. Pope Gregory’s calendar men decided that in 1582.",
- "I predict! In March of the year 2100 the North Star will point more truly north than it ever has or ever will again.",
- "I predict! On December 11, 2117, Venus will cross the face of the sun. Nobody who saw it last time will be there.",
- "I predict! On March 23, 2178, Pluto will finish its first trip around the sun since anyone noticed it. It was found in 1930.",
- "I predict! On July 16, 2186, the sun will go dark for seven minutes and twenty-nine seconds over South America. No eclipse in ten thousand years lasts longer.",
- "I predict! In the year 2285 Easter will fall on March 22. It cannot fall any earlier.",
- "I predict! In the year 40,272 the spacecraft Voyager 1 will drift past a star in the Little Bear. It will not stop.",
- "I predict! In eight million years a small mirrored satellite will fall back to Earth. It carries a map, so that whoever finds it will know how the continents have moved.",
+ "I predict! On May 1, 2029, a bet will be settled over a case of port. Lewis Wolpert wagered that by then a living thing could be worked out entirely from its genes. Rupert Sheldrake wagered that it could not.",
  "I predict! In 2029 a machine will talk so well that judges take it for a person. Ray Kurzweil has bet twenty thousand dollars on it. Mitch Kapor has bet twenty thousand that it will not.",
- "I predict! By 2030 three hours of work a day will be plenty, and the hard part will be filling the afternoon. The economist John Maynard Keynes said so in 1930.",
- "I predict! By 2035 coffee, tea and tobacco will be out of fashion. Nikola Tesla said so in 1935. The ball is not so sure about the coffee.",
- "I predict! On the morning of April 8, 2037, the sun will stand where it stood at the Creation, and a blessing will be said over it. The rabbis of the Talmud count this once every 28 years.",
- "I predict! By 2057 children will design their own plants and pets as a game. The physicist Freeman Dyson expected it.",
+ "I predict! By 2030 three hours of work a day will be plenty, and the hard part will be filling the afternoon. The economist John Maynard Keynes foretold it in 1930.",
+ "I predict! By 2030 there will be minds greater than human ones. The mathematician Vernor Vinge wrote in 1993 that it would be a surprise if it took any longer.",
+ "I predict! By the last day of 2030 nobody will have proved that aliens have visited the Earth. Michael Shermer has bet on it. The astronomer Avi Loeb has bet the other way.",
+ "I predict! By 2035 coffee, tea and tobacco will be out of fashion. Nikola Tesla foretold it in 1935. The ball is not so sure about the coffee.",
+ "I predict! By 2040 a machine with the mind of a person will walk about freely. The roboticist Hans Moravec foretold it.",
+ "I predict! In 2040 a machine will be perfected that makes anything at all at home, and farms, factories and jobs will fade away while the arts bloom. Arthur C. Clarke foretold it.",
+ "I predict! By 2043 diggers will have found buildings older and grander than the oldest temple known. Samo Burja has bet on it. Scott Alexander has bet against.",
+ "I predict! In 2045 people and their thinking machines will merge, and change faster than anyone can follow. Ray Kurzweil named the year.",
+ "I predict! By 2048 science will know how the brain makes a mind. Christof Koch has bet a case of wine on it, for the second time. The first time, the philosopher David Chalmers won.",
+ "I predict! By 2050 most new science will be discovered by machines. The roboticist Hans Moravec foretold it and called them our children.",
+ "I predict! By 2057 children will design their own plants and pets as a game. The physicist Freeman Dyson foretold it.",
+ "I predict! On October 4, 2057, the hundredth birthday of the first satellite will be celebrated on the Moon, on Mars and on the moons of Jupiter. Arthur C. Clarke foretold it.",
  "I predict! The world will not end before the year 2060. Isaac Newton worked it out from the Book of Daniel and wrote that there was no reason for it ending sooner.",
- "I predict! In the year 2106 the world is peaceful and everybody is as clever as the great geniuses. H. G. Wells dreamed it and wrote it down.",
- "I predict! In the year 2240 the world will have lasted six thousand years, and a thousand years of rest begins. Rav Katina taught this in Babylonia in the third century.",
- "I predict! On March 26, 2407, the Maya calendar turns over again. It turned over in 2012 as well. The count simply goes on.",
- "I predict! In the year 2440 Paris has good hospitals, sensible clothes and no pastry chefs. Louis-Sébastien Mercier dreamed it in 1771.",
- "I predict! In the year 2889 dinner arrives at home through a tube and advertisements are projected on the clouds. A story under the name of Jules Verne says so.",
+ "I predict! In 2061 Halley’s Comet will return, people will land on it, and they will find something alive there, asleep. Arthur C. Clarke foretold it.",
+ "I predict! In 2095 a new kind of engine will make rockets old-fashioned, and the first explorers will leave for the stars. Arthur C. Clarke foretold it.",
+ "I predict! In the year 2100, history begins. That is all Arthur C. Clarke wrote for that year.",
+ "I predict! In the year 2100 Edgar Cayce will be born again, in Nebraska. Cayce dreamed it in 1936.",
+ "I predict! In the year 2106 the world will be peaceful and everybody as clever as the great geniuses. H. G. Wells dreamed it and wrote it down.",
+ "I predict! By 2117 people will have settled on another planet. Stephen Hawking said in 2017 that there were a hundred years to do it.",
+ "I predict! In the year 2240 the world will have lasted six thousand years, and a thousand years of rest will begin. Rav Katina taught this in Babylonia in the third century.",
+ "I predict! In the year 2424 the last king of the hidden land of Shambhala will ride out, and a golden age will follow all over the world. A Buddhist book of the eleventh century foretells it.",
+ "I predict! In the year 2440 Paris will have good hospitals, sensible clothes and no pastry chefs. Louis-Sébastien Mercier dreamed it in 1771.",
+ "I predict! By the year 2780 heavy things will be made weightless for easy carrying. Benjamin Franklin wondered about it in 1780 and wished to have been born later.",
+ "I predict! In the year 2889 dinner will arrive at home through a tube, and advertisements will be projected on the clouds. A story under the name of Jules Verne foretells it.",
  "I predict! The prophecies of Nostradamus run until the year 3797. Nostradamus said so in a letter. After that the ball is on its own.",
+ "I predict! About the year 4099 the world will climb into a higher and brighter age. The Bengali yogi Sri Yukteswar reckoned it in 1894.",
  "I predict! On October 21, 4772, the crowning of King Pakal of Palenque will still be remembered. The king’s scribes carved that promise in stone thirteen hundred years ago.",
- "I predict! In the year 428,899 the present age ends and a golden one begins. The Hindu astronomers counted the years.",
- "I predict! In the spring of 2028 the people of Suwa in Japan will ride great fir trees down a mountainside, as they do every six years.",
- "I predict! In 2030 a stone giant in India, seventeen metres tall, will be bathed in milk, saffron and sugarcane juice. It happens every twelve years and has since the year 981.",
- "I predict! In 2030 a village in Bavaria will put on a play. The villagers promised in 1633 to do it every ten years, and they have kept the promise.",
- "I predict! In 2032 the answers everyone gave to the American census of 1960 will be unsealed.",
- "I predict! In 2033 the shrine at Ise in Japan will be taken down and built again next door, exactly the same. It will be the sixty-third time.",
- "I predict! In 2033 a temple in Kyoto will show a statue it keeps hidden. It does so once every thirty-three years.",
- "I predict! On New Year’s Day, 2034, the first Superman story will belong to everybody.",
- "I predict! In 2040 scientists in Michigan will dig up a bottle of seeds at night, from a secret place. A botanist buried it in 1879 to see how long seeds can sleep.",
- "I predict! About the year 2054 some bottles of champagne will be lifted from the bottom of the Baltic Sea, to see whether the sea kept them better than a cellar.",
- "I predict! In 2085 the Lord Mayor of Sydney will open a letter from Queen Elizabeth the Second. Nobody knows what it says. The envelope says not to open it sooner.",
- "I predict! In 2103 the only copy of a Wu-Tang Clan album may at last be sold to the public. The contract forbade it for eighty-eight years.",
- "I predict! In 2114 a hundred books that nobody was allowed to read will be printed, on paper from a forest that was planted for them in Norway.",
- "I predict! On November 18, 2115, a safe in France will unlock itself, and a film that nobody has seen will be shown.",
- "I predict! On November 29, 2394, the city of Seoul will open a capsule from 1994. Inside are six hundred things, and one of them is a pager.",
- "I predict! On September 5, 2640, an organ in a German church will finish the piece of music it began in 2001. The piece is called As Slow as Possible.",
- "I predict! On the last day of the year 2999 a piece of music that has played without repeating for a thousand years will end.",
- "I predict! In the year 3183 the last block will be set on a pyramid in Germany. One block is added every ten years.",
- "I predict! In the year 6939 two capsules under a park in New York will be opened. One holds a letter from Albert Einstein.",
- "I predict! In the year 6970 a capsule beside Osaka Castle will be opened. It has been shut for five thousand years.",
- "I predict! At noon on May 28, 8113, a sealed room in Georgia will be opened. It is full of ordinary things from the 1930s.",
- "I predict! Next Saturday at one o’clock a stonemason in Utrecht will cut one more letter of a poem into the street. The poem has no end.",
- "I predict! Next June four villages in Peru will weave a new bridge out of grass, and let the old one fall into the river. They have done so since the time of the Incas."];
+ "I predict! In the year 428,899 the present age will end and a golden one begin. The Hindu astronomers counted the years."];

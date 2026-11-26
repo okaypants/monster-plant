@@ -70,7 +70,7 @@ async def main():
         check(await pg.evaluate("()=>/^moon[1-5]$/.test(moonDialPic())"), "the moon dial should show one of its five faces")
         await pg.evaluate("()=>{__step(5);capClear()}")
         # the crystal ball: mist gathers, cutting from colour to colour, it delivers one of its visions, and it clears again
-        check(await pg.evaluate("()=>BALL_VISIONS.length>=50&&new Set(BALL_VISIONS).size===BALL_VISIONS.length&&BALL_VISIONS.every(v=>/^I predict! /.test(v)&&/\\d/.test(v+'')||/Next (Saturday|June)|million years/.test(v))&&!BALL_VISIONS.some(v=>/\\b(he|she|his|her)\\b/i.test(v))"), "the ball should have fifty or more different visions, each beginning I predict! and none giving anyone a gender")
+        check(await pg.evaluate("()=>BALL_VISIONS.length>=25&&new Set(BALL_VISIONS).size===BALL_VISIONS.length&&BALL_VISIONS.every(v=>/^I predict! /.test(v)&&/\\d/.test(v+'')||/Next (Saturday|June)|million years/.test(v))&&!BALL_VISIONS.some(v=>/\\b(he|she|his|her)\\b/i.test(v))"), "the ball should have twenty-five or more different visions, each beginning I predict! and none giving anyone a gender")
         await pg.evaluate("()=>{capClear();localStorage.removeItem(BALL_BAG)}")
         await pg.evaluate(TAP, "ball")
         await pg.evaluate("()=>__step(1.3)")
