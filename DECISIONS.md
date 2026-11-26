@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The bedtime line is just "Good night, sleep tight." (Nov 25)
+
+- Jackie: "just say good night sleep tight". The line was "Goodnight, sleep tight, the bed bugs are nice here. Tap anywhere to sleep." The joke and the instruction are gone. A tap at night still asks whether to wake up for a new day.
+
 ### Sitting back in the armchair; the kid smaller a third time (Nov 25)
 
 - Jackie: "the kid should sit on the chair better and probably be even smaller".

@@ -46,7 +46,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
   if(inR(x,y,LAMP)){st.desk=st.desk===false;save();return;}
   if(inR(x,y,WALL_LAMP)){st.wall=st.wall===false;save();return;}
   if(inR(x,y,WIN)){st.curtain=st.curtain==='open'?'closed':'open';sfx('paper');save();return;}
-  openBubble(x-120,y-90,'Wake up for a new day?'+tsChoices(CHOICES.wake),{y:()=>{closeBubble();wake();},n:closeBubble});return;} // any other tap, as the goodnight caption says
+  openBubble(x-120,y-90,'Wake up for a new day?'+tsChoices(CHOICES.wake),{y:()=>{closeBubble();wake();},n:closeBubble});return;} // any other tap asks whether to wake up
  const on=held.tool==='can'?(faceAt(x),pourOver(x,y,holdK(x,y))):held.tool?onPlant(x,y):onPlantPx(x,y);
  if(held.tool&&on){useTool(x,y);return;}
  if(held.tool){held.tool=null;return;}
