@@ -289,6 +289,10 @@ def build_frame():
         ys,xs=np.where(lab==i);cy,cx=int(round(ys.mean())),int(round(xs.mean()));fur=a[cy-5,cx,:3].copy() # the plain fur of the forehead above the eye
         a[cy-3:cy+4,cx-3:cx+4,:3]=fur;a[cy+1,cx-2:cx+3,:3]=(40,16,12)
     Image.fromarray(a,'RGBA').save(os.path.join(ROOT,'obj_frame_blink.png'),optimize=True)
+    g=np.asarray(up).copy() # and with its eyes lit green for a moment (Jackie, Nov 25: "with glowing eyes sometime"): each dark eye becomes a bright green one with a pale middle
+    for i in eyes:
+        ys,xs=np.where(lab==i);cy,cx=int(round(ys.mean())),int(round(xs.mean()));g[ys,xs,:3]=(150,255,70);g[cy-1:cy+1,cx-1:cx+1,:3]=(236,255,190)
+    Image.fromarray(g,'RGBA').save(os.path.join(ROOT,'obj_frame_glow.png'),optimize=True)
     return {'frame':list(up.size)}
 if __name__=='__main__':
     room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard());meta.update(build_frame())

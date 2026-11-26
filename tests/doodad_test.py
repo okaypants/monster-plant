@@ -81,12 +81,13 @@ async def main():
         await pg.evaluate("()=>{__step(4);capClear()}")
         check(await pg.evaluate("()=>ballFrame()===1"), "the crystal ball should clear again")
         # the cat's framed picture in the bookcase: a tap tips it for a moment, and the cat in it blinks once in a long while
-        check(await pg.evaluate("()=>thingBy('frame').pic()==='frame'&&['frame','frame_tilt','frame_blink'].every(n=>OBJ[n].naturalWidth>40)"), "the framed cat should stand upright in its cubby")
+        check(await pg.evaluate("()=>thingBy('frame').pic()==='frame'&&['frame','frame_tilt','frame_blink','frame_glow'].every(n=>OBJ[n].naturalWidth>40)"), "the framed cat should stand upright in its cubby")
         await pg.evaluate(TAP, "frame")
         check(await pg.evaluate("()=>framePic()==='frame_tilt'"), "a tap should tip the frame")
         await pg.evaluate("()=>__step(1)")
         check(await pg.evaluate("()=>framePic()==='frame'"), "the frame should stand straight again")
-        check(await pg.evaluate("()=>{if(FRAME_GAP[0]<60000)return false;frameBlinkAt=performance.now()-10;const b=framePic()==='frame_blink';__step(1);const after=framePic(),gap=frameBlinkAt-performance.now();return b&&after==='frame'&&gap>=FRAME_GAP[0]-2000&&gap<=FRAME_GAP[1]}"), "the cat in the frame should blink for a moment, a minute or more apart")
+        check(await pg.evaluate("()=>{if(FRAME_GAP[0]<60000)return false;frameGlow=false;frameBlinkAt=performance.now()-10;const b=framePic()==='frame_blink';__step(1);const after=framePic(),gap=frameBlinkAt-performance.now();return b&&after==='frame'&&gap>=FRAME_GAP[0]-2000&&gap<=FRAME_GAP[1]}"), "the cat in the frame should blink for a moment, a minute or more apart")
+        check(await pg.evaluate("()=>{frameGlow=true;frameBlinkAt=performance.now()-10;const a=framePic()==='frame_glow';__step(1.2);return a&&framePic()==='frame'&&FRAME_GLOW_ODDS<=.3}"), "now and then the cat in the frame should have glowing eyes for a moment instead of a blink")
         for n in ["forks", "deskchair", "crate"]:
             await pg.evaluate(TAP, n)
             await pg.evaluate("()=>__step(.05)")

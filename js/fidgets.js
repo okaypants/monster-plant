@@ -66,12 +66,12 @@ function fidgetPoke(x,y){
 /* THE FRAMED CAT (Jackie, Nov 25: "i kind of want to replace the wind up toy with a framed image of the cat", then "I would like it to
    blink every once in awhile", "like very infrequently"). It stands in the bookcase where the wind-up cat was. A tap tips it for a
    moment. Left alone, the cat in the picture blinks once every one to three minutes. Frame swaps only. */
-const FRAME_TIP=350,FRAME_BLINK=180,FRAME_GAP=[60000,180000];
-let frameTipT=-1e9,frameBlinkAt=0;
+const FRAME_TIP=350,FRAME_BLINK=180,FRAME_GLOW=700,FRAME_GLOW_ODDS=.25,FRAME_GAP=[60000,180000]; // one time in four the eyes glow green for a moment instead of blinking (Jackie, Nov 25: "with glowing eyes sometime")
+let frameTipT=-1e9,frameBlinkAt=0,frameGlow=false;
 function frameTap(){frameTipT=performance.now();sfx('tick');}
 function framePic(){const now=performance.now();if(now-frameTipT<FRAME_TIP)return 'frame_tilt';
- if(!frameBlinkAt)frameBlinkAt=now+rnd(FRAME_GAP[0],FRAME_GAP[1]);
- if(now>=frameBlinkAt){if(now<frameBlinkAt+FRAME_BLINK)return 'frame_blink';frameBlinkAt=now+rnd(FRAME_GAP[0],FRAME_GAP[1]);}
+ const next=()=>{frameBlinkAt=now+rnd(FRAME_GAP[0],FRAME_GAP[1]);frameGlow=Math.random()<FRAME_GLOW_ODDS;};if(!frameBlinkAt)next();
+ if(now>=frameBlinkAt){if(now<frameBlinkAt+(frameGlow?FRAME_GLOW:FRAME_BLINK))return frameGlow?'frame_glow':'frame_blink';next();}
  return 'frame';}
 const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17: "I think lidded jar should be coins")
 /* THE CRYSTAL BALL (Jackie, Nov 17: "let's base it on something real"). The signs are John Melville's, from "Crystal-Gazing and

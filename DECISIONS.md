@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The framed cat's eyes glow now and then (Nov 25)
+
+- Jackie plans to redesign and rename the cat after the cat in the Japanese film House, and wants the crystal ball to reference something in the same way. On my idea that a cat's eyes might glow in the ball: "with glowing eyes sometime".
+- For now, the cat in the framed picture: one time in four, where it would blink, its eyes glow green for a moment. The room's own cat is not changed; that waits for Jackie's redesign. Glowing eyes in the crystal ball come with its visions.
+
 ### The moon page: no "elsewhere", only tonight, and why it matters (Nov 25)
 
 - Jackie, on the heading "Tonight elsewhere": "\"Elsewhere\" assumes that everyone is from Florida". No tradition is the default now. Western astrology is one line among the others, under "Tonight's moon in different traditions", in A to Z order of where each comes from. The calendar dates have their own heading, "Today's date".
