@@ -105,11 +105,11 @@ async def main():
         await pg.evaluate("()=>__step(.3)")
         await pg.evaluate("()=>__step(.3)")
         check(await pg.evaluate("([i0])=>viewI===(i0+1)%VIEW_CARDS.length", [i0]), "the arrow should bring the next card")
-        # tap the card: look through the viewer. One picture fills the view and swaps between the card's two halves; a tap steps back
+        # tap the card: look through the viewer. One still picture fills the view; a tap steps back
         await pg.evaluate("()=>document.querySelector('.vwpic').decode().catch(()=>0)")
         await pg.click(".vwslide")
-        look = await pg.evaluate("()=>{const c=document.querySelector('.vwlook canvas'),v=VIEW_CARDS[viewI];if(!c)return null;const e0=viewEye,px=()=>[...c.getContext('2d').getImageData(0,0,c.width,c.height).data].reduce((a,b)=>a+b,0);const p0=px();__step(VIEW_SWAP/1000+.02);const e1=viewEye,p1=px();return {w:c.width,h:c.height,s:v.s,swapped:e0!==e1,drawn:p0>0&&p1>0,differ:p0!==p1}}")
-        check(look and look["w"] == look["s"][4] and look["h"] == look["s"][5] and look["swapped"] and look["drawn"] and look["differ"], f"tapping the card should look through the viewer, swapping between its two pictures: {look}")
+        look = await pg.evaluate("()=>{const c=document.querySelector('.vwlook canvas'),v=VIEW_CARDS[viewI];if(!c)return null;const e0=viewEye,px=()=>[...c.getContext('2d').getImageData(0,0,c.width,c.height).data].reduce((a,b)=>a+b,0);const p0=px();__step(.6);const e1=viewEye,p1=px();return {w:c.width,h:c.height,s:v.s,still:e0===e1&&p0===p1&&!viewLookT,drawn:p0>0}}")
+        check(look and look["w"] == look["s"][4] and look["h"] == look["s"][5] and look["still"] and look["drawn"], f"tapping the card should look through the viewer at one still picture: {look}")
         await pg.screenshot(path=os.path.join(OUT, "viewer_look.png"))
         await pg.click(".vwlook")
         check(await pg.evaluate("()=>!document.querySelector('.vwlook')&&!viewLookT&&!!document.querySelector('.screen.viewer')&&VIEW_CARDS.every(v=>v.s&&v.s.length===6&&v.s[4]>100)"), "a tap should step back to the card, and every card should have its two pictures lined up")

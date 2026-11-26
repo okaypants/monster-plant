@@ -30,12 +30,19 @@ function openMoonPage(){if(moonEl)return;const t=Date.now(),el=document.createEl
  try{const c=moonPic(seasonNow(),moonAge(t)),im=add(top,'img','mppic');im.alt='';im.draggable=false;im.src=c.toDataURL();}catch(e){}
  const tt=add(top,'div','mptt');const nm=moonName(t);add(tt,'h2','mph',nm[0].toUpperCase()+nm.slice(1));
  for(const s of moonPhaseLines(t))add(tt,'p','',s);
- add(card,'h3','mpsub','What it does tonight');for(const l of MOON_DOES[nm]||[])add(card,'p','',l);
+ /* Each line sits in its own little rounded box with a coloured tag saying what it is about (Jackie, Nov 25: "each little thing ... in its
+    own cute little rounded box like on its own card in that card ... a lot more kawaii AND cool"). The colours are flat pastels with the
+    game's dark outline; a tag's colour goes with its box. */
+ const box=(grid,tag,text,tint)=>{const b=add(grid,'div','mpitem mp'+tint);add(b,'span','mpchip',tag);add(b,'p','',text);return b;};
+ const sect=(title)=>{add(card,'h3','mpsub',title);return add(card,'div','mpgrid');};
+ const D=MOON_DOES[nm]||[],g1=sect('What it does tonight');[['Tides','aqua'],['Sky','lilac'],['Astrologers say','pink']].forEach(([tag,tint],k)=>{if(D[k])box(g1,tag,D[k],tint);});
  if(typeof moonTraditions==='function'){const E=moonTraditions(t);
-  if(E.fest.length){add(card,'h3','mpsub','Tonight');for(const s of E.fest)add(card,'p','mpfest',s);}
-  add(card,'h3','mpsub','Tonight’s moon in different traditions');const cal=E.lines.filter(l=>l.where==='Calendars'),trad=E.lines.filter(l=>l.where!=='Calendars'); /* no tradition is the default one and the rest "elsewhere" (Jackie, Nov 25): Western astrology is one line among the others, listed in A to Z order of where each comes from */
-  for(const s of moonSignLines(t))trad.push({where:'Western',say:s});trad.sort((a,b)=>a.where.localeCompare(b.where));for(const l of trad)add(card,'p','',l.say);
-  if(cal.length){add(card,'h3','mpsub','Today’s date');for(const l of cal)add(card,'p','',l.say);}}
+  if(E.fest.length){const g=sect('Tonight');for(const s of E.fest)box(g,'Festival',s,'gold');}
+  const g2=sect('Tonight’s moon in different traditions'),cal=E.lines.filter(l=>l.where==='Calendars'),trad=E.lines.filter(l=>l.where!=='Calendars'); /* no tradition is the default one and the rest "elsewhere" (Jackie, Nov 25): Western astrology is one box among the others, in A to Z order of where each comes from */
+  for(const s of moonSignLines(t))trad.push({where:'Western',say:s});trad.sort((a,b)=>a.where.localeCompare(b.where));
+  const TAG={Arabic:['Arabic','sand'],'Hawaiʻi':['Hawaiian','mint'],India:['Indian','peach'],Japan:['Japanese','pink'],Western:['Western','lilac']};
+  for(const l of trad){const[tag,tint]=TAG[l.where]||[l.where,'sand'];box(g2,tag,l.say,tint);}
+  if(cal.length){const g3=sect('Today’s date');for(const l of cal)box(g3,'Calendars',l.say,'aqua');}}
  el.addEventListener('click',e=>{if(e.target===el)closeMoonPage();});x.addEventListener('click',e=>{e.stopPropagation();closeMoonPage();});
  ui.appendChild(el);}
 function closeMoonPage(){if(!moonEl)return;moonEl.remove();moonEl=null;sfx('tick');}

@@ -35,12 +35,12 @@ function closeViewer(){if(!viewEl)return;viewLookEnd(true);viewEl.remove();viewE
    near things shift while far things hold still. Tap the card and the screen goes dark but for the shape you see through a pair of
    lenses, with the one picture filling it. Tap again to step back to the card. A frame swap only; with reduced motion the left
    picture is shown still. Where the two pictures line up on each card is worked out by tools/viewer_build.py (the card's 's'). */
-const VIEW_SWAP=240;let viewLookT=0,viewEye=0;
+const VIEW_SWAP=0; /* 0 = the view holds still (Jackie, Nov 25: "I don't like the viewing experience, it would be more 3d not moving"); it was 240 ms between swaps */let viewLookT=0,viewEye=0;
 function viewLookDraw(){const lk=viewEl&&viewEl.querySelector('.vwlook');if(!lk)return;const v=VIEW_CARDS[viewI],im=viewEl.querySelector('.vwpic'),c=lk.querySelector('canvas');if(!v.s||!im.naturalWidth)return;
  const[lx,ly,rx,ry,w,h]=v.s;if(c.width!==w||c.height!==h){c.width=w;c.height=h;}
  c.getContext('2d').drawImage(im,viewEye?rx:lx,viewEye?ry:ly,w,h,0,0,w,h);}
 function viewLook(){if(!viewEl||viewEl.querySelector('.vwlook'))return;const v=VIEW_CARDS[viewI];if(!v.s)return;sfx('tick');
  const lk=document.createElement('div');lk.className='vwlook';lk.innerHTML='<div class="vwhood"><canvas></canvas></div>';
  lk.addEventListener('click',e=>{e.stopPropagation();viewLookEnd();});viewEl.appendChild(lk);viewEye=0;viewLookDraw();
- if(!(typeof tsCalm==='function'&&tsCalm()))viewLookT=setInterval(()=>{viewEye^=1;viewLookDraw();},VIEW_SWAP);}
+ if(VIEW_SWAP&&!(typeof tsCalm==='function'&&tsCalm()))viewLookT=setInterval(()=>{viewEye^=1;viewLookDraw();},VIEW_SWAP);}
 function viewLookEnd(quiet){if(viewLookT){clearInterval(viewLookT);viewLookT=0;}const lk=viewEl&&viewEl.querySelector('.vwlook');if(lk){lk.remove();if(!quiet)sfx('tick');}}

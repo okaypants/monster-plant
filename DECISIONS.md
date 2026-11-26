@@ -2,11 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon page's lines are little rounded boxes (Nov 25)
+
+- Jackie: "I would like each little thing \"What it does tonight\" etc to be in its own cute little rounded box like on its own card in that card ... just a lot more kawaii AND cool".
+- Every line on the moon page now sits in its own rounded box in a flat pastel colour with the game's dark outline, and a small coloured tag on its top edge says what it is: Tides, Sky, Astrologers say, Arabic, Hawaiian, Indian, Japanese, Western, Calendars, Festival. On a wide screen the boxes sit two across.
+
 ### Looking through the viewfinder (Nov 25)
 
 - Jackie: "Is there any way to kind of simulate the experience of looking through the viewer". I described swapping between a card's two pictures so it shows depth, and asked; Jackie: "Yes, build it".
 - Tap a card and the screen goes dark except for the shape you see through a pair of lenses. One picture fills it and swaps between the card's left and right photograph about four times a second, so near things shift and far things hold still. Tap again to step back to the card. With reduced motion it shows the left picture, still.
 - Tapping the card used to bring the next card; the arrows do that now. A line under each card says "Tap the card to look through the viewer."
+- Jackie, on trying it: "I don't like the viewing experience, it would be more 3d not moving". The swapping is off. Looking through the viewer now shows the card's left photograph, still, in the lens shape. Real depth without movement is the open question.
 - Where the two photographs line up is worked out for each card by the build tool. Some cards line up better than others, and the picture is enlarged from a small scan, so it is soft. Sharper scans from the Library of Congress would fix that.
 
 ### The radio has one station per city and per kind (Nov 25)
