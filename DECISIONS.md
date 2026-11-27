@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A scorched monster no longer gets brown rings round its eyes and mouth (Nov 27)
+
+- Jackie: "The baby is blurry", then "I think it was turning grey", then "for some reason the baby only looks weird in the bassinet on my phone and it takes a little bit being in there". Her screenshot, enlarged, showed brown rings round the baby's eyes and mouth and a brown fringe inside its outline.
+- The cause: the bassinet stands right under the floor lamp. A monster that is not a sun-lover gets too warm right under a lamp after a while, and its edges toast brown. The toasting was worked out from every dark pixel, and a baby's eyes and mouth are dark pixels in its drawing, so each got a brown ring. Now only the dark outline that touches the outside counts, so the toasting stays at the edges.
+- Not changed: the lamp still scorches a baby left in the bassinet with the lamp on. Whether it should is Jackie's call.
+
 ### String lights run along the top of the wall (Nov 27)
 
 - Jackie, Nov 26: "we could have string lights all the way across the top very small"; asked whether to rebalance the garland or go across, "Across". Her ChatGPT sheet has six strands, each drawn lit and dark.

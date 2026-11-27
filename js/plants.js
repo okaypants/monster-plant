@@ -86,7 +86,9 @@ const lookCache=new Map();
 function needLook(im,k,burn){if(k<=0&&burn<=0)return im;const key=im.src+'|'+k.toFixed(2)+'|'+burn;let c=lookCache.get(key);if(c)return c;
  const W2=im.naturalWidth,H2=im.naturalHeight;c=document.createElement('canvas');c.width=W2;c.height=H2;const x=c.getContext('2d');x.drawImage(im,0,0);
  let d;try{d=x.getImageData(0,0,W2,H2);}catch(e){return im;}const a=d.data,tipY=H2*.45,R=Math.max(2,Math.round(H2*.008*burn)),Rt=Math.round(R*1.6),t=toastK(burn);
- let edge=null;if(burn>0){edge=new Uint8Array(W2*H2).fill(255);const q=[];for(let p=0;p<W2*H2;p++)if(a[p*4+3]<=40||a[p*4]+a[p*4+1]+a[p*4+2]<170){edge[p]=0;q.push(p);} // steps in from the outside and from the outlines, so leaf edges toast inside the black line
+ let edge=null;if(burn>0){edge=new Uint8Array(W2*H2).fill(255);const q=[],N=W2*H2,dark=p=>a[p*4+3]>40&&a[p*4]+a[p*4+1]+a[p*4+2]<170;for(let p=0;p<N;p++)if(a[p*4+3]<=40){edge[p]=0;q.push(p);} // steps in from the outside and from the outline, so leaf edges toast inside the black line
+  // the outline is the dark line that touches the outside. Dark marks inside the body (a baby's eyes and mouth are part of its drawing) are not outline: they used to toast a brown ring round themselves (Jackie, Nov 27: the baby in the bassinet "looks weird")
+  for(let h=0;h<q.length;h++){const p=q[h],px=p%W2;for(const n of[px>0?p-1:-1,px<W2-1?p+1:-1,p-W2,p+W2])if(n>=0&&n<N&&edge[n]===255&&dark(n)){edge[n]=0;q.push(n);}}
   for(let h=0;h<q.length;h++){const p=q[h],dd=edge[p];if(dd>=Rt)continue;const px=p%W2;for(const n of[px>0?p-1:-1,px<W2-1?p+1:-1,p-W2,p+W2])if(n>=0&&n<W2*H2&&edge[n]>dd+1){edge[n]=dd+1;q.push(n);}}}
  for(let p=0,i=0;p<W2*H2;p++,i+=4){if(a[i+3]===0)continue;const r=a[i],g=a[i+1],b=a[i+2];if(r+g+b<170)continue; // black outlines stay black
   const y=(p/W2)|0;
