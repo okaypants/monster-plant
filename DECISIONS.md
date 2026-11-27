@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Soundtracks are recorded very small and can be passed to other people as a file (Nov 27)
+
+- Jackie: "I think the song files need to be really small, really small, and like poor quality is fine if they're dealing with these black and white movies and we need to be able to share them via whatever with other people and then for them to be able to like load it into their own things so that they can like watch the movie with other people's scores if they want easily".
+- A film's soundtrack is now recorded in one channel at 12 kilobits a second: about 90 kilobytes a minute, measured at 13 KB for 8 seconds. (It was about 240 kilobytes a minute.) A phone that cannot record that low uses the lowest it can.
+- Each soundtrack in Your films has a Share button. It hands one small file (ending .mpscore) to the phone's own share sheet, or saves it as a download where there is no share sheet. The file holds the film it is for, the title, who scored it, the card colour and the sound.
+- "Add a soundtrack someone sent you" reads such a file. It is kept beside your own for that film and never replaces it. A file for a film that is not in the collection, or that is not a soundtrack, is turned away with a line saying so. The 40 MB limit covers added ones too.
+- The game sends nothing anywhere itself; passing the file on is the player's own doing.
+
 ### Decorations and string lights are starting over as a box of separate things (Nov 27)
 
 - Jackie: "Actually let's start completely over with decorations and string lights", "let's do deep research into everything to make sure there's nothing incidentally stereotypical or offensive but also genuinely adds something to the room", "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS ETC". Offered three shapes, she said "Go with your recs".

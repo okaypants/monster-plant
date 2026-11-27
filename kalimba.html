@@ -501,7 +501,7 @@ const press=(el,fn)=>el.addEventListener('pointerdown',e=>{e.stopPropagation();e
 const preview=()=>{if(!AC)return;const row=rows[rows.length-1];[0,2,4].forEach((k,i)=>setTimeout(()=>{const t=row.find(t=>t.k===k);if(t){const id='pv'+i,h=noteOn(t,t.bridgeY+t.len*.8,.45,id);h&&setTimeout(()=>noteOff(h,id),220)}},i*90))};
 press($('bSound'),()=>openSheet('01 · SOUND',SOUNDS.map((so,i)=>({label:so[0],sub:SOUND_SUB[i],sw:so[1],sel:i===soundI,act:()=>{allOff();soundI=i;syncCaps()}})),120));
 // ───────── recorder: captures the instrument's own output (no mic) ─────────
-let rec=null,recChunks=[],recStart=0,recDest=null,takes=[],playing=null,lcdMsg='',lcdMsgT=-1e9;
+let rec=null,recChunks=[],recStart=0,recDest=null,recSmall=null,takes=[],playing=null,lcdMsg='',lcdMsgT=-1e9;
 const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const say=m=>{lcdMsg=m;lcdMsgT=performance.now()};
 const REC_MIME=(()=>{if(!window.MediaRecorder)return null;for(const m of['audio/webm;codecs=opus','audio/webm','audio/mp4;codecs=mp4a.40.2','audio/mp4'])try{if(MediaRecorder.isTypeSupported(m))return m}catch(e){}return''})();
@@ -509,8 +509,10 @@ const REC_MIME=(()=>{if(!window.MediaRecorder)return null;for(const m of['audio/
 function syncTakes(){$('bTakes').querySelector('.val').textContent=takes.length}
 function setRecUI(on){$('bRec').classList.toggle('recording',on);$('bRec').querySelector('.val').textContent=on?'0:00':'●'}
 function startRec(){if(!AC||REC_MIME===null||!masterOut)return;
+  const film=typeof KF!=='undefined'&&KF.arming,small=film?{audioBitsPerSecond:12000}:{}; /* a film's soundtrack is recorded very small: one channel at 12 kilobits a second, about 90 kilobytes a minute (Jackie, Nov 27: "the song files need to be really small, really small, and like poor quality is fine if they're dealing with these black and white movies"). A phone that cannot record that low uses the lowest it can. */
   if(!recDest){recDest=AC.createMediaStreamDestination();masterOut.connect(recDest)}
-  recChunks=[];let r;const small=typeof KF!=='undefined'&&KF.arming?{audioBitsPerSecond:32000}:{}; /* a film's soundtrack is recorded small, so many of them fit on a phone */try{r=REC_MIME?new MediaRecorder(recDest.stream,{mimeType:REC_MIME,...small}):new MediaRecorder(recDest.stream,small)}catch(e){say('rec not available');return}
+  if(film&&!recSmall){recSmall=AC.createMediaStreamDestination();try{recSmall.channelCount=1;recSmall.channelCountMode='explicit'}catch(e){}masterOut.connect(recSmall)}
+  const dest=film?recSmall:recDest;recChunks=[];let r;try{r=REC_MIME?new MediaRecorder(dest.stream,{mimeType:REC_MIME,...small}):new MediaRecorder(dest.stream,small)}catch(e){say('rec not available');return}
   r.ondataavailable=e=>{if(e.data&&e.data.size)recChunks.push(e.data)};
   r.onstop=()=>{const mime=r.mimeType||REC_MIME||'audio/webm',blob=new Blob(recChunks,{type:mime}),dur=(performance.now()-recStart)/1000;rec=null;setRecUI(false);
     if(blob.size<200||dur<.4){say('too short · not kept');return}
