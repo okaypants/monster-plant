@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The game's instrument is called Kalimba-Score (Nov 27)
+
+- Jackie, asked what to call the Kalimbasizer inside the game: "Call it kalimba-score, a practical kalimbasizer".
+- Its start screen reads KALIMBA-SCORE with "a practical Kalimbasizer" under it. The kalimba on the movie room's shelf and the page's title carry the new name, and a take saved from it is named kalimba-score. Only the name changed; its look and its buttons are as they were.
+
 ### Stand-in pictures and plain word buttons in the movie room carry a fitting emoji (Nov 27)
 
 - Jackie: "Use relevant emojis anytime crude but images are made" (dictated; read as: where a crude stand-in was drawn or a button is only a word, use an emoji that fits).

@@ -142,7 +142,7 @@ function mvKalimbaFilms(){return MV_SHELVES;} function mvKalimbaSrc(f){return mv
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
- const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='The Kalimbasizer';f.setAttribute('allow','autoplay');kalEl.appendChild(f);ui.appendChild(kalEl);}
+ const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='Kalimba-Score';f.setAttribute('allow','autoplay');kalEl.appendChild(f);ui.appendChild(kalEl);}
 function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
 addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score'){mvScoreStop();mvScoreKey='';mvScoresLoad();}});
 /* THE REMOTE (Jackie, Nov 27: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote"). It
@@ -290,7 +290,7 @@ function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn
  add('machine','Popcorn',()=>{});add('buckets','Popcorn',()=>mvOffer('corn'));{const m=st2.querySelector('.mvthing[data-k=machine]');m.onclick=null;m.style.touchAction='none';m.addEventListener('pointerdown',e=>{e.preventDefault();try{m.setPointerCapture(e.pointerId);}catch(x){}mvPopDown();});['pointerup','pointercancel'].forEach(ev=>m.addEventListener(ev,mvPopUp));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')mvOffer('corn');});}
  mvWho.forEach((w,i)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvwho';b.dataset.i=i;b.setAttribute('aria-label',w.name);const h=w.pic.height*MV_SEAT.show;b.style.cssText=mvPct({x:w.x-w.pic.width/2,y:MV_SEAT.top-h,w:w.pic.width,h});b.onclick=()=>mvWhoTap(i);st2.insertBefore(b,mvEl.querySelector('.mvnote'));});add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
  for(const k in MV_DRAWERS){MV_SPOTS['dr_'+k]=MV_DRAWERS[k];add('dr_'+k,k==='decor'?'The decorations drawer':k==='toys'?'The cat toys drawer':'The string lights drawer',()=>mvDrawer(k));}
- add('glasses','Tint the film',mvGlasses);add('boxset','The Kalimbasizer',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
+ add('glasses','Tint the film',mvGlasses);add('boxset','Kalimba-Score',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
 /* THE DRAWERS (Jackie, Nov 27: "Maybe we should put something in each drawer in the movie room"; "Decorations go in a drawer. Cat toys
    in another. String lights in another."). The room has six drawers. Three are used so far:
    - the left-hand unit's drawer holds the decorations: choose an occasion and its garland hangs across the back of the couch
