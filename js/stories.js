@@ -14,6 +14,7 @@
      p    the pages, in order: about 12 words each so they fit on a phone; \n starts a new line (poems keep their lines)
      src  for facts and folklore: where to check it (never shown in the game)
    A page can also be {o, l, e} (Jackie, Nov 16): o = the words in their original script, l = the language, e = the English.
+   The book shows these as facing pages, the original on the left and the English on the right (readPages below).
    Only where a real source text exists, copied exactly; the comment by the read says where it is from.
    A read can carry rec, a real record to play: see THE SONG BOOK below.
    "from" in a title means it's a part of a longer piece. The open book shows two pages at a time; the title is the first page. */
@@ -338,11 +339,11 @@ const STORIES={
    {o:'बंदर क्या जाने अदरक का स्वाद',l:'hi',e:'What does a monkey know of the taste of ginger?\n— India'}]},
   {t:'When the Big Ones Fight',by:'sayings from Korea and East Africa',src:'Korean: 고래 싸움에 새우 등 터진다; Swahili: Wapiganapo tembo, nyasi huumia.',p:[
    {o:'고래 싸움에 새우 등 터진다',l:'ko',e:'When whales fight, the shrimp’s back bursts.\n— Korea'},
-   'Wapiganapo tembo, nyasi huumia.\nWhen elephants fight, it is the grass that gets hurt.\n— Swahili']},
+   {o:'Wapiganapo tembo, nyasi huumia.',l:'sw',e:'When elephants fight, it is the grass that gets hurt.\n— Swahili'}]},
   {t:'Food First',by:'sayings from Japan, the Philippines and Turkey',src:'Japanese: 花より団子 (hana yori dango); Tagalog: Kapag may tiyaga, may nilaga; Turkish: Bir fincan kahvenin kırk yıl hatırı vardır.',p:[
    {o:'花より団子',l:'ja',e:'Dumplings over flowers. Said of people at a blossom-viewing picnic who came for the snacks.\n— Japan'},
-   'Kapag may tiyaga, may nilaga.\nWhere there is patience, there is stew.\n— Tagalog, the Philippines',
-   'Bir fincan kahvenin kırk yıl hatırı vardır.\nOne cup of coffee is remembered for forty years.\n— Turkey']},
+   {o:'Kapag may tiyaga, may nilaga.',l:'tl',e:'Where there is patience, there is stew.\n— Tagalog, the Philippines'},
+   {o:'Bir fincan kahvenin kırk yıl hatırı vardır.',l:'tr',e:'One cup of coffee is remembered for forty years.\n— Turkey'}]},
   {t:'The Old Man’s Horse',by:'a saying from China, with its story',src:'塞翁失馬，焉知非福, from the Huainanzi (2nd century BC), chapter 18 (人間訓).',p:[
    'An old man on the border lost his horse. The neighbors were sorry. “How do you know this isn’t good luck?” he said.',
    'The horse came back with a second, finer horse. The neighbors were glad. “How do you know this isn’t bad luck?”',
@@ -529,7 +530,14 @@ const STORIES={
    'Turn over a stone or a log, and put it back the way you found it.']}]};
 
 // the pages of a read as the open book shows them: the title page first
-function readPages(s){return s?[{t:s.t,by:s.by}].concat(s.p):[];}
+/* FACING PAGES (Jackie, Nov 27: "for books we read; have translations be like, the original language on the left page and the
+   translation on the right"). The open book shows two pages at a time, the title on the first left page. A page that carries
+   its original words becomes two: the original alone on a left page, with the name of its language at the foot, and the English
+   alone on the right page facing it. Where that would start on a right page, a printer's flower fills the right page first,
+   as a book does to bring a new piece onto a fresh opening. The same flower closes a read that ends on a left page. */
+const LANG_NAMES={ko:'Korean',vi:'Vietnamese',bn:'Bengali',ja:'Japanese',ar:'Arabic',sga:'Old Irish',la:'Latin',hi:'Hindi',ak:'Akan',fa:'Persian','zh-Hant':'Chinese',sw:'Swahili',tl:'Tagalog',tr:'Turkish'};
+function readPages(s){if(!s)return [];const P=[{t:s.t,by:s.by}],L=s.p;for(let i=0;i<L.length;i++){const pg=L[i];if(pg&&typeof pg==='object'&&pg.o){if(P.length%2)P.push({orn:1});P.push({o:pg.o,l:pg.l});
+  if(pg.e)P.push({e:pg.e,l:pg.l});else if(typeof L[i+1]==='string')P.push(L[++i]);else P.push({orn:1});}else P.push(pg);}if(P.length%2)P.push({orn:1}); /* a read that ends on a left page has the flower on the last right page, so no page is left bare */return P;} // an original with no English of its own (Khichuri) is faced by the page that follows it, which is its English
 /* Which read comes next for a book. st.shelf[book] is the order still to come (saved); when it runs out it is shuffled again,
    never starting with the one just read. */
 function nextRead(book){const all=STORIES[book]||[];if(!all.length)return null;st.shelf=st.shelf||{};st.shelfLast=st.shelfLast||{};

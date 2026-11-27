@@ -299,14 +299,32 @@ function mvThrow(w){if(!w.corn)return;sfx('tick');const x0=w.x+w.pic.width/2,y0=
  if(mvCat)mvKernel(x0,y0,(mvCat.x-x0)/40,-12,{end:1e9,floor:mvCat.y-6,life:500,land:()=>mvCatPounce(x0)});mvHop(w,1);}
 function mvGlasses(){mvTint=(mvTint+1)%MV_TINTS.length;if(mvEl)mvEl.dataset.tint=MV_TINTS[mvTint];sfx('tick');mvNote(MV_TINT_NAME[MV_TINTS[mvTint]]);}
 /* reading: a book's pages one at a time */
-function mvRead(book,i=0){const n=book.pages.length;i=clamp(i,0,n-1);
- const el=mvPanel('mvread','<div class="mvplist"><h2></h2><p class="mvrby"></p><p class="mvrtext"></p><div class="mvrfoot"><button type="button" class="mvrbtn mvrprev">Back</button><span>Page '+(i+1)+' of '+n+'</span><button type="button" class="mvrbtn mvrnext">'+(i<n-1?'Next':'Close the book')+'</button></div></div>');
- el.querySelector('h2').textContent=book.t;el.querySelector('.mvrby').textContent=book.by;el.querySelector('.mvrtext').textContent=book.pages[i];
- const pv=el.querySelector('.mvrprev');pv.disabled=i===0;pv.onclick=()=>mvRead(book,i-1);el.querySelector('.mvrnext').onclick=()=>i<n-1?mvRead(book,i+1):mvTrayClose();sfx('paper');}
+/* THE MOVIE ROOM'S BOOKS OPEN LIKE BOOKS (Jackie, Nov 27: "make sure that every page in every book in both rooms look great and make
+   sense in terms of publishing and reformat as necessary"). A book opens on two facing pages. The first left page is its title
+   page: the title, who wrote it and when, and for the old books a line saying it is an extract in the author's own words. The
+   words are then set out a few sentences to a page, never breaking a sentence, so every page fits its paper on a phone; a page
+   that begins a new paragraph of the original is indented. Each page has its number at the foot. If the last page is a left
+   page, a printer's flower closes the book on the right. Tap the right page (or Next) to turn on, the left (or Back) to go back. */
+const MV_PAGE_CHARS=225;
+function mvBookPages(book){if(book._pp)return book._pp;const P=[{t:book.t,by:book.by,note:book.own?'':'An extract, in the author’s own words'}];
+ for(const para of book.pages){let S=para.match(/[^.!?]+[.!?]+["”’)]*\s*|[^.!?]+$/g)||[para];let cur='',first=true;
+  S=S.flatMap(q=>{const out=[];while(q.length>MV_PAGE_CHARS){let k=Math.max(q.lastIndexOf(', ',MV_PAGE_CHARS),q.lastIndexOf('; ',MV_PAGE_CHARS),q.lastIndexOf(': ',MV_PAGE_CHARS));if(k<MV_PAGE_CHARS*.4)k=q.lastIndexOf(' ',MV_PAGE_CHARS)-1;out.push(q.slice(0,k+2));q=q.slice(k+2);}out.push(q);return out;}); // a sentence too long for one page turns the page at a comma
+  for(const q of S){if(cur&&(cur+q).length>MV_PAGE_CHARS){P.push({x:cur.trim(),par:first});first=false;cur='';}cur+=q;}
+  if(cur.trim())P.push({x:cur.trim(),par:first});}
+ if(P.length%2)P.push({orn:1});return book._pp=P;}
+function mvBookPage(el,pg,n){el.textContent='';el.className='mvbp '+(n%2?'mvbr':'mvbl');if(!pg)return;
+ if(pg.t){el.classList.add('mvbtitle');const b=document.createElement('b');b.textContent=pg.t;const s=document.createElement('span');s.textContent=pg.by;el.append(b,s);if(pg.note){const k=document.createElement('i');k.textContent=pg.note;el.appendChild(k);}return;}
+ if(pg.orn){el.classList.add('mvborn');el.textContent='❦';return;}
+ const p=document.createElement('p');p.className='mvrtext'+(pg.par&&n>1?' par':'');p.textContent=pg.x;const f=document.createElement('span');f.className='mvfolio';f.textContent=n;el.append(p,f);}
+function mvRead(book,i=0){const P=mvBookPages(book),n=P.length;i=clamp(i-(i%2),0,n-2);
+ const el=mvPanel('mvread','<div class="mvplist"><h2 hidden></h2><div class="mvbook"><div class="mvbp"></div><div class="mvbp"></div></div><div class="mvrfoot"><button type="button" class="mvrbtn mvrprev">Back</button><span></span><button type="button" class="mvrbtn mvrnext">'+(i<n-2?'Next':'Close the book')+'</button></div></div>');
+ el.querySelector('h2').textContent=book.t;const B=el.querySelectorAll('.mvbp');mvBookPage(B[0],P[i],i);mvBookPage(B[1],P[i+1],i+1);el.querySelector('.mvrfoot span').textContent=i?'Pages '+i+' and '+(i+1)+' of '+(n-1):'';
+ const back=()=>mvRead(book,i-2),on=()=>i<n-2?mvRead(book,i+2):mvTrayClose();const pv=el.querySelector('.mvrprev');pv.disabled=i===0;pv.onclick=back;el.querySelector('.mvrnext').onclick=on;B[0].onclick=()=>{if(i>0)back();};B[1].onclick=on;sfx('paper');}
 function mvShelfOfBooks(title,about,books){const el=mvPanel('mvbooks','<img src="movieroom/acc_book_open.png" alt="" draggable="false"><div class="mvplist"><h2>'+title+'</h2><p>'+about+'</p>'+
   books.map((b,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
  el.querySelectorAll('.mvpfilm').forEach(b=>{const k=books[+b.dataset.i];b.querySelector('b').textContent=k.t;b.querySelector('span').textContent=k.by;b.onclick=()=>mvRead(k);});}
 function mvBoxSet(){mvShelfOfBooks('The box set','Three small books about a famous trilogy.',MV_BOXSET);}
+MV_BOXSET.forEach(k=>k.own=true); /* written for the game, so their title pages do not call them extracts */
 function mvFilmBooks(){mvShelfOfBooks('Books about film','Old books about the movies, in their own words, and three small books about a famous trilogy.',(mvBooks||[]).concat(MV_BOXSET));} // the box set's three books live here now that the Kalimbasizer has its place
 fetch('movieroom/books.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.books)mvBooks=j.books.filter(b=>b.pages&&b.pages.length).map(b=>({t:b.title,by:b.by+', '+b.year,pages:b.pages}));}).catch(()=>{});
 function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvthing';b.dataset.k=k;b.setAttribute('aria-label',label);b.style.cssText=mvPct(MV_SPOTS[k]);b.onclick=fn;st2.insertBefore(b,mvEl.querySelector('.mvnote'));};

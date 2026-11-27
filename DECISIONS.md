@@ -2,6 +2,23 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Goodnight is said at the cat's bed and from the journal; the armchair asks only when someone is in it (Nov 27)
+
+- Jackie: "make clicking the bed a goodnight situation and then make clicking the journal a goodnight potential too but never the couch", then "well the couch can be good night as well but only if someone is on it".
+- By day a tap on the cat's bed, anywhere the cat itself is not, asks "Settle in for the night?". (A tap on the cat still pets the cat.)
+- The open journal has a "🌙 Goodnight" button at its bottom right; it closes the journal and the night begins. It is not there at night.
+- The armchair asks the same question only while a monster is sitting or napping in it or the cat is on it. Empty, a tap on it does nothing. Before this the armchair always asked, and it was the only place to say goodnight.
+
+### Translations are facing pages, and every page of every book in both rooms was gone over (Nov 27)
+
+- Jackie: "for books we read; have translations be like, the original language on the left page and the translation on the right. go over every book in the study room. we also want to make sure that every page in every book in both rooms look great and make sense in terms of publishing and reformat as necessary".
+- Study: a page with its original words is now two facing pages, the original alone on the left with its language named at the foot, the English alone on the right. Where that would begin on a right page, a printer's flower fills the right page first. Three sayings that had their original and English run together on one page (Swahili, Tagalog, Turkish) are facing pages too. Khichuri's Bengali lines now face their English.
+- A read that ends on a left page has the flower on its last right page, so no page is bare.
+- The two charms written out as figures (ABRACADABRA, the SATOR square) are set in the middle of the page in even letters.
+- Every spread of all 69 reads in the twelve study books was photographed and looked at, and the check that every page fits its paper at phone size passes.
+- Movie room: its books used to open as one long paragraph in a box. They now open as a book on two facing pages: a title page (title, author and year, and for the eleven old books "An extract, in the author's own words"), the words a few whole sentences to a page with a new paragraph indented, a page number at the foot, and the flower to close. A sentence too long for a page turns the page at a comma. All 176 pages of the fourteen books fit at phone size. Tap the right page or Next to turn on, the left or Back to go back.
+- Not changed: the wording of any read. This pass was about how the pages are laid out.
+
 ### Popcorn flies out of the machine and bounces on the floor for 45 seconds; two flavours are trash and gravel (Nov 27)
 
 - Jackie: "when popcorn is popping i want it to fly out of the machine and bounce of the floor lightly with real popcorn physics and i want it to be for a hot minute".
