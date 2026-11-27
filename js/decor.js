@@ -42,10 +42,10 @@ const WIN_AT={x:240,y:118,cx:444,top:150,lx:444,ly:560},WIN_MASK=img('decor/winm
    (decor/topmask.png), so it passes behind the hanging plants and covers nothing. It replaces the garland that hung on the
    right-hand wall; the occasion's garland stays in the window. Her sheet has six strands, each drawn lit and dark
    (tools/lights_build.py): warm white on ordinary days, and one of the others while the room is decorated for an occasion.
-   They are lit at night and at dusk, and dark by day. While lit, two or three bulbs at a time show their dark picture for a
+   While lit, two bulbs at a time show their dark picture for a
    moment, a twinkle made of whole frame swaps; with reduced motion they hold still. */
 const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png'); // the right-hand wall's shape, kept for anything hung there later
-const LIGHTS_AT={x:35,y:38},TOP_AT={x:0,y:30},TOP_MASK=img('decor/topmask.png'),LIGHTS_TWINK=1400,LIGHTS_OUT=3;
+const LIGHTS_AT={x:35,y:38},TOP_AT={x:0,y:30},TOP_MASK=img('decor/topmask.png'),LIGHTS_TWINK=1700,LIGHTS_OUT=2;
 const LIGHTS_FOR={lny:'lantern',midautumn:'lantern',chuseok:'lantern',obon:'lantern',tanabata:'lantern',hina:'lantern',vesak:'lantern',diwali:'lantern',
  christmas:'multi',birthday:'multi',pride:'multi',holi:'multi',songkran:'multi',kodomo:'multi',juneteenth:'multi',kwanzaa:'multi',
  halloween:'ember',muertos:'ember',harvest:'ember',autumn:'ember',
@@ -55,7 +55,12 @@ const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','paste
 fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
 const lightsCv=document.createElement('canvas');
 function lightsStrand(){const s=decorNow();return (s&&LIGHTS_FOR[s.id])||'warm';}
-function lightsLit(){const tk=typeof timeKey==='function'?timeKey():'day';return tk!=='day';}
+/* Always lit, day and night, unless you turn them off by tapping them; tap again and they are lit again (Jackie, Nov 27: "I want the
+   string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them"). Off, the
+   strand hangs dark; taking it down altogether is still in the cupboard. */
+const LIGHTS_TAP={x:250,y:36,w:1170,h:60}; // the stretch of strand between the two hanging plants
+function lightsLit(){return !st.lightsDark;}
+function lightsTap(){st.lightsDark=!st.lightsDark;sfx('tick');tell(st.lightsDark?'The string lights are off.':'The string lights are on.',{kind:'info',key:'decor',now:true});save();}
 function lightsOut(n){ // which bulbs are dark this moment: a few, chosen afresh every LIGHTS_TWINK ms, the same ones for the whole of that time
  if((typeof tsCalm==='function'&&tsCalm())||!n)return [];const k=Math.floor(performance.now()/LIGHTS_TWINK),out=[];let h=(k*2654435761)>>>0;
  for(let i=0;i<LIGHTS_OUT;i++){h=(Math.imul(h^(h>>>15),2246822519)+i*374761393)>>>0;out.push(h%n);}return out;}

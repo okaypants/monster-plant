@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The string lights are always lit, and a tap turns them off (Nov 27)
+
+- Jackie: "I want the string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them".
+- They are lit day and night now (they had been dark by day). Two bulbs at a time go dark for a moment, a little less often than before. A tap on the strand between the two hanging plants turns the lights off, and the strand hangs dark; another tap lights them again. Taking the strand down altogether is still in the cupboard.
+
 ### The first room is called the study room, and the movie room's curtains draw like its curtains (Nov 27)
 
 - Jackie: "Should we have the curtains animated like in the plant room? Which we'll actually call the study room".

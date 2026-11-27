@@ -38,6 +38,7 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,MOONBOX)){fidgetPoke(x,y);openTarot();return;} // the moon box on the right bookcase: a tarot reading (js/tarot.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,CUPBOARD)){cubOpen();return;} // the star door: Tofu's cupboard (js/cupboard.js)
  if(!held.tool&&!onPlantPx(x,y)&&onBookshelf(x,y)){openBooks(bookZone(x,y).books);return;} // any book: both bookcases, the crate book, the book stack
+ if(!held.tool&&!st.noLights&&typeof lightsTap==='function'&&inR(x,y,LIGHTS_TAP)){lightsTap();return;} // the string lights along the top of the wall: a tap turns them off or on (js/decor.js)
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,SAMPLER)){openSampler();return;} // the sampler on the top shelf opens its own app (js/sampler.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,RADIO)){radioTap();fidgetPoke(x,y);return;} // the radio on the desk: on or off (js/radio.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
