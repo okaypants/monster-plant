@@ -67,7 +67,9 @@ let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote'
 /* Jackie, Nov 27: "you can open the curtains but I think you should be able to close them too by clicking the screen and only
    control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
-function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film';return v;}
+function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}
+ if(mvSeekTo>0){const t=mvSeekTo,go=()=>{try{v.currentTime=Math.min(t,Math.max(0,(v.duration||t)-3));}catch(e){}};mvSeekTo=0;if(v.readyState>=1)go();else v.addEventListener('loadedmetadata',go,{once:true});} // a channel is joined part-way through
+ v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film';return v;}
 function mvStart(){const v=mvLoad(),p=v.play();mvCardShow();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
 function mvScreen(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const v=mvEl.querySelector('video');sfx('paper');
  if(mvState==='closed'){mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);} // the curtains only: whatever was on is still there, paused, and if nothing was chosen the screen is black
@@ -76,7 +78,7 @@ function mvPlay(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const
  if(!f){mvPick();mvNote('Choose something to watch.');return;}
  if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
  if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';mvLightApply();}}
-function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
+function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(mvChan&&!mvChan.live){mvTune(mvChan);return;} /* on a channel the next film simply begins */if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
    hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
@@ -140,7 +142,7 @@ function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine
  const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreTick();return;}
  mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreKey=k;mvScoreTick();});}
 function mvSoundStep(){const L=mvHasScore(mvFilm)?['film','mine','off']:['film','off'];mvMode=L[(L.indexOf(mvMode)+1)%L.length]||'film';sfx('tick');mvSoundApply();mvNote(mvMode==='film'?'The film’s own sound.':mvMode==='mine'?'Your soundtrack.':'Sound off.');}
-function mvKalimbaFilms(){return MV_SHELVES;} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
+function mvKalimbaFilms(){return MV_SHELVES.concat(MV_MORE);} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
@@ -197,11 +199,56 @@ function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl.querySelector('video');
  if(mvState==='closed')mvCurtains(true,show);else show();}
 addEventListener('resize',()=>mvTvPlace());
 function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite loop is shown like a film
-function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused;
- const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(!mvFilm?'🎞️ Film library':on?'⏸️ Pause':'▶️ Play')+'</button>'+(mvFilm?' <button type="button" class="mvrbtn mvrlib">🎞️ Film library</button>':'')+'<p>Channels</p>'+
-  MV_LIVE.map((c,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
- el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};const lib=el.querySelector('.mvrlib');if(lib)lib.onclick=()=>{mvTrayClose();mvPick();};
- el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by;b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}
+/* THE REMOTE AND THE CHANNELS (Jackie, Nov 27: "i'd like it to be more like a real one ... pull a lot more random videos to turn into
+   playlists for channels as well as actual channels that we can do an up down button to randomly tune into and maybe an onscreen
+   tv guide ... and then we could have the film library button as well ... play pause forward rewind etc would be for the active
+   title so it would have to be on the side i guess so most of the screen is visible"; "maybe there's an onscreen tv guide and
+   then you have to type in a specific number on the remote like a channel to get there").
+   A CHANNEL is a number, a name and a playlist (movieroom/channels.json, made by tools/channels_build.py; the old television and
+   the satellite loops are added here). Every channel runs round the clock: its playlist is laid end to end and the clock says
+   which film is on and how far in, so tuning in lands part-way through, as on a real set, and when a film ends the next begins.
+   THE REMOTE is a slim panel down the right of the room, so the screen stays in view. It has a number pad (type a channel's
+   number), channel up and down, back ten seconds, play or pause, on ten seconds, GUIDE and the film library.
+   THE GUIDE is drawn on the screen itself: every channel with its number, its name and what kind of thing it shows. A tap on a
+   row tunes to it, or its number can be typed on the remote. */
+let MV_MORE=[]; /* shelves of the film library made from the channels (Jackie, Nov 27: "don't forget to include titles there and in the film library", "as well as super super short films", "in both"): the very short first films, and everything the channels show, each to be watched from its start or scored */
+let MV_CH=[],mvChan=null,mvSeekTo=0,mvRemEl=null,mvDigits='',mvDigitT=0,mvGuideT=0;
+const MV_CH_OWN=[{n:4,add:[{src:MV_LIVE[3].src,t:'The Crystal Egg',y:'1951',d:1427},{src:MV_LIVE[4].src,t:'The Case of the Haunted Gainsborough',y:'1954',d:1600},{src:MV_LIVE[5].src,t:'Captain Z-Ro: Leonardo da Vinci',y:'1956',d:1587},{src:MV_LIVE[6].src,t:'Burns and Allen: The Kleebob Card Game',y:'1950',d:1766},{src:MV_LIVE[7].src,t:'You Bet Your Life',y:'1950s',d:1765}]}],
+ MV_CH_LIVE=[{n:8,name:'The Northwest from Space',about:'A weather satellite, the last few hours',live:MV_LIVE[0]},{n:9,name:'North America from Space',about:'A weather satellite, the last few hours',live:MV_LIVE[1]},{n:10,name:'Test Card',about:'Nothing is on',live:MV_LIVE[2]}];
+function mvChannelsSet(j){const L=((j&&j.channels)||[]).map(c=>({n:c.n,name:c.name,about:c.about,list:(c.list||[]).slice()}));for(const o of MV_CH_OWN){let c=L.find(q=>q.n===o.n);if(!c){c={n:o.n,name:'The Late Show',about:'Old television: drama, comedy and quiz',list:[]};L.push(c);}c.list=o.add.concat(c.list);}
+ {const lenOf=d=>d<90?Math.round(d)+' sec':Math.round(d/60)+' min',mk=(c,it)=>({id:it.id||('tv:'+it.t),f:it.f,src:it.src,t:it.t,by:c.name+(it.y?', '+it.y:''),len:lenOf(it.d),d:it.d}),sh=L.find(c=>c.n===11),rest=L.filter(c=>c.n>0&&c.n!==11);MV_MORE=[];
+  if(sh&&sh.list.length)MV_MORE.push({id:'short',name:'One-minute films',pic:'movieroom/acc_reel.png',about:'The very first films, a minute or less each.',films:sh.list.map(it=>mk(sh,it)).sort((a,b)=>a.d-b.d)});
+  const all=rest.flatMap(c=>c.list.map(it=>mk(c,it))).sort((a,b)=>a.d-b.d);if(all.length)MV_MORE.push({id:'tv',name:'From the channels',pic:'movieroom/acc_vhs.png',about:'Everything the channels show, shortest first, to watch from the start.',films:all});}
+ const ads=(L.find(c=>c.n===0)||{list:[]}).list; /* old commercials are programmed in between the films, two at a time, as a station would (Jackie, Nov 27: "old commercials programmed in") */
+ for(const c of L){if(c.n===0||!ads.length)continue;const out=[];c.list.forEach((it,k)=>{out.push(it);for(let j=0;j<2;j++)out.push(Object.assign({ad:1},ads[(k*2+j+c.n*5)%ads.length]));});c.list=out;}
+ MV_CH=L.filter(c=>c.n>0&&c.list.length).concat(MV_CH_LIVE).sort((a,b)=>a.n-b.n);}
+mvChannelsSet(null);fetch('movieroom/channels.json').then(r=>r.ok?r.json():null).then(j=>{if(j)mvChannelsSet(j);}).catch(()=>{});
+/* what a channel is showing at a moment: {it, i, off (seconds in), left (seconds to go), next} */
+function mvOnAir(ch,at){if(ch.live)return {it:{t:ch.about,d:0},off:0,left:0,next:null,live:true};const L=ch.list,tot=L.reduce((a,b)=>a+b.d,0);let p=((at===undefined?Date.now()/1000:at)+ch.n*977)%tot,i=0;while(p>=L[i].d){p-=L[i].d;i++;}return {it:L[i],i,off:p,left:L[i].d-p,next:L[(i+1)%L.length]};}
+function mvChanFilm(ch,it){return ch.live?Object.assign({},ch.live,{chan:ch.n}):{id:it.id,f:it.f,src:it.src,t:it.t,by:'Channel '+ch.n+' · '+ch.name+(it.ad?' · a word from our sponsors':it.y?' · '+it.y:''),len:mvClock(it.d),chan:ch.n};}
+function mvBanner(ch,title){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;b.innerHTML='<b></b><span></span>';b.querySelector('b').textContent=ch.n+'  '+ch.name;b.querySelector('span').textContent=title||'';b.hidden=false;clearTimeout(mvBanner.t);mvBanner.t=setTimeout(()=>{b.hidden=true;},4000);}
+function mvTune(ch,fromStart){if(!mvEl||!ch)return;mvChan=ch;const a=mvOnAir(ch),f=mvChanFilm(ch,a.it);mvSeekTo=ch.live||fromStart?0:a.off;mvRemShow();mvGuideClose();sfx('tick');
+ if(mvState==='open'&&!mvInter){mvFilm=f;mvEl.dataset.paused='';if(mvMode==='mine')mvMode='film';mvStart();mvBanner(ch,ch.live?ch.about:a.it.t);mvNote('');}
+ else{mvChoose(f);mvChan=ch;setTimeout(()=>mvBanner(ch,ch.live?ch.about:a.it.t),900);}}
+function mvTuneBy(d){if(!MV_CH.length)return;const i=mvChan?MV_CH.indexOf(mvChan):(d>0?-1:0);mvTune(MV_CH[((i+d)%MV_CH.length+MV_CH.length)%MV_CH.length]);}
+function mvDigit(k){mvDigits=(mvDigits+k).slice(-2);mvRemShow();sfx('tick');clearTimeout(mvDigitT);mvDigitT=setTimeout(()=>{const n=+mvDigits;mvDigits='';const ch=MV_CH.find(c=>c.n===n);if(ch)mvTune(ch);else{mvNote('Nothing is on channel '+n+'.');mvRemShow();}},mvDigits.length>=2?350:1300);}
+function mvSkip(d){if(!mvEl||!mvFilm||mvState!=='open')return;const v=mvEl.querySelector('video');try{v.currentTime=Math.max(0,Math.min((v.duration||1e9)-1,v.currentTime+d));}catch(e){}sfx('tick');}
+function mvRemShow(){if(!mvRemEl)return;const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused,d=mvRemEl.querySelector('.mvremd');
+ d.textContent=mvDigits?'CH '+mvDigits+'_':mvChan?'CH '+mvChan.n+' · '+mvChan.name:mvFilm?mvFilm.t:'Nothing on';mvRemEl.querySelector('.mvrplay').textContent=on?'⏸':'▶';}
+function mvRemote(){if(!mvEl)return;if(mvRemEl){mvRemClose();return;}mvTrayClose();sfx('tick');mvRemEl=document.createElement('div');mvRemEl.className='mvrem';
+ mvRemEl.innerHTML='<button type="button" class="mvremx" aria-label="Put the remote down">×</button><div class="mvremd"></div>'+
+  '<div class="mvremrow"><button type="button" class="mvrk" data-a="up" aria-label="Channel up">CH ▲</button><button type="button" class="mvrk" data-a="down" aria-label="Channel down">CH ▼</button></div>'+
+  '<div class="mvrempad">'+[1,2,3,4,5,6,7,8,9].map(k=>'<button type="button" class="mvrk" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" class="mvrk mvrguide" data-a="guide">GUIDE</button><button type="button" class="mvrk" data-k="0">0</button><button type="button" class="mvrk" data-a="lib" aria-label="Film library">🎞️</button></div>'+
+  '<div class="mvremrow three"><button type="button" class="mvrk" data-a="back" aria-label="Back ten seconds">⏪</button><button type="button" class="mvrk mvrplay" data-a="play" aria-label="Play or pause">▶</button><button type="button" class="mvrk" data-a="fwd" aria-label="On ten seconds">⏩</button></div>';
+ mvRemEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();if(b.classList.contains('mvremx')){mvRemClose();return;}if(b.dataset.k!==undefined){mvDigit(b.dataset.k);return;}const a=b.dataset.a;
+  if(a==='up')mvTuneBy(1);else if(a==='down')mvTuneBy(-1);else if(a==='guide')mvGuide();else if(a==='lib'){mvGuideClose();mvPick();}else if(a==='back')mvSkip(-10);else if(a==='fwd')mvSkip(10);else if(a==='play'){if(!mvFilm&&MV_CH.length)mvTune(MV_CH[0]);else mvPlay();setTimeout(mvRemShow,60);}});
+ mvEl.querySelector('.mvstage').appendChild(mvRemEl);mvRemShow();}
+function mvRemClose(){if(mvRemEl){mvRemEl.remove();mvRemEl=null;}mvGuideClose();}
+function mvGuideClose(){clearInterval(mvGuideT);const g=mvEl&&mvEl.querySelector('.mvguide');if(g)g.remove();}
+function mvGuide(){if(!mvEl)return;if(mvEl.querySelector('.mvguide')){mvGuideClose();return;}const g=document.createElement('div');g.className='mvguide';g.style.cssText=mvPct(MV.screen);
+ const draw=()=>{const now=new Date(),a=null,hm=x=>String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0');g.innerHTML='<div class="mvgh"><b>TV GUIDE</b><span>'+hm(now)+'</span></div>'+MV_CH.map((c,i)=>'<button type="button" class="mvgrow'+(c===mvChan?' on':'')+'" data-i="'+i+'"><i></i><b></b><span></span><em></em></button>').join('');
+  g.querySelectorAll('.mvgrow').forEach(b=>{const c=MV_CH[+b.dataset.i];b.querySelector('i').textContent=c.n;b.querySelector('b').textContent=c.name;b.querySelector('span').textContent=c.about;b.querySelector('em').textContent=''; /* the guide is of channels, not of what is on (Jackie, Nov 27: "the tv guide can be for channels not shows") */b.onclick=e=>{e.stopPropagation();mvTune(c);};});};
+ draw();g.addEventListener('click',mvGuideClose);mvEl.querySelector('.mvstage').appendChild(g);clearInterval(mvGuideT);mvGuideT=setInterval(()=>{if(mvEl&&mvEl.querySelector('.mvguide'))draw();else clearInterval(mvGuideT);},5000);if(mvState==='closed')mvScreen();}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
      and every monster in the room that is old enough to eat is a little fuller;
@@ -348,7 +395,7 @@ function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn
    - the right-hand unit's drawer holds the string lights: a strand along the top of the wall, behind the plants, twinkling as
      in the study room.
    What is up is remembered with the save (mvDecor, mvLights). */
-const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},lights:{x:412,y:606,w:200,h:50},toys:{x:628,y:606,w:202,h:50}}/* the first three drawers from the left, in the order you would dress a room: decorations, then string lights, then the cat's toys (Jackie, Nov 27: "we also want the drawers to be logically organized left to right"); the other three are empty for now */,MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
+const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},lights:{x:412,y:606,w:200,h:50}}/* the cat toys drawer was taken out (Jackie, Nov 27: "get rid of toys"); the toy code below is kept, unused, in case it comes back *//* the first three drawers from the left, in the order you would dress a room: decorations, then string lights, then the cat's toys (Jackie, Nov 27: "we also want the drawers to be logically organized left to right"); the other three are empty for now */,MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
 let mvLightsT=0;
 function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)return;const x=c.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,c.width,c.height);let n=st.mvLights;
  if(!n||typeof LIGHTS_IMG==='undefined')return;if(n==='auto')n=lightsAuto(st.mvDecor); /* Seasonal: with the movie room's decorations, or the time of year */const on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off)||!MV_TOP_MASK.complete)return;const ox=35,oy=6;x.drawImage(on,ox,oy);
@@ -395,7 +442,7 @@ function mvTonight(){const all=MV_SHELVES.flatMap(s=>s.films),d=new Date(),n=Mat
 /* choosing a film: a tap on the reels, the tapes or the discs opens that shelf's list */
 let mvPickEl=null,mvLast=MV_SHELVES[0];
 function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
-function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
+function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;if(f.chan==null)mvChan=null; /* something from the library or the shelves: no channel is on */if(mvRemEl)setTimeout(mvRemShow,50);
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
 /* YOUR FILMS (Jackie, Nov 27: "when it records we can elect to add it to our own film library section with a custom title card").
@@ -404,7 +451,7 @@ function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
    one off this device. All of them together are held to SCORES_MAX (js/scores.js), and the films themselves are never stored. */
 const MV_MINE={id:'mine',name:'Your films',pic:'movieroom/acc_reel.png',about:'Films that you or a friend scored.',films:[]},MV_CARDS=[['#1C1C1B','#FBF8F1'],['#F2B8A2','#1C1C1B'],['#BFD8B8','#1C1C1B'],['#C9C3E6','#1C1C1B']];
 let mvCardNext=null,mvCardT=0;
-const mvFilmByKey=k=>{k=scoreFilmKey(k);for(const sh of MV_SHELVES)for(const f of sh.films)if(scoreKey(f)===k)return f;return null;};
+const mvFilmByKey=k=>{k=scoreFilmKey(k);for(const sh of MV_SHELVES.concat(MV_MORE))for(const f of sh.films)if(scoreKey(f)===k)return f;return null;};
 const mvClock=d=>Math.floor(d/60)+':'+String(Math.floor(d%60)).padStart(2,'0');
 function mvCardShow(){const c=mvEl&&mvEl.querySelector('.mvcard'),q=mvCardNext;mvCardNext=null;if(!c||!q||!mvFilm||scoreKey(mvFilm)!==scoreFilmKey(q.key))return;const col=MV_CARDS[q.card]||MV_CARDS[0];
  c.style.background=col[0];c.style.color=col[1];c.innerHTML='<b></b><span></span>';c.querySelector('b').textContent=q.film;c.querySelector('span').textContent=q.by?'scored by '+q.by:''; /* no title for the soundtrack itself (Jackie, Nov 27: "No song title, it's just the score"): the card reads like the film's own, with who scored it */ /* the film's own title is the biggest thing on the card (Jackie, Nov 27: "the title of the movie has to be bigger than anything"); the name you gave your soundtrack and who scored it go under it */ /* Jackie, Nov 27: the card "shouldn't say played by or played on the kalimbasizer, instead it should say scored by and then whatever the player's chosen name is"; with no name given, that part is left off */c.hidden=false;clearTimeout(mvCardT);mvCardT=setTimeout(()=>{c.hidden=true;},3500);}
@@ -419,7 +466,7 @@ function mvPickMine(){scoreList().then(L=>{if(!mvPickEl)return;const box=mvPickE
  box.querySelectorAll('.mvmines').forEach(b=>b.onclick=()=>mvShare(L[+b.dataset.i].key));const fi=box.querySelector('.mvminefile');box.querySelector('.mvmineadd').onclick=()=>fi.click();fi.onchange=()=>{if(fi.files&&fi.files[0])mvAddFile(fi.files[0]);};
  box.querySelectorAll('.mvpfilm').forEach(b=>{const q=L[+b.dataset.i],f=mvFilmByKey(q.key);b.querySelector('b').textContent=q.film;b.querySelector('span').textContent=(q.by?'scored by '+q.by+' · ':'')+mvClock(q.dur)+(q.parts>1?' · '+q.parts+' parts':'')+' · '+scoreSize(q.size);b.disabled=!f;b.onclick=()=>{mvMode='mine';mvScorePick=q.key;mvCardNext=q;mvChoose(f);};});
  box.querySelectorAll('.mvminex').forEach(b=>b.onclick=()=>{const q=L[+b.dataset.i];scoreDropKey(q.key).then(()=>{if(mvScoreKey===q.key){mvScoreStop();mvScoreKey='';}return mvScoresLoad();}).then(()=>{mvNote('Removed from your films.');mvPickMine();});});});}
-function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES.concat(MV_MINE); /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
+function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES.concat(MV_MORE,MV_MINE); /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
  mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><button type="button" class="mvrbtn mvtonight"></button>'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+(sh===MV_MINE?'<div class="mvmine"></div>':'')+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
  mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;{const tb=mvPickEl.querySelector('.mvtonight'),tf=mvTonight();tb.textContent='Tonight’s film: '+tf.t;tb.onclick=()=>{mvChoose(tf);mvNote('Tonight’s film is '+tf.t+'.');};}mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
@@ -427,7 +474,7 @@ function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLa
 function openMovieRoom(){
  if(mvEl)return;
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
- mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video><div class="mvcard" hidden style="'+mvPct(MV.screen)+'"></div>'+
+ mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video><div class="mvcard" hidden style="'+mvPct(MV.screen)+'"></div><div class="mvchb" hidden style="'+mvPct(MV.screen)+'"></div>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain mvcurtL" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'"><img class="mvcurtain mvcurtR" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+'<canvas class="mvfx" width="'+MV.W+'" height="'+MV.H+'"></canvas>'+'<canvas class="mvlights" width="'+MV.W+'" height="100"></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
@@ -439,10 +486,10 @@ function openMovieRoom(){
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback" aria-label="Go to another room">🚪 Rooms</button></div>';
- const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));v.addEventListener('timeupdate',mvScoreTick);v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
+ const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));['play','pause'].forEach(ev=>v.addEventListener(ev,()=>mvRemShow()));v.addEventListener('timeupdate',mvScoreTick);v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvRemote;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=mvSoundStep;mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
  mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundApply();mvCatEnter();mvThingsWire();mvLightApply();mvScoresLoad();mvDecorShow();mvLightsDraw();MV_TOP_MASK.complete||MV_TOP_MASK.addEventListener('load',mvLightsDraw,{once:true});clearInterval(mvLightsT);mvLightsT=setInterval(mvLightsDraw,LIGHTS_TWINK);}
-function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);clearTimeout(mvPopFlyT);mvPopFly=null;mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);clearTimeout(mvPopFlyT);mvPopFly=null;mvRemEl=null;mvChan=null;clearInterval(mvGuideT);clearTimeout(mvDigitT);mvDigits='';mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */

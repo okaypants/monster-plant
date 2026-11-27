@@ -724,7 +724,9 @@ requestAnimationFrame(frame);
 /* FILM MODE. The films come from the movie room's collection when this page is opened inside the game (same site, so the page can
    read the room's list); opened on its own it has no films and is the plain instrument. */
 const KF={films:[],film:null,scoring:false,arming:false,count:0,parts:[],player:null,dirty:false,t0:0,loop:null,by:'',card:0};
-try{if(parent!==window&&parent.mvKalimbaFilms){KF.films=parent.mvKalimbaFilms().flatMap(sh=>sh.films.map(f=>({...f,shelf:sh.name})));KF.src=parent.mvKalimbaSrc;}}catch(e){}
+try{if(parent!==window&&parent.mvKalimbaFilms){KF.films=parent.mvKalimbaFilms().flatMap(sh=>sh.films.map(f=>({...f,shelf:sh.name})));
+  /* the films to score are listed shortest first (Jackie, Nov 27: "arrange the film library to score by length"), each once */
+  {const secs=f=>f.d||(/sec/.test(f.len||'')?parseFloat(f.len):(parseFloat(f.len)||99)*60),seen=new Set();KF.films=KF.films.filter(f=>{const k=f.id+'/'+(f.f||'');if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>secs(a)-secs(b));}KF.src=parent.mvKalimbaSrc;}}catch(e){}
 const kv=$('kv'),KCARDS=[['#1C1C1B','#FBF8F1','night'],['#F2B8A2','#1C1C1B','peach'],['#BFD8B8','#1C1C1B','moss'],['#C9C3E6','#1C1C1B','dusk']]; // title card colours: ground, lettering
 /* ALWAYS THE BIG SCREEN (Jackie, Nov 27: with the film small "it looks like a kalimba which isn't good. it should always be big
    screen AND you have options to set up"). Inside the game the film is always big, even before one is chosen (the screen then
@@ -744,7 +746,7 @@ function kfBar(){const d=kv.duration||0,b=$('kbarP'),L=$('kbarL');b.innerHTML=''
 function kfSet(f){kfQuiet();KF.film=f;{const tip=$('knofilm');if(tip)tip.style.display=f?'none':''}KF.parts=[];KF.dirty=false;KF.loop=null;$('kLoopV').textContent='off';$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();
     scoreGet(f).then(r=>{if(KF.film!==f||KF.dirty)return;KF.parts=scoreParts(r).map(p=>({t:p.t,dur:p.dur,blob:p.blob,mime:p.mime}));KF.by=(r&&r.by)||'';KF.card=(r&&r.card)||0;kfPlayerMake();}).catch(()=>{});}kfPlayerMake();kfView();}
 function kfPick(){if(!KF.films.length){say('open me from the movie room for films');return}if(KF.dirty){kfKeep();return}
-  openSheet('FILM',KF.films.map(f=>({label:f.t,sub:f.by+' · '+f.len,sel:KF.film===f,quiet:true,act:()=>kfSet(f)})),220)}
+  openSheet('FILM · shortest first',KF.films.map(f=>({label:f.t,sub:f.len+' · '+f.by,sel:KF.film===f,quiet:true,act:()=>kfSet(f)})),220)}
 /* MOVING ABOUT WHILE YOU PRACTISE (Jackie, Nov 27: "you should also be able to easily go back or forward when practicing during
    playback"). BACK and ON step ten seconds; dragging along the bar goes anywhere. LOOP: the first tap marks where a stretch starts,
    the second where it ends, and the film then goes round that stretch until a third tap lets it run on. */

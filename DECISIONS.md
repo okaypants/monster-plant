@@ -2,6 +2,21 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The remote is a real remote: channels on a schedule, a number pad, a guide, the library, and commercials between films (Nov 27)
+
+- Jackie: "I am also starting to love the remote but i'd like it to be more like a real one so maybe we can just research and pull a lot more random videos to turn into playlists for channels as well as actual channels that we can do an up down button to randomly tune into and maybe an onscreen tv guide ... and then we could have the film library button as well ... play pause forward rewind etc would be for the active title so it would have to be on the side i guess so most of the screen is visible"; "you have to type in a specific number on the remote like a channel to get there"; "they can also be tv shows and shorts and super shorts as well as old commercials programmed in"; "and clips"; "the tv guide can be for channels not shows"; then she dropped the guide and at once took it back ("no actually a tv guide is great"); "don't forget to include titles there and in the film library that are public domain"; "as well as super super short films"; "in both"; "arrange the film library to score by length".
+- Ten channels: 2 Cartoons, 3 Yesterday's Tomorrow, 4 The Late Show, 5 Nature Hour, 6 Space, 7 Travelogue, 8 and 9 the two weather satellites, 10 Test Card, 11 One-Minute Films. 109 films from the Internet Archive, gathered by `tools/channels_build.py` into `movieroom/channels.json`. Each is marked public domain there, or is from the Prelinger Archives or NASA, or (the one-minute films) dates from before 1929. Every address was checked to answer as a video.
+- Each channel runs round the clock: tuning in lands part-way through whatever is on, and when a film ends the next begins. Two old commercials from a pool of twenty play after every film on channels 2 to 7.
+- The remote is a panel down the right of the room, so the screen stays in view: a number pad (type a channel's number), channel up and down, back ten seconds, play or pause, on ten seconds, GUIDE and the film library. Its little display shows the channel. The channel's number and name flash up on the screen when you tune.
+- The guide is drawn on the screen: every channel with its number, name and what kind of thing it shows. A tap on a row tunes to it.
+- The film library has two new shelves made from the channels: One-minute films, and From the channels, both shortest first. Kalimba-Score's list of films to score is shortest first too, and includes them.
+- Cut by hand after reading the titles: films about hunting, a disaster, youth gangs, a wartime strike, pests, a diet drink, two early erotic films, things still owned (a Jetsons promo, a Kellogg's advertisement, Lost in Space), and three Betty Boop cartoons with caricature, harassment or cruelty in them. Old cartoons are taken only from named series, with known bad episodes left out. Titles and descriptions with words for war, weapons, drugs, drink, tobacco, slurs and the like are dropped by the tool.
+- Nobody has watched these 109 through. The choosing was by title, description and what the Archive says of each film.
+
+### The movie room has no cat toys drawer (Nov 27)
+
+- Jackie: "the toys are still kind of weird", "maybe forget the toys", "get rid of toys and lets think of other things to put in the other drawers". The drawer is gone from the movie room; the toys are still in the study's cupboard.
+
 ### The night sky is behind Kalimba-Score, and upright it stands in from both sides (Nov 27)
 
 - Jackie: "i love everything so far except the perspective in the kalimbasizer so maybe we need to cut back both sides when its vertical and add the space background like in the rest of the game".
