@@ -10,6 +10,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - After a recording you are asked whether to keep it: a title (up to 40 letters) and one of four card colours, then "add to my films" or "throw it away". Nothing is kept unless you say so.
 - The movie room's film menu has a last tab, Your films, listing each one with its length and size and a Remove button. Choosing one plays the film with your sound after its title card.
 - Phones: a soundtrack is recorded small (about a quarter of a megabyte a minute), there is one a film, and all together may take no more than 40 MB; past that one must be removed first. The films are never stored.
+- Jackie, seeing it: "I really dislike the black bar on the keys. Try again". The thick black bar across each row of keys is now a slim cream rail with a thin outline and a small rivet over each key.
 - Decided against, for now: saving the notes played and replaying them on the instrument. It would be far smaller, but the instrument has held notes, glides and sound knobs, and a replay that sounded different from what was played could not be checked on a phone from here. The small recording with a hard limit meets the worry without that risk.
 
 ### The movie room's drawers run decorations, string lights, cat toys, and their menus are one neat grid (Nov 27)

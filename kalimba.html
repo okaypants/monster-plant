@@ -467,8 +467,9 @@ function draw(time){
   ctx.globalAlpha=1;ctx.fillStyle=fresh>.85?TE:'#55534E';ctx.beginPath();ctx.arc(lx+lw-13,ly+lh/2,3.5,0,TAU);ctx.fill();ctx.restore();
   for(const row of rows){
     row.forEach(t=>drawKey(t,time));
-    const y=row[0].bridgeY;ctx.save();ctx.fillStyle=INK;rr(G.bx+G.pad-6,y-6,G.bw-2*G.pad+12,12,6);ctx.fill();
-    ctx.fillStyle=body;[G.bx+G.pad+2,G.bx+G.bw-G.pad-2].forEach(x=>{ctx.beginPath();ctx.arc(x,y,2.2,0,TAU);ctx.fill()});ctx.restore()}
+    const y=row[0].bridgeY;ctx.save(); /* the bridge is a slim cream rail with a thin outline and a rivet over each key (Jackie, Nov 27: "I really dislike the black bar on the keys"); it was a thick black bar */
+    rr(G.bx+G.pad-4,y-3.5,G.bw-2*G.pad+8,7,3.5);ctx.fillStyle=NIGHT?'#6B6E7C':CREAM;ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.2;ctx.stroke();
+    ctx.fillStyle=NIGHT?CREAM:INK;ctx.globalAlpha=.55;row.forEach(t=>{ctx.beginPath();ctx.arc(t.x,y,1.5,0,TAU);ctx.fill()});ctx.restore()}
   for(let i=ripples.length-1;i>=0;i--){const r=ripples[i];r.r+=2.4;r.life-=.045;if(r.life<=0){ripples.splice(i,1);continue}
     ctx.save();ctx.globalAlpha=r.life*.4;ctx.strokeStyle=NIGHT?CREAM:INK;ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,TAU);ctx.stroke();ctx.restore()}
   drawMotes();
