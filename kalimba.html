@@ -104,11 +104,11 @@ html.night .cap.oct button:first-child{padding-left:5px}
    maybe? or maybe a UI shift"). With a film chosen and the screen sideways, the film takes the left of the screen at full height and
    the keys the right, two rows of seven. SET UP goes back to the whole instrument with the film small. */
 @media (min-aspect-ratio:11/10){
-html.film #panel{left:0;right:auto;top:0;bottom:0;width:46vw;max-width:none;margin:0;display:flex;flex-direction:column;padding:8px 6px 8px 10px;box-sizing:border-box}
+html.film #panel{left:var(--padw,0px);right:auto;top:0;bottom:0;width:calc(100vw - 2*var(--padw,0px));max-width:none;margin:0;display:flex;flex-direction:column;padding:8px 6px;box-sizing:border-box}
 html.film #panel>.cap{display:none}html.film #panel>.cap.oct{display:none}
 html.film #kfilm{flex:1;min-height:0;height:auto;flex-direction:column;position:relative}
 html.film #kv{flex:1;min-height:0;height:auto;width:100%;aspect-ratio:auto}
-html.film #kside{flex:none;grid-template-columns:repeat(4,1fr);gap:5px}html.film #kPick{display:none} /* with the film big there are eight buttons in two rows; another film is chosen from set up */html.film #kbar{display:block}
+html.film #kside{flex:none;grid-template-columns:repeat(5,1fr);gap:5px} /* with the film big there are ten buttons in two rows */html.film #kbar{display:block}
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:4px 6px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 #kside{grid-template-columns:1.4fr 1fr 1fr}
@@ -121,7 +121,7 @@ html.film #panel>.cap{display:none}
 html.film #kfilm{flex-direction:column;height:auto;gap:6px}
 html.film #kv{width:100%;height:auto;aspect-ratio:4/3;max-height:40vh}
 html.film #kbar{display:block}
-html.film #kside{grid-template-columns:repeat(4,1fr);gap:5px}html.film #kPick{display:none}
+html.film #kside{grid-template-columns:repeat(5,1fr);gap:5px}
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 html:not(.film) .kx{display:none} /* the film's own controls show only with the film big */
@@ -160,9 +160,10 @@ html:not(.film) .kx{display:none} /* the film's own controls show only with the 
     <button class="cap kcap kx" id="kPlay"><span class="lbl" id="kTime">0:00</span><span class="val" id="kPlayV">▶ play</span></button>
     <button class="cap kcap kx" id="kFwd"><span class="lbl">ON</span><span class="val">10s ▶</span></button>
     <button class="cap kcap kx" id="kLoop"><span class="lbl">LOOP</span><span class="val" id="kLoopV">off</span></button>
-    <button class="cap kcap" id="kPick"><span class="lbl">FILM</span><span class="val" id="kName">choose a film</span></button>
+    <button class="cap kcap kx" id="kMet"><span class="lbl">CLICK</span><span class="val" id="kMetV">off</span></button>
     <button class="cap kcap kx" id="kGo"><span class="lbl">RECORD</span><span class="val" id="kGoV">● rec</span><i class="led"></i></button>
     <button class="cap kcap kx" id="kSave"><span class="lbl" id="kSaveL">SAVE</span><span class="val" id="kSaveV">no parts</span></button>
+    <button class="cap kcap" id="kPick"><span class="lbl">FILM</span><span class="val" id="kName">choose a film</span></button>
     <button class="cap kcap" id="kView"><span class="lbl">VIEW</span><span class="val" id="kViewV">set up</span></button>
     <button class="cap kcap" id="kBack"><span class="lbl">DONE</span><span class="val">back</span></button></div></div>
 </div>
@@ -397,6 +398,9 @@ function monoOff(id){if(!mono)return;mono.stack=mono.stack.filter(s=>s.id!==id);
 let G={},rows=[];
 function layoutOrder(n){const cols=new Array(n),c=Math.floor((n-1)/2);let k=0;for(let j=0;k<n&&j<4*n;j++){const off=j===0?0:(j%2?-(j+1)/2:j/2),i=c+off;if(i>=0&&i<n&&cols[i]===undefined)cols[i]=k++}return cols}
 function geo(){const land=isLand(),[R,n]=cfg();
+  if(filmView()){const PADW=Math.round(clamp((W-360)/2,120,300)),z=TUNE()[2].length+1,mk=(x,side)=>({x,y:8,w:PADW-14,h:H-18,side,base:side?z-1:0,pn:side?.55:-.55,flash:[]}); /* sideways with a film: two thumb pads either side of it, and no keys */
+    document.documentElement.style.setProperty('--padw',PADW+'px');G={pads:[mk(8,0),mk(W-PADW+6,1)],R:0,n:0,tw:40};rows=[];return}
+  document.documentElement.style.setProperty('--padw','0px');
   const LEFT=filmView()?Math.round(W*.46):0,bx=LEFT+10,bw=W-LEFT-20,by=(LEFT?0:TOP)+10,bh=H-by-12,lcd=land?30:50,contentTop=by+12+lcd+10,contentBot=by+bh-14,rowH=(contentBot-contentTop)/R,pad=Math.max(10,bw*.025);
   const colW=(bw-2*pad)/n,tw=Math.min(colW*.8,62,rowH*.42);
   G={bx,bw,by,bh,lcd,contentTop,rowH,pad,colW,tw,R,n};
@@ -408,7 +412,7 @@ function geo(){const land=isLand(),[R,n]=cfg();
 // ───────── play ─────────
 let lastNote='',lastNoteT=0,lastPlay=0,recent=0,lastDeg=0,lastRow=0;
 const ripples=[];
-function keyAt(x,y){if(y<G.contentTop-6)return null;const r=clamp(Math.floor((y-G.contentTop)/G.rowH),0,G.R-1),c=Math.floor((x-G.bx-G.pad)/G.colW);
+function keyAt(x,y){if(G.pads||y<G.contentTop-6)return null;const r=clamp(Math.floor((y-G.contentTop)/G.rowH),0,G.R-1),c=Math.floor((x-G.bx-G.pad)/G.colW);
   if(c<0||c>=G.n)return null;return rows[r][c]}
 function markPlayed(t,f){lastNote=noteName(f);lastDeg=t.idx%TUNE()[2].length+1;lastRow=t.tier+1;lastNoteT=lastPlay=performance.now();recent=Math.min(12,recent+1)}
 const isSyn=()=>SYN_TYPES.includes(SOUNDS[soundI][0]);
@@ -425,7 +429,7 @@ const canLatch=()=>isSyn();
 function dropHeld(idx){const x=held.get(idx);if(x){held.delete(idx);noteOff(x.h,x.id)}}
 function latchNote(h,id){const v=h.mono?mono&&mono.voice:h.voice;if(!v||v.dead){noteOff(h,id);return}clearTimeout(v.safety);
   if(h.mono)[...held.keys()].forEach(dropHeld);else dropHeld(h.t.idx);held.set(h.t.idx,{h,id})}
-function allOff(){pointers.forEach(p=>{noteOff(p.h,p.nid);p.h=null});[...held.keys()].forEach(dropHeld);if(mono){mono.voice.release();mono=null}}
+function allOff(){pointers.forEach(p=>{if('pad' in p)padOff(p.h,p.nid);else noteOff(p.h,p.nid);p.h=null});[...held.keys()].forEach(dropHeld);if(mono){mono.voice.release();mono=null}}
 function noteOff(h,id){if(!h)return;h.t.hold=Math.max(0,(h.t.hold||0)-1);if(h.mono)monoOff(id);else h.voice&&h.voice.release()}
 
 // ───────── motes: dust that lifts off played keys. Steady playing builds `flow`, which keeps motes alive longer,
@@ -474,6 +478,7 @@ function drawKey(t,time){const tw=G.tw,top=t.bridgeY-2,tipC=t.bridgeY+t.len-tw/2
   if(t.flash>.05){ctx.save();ctx.globalAlpha=t.flash;ctx.strokeStyle=TE;ctx.lineWidth=2;ctx.beginPath();ctx.arc(fx,fy,tw*.5+4+(1-t.flash)*14,0,TAU);ctx.stroke();ctx.restore()}}
 function draw(time){
   ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.fillStyle=PAPER;ctx.fillRect(0,0,W,H);
+  if(G.pads){drawPads(time);return}
   const day=SOUNDS[soundI][1],body=NIGHT?nightBody()[1]:day;
   ctx.save();ctx.fillStyle=INK;rr(G.bx+4,G.by+5,G.bw,G.bh,34);ctx.fill();ctx.restore();
   ctx.save();ctx.fillStyle=NIGHT?nightBody()[0]:day;rr(G.bx,G.by,G.bw,G.bh,34);ctx.fill();if(NIGHT&&nightBody()[2]){ctx.fillStyle=nightBody()[2];ctx.fill()}ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.restore();
@@ -505,6 +510,45 @@ function buildGrain(){const g=document.createElement('canvas');g.width=g.height=
   for(let i=0;i<id.data.length;i+=4){const v=222+Math.random()*33;id.data[i]=v;id.data[i+1]=v-2;id.data[i+2]=v-6;id.data[i+3]=255}gx.putImageData(id,0,0);grainPat=ctx.createPattern(g,'repeat')}
 
 // ───────── engine ─────────
+/* THE THUMB PADS (Jackie, Nov 27: sideways, "score with something else not a kalimbasizer that works with that hand position but
+   still enables a good view of the movie ... an intuitive touch based pad that sparks and reacts and swishes to your touch and
+   movement and notes are kind of intuitively found"; asked one pad or two: "i want two thumbs"). With the phone sideways and a film
+   chosen, the film is in the middle and a tall pad stands at each side, one under each thumb. Up and down a pad is the note, low
+   at the bottom, always in the chosen key and scale, so a tune is found by feel; the left pad is the low octave and the right pad
+   the octave above. Side to side is the tone, dull to bright. A tap plucks, a held thumb sustains (with the sounds that hold),
+   a slide runs through the notes, and a quick move adds a swish of air. Sparks fly from the thumb and a ribbon follows it. The
+   pads use the same sounds and feed the same recorder as the keys. */
+let sparks=[];
+function swish(v,pn){if(!AC)return;const t=now(),o=outNode(pn,v),src=noiseSrc(),f=AC.createBiquadFilter(),g=AC.createGain();f.type='bandpass';f.Q.value=1.1;f.frequency.setValueAtTime(700,t);f.frequency.exponentialRampToValueAtTime(4200,t+.2);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+.26);src.connect(f);f.connect(g);g.connect(o);src.start(t);src.stop(t+.3)}
+function padAt(x,y){for(const P of G.pads)if(x>=P.x-6&&x<=P.x+P.w+6&&y>=P.y&&y<=P.y+P.h)return P;return null}
+function padRead(P,x,y){const z=TUNE()[2].length+1,k=clamp(1-(y-P.y)/P.h,0,.9999);return{zone:Math.floor(k*z),bright:clamp((x-P.x)/P.w,0,1)}}
+function padOn(P,zone,bright,v,id){const idx=P.base+zone,f=freqOf(idx),type=SOUNDS[soundI][0];lastNote=noteName(f);lastDeg=idx%TUNE()[2].length+1;lastRow=P.side+1;lastNoteT=lastPlay=performance.now();recent=Math.min(12,recent+1);P.flash[zone]=1;buzz(5);
+  if(!SYN_TYPES.includes(type)){kal(type,f,bright*.85+.15,v,P.pn);return null}
+  if(MONO[type]!==undefined){monoOn(id,type,f,P.pn);return{mono:true}}
+  return{voice:synth(type,f,P.pn)}}
+function padOff(h,id){if(!h)return;if(h.mono)monoOff(id);else h.voice&&h.voice.release()}
+function padSpark(x,y,n,sp){for(let i=0;i<n;i++){const a=rnd(TAU),v=rnd(.4,1)*sp;sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.5,life:1,r:rnd(1.1,2.8),hot:Math.random()<.5})}if(sparks.length>240)sparks.splice(0,sparks.length-240)}
+function padDown(e){const P=padAt(e.clientX,e.clientY),nid=++uid;if(!P){pointers.set(e.pointerId,{pad:null});return}const r=padRead(P,e.clientX,e.clientY);
+  pointers.set(e.pointerId,{pad:P,zone:r.zone,h:padOn(P,r.zone,r.bright,.85,nid),nid,x:e.clientX,y:e.clientY,t:performance.now(),trail:[[e.clientX,e.clientY]],sw:0});padSpark(e.clientX,e.clientY,10,2.6)}
+function padMove(e){const p=pointers.get(e.pointerId);if(!p||!p.pad)return;const P=p.pad,x=clamp(e.clientX,P.x,P.x+P.w),y=clamp(e.clientY,P.y,P.y+P.h),tn=performance.now(),dt=Math.max(1,tn-p.t),sp=Math.hypot(x-p.x,y-p.y)/dt; // pixels a millisecond
+  const r=padRead(P,x,y);if(r.zone!==p.zone){const v=clamp(.45+sp*.5,.45,1);if(!(p.h&&p.h.mono))padOff(p.h,p.nid);p.h=padOn(P,r.zone,r.bright,v,p.nid);p.zone=r.zone;padSpark(x,y,5,1.6+sp*2.5)}
+  if(sp>1.1&&tn-p.sw>170){p.sw=tn;swish(clamp(sp*.35,.2,.8),P.pn)}
+  if(sp>.15)padSpark(x,y,1,.8+sp*1.6);p.trail.push([x,y]);if(p.trail.length>14)p.trail.shift();p.x=x;p.y=y;p.t=tn}
+function drawPads(time){const day=SOUNDS[soundI][1],body=NIGHT?nightBody()[0]:day,S=TUNE()[2],z=S.length+1,ink=NIGHT?CREAM:INK;
+  for(const P of G.pads){ctx.save();ctx.fillStyle=INK;rr(P.x+3,P.y+4,P.w,P.h,26);ctx.fill();ctx.fillStyle=body;rr(P.x,P.y,P.w,P.h,26);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.clip();
+    const zh=P.h/z;for(let i=0;i<z;i++){const y=P.y+P.h-(i+1)*zh,fl=P.flash[i]||0;if(fl>.02){ctx.globalAlpha=fl*.5;ctx.fillStyle=CREAM;ctx.fillRect(P.x,y,P.w,zh);P.flash[i]=fl*.9}
+      ctx.globalAlpha=(i%S.length===0)?.5:.16;ctx.fillStyle=ink;ctx.fillRect(P.x+10,y+zh-1,P.w-20,(i%S.length===0)?2:1); // the line under each note; the home note's is stronger
+      ctx.globalAlpha=.45;ctx.font="500 9px 'IBM Plex Mono',monospace";ctx.textAlign=P.side?'right':'left';ctx.textBaseline='middle';ctx.fillText(i%S.length+1,P.side?P.x+P.w-9:P.x+9,y+zh/2)}
+    ctx.restore()}
+  pointers.forEach(p=>{if(!p.pad||p.trail.length<2)return;ctx.save();ctx.lineCap='round';ctx.strokeStyle=CREAM;for(let i=1;i<p.trail.length;i++){ctx.globalAlpha=i/p.trail.length*.8;ctx.lineWidth=2+i/p.trail.length*9;ctx.beginPath();ctx.moveTo(p.trail[i-1][0],p.trail[i-1][1]);ctx.lineTo(p.trail[i][0],p.trail[i][1]);ctx.stroke()}
+    ctx.globalAlpha=.9;ctx.fillStyle=CREAM;ctx.beginPath();ctx.arc(p.x,p.y,13,0,TAU);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.restore()});
+  for(let i=sparks.length-1;i>=0;i--){const q=sparks[i];q.x+=q.vx;q.y+=q.vy;q.vy+=.06;q.life-=.032;if(q.life<=0){sparks.splice(i,1);continue}ctx.globalAlpha=q.life;ctx.fillStyle=q.hot?TE:CREAM;ctx.beginPath();ctx.arc(q.x,q.y,q.r*q.life+.4,0,TAU);ctx.fill()}
+  ctx.globalAlpha=1;const L=G.pads[0],R=G.pads[1];ctx.save();ctx.textAlign='center';ctx.textBaseline='middle'; // what the display strip says, at the top of the pads
+  if(time-lcdMsgT<2600){ctx.globalAlpha=.85;ctx.fillStyle=ink;ctx.font="600 9px 'IBM Plex Mono',monospace";const words=lcdMsg.split(' · ');words.forEach((w,i)=>ctx.fillText(w,L.x+L.w/2,L.y+16+i*12))}
+  if(rec){ctx.globalAlpha=1;ctx.fillStyle='#E5372B';ctx.font="600 10px 'IBM Plex Mono',monospace";ctx.fillText((Math.floor(time/500)%2?'● ':'  ')+'REC '+fmt((time-recStart)/1000),R.x+R.w/2,R.y+16)}
+  else{ctx.globalAlpha=.5;ctx.fillStyle=ink;ctx.font="500 8px 'IBM Plex Mono',monospace";ctx.fillText(`${SOUNDS[soundI][0].toUpperCase()} · ${TUNE()[0].toUpperCase()}`,R.x+R.w/2,R.y+16)}
+  ctx.restore();if(grainPat){ctx.save();ctx.globalCompositeOperation='multiply';ctx.globalAlpha=.22;ctx.translate(-rnd(180),-rnd(180));ctx.fillStyle=grainPat;ctx.fillRect(0,0,W+180,H+180);ctx.restore()}}
 function resize(){TOP=Math.ceil($('panel').getBoundingClientRect().bottom)+2;DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);buildGrain();geo()}
 addEventListener('resize',resize);resize();
 
@@ -595,11 +639,12 @@ function metTick(){if(!AC||!metOn)return;while(metNext<now()+.12){const t=Math.m
   o.type='square';o.frequency.value=acc?1570:1050;o.connect(g);g.connect(metGain);adsr(g.gain,t,.001,acc?.45:.3,.035);o.start(t);o.stop(t+.06); // woodblock-ish: square body…
   const n=noiseSrc(),hp=AC.createBiquadFilter(),ng=AC.createGain();hp.type='highpass';hp.frequency.value=3000;n.connect(hp);hp.connect(ng);ng.connect(metGain);adsr(ng.gain,t,.001,acc?.5:.35,.012);n.start(t);n.stop(t+.03); // …plus a bright tick that cuts through
   const bi=metBeat%4;setTimeout(()=>{metFlash=performance.now();metShown=bi},Math.max(0,(t-now())*1000));metBeat++;metNext+=60/metBpm}}
-function setMet(bpm){clearInterval(metTimer);metOn=!!bpm&&!!AC;const el=$('bMet');el.querySelector('.val').textContent=metOn?bpm:'off';if(!metOn){el.classList.remove('on');applyShape();return}
+function setMet(bpm){clearInterval(metTimer);metOn=!!bpm&&!!AC;const el=$('bMet');el.querySelector('.val').textContent=metOn?bpm:'off';$('kMetV').textContent=metOn?bpm:'off';if(!metOn){el.classList.remove('on');applyShape();return}
   metBpm=bpm;if(!metGain){metGain=AC.createGain();metGain.gain.value=MET_VOLS[metVol][1];metGain.connect(AC.destination)}
   dIn.delayTime.setTargetAtTime(60/bpm*.75,now(),.05);applyShape(); // echo and wobble follow the tempo
   metNext=now()+.1;metBeat=0;metTimer=setInterval(metTick,25)}
-press($('bMet'),()=>openSheet('CLICK · not recorded',[{label:'off',sub:'silent',sel:!metOn,quiet:true,act:()=>setMet(0)}].concat(TEMPOS.map(b=>({label:b,sub:'bpm',sel:metOn&&b===metBpm,quiet:true,act:()=>setMet(b)})),MET_VOLS.map(([l,v],i)=>({label:l,sub:'volume',sel:i===metVol,quiet:true,act:()=>{metVol=i;if(metGain)metGain.gain.value=v}}))),76));
+/* THE METRONOME is beside the film too (Jackie, Nov 27: "we also need a metronome"): CLICK opens the same list of tempos and loudness. It is heard while you play and is never recorded. */
+const metSheet=()=>openSheet('CLICK · not recorded',[{label:'off',sub:'silent',sel:!metOn,quiet:true,act:()=>setMet(0)}].concat(TEMPOS.map(b=>({label:b,sub:'bpm',sel:metOn&&b===metBpm,quiet:true,act:()=>setMet(b)})),MET_VOLS.map(([l,v],i)=>({label:l,sub:'volume',sel:i===metVol,quiet:true,act:()=>{metVol=i;if(metGain)metGain.gain.value=v}}))),76);press($('bMet'),metSheet);
 // ───────── SHAPE sheet: plain-word sliders, with the synth term underneath ─────────
 const KNOBS=[['echo','ECHO','tape delay · follows the click tempo','none','lots'],['verb','REVERB','room size','dry','cathedral'],
  ['tone','TONE','low-pass filter cutoff','dark','bright'],['edge','EDGE','filter resonance','smooth','whistly'],
@@ -618,14 +663,15 @@ press($('bShape'),openShape);syncShape();
 
 const pointers=new Map();
 cv.addEventListener('pointerdown',e=>{e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(_){}
+  if(G.pads){padDown(e);return}
   const t=keyAt(e.clientX,e.clientY),nid=++uid;
   if(t&&held.has(t.idx)){dropHeld(t.idx);buzz(5);pointers.set(e.pointerId,{t,h:null,nid});return}
   pointers.set(e.pointerId,{t,h:t?noteOn(t,e.clientY,.85,nid):null,nid})});
-cv.addEventListener('pointermove',e=>{const p=pointers.get(e.pointerId);if(!p)return;const t=keyAt(e.clientX,e.clientY);
+cv.addEventListener('pointermove',e=>{const p=pointers.get(e.pointerId);if(!p)return;if('pad' in p){padMove(e);return}const t=keyAt(e.clientX,e.clientY);
   if(t!==p.t){const id=p.nid;
     if(p.h&&p.h.mono&&t&&isSyn()){p.h.t.hold=Math.max(0,p.h.t.hold-1);p.h=noteOn(t,e.clientY,.6,id)} // legato glide, no retrigger
     else{noteOff(p.h,id);p.h=t?noteOn(t,e.clientY,.6,id):null}}p.t=t});
-const endP=e=>{const p=pointers.get(e.pointerId);pointers.delete(e.pointerId);if(!p||!p.h)return;if(latch&&canLatch())latchNote(p.h,p.nid);else noteOff(p.h,p.nid)};
+const endP=e=>{const p=pointers.get(e.pointerId);pointers.delete(e.pointerId);if(p&&'pad' in p){padOff(p.h,p.nid);return}if(!p||!p.h)return;if(latch&&canLatch())latchNote(p.h,p.nid);else noteOff(p.h,p.nid)};
 cv.addEventListener('pointerup',endP);cv.addEventListener('pointercancel',endP);
 document.addEventListener('gesturestart',e=>e.preventDefault());
 
@@ -654,7 +700,6 @@ $('start').addEventListener('click',e=>{e.preventDefault();unlockAudio();started
    the kalimba"). The tap that opened this from the movie room's shelf is the gesture that lets sound start; where a phone still
    holds the sound back, the first touch here wakes it. Opened on its own, outside the game, the opening screen is still shown. */
 if(parent!==window){$('start').style.display='none';started=true;try{unlockAudio();applyShape()}catch(e){}
-  setTimeout(()=>{if(isLand())say('turn the phone upright to play with your thumbs')},600);
   document.addEventListener('pointerdown',()=>{if(!AC||AC.state!=='running')unlockAudio()},{capture:true,passive:true});}
 
 let lastT=performance.now();
@@ -729,7 +774,7 @@ $('kkYes').onclick=()=>{const f=KF.film,P=KF.parts;if(!f)return;if(!P.length){$(
   const by=$('kkBy').value.trim().slice(0,30);scoreRoom(f,P.reduce((n,p)=>n+p.blob.size,0)).then(ok=>{if(!ok){$('kkInfo').textContent='Your films is full. Remove one in the movie room, then save again.';return}
   try{localStorage.setItem('mp-scorer',by)}catch(e){}return scorePut(f,{parts:P,by,card:kkCard,meta:`${SOUNDS[soundI][0]} · ${TUNE()[0]}`}).then(()=>{KF.by=by;KF.card=kkCard;KF.dirty=false;kfPlayerMake();kfKeepEnd();say('saved to your films');try{parent.postMessage('mp-kalimba-score','*')}catch(e){}});}).catch(()=>{$('kkInfo').textContent='It could not be kept on this device.';});};
 $('kkeep').addEventListener('pointerdown',e=>e.stopPropagation());
-press($('kPick'),kfPick);press($('kPlay'),kfPlay);press($('kGo'),kfGo);press($('kRew'),()=>kfSeekTo(kv.currentTime-10));press($('kFwd'),()=>kfSeekTo(kv.currentTime+10));press($('kLoop'),kfLoop);press($('kSave'),kfKeep);
+press($('kPick'),kfPick);press($('kPlay'),kfPlay);press($('kGo'),kfGo);press($('kRew'),()=>kfSeekTo(kv.currentTime-10));press($('kFwd'),()=>kfSeekTo(kv.currentTime+10));press($('kLoop'),kfLoop);press($('kMet'),metSheet);press($('kSave'),kfKeep);
 press($('kView'),()=>kfView(!document.documentElement.classList.contains('film')));press($('kBack'),()=>{if(kfBusy())kfStop();if(KF.dirty){kfKeep();say('save or undo first');return}kfQuiet();if(KF.player)KF.player.stop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
 if(!KF.films.length){$('kfilm').style.display='none';}
 try{const want=new URLSearchParams(location.search).get('film');if(want){const f=KF.films.find(q=>q.id===want);if(f)kfSet(f);}}catch(e){}

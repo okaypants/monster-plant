@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Sideways, Kalimba-Score is two thumb pads either side of the film; the metronome sits beside the film (Nov 27)
+
+- Jackie: "maybe if it's horizontal you can score with something else not a kalimbasizer that works with that hand position but still enables a good view of the movie - right or left handed - an intuitive touch based pad that sparks and reacts and swishes to your touch and movement and notes are kind of intuitively found". Offered one pad or two: "ooh yeah i want two thumbs".
+- With the phone sideways and a film chosen, the film is in the middle and a tall pad stands at each side. Up and down a pad is the note, low at the bottom, always in the chosen key and scale; the left pad is the low octave and the right pad the one above. Side to side is the tone, dull to bright (on the plucked sounds). A tap plucks, a held thumb sustains with the sounds that hold, a slide runs through the notes, and a quick move adds a swish of air. Sparks fly from the thumb and a ribbon follows it; the note under the thumb lights.
+- The pads use the instrument's own sounds, key and scale, and feed the same recorder, so parts, layering, loop and save work the same. Upright keeps the keys.
+- Jackie: "we also need a metronome". The instrument already had one (CLICK: nine tempos, three loudnesses, heard while you play and never recorded) but it was only in the set up view. CLICK is now one of the buttons under the film, and FILM is back there too: ten buttons in two rows.
+- The line telling you to turn the phone upright was taken off, since sideways is now a way to play in its own right.
+
 ### Kalimba-Score is played with the phone upright (Nov 27)
 
 - Jackie: "I think we need to switch kalimba-score to a vertical for thumb comfort".
