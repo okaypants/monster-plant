@@ -60,11 +60,17 @@ function mvSet(s){mvState=s;if(!mvEl)return;mvEl.dataset.state=s;const c=mvEl.qu
  const w=mvEl.querySelector('.mvseats');if(w){if(s!=='closed'&&w.hidden)mvSeats();w.hidden=s==='closed';}}
 function mvCurtains(open,then){clearTimeout(mvTimer);mvSet('half');mvTimer=setTimeout(()=>{mvSet(open?'open':'closed');if(then)then();},MV.step);}
 let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote');if(!n)return;clearTimeout(mvNoteT);n.textContent=t||'';n.hidden=!t;if(t&&!stay)mvNoteT=setTimeout(()=>{n.hidden=true;},5000);} // a film's name shows for a few seconds; trouble stays
-function mvPlay(){const v=mvEl.querySelector('video'),f=mvFilm;
- if(mvState==='closed'){if(v.dataset.film!==f.id+'/'+f.f){v.src=mvSrc(f);v.dataset.film=f.id+'/'+f.f;}mvNote(f.t+', '+f.by);sfx('paper');
-  mvCurtains(true,()=>{const p=v.play();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));});return;}
- if(mvState!=='open')return;
- if(v.paused){const p=v.play();if(p&&p.catch)p.catch(()=>{});mvEl.dataset.paused='';}else{v.pause();mvEl.dataset.paused='1';}}
+/* Jackie, Nov 27: "you can open the curtains but I think you should be able to close them too by clicking the screen and only
+   control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
+   them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
+function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm;if(v.dataset.film!==f.id+'/'+f.f){v.src=mvSrc(f);v.dataset.film=f.id+'/'+f.f;}return v;}
+function mvStart(){const v=mvLoad(),p=v.play();mvEl.dataset.paused='';if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
+function mvScreen(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video');sfx('paper');
+ if(mvState==='closed'){mvLoad();mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);}
+ else{v.pause();mvEl.dataset.paused='1';mvCurtains(false);}}
+function mvPlay(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video'),f=mvFilm;
+ if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
+ if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';}}
 function mvEnd(){if(!mvEl||mvState==='closed')return;mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
@@ -120,7 +126,7 @@ function openMovieRoom(){
  mvEl.innerHTML='<div class="mvstage"><video playsinline muted preload="none" style="'+mvPct(MV.screen)+'"></video>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
-  '<button type="button" class="mvtap" aria-label="Start or pause the film" style="'+mvPct(MV.curtain)+'"></button>'+
+  '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
   '<button type="button" class="mvhot mvknob" aria-label="Sound on or off" style="'+mvPct(MV_KNOB)+'"></button>'+
@@ -129,7 +135,7 @@ function openMovieRoom(){
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
- mvEl.querySelector('.mvtap').onclick=mvPlay;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
+ mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
  mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(false);mvCatEnter();}
 function closeMovieRoom(){if(!mvEl)return;mvPickClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
