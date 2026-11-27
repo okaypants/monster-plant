@@ -6,12 +6,12 @@
    The film streams from the Internet Archive, so it needs a connection; it plays muted (the copy's music is not known to be free).
    You get here from the Leave button (below). */
 const MV={W:1670,H:941,screen:{x:428,y:117,w:816,h:468},curtain:{x:366,y:98,w:940,h:504},step:260};
-/* THE COLLECTION (Jackie, Nov 26: "a movie collection with reels, vhs, and bluray"). Three shelves of films, each opened by tapping
-   its things on the left-hand shelving. Every film is public domain in the United States (published before 1931) and its Internet
+/* THE COLLECTION (Jackie, Nov 26: "a movie collection with reels, vhs, and bluray"). Shelves of films, each opened by tapping its things on the left-hand shelving; a shelf can hold more than one
+   collection, shown as buttons at the top of its list. Every film is public domain in the United States (published before 1931) and its Internet
    Archive copy was confirmed to exist (research_notes/movieroom/channels.md). They are silent films and play muted. None has been
    watched all the way through yet, so this list is a first shelf, to be checked. id = the Archive's item, f = its file. */
 const MV_SHELVES=[
- {id:'reel',name:'Magic lantern',about:'Trick films and fairy stories from the first years of cinema.',pic:'movieroom/acc_reel.png',at:[{x:112,y:250,w:256,h:100},{x:112,y:400,w:66,h:76}],films:[
+ {id:'reel',name:'Magic lantern',about:'Trick films and fairy stories from the first years of cinema.',pic:'movieroom/acc_reel.png',at:[{x:112,y:400,w:66,h:76}],films:[
   {t:'A Trip to the Moon',by:'Georges Méliès, France, 1902',len:'11 min',id:'ATripToTheMoon20Fps',f:'TripToTheMoon20Fps_512kb.mp4'},
   {t:'The Impossible Voyage',by:'Georges Méliès, France, 1904',len:'20 min',id:'The_Impossible_Voyage',f:'The_Impossible_Voyage_512kb.mp4'},
   {t:'The Kingdom of the Fairies',by:'Georges Méliès, France, 1903',len:'17 min',id:'silent-le-royaume-des-fes-aka-the-kingdom-of-the-fairies',f:'Le royaume des fes AKA The Kingdom of the Fairies.mp4'},
@@ -29,7 +29,26 @@ const MV_SHELVES=[
   {t:'One Week',by:'Buster Keaton, America, 1920',len:'25 min',id:'silent-one-week',f:'One Week.mp4'},
   {t:'The Scarecrow',by:'Buster Keaton, America, 1920',len:'18 min',id:'silent-the-scarecrow',f:'The Scarecrow.mp4'},
   {t:'The Boat',by:'Buster Keaton, America, 1921',len:'23 min',id:'silent-the-boat',f:'The Boat.mp4'},
-  {t:'The Rink',by:'Charlie Chaplin, America, 1916',len:'24 min',id:'silent-the-rink',f:'The Rink.mp4'}]}];
+  {t:'The Rink',by:'Charlie Chaplin, America, 1916',len:'24 min',id:'silent-the-rink',f:'The Rink.mp4'}]},
+ {id:'swim',name:'Things that swim',about:'Sea creatures, divers and plain waves, from 1900 to 1929.',pic:'movieroom/acc_reel.png',at:[{x:270,y:250,w:98,h:100}],films:[
+  {t:'Hyas and Stenorhynchus',by:'Jean Painlevé, France, 1929',len:'10 min',id:'painleve-jean-hyas-et-stenorinques',f:'Painleve-Jean_Hyas-et-stenorinques.mp4'},
+  {t:'The Pearl Fisher',by:'Pathé, France, 1907',len:'8 min',id:'silent-le-pcheur-de-perles-aka-the-pearl-fisher',f:'Le pcheur de perles AKA The Pearl Fisher.mp4'},
+  {t:'Romance of Pearl Culture in Japan',by:'filmed in Ise, Japan, 1922',len:'10 min',id:'RomanceOfPearlCultureInJapan1922',f:'RomanceOfPearlCultureInJapan1922.mp4'},
+  {t:'Sea Effects',by:'France, 1906',len:'2 min',id:'silent-effets-de-mer',f:'Effets de mer.mp4'},
+  {t:'Rough Sea',by:'1900',len:'1 min',id:'silent-rough-sea',f:'Rough Sea.mp4'}]},
+ {id:'small',name:'Small lives',about:'Flowers, butterflies and insects, some real and some puppets.',pic:'movieroom/acc_reel.png',with:'swim',films:[
+  {t:'Fruits and Flowers',by:'Gaumont, France, 1912, in early colour',len:'3 min',id:'1912-chronochrome-gaumont-flowers',f:'1912 Chronochrome Gaumont Flowers.ia.mp4'},
+  {t:'The Ant and the Grasshopper',by:'Ladislas Starevich, Russia, about 1911',len:'5 min',id:'LadislasStarevichTheAntAndTheGrasshopper1911',f:'Ladislas Starevich - The Ant And The Grasshopper (1911).mp4'},
+  {t:'The Beautiful Leukanida',by:'Ladislas Starevich, Russia, 1912',len:'9 min',id:'1912LadislasStarevichTheBeautifulLeukanida.3gp',f:'1912 Ladislas Starevich - The Beautiful Leukanida.mp4'},
+  {t:'A Butterfly’s Metamorphosis',by:'Gaston Velle, France, 1904',len:'2 min',id:'silent-la-mtamorphose-du-papillon-aka-a-butterflys-metamorphosis',f:'La mtamorphose du papillon AKA A Butterfly\'s Metamorphosis.mp4'},
+  {t:'The Tulips',by:'Segundo de Chomón, France, 1907',len:'4 min',id:'LesTulipes',f:'1907SegundoDeChomnLesTulipestheTulips.mp4'}]},
+ {id:'colour',name:'Colour before colour',about:'Films painted by hand, frame by frame, and the first tries at real colour.',pic:'movieroom/acc_reel.png',with:'reel',films:[
+  {t:'Annabelle Butterfly Dance',by:'Edison, America, 1894',len:'1 min',id:'annabelle-butterfly-dance-1894',f:'Annabelle Butterfly Dance (1894).mp4'},
+  {t:'Serpentine Dance by Mme Bob Walter',by:'Alice Guy, France, 1897',len:'2 min',id:'danse-serpentine-par-mme-bob-walter',f:'Danse serpentine par Mme Bob Walter.ia.mp4'},
+  {t:'Creation of the Serpentine',by:'Segundo de Chomón, France, 1908',len:'5 min',id:'CrationDeLaSerpentine',f:'SegundoDeChomnCrationDeLaSerpentine1908CreationOfTheSerpentine_512kb.mp4'},
+  {t:'Loie Fuller',by:'Pathé, France, 1902',len:'2 min',id:'silent-loie-fuller',f:'Loie Fuller.mp4'},
+  {t:'A Trip to Jupiter',by:'Segundo de Chomón, France, 1909',len:'8 min',id:'silent-le-voyage-sur-jupiter-aka-a-trip-to-jupiter',f:'Le voyage sur Jupiter AKA A Trip to Jupiter.mp4'},
+  {t:'Venice, Queen of the Adriatic',by:'Gaumont, France, 1912, in early colour',len:'8 min',id:'1912-chronochrome-gaumont-venice',f:'1912 Chronochrome Gaumont Venice.ia.mp4'}]}];
 const MV_REMOTE={x:1326,y:380,w:54,h:96};
 const mvSrc=f=>'https://archive.org/download/'+encodeURIComponent(f.id)+'/'+encodeURIComponent(f.f);
 let mvFilm=MV_SHELVES[0].films[0];
@@ -71,10 +90,10 @@ function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
 function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
-function mvPick(sh){if(mvPickEl||!mvEl)return;sfx('tick');const seen=mvSeen();mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
- mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
+function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');const seen=mvSeen(),home=sh.with||sh.id,sibs=MV_SHELVES.filter(q=>q.id===home||q.with===home);mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
+ mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist">'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
- mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;
+ mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES.find(q=>q.id===b.dataset.id)));
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
  if(mvEl)return;
@@ -83,7 +102,7 @@ function openMovieRoom(){
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
   '<button type="button" class="mvtap" aria-label="Start or pause the film" style="'+mvPct(MV.curtain)+'"></button>'+
-  MV_SHELVES.map((sh,i)=>sh.at.map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
+  MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<button type="button" class="mvhot mvamp" aria-label="Tonight\'s film" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="Start or pause the film" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';

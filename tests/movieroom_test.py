@@ -54,14 +54,16 @@ async def main():
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));const a=mvState;__step(.5);const c=document.querySelector('.mvcurtain');return {a,b:mvState,cur:c.getAttribute('src'),hidden:c.hidden,seats:document.querySelector('.mvseats').hidden};}")
         check("when the film ends the curtains close", r["a"] == "half" and r["b"] == "closed" and r["cur"].endswith("curtain_closed.png") and not r["hidden"] and r["seats"], r)
         # the collection: a tap on the tapes opens their list, and choosing a film plays it
-        r = await pg.evaluate("()=>{[...document.querySelectorAll('.mvhot')].find(b=>b.dataset.shelf==='1').click();const L=[...document.querySelectorAll('.mvpfilm')];const n=L.length,title=document.querySelector('.mvplist h2').textContent;L[2].click();__step(.6);"
+        r = await pg.evaluate("()=>{[...document.querySelectorAll('.mvhot')].find(b=>b.dataset.shelf===String(MV_SHELVES.findIndex(q=>q.id==='vhs'))).click();const L=[...document.querySelectorAll('.mvpfilm')];const n=L.length,title=document.querySelector('.mvplist h2').textContent;L[2].click();__step(.6);"
                               "const v=document.querySelector('.mvstage video');return {n,title,pick:!!document.querySelector('.mvpick'),state:mvState,src:v.getAttribute('src'),note:document.querySelector('.mvnote').textContent,shelves:MV_SHELVES.length,all:MV_SHELVES.every(s=>s.films.every(f=>f.t&&f.by&&f.len&&f.id&&f.f))};}")
-        check("a tap on the tapes lists that shelf's films", r["n"] == 6 and r["title"] == "Paper, puppets and ink" and r["shelves"] == 3 and r["all"], r)
+        check("a tap on the tapes lists that shelf's films", r["n"] == 6 and r["title"] == "Paper, puppets and ink" and r["shelves"] == 6 and r["all"], r)
+        r2 = await pg.evaluate("()=>{mvPick(MV_SHELVES.find(q=>q.id==='swim'));const tabs=[...document.querySelectorAll('.mvptab')].map(b=>b.textContent);document.querySelectorAll('.mvptab')[1].click();const t=document.querySelector('.mvplist h2').textContent,n=document.querySelectorAll('.mvpfilm').length;mvPickClose();return {tabs,t,n};}")
+        check("the film cans hold two collections, switched by the buttons at the top", r2["tabs"] == ["Things that swim", "Small lives"] and r2["t"] == "Small lives" and r2["n"] == 5, r2)
         check("choosing a film opens the curtains on it", not r["pick"] and r["state"] == "open" and "silent-rozhdestvo" in r["src"] and "Insects" in r["note"], r)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));__step(.5);return mvState;}")
         check("that film ends and the curtains close", r == "closed", r)
         r = await pg.evaluate("()=>{const t=mvTonight();document.querySelector('.mvamp').click();__step(.6);const note=document.querySelector('.mvnote').textContent,same=mvFilm===t,st1=mvState;"
-                              "document.querySelector('.mvstage video').dispatchEvent(new Event('ended'));__step(.5);[...document.querySelectorAll('.mvhot')].find(b=>b.dataset.shelf==='1').click();"
+                              "document.querySelector('.mvstage video').dispatchEvent(new Event('ended'));__step(.5);[...document.querySelectorAll('.mvhot')].find(b=>b.dataset.shelf===String(MV_SHELVES.findIndex(q=>q.id==='vhs'))).click();"
                               "const seen=[...document.querySelectorAll('.mvpfilm span')].filter(x=>x.textContent.endsWith('seen')).length;document.querySelector('.mvpx').click();return {note,same,st1,seen,list:mvSeen().length};}")
         check("the amplifier puts on tonight's film", r["same"] and r["st1"] == "open" and r["note"].startswith("Tonight"), r)
         check("films watched to the end are marked seen in their list", r["list"] >= 2 and r["seen"] >= 1, r)

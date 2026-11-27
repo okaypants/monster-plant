@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Three stranger collections join the movie room (Nov 26)
+
+- Jackie wanted "unusual things like really old film of things swimming ... vibey". From the research in research_notes/movieroom/strange_collections.md, three collections are added, sixteen films in all, each loaded in the game to confirm it plays:
+  - Things that swim (the stack of film cans): Jean Painlevé's 1929 crab film, a hand-coloured undersea fairy film, pearl divers in Japan in 1922, and two short films of nothing but waves.
+  - Small lives (also in the film cans): flowers in 1912 colour, Starevich's insect puppets, a butterfly film and tulips.
+  - Colour before colour (with the reels): hand-coloured serpentine dances, A Trip to Jupiter, and Venice in 1912 colour.
+- A shelf can now hold more than one collection; the others show as buttons at the top of its list. The collection names are the research's or mine.
+- Left out for now: everything that flickers or strobes (the abstract films), heavy files, anything from 1931 on from outside the United States, and films the research flagged for content. Jean Painlevé's later films, the Yo La Tengo score Jackie loves, and Len Lye are still under copyright or uncertain.
+- None of these has been watched all the way through yet.
+
 ### The monsters and the cat watch from the couch; the amplifier puts on tonight's film (Nov 26)
 
 - Jackie, on ways of watching: "U do u". So I chose these, and they can be changed.
