@@ -2,6 +2,25 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Kalimbasizer is in the movie room, and you can score a film with it (Nov 27)
+
+- Jackie: "I think I'd like to replace the books with the kalimbasizer, where it has the option to track old public domain silents and shorts", "i mean the lotr boxset not the books", "and maybe it has the option to upload somewhere accessible that could be saved for the movie room? idk", then "I do like a monster-plant custom version of kalimbasizer".
+- The game has its own copy of her Kalimbasizer (kalimba.html, copied from okaypants.github.io/Phone-Game on Nov 27; changes there do not reach it). It opens from the box set's place on the bottom right shelf.
+- Added to the copy: a film strip under the buttons. FILM chooses one of the movie room's films; SCORE IT starts the film and the recorder together and stops them together; what you played is kept on the device as that film's soundtrack (js/scores.js). DONE goes back to the room. Its own REC and TAKES work as before.
+- In the movie room the receiver now steps through the film's own sound, your soundtrack (only when that film has one) and off. Your soundtrack starts, pauses and stops with the film and is kept in step with it.
+- Nothing is uploaded anywhere: the game has no server. A take can still be saved as a file from TAKES.
+- The box set's three books moved into the row of film books. The shelf's picture still shows the box set, not a kalimba; that needs a small redraw.
+
+### The movie room's screen stays black until something is chosen (Nov 27)
+
+- Jackie: "when the screen opens by tapping IT shouldn't automatically play anything it should be black until you select".
+- Opening the curtains loads nothing. With nothing chosen, Play on the remote opens the film menu.
+
+### The crystal ball's prophecy comes last (Nov 27)
+
+- Jackie: "The crystal pacing is still off namely the prediction timing, it should come after everything".
+- The prophecy is now spoken 5.7 seconds after the tap: after the eight clouds have cleared and the things have settled. The cat's eyes are still lit when it comes and stay lit until its words have gone.
+
 ### The radio starts on the real radio, and its button says RADIO (Nov 27)
 
 - Jackie: "In the radio, i want the radio to be the default (as radio not world)".
