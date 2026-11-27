@@ -3,7 +3,7 @@
 from the Bibliothèque nationale de France by way of Wikimedia Commons, public domain; art_src/moon/NN.jpg in the book's order) and
 works out which night of the lunar month each shows, for the moon page (js/moonpage.js).
 Each plate is a circle with the lit part of the moon engraved inside it. The circle is found from where the ink is, the plate is cut
-to a square just round it, and nothing in the engraving is changed. The plates are in the book's order through the month, and each one's night is taken from its place in that order (see age()).
+to a square round it with a margin of paper (Jackie, Nov 26: "a little more room to breathe - the borders are touching parts"), and nothing in the engraving is changed. The plates are in the book's order through the month, and each one's night is taken from its place in that order (see age()).
 Writes moon/hNN.jpg and prints the list of ages. Run: python3 tools/moon_plates.py"""
 import os,glob,json,math
 import numpy as np,scipy.ndimage as nd
@@ -13,7 +13,7 @@ def one(path):
     g=np.asarray(Image.open(path).convert('L')).astype(float);H,W=g.shape;ink=g<115
     reg=np.zeros_like(ink);reg[int(H*.24):int(H*.9),int(W*.1):int(W*.97)]=True;m=ink&reg
     cols=np.where(m.sum(0)>=2)[0];rows=np.where(m.sum(1)>=2)[0];l,r,t=cols.min(),cols.max(),rows.min();R=(r-l)/2;cx=(l+r)/2;cy=t+R
-    pad=R*.06;box=[int(cx-R-pad),int(cy-R-pad),int(cx+R+pad),int(cy+R+pad)]
+    pad=R*.16;box=[int(cx-R-pad),int(cy-R-pad),int(cx+R+pad),int(cy+R+pad)]
     return Image.open(path).convert('L').crop(box).resize((SIZE,SIZE),Image.LANCZOS)
 def age(i,n=28):
     """The moon's age in days for plate i of the 28. The plates run in order through the month: the first is the empty circle of the
