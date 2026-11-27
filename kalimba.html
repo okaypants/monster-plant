@@ -627,6 +627,12 @@ function unlockAudio(){
 $('start').addEventListener('click',e=>{e.preventDefault();unlockAudio();started=true;e.currentTarget.style.display='none';buzz(12);
   applyShape();setTimeout(preview,120)});
 
+/* INSIDE THE GAME THERE IS NO OPENING SCREEN (Jackie, Nov 27: "I don't even want an opening screen. I just want to get straight to
+   the kalimba"). The tap that opened this from the movie room's shelf is the gesture that lets sound start; where a phone still
+   holds the sound back, the first touch here wakes it. Opened on its own, outside the game, the opening screen is still shown. */
+if(parent!==window){$('start').style.display='none';started=true;try{unlockAudio();applyShape()}catch(e){}
+  document.addEventListener('pointerdown',()=>{if(!AC||AC.state!=='running')unlockAudio()},{capture:true,passive:true});}
+
 let lastT=performance.now();
 function frame(t){const dt=Math.min(3,(t-lastT)/16.667);lastT=t;recent*=Math.pow(.985,dt);
   for(const row of rows)for(const k of row){k.ph+=1.1*dt;k.amp*=Math.pow(.94,dt);k.flash=k.hold>0?1:k.flash*Math.pow(.92,dt);k.squish*=Math.pow(.85,dt)}
