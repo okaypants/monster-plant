@@ -16,6 +16,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 
 - Jackie: "i would like the blinking background for the empty space around the game to be constellations and smaller and all small pixels so that small amounts of the image aren't just empty and black".
 - The stars had been placed across the whole page, so a narrow strip beside the room often had none. Now a small sky repeats over the page: nine real constellations (Big Dipper, Orion, Cassiopeia, Cygnus, Lyra, Scorpius, Leo, Crux, Corona) as single-pixel stars joined by faint lines, with fainter stars between. Any strip has stars in it.
+- Later the same day, Jackie: "can we make the constellations dimmer -- otherwise amazing". The stars, the lines between them and the blink are all drawn dimmer.
 - Half the constellation stars blink at one pace and half at another. With reduced motion they stay still. The sky is drawn by `tools/sky_build.py`.
 
 ### The light knob looks the same at every setting (Nov 27)

@@ -19,7 +19,7 @@ CON={
  'Leo':([(0,3),(2,1),(4,0.6),(5,2.2),(4,3.6),(8,3),(9.4,5),(6.4,5.4)],[(0,1),(1,2),(2,3),(3,4),(4,0),(4,5),(5,6),(6,7),(7,4)]),
  'Crux':([(2,0),(2,5),(0,2.4),(4,2)],[(0,1),(2,3)]),
  'Corona':([(0,0.6),(1,2.2),(2.6,3),(4.4,2.8),(5.8,1.8),(6.4,0.2)],[(0,1),(1,2),(2,3),(3,4),(4,5)])}
-STAR=(253,235,201,255);FAINT=(185,174,224,255);DIM=(108,97,164,255);LINE=(108,97,164,90);BG=(0,0,0,0)
+STAR=(176,163,150,255);FAINT=(128,119,160,255);DIM=(82,73,124,255);LINE=(108,97,164,52);BG=(0,0,0,0) # dimmer than at first (Jackie, Nov 27: "can we make the constellations dimmer")
 def main():
     a=Image.new('RGBA',(T,T),BG);d=ImageDraw.Draw(a);bright=[];taken=[]
     for name,(pts,joins) in CON.items():
@@ -40,8 +40,8 @@ def main():
     for n,part in (('b',bright[::2]),('c',bright[1::2])):
         im=Image.new('RGBA',(T,T),BG)
         for x,y in part:
-            im.putpixel((x,y),(255,255,255,255))
-            for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):im.putpixel(((x+dx)%T,(y+dy)%T),(253,235,201,150)) # a brighter star is a small plus
+            im.putpixel((x,y),(232,216,190,255))
+            for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):im.putpixel(((x+dx)%T,(y+dy)%T),(253,235,201,70)) # a brighter star is a small plus
         im.save(os.path.join(ROOT,'sky_%s.png'%n),optimize=True)
     print(len(bright),'constellation stars')
 if __name__=='__main__':main()
