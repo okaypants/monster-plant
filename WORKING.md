@@ -7,4 +7,4 @@ These are Jackie's instructions for every work session in this repo.
 3. **Run `python tests/smoke_test.py` before and after every change.** If it fails, fix what broke before you stop.
 4. **Show Jackie screenshots of what changed.**
 5. **Log decisions:** add an entry at the top of [DECISIONS.md](DECISIONS.md) for anything Jackie decides, with the reason.
-6. **Commit and push to `main` only when the tests pass.**
+6. **Commit and push to `main` only when the tests pass.** Before each push, run `python3 tools/stamp.py` and commit what it changes: it gives the page and its scripts a new version, so a phone that has saved an old copy fetches the new one.

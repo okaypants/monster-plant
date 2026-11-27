@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The game checks that it is the newest copy (Nov 27)
+
+- Jackie, on her phone, hours after the changes were published: "the light switch still isnt working in the movie room", "None of the new microactions work such as the drinks ... or the receiver as the volume", "the timing on the crystal ball is also bad". On the published site, tested the same day, all of these worked. Her phone was running a saved older copy of the game's scripts.
+- The page and every script it loads now carry a version stamp (tools/stamp.py, run before each push; WORKING.md says so). When the game starts it reads version.txt fresh, and if that differs from the page's own stamp the page reloads itself at a new address, which fetches the newest copy.
+- The first time, she still has to refresh once by hand, because the copy on her phone does not have the check yet.
+- She also listed "the remote as a tv switcher". That was never built: live TV is still at the research stage.
+
+### The movie room's light knob is easier to hit, and the wall lamps work too (Nov 27)
+
+- The knob's picture is small; on a phone it was about a quarter of an inch across. Its tap area is now more than twice as wide and tall, and a tap on either wall lamp steps the lights the same way.
+
 ### The movie room's lit lamps and closed curtains come from the refined set too (Nov 27)
 
 - Jackie sent the refined room with its wall lamps lit and with its curtains closed. The lit lamps, with their glow on the wallpaper, and the closed curtains are cut from those and replace the pieces borrowed from the earlier picture, so everything in the room is in the same crisp style. The closed picture lined up with the base exactly; the lit one sat a pixel higher and was cut to match.
