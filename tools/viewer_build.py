@@ -42,7 +42,7 @@ def whole(path,s):
     xm=int(round(cx+dx/2));M=np.median(a[ly:ly+h,max(0,xm-1):xm+2].reshape(-1,3),0)
     E=np.concatenate([a[int(H*.02):int(H*.05)].reshape(-1,3),a[int(H*.95):int(H*.98)].reshape(-1,3)]);M2=np.median(E,0)
     mount=(np.abs(a-M).sum(2)<60)|(np.abs(a-M2).sum(2)<60)
-    both=lambda y0,y1,x0,x1:min(mount[y0:y1,x0:x1].mean(),mount[y0+dy:y1+dy,x0+dx:x1+dx].mean())>.93 # mount in both photographs' windows
+    both=lambda y0,y1,x0,x1:min(mount[y0:y1,x0:x1].mean(),mount[y0+dy:y1+dy,x0+dx:x1+dx].mean())>.8 # mount in both photographs' windows
     while t<ly and both(t,t+1,L,R):t+=1
     while b>ly+h and both(b-1,b,L,R):b-=1
     while L<lx and both(t,b,L,L+1):L+=1
