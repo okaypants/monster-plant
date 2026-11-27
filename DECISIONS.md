@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The remote opens play and live channels (Nov 27)
+
+- Jackie: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote".
+- The remote opens a small panel: Play or Pause, and five live channels found to be lawful to show (research_notes/movieroom/live_streams.md):
+  - two NOAA weather-satellite pictures (the Pacific Northwest, and North America), public-domain video files renewed every few minutes. They play on the room's own screen like a film, round and round, and are fetched afresh every twenty minutes. They are near-live loops of the last few hours, not live video.
+  - NASA's Earth view from the space station, NASA's space station cameras, and the Geological Survey's Kīlauea volcano camera. These are public domain but only given out through YouTube's player, and YouTube does not allow anything to be drawn over its player, so they open as a close-up: the player alone, large, with a Back button. Their addresses change when the owner restarts a stream and will need correcting now and then.
+- Left out on purpose: news channels, and animal cams that can show predation.
+
+### Taking the decorations down is at the top of the list (Nov 27)
+
+- Jackie: "I need the option to remove decorations". The button was there but was the last of thirty-one in the cupboard's Decorations list, below the fold. "Take the decorations down" and "Take the string lights down" now come first.
+
 ### The game checks that it is the newest copy (Nov 27)
 
 - Jackie, on her phone, hours after the changes were published: "the light switch still isnt working in the movie room", "None of the new microactions work such as the drinks ... or the receiver as the volume", "the timing on the crystal ball is also bad". On the published site, tested the same day, all of these worked. Her phone was running a saved older copy of the game's scripts.
