@@ -29,18 +29,19 @@ function cubToys(){const el=cubTray();el.dataset.k='toys';
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();cubGrab(s,e);});el.appendChild(b);}
  cubPlace();cub.t=performance.now();}
 /* STRING LIGHTS have their own list (Jackie, Nov 27: "string lights should be a separate menu in the cabinet"): take them down or hang
-   them, turn them off or on, and choose the strand. "Follow the decorations" is the strand that goes with whatever the room is
-   decorated for, warm white when it is not; any other choice stays up whatever the occasion. */
+   them, turn them off or on, and choose the strand. "Seasonal" is the strand that goes with whatever the room is
+   decorated for, and with the time of year when it is not; any other choice stays up whatever the occasion. */
 function cubLights(){const el=cubTray();el.dataset.k='lights';el.classList.add('cubdecor','cublightsmenu');
  el.appendChild(cubBtn(st.noLights?'Hang the string lights':'Take the string lights down',()=>{lightsSet(!!st.noLights);cubClose();},'cubdown'));
  if(!st.noLights)el.appendChild(cubBtn(st.lightsDark?'Turn them on':'Turn them off',()=>{lightsTap();cubClose();},'cubdown'));
- for(const [id,name] of [['','Follow the decorations']].concat(LIGHTS_KINDS)){const b=cubBtn(name,()=>{lightsPick(id);cubClose();},(st.lightsKind||'')===id?'on':'');b.dataset.id=id||'auto';el.appendChild(b);}
+ for(const [id,name] of [['','Seasonal']].concat(LIGHTS_KINDS)){const b=cubBtn(name,()=>{lightsPick(id);cubClose();},(st.lightsKind||'')===id?'on':'');b.dataset.id=id||'auto';el.appendChild(b);}
  cubPlace();cub.t=performance.now();}
 // the list of what to decorate for. Taking things down comes first, where it is seen without scrolling (Jackie, Nov 27: "I need the
 // option to remove decorations"; it had been the last of thirty-one buttons); the set that is up is marked
 function cubDecor(){const el=cubTray();el.dataset.k='decor';el.classList.add('cubdecor');
  if(st.decor)el.appendChild(cubBtn('Take the decorations down',()=>{decorSet(null);cubClose();},'cubdown'));
- for(const s of decorOffered()){const b=cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':'');b.dataset.id=s.id;el.appendChild(b);}
+ const head=t=>{const h=document.createElement('div');h.className='cubhead';h.textContent=t;el.appendChild(h);},put=L=>{for(const s of L){const b=cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':'');b.dataset.id=s.id;el.appendChild(b);}};
+ head('Seasons');put(decorSeasonal());head('Holidays');put(decorHolidays());
  cubPlace();cub.t=performance.now();}
 function cubPlace(){if(!cubEl)return;const w=cubEl.offsetWidth,h=cubEl.offsetHeight;if(cubEl.dataset.k==='decor'){cubEl.style.left=Math.round(clamp((CUPBOARD.x+CUPBOARD.w)*S-w,4,W*S-w-4))+'px';cubEl.style.top=Math.round(Math.max(48,(H*S-h)/2))+'px';return;} // the long list stands beside the cupboard, in the middle of the screen's height
   // along the bottom, ending under the cupboard, clear of the bottom edge like the treat tray

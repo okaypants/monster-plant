@@ -55,8 +55,15 @@ const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','paste
 fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
 const lightsCv=document.createElement('canvas');
 const LIGHTS_KINDS=[['warm','Warm white'],['multi','Many colours'],['lantern','Paper lanterns'],['star','Gold stars'],['pastel','Pastel'],['ember','Orange and purple']];
-function lightsStrand(){if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;const s=decorNow();return (s&&LIGHTS_FOR[s.id])||'warm';} // a strand you chose yourself stays up; otherwise it follows the decorations
-function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st.lightsDark=false;sfx('chime');const n=(LIGHTS_KINDS.find(q=>q[0]===id)||[])[1];tell(n?'The string lights are '+n.toLowerCase()+'.':'The string lights follow the decorations.',{kind:'info',key:'decor',now:true});save();}
+/* SEASONS AND HOLIDAYS (Jackie, Nov 27: "for the string lights choose seasonal for the general seasonal choice and then break up the
+   decoration categories into seasonal (spring summer fall winter), and then specific holidays"). Four of the thirty sets are the
+   seasons' own; the rest are holidays. The lights' "Seasonal" choice goes with whatever is up, and with the time of year when
+   nothing is: pastel in spring, many colours in summer, orange and purple in autumn, gold stars in winter. */
+const DECOR_SEASONS=[['blossom','Spring'],['midsummer','Summer'],['autumn','Fall'],['solstice','Winter']],LIGHTS_SEASON={spring:'pastel',summer:'multi',autumn:'ember',winter:'star'};
+const decorSeasonal=()=>DECOR_SEASONS.map(([id,name])=>({...DECOR_SETS.find(q=>q.id===id),name})),decorHolidays=()=>DECOR_SETS.filter(q=>!DECOR_SEASONS.some(z=>z[0]===q.id));
+function lightsAuto(decorId){return (decorId&&LIGHTS_FOR[decorId])||LIGHTS_SEASON[typeof seasonNow==='function'?seasonNow():'winter']||'warm';}
+function lightsStrand(){if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;return lightsAuto(st.decor);} // a strand you chose yourself stays up; otherwise it follows the decorations
+function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st.lightsDark=false;sfx('chime');const n=(LIGHTS_KINDS.find(q=>q[0]===id)||[])[1];tell(n?'The string lights are '+n.toLowerCase()+'.':'The string lights follow the season.',{kind:'info',key:'decor',now:true});save();}
 /* Always lit, day and night, unless you turn them off by tapping them; tap again and they are lit again (Jackie, Nov 27: "I want the
    string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them"). Off, the
    strand hangs dark; taking it down altogether is still in the cupboard. */
