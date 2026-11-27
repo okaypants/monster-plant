@@ -11,24 +11,43 @@
         Christmas's is the tree, which rock and sway when tapped (js/seasonal.js)
    The garland's lights blink now and then. Nothing else here can be tapped or played with: several of these things are sacred to
    the people who keep the day, so they are shown plainly. */
-const DECOR_SETS=[['newyear','New Year'],['lny','Lunar New Year'],['valentine','Valentine’s Day'],['hina','Hinamatsuri'],['holi','Holi'],['nowruz','Nowruz'],['blossom','First day of spring'],['easter','Easter'],
- ['songkran','Songkran'],['eid','Eid'],['kodomo','Children’s Day'],['vesak','Vesak'],['juneteenth','Juneteenth'],['midsummer','Midsummer'],['pride','Pride'],['tanabata','Tanabata'],['obon','Obon'],['autumn','Autumn'],
- ['midautumn','Mid-Autumn'],['chuseok','Chuseok'],['diwali','Diwali'],['halloween','Halloween'],['muertos','Day of the Dead'],['harvest','Harvest and Thanksgiving'],['advent','Advent and St. Lucia'],['hanukkah','Hanukkah'],
- ['solstice','Winter solstice'],['christmas','Christmas'],['kwanzaa','Kwanzaa'],['birthday','A birthday']].map(([id,name])=>({id,name,floor:id==='autumn'?'pumpkin':id==='christmas'?'tree':id==='midsummer'?'pride_f':id+'_f'})); /* summer's floor piece was a maypole, which is a cross (Jackie, Nov 27: "in summer decorations, there's a cross -- get rid of it and repurpose something else"); the pot of many-coloured flowers stands there instead */
-// where they go (room pixels): the middle of each thing's bottom edge
-const DECOR_SPOT={s:{x:97,y:438},d:{x:1264,y:551}},DECOR_USE=['s']; /* which of the shelf and desk pieces are put up. The desk pieces are drawn and cut (decor/<id>_d.png) but not used: Jackie, publishing this, Nov 25: "Publish but no shelf decor or desk", then "Jk shelf is ok". Add 'd' here to bring them back */
-const DECOR_IMG={};for(const s of DECOR_SETS){for(const k of ['w','w_dim'].concat(DECOR_USE))DECOR_IMG[s.id+'_'+k]=img('decor/'+s.id+'_'+k+'.png');if(s.floor.endsWith('_f'))DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');}
-function decorNow(){return DECOR_SETS.find(s=>s.id===st.decor)||null;}
+/* SECOND ROUND (Jackie, Nov 27: "let's start completely over with decorations and string lights", after "maybe get chat to make a
+   beach ball? and then rethink everything in that way -- like things that indicate a season or holiday or fun event", and
+   "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS"). The thirty sets are gone.
+   A decoration is now one object standing on the floor (decor/t_<id>.png, cut by tools/decor2_build.py), chosen from four
+   groups; a garland for the window is chosen separately (decor/g_<id>.png). Nothing goes in the bookcase cubby any more, so the
+   framed cat stays where it is. The big pumpkin and the big tree, which rock and sway when tapped (js/seasonal.js), are kept as
+   two more things to put out. Names follow reports/Respectful seasonal and holiday decor.md: a holiday's object is listed under
+   the holiday's own name. */
+const DECOR_GROUPS=[['Seasons and weather',[['boots','Rain boots'],['beachball','Beach ball'],['leaves','Raked leaves'],['sledge','Sledge'],['umbrellas','Umbrella stand'],['stormlamp','Storm lantern'],['fan','Fan'],['pinwheels','Pinwheels'],
+  ['moonlamp','Moon lamp'],['seedlings','Seedlings'],['squash','Pumpkins and squash'],['pumpkin','The big pumpkin'],['sunflower','Sunflower'],['firewood','Firewood'],['sandbucket','Sand bucket'],['picnic','Picnic']]],
+ ['Home and hobbies',[['present','A birthday'],['newhome','New home'],['trophy','A win'],['sickday','Sick day'],['catbox','A box for the cat'],['backpack','Back to school'],['movienight','Movie night'],['fort','Blanket fort'],
+  ['boardgame','Game night'],['teatray','Tea'],['ballgame','Game day'],['crafts','Crafts'],['books','Reading day'],['mop','Cleaning day']]],
+ ['Holidays, January to July',[['newyear','New Year'],['kumquat','Lunar New Year'],['valentine','Valentine’s Day'],['peach','Peach blossom'],['holi','Holi'],['hyacinth','Nowruz'],['eggtree','Easter'],['waterjar','Songkran'],
+  ['eidlantern','Eid'],['irises','Children’s Day'],['lotus','Vesak'],['hibiscus','Juneteenth'],['midsummer','Midsummer'],['pride','Pride'],['tanabata','Tanabata']]],
+ ['Holidays, August to December',[['pampas','Mid-Autumn'],['bojagi','Chuseok'],['rangoli','Diwali'],['jackolantern','Halloween'],['marigolds','Day of the Dead'],['dreidel','Hanukkah'],['winterlantern','Winter lights'],['smalltree','Christmas'],['tree','The big tree'],
+  ['kwanzaa','Kwanzaa'],['applepie','Harvest'],['snowglobe','Snow globe'],['poinsettia','Poinsettia'],['presents','Presents'],['paperlantern','Paper lantern'],['mandarins','Mandarins'],['skates','Ice skates']]]];
+/* Jackie, seeing the cut sheet, Nov 27: "no telescope, guitar, globe". Those three are out of the list and their pictures are not kept.
+   Two pieces are cut but not offered until Jackie has seen them: the morning glory (decor/t_morningglory.png), whose bamboo frame
+   ends in two small crosses, and the moon garland (decor/g_moons.png), which came back with a star beside each crescent. Both
+   were ruled out in the prompt (she took the maypole out of the summer set because it "is a cross"). */
+const DECOR_SETS=[].concat(...DECOR_GROUPS.map(([group,L])=>L.map(([id,name])=>({id,name,group,floor:id==='pumpkin'||id==='tree'?id:'t_'+id}))));
+const GARLAND_KINDS=[['blossom','Blossom'],['citrus','Orange and lemon'],['leaves','Autumn leaves'],['snow','Snowflakes'],['rain','Rain and clouds'],['hearts','Hearts'],['eggs','Painted eggs'],['bats','Bats'],['evergreen','Evergreen and bows'],['marigold','Marigolds'],['pennants','Rainbow pennants'],['lanterns','Paper lanterns'],['bunting','Birthday bunting']];
+const DECOR_IMG={};for(const s of DECOR_SETS)if(s.floor[1]==='_')DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');for(const [id] of GARLAND_KINDS)DECOR_IMG['g_'+id]=img('decor/g_'+id+'.png');
+// what a save from the thirty sets turns into: the nearest single thing, and a garland where one plainly matches
+const DECOR_OLD={lny:['kumquat','lanterns'],hina:['peach','blossom'],nowruz:['hyacinth'],blossom:['peach','blossom'],easter:['eggtree','eggs'],songkran:['waterjar'],eid:['eidlantern'],kodomo:['irises'],vesak:['lotus'],juneteenth:['hibiscus'],obon:[''],
+ autumn:['pumpkin','leaves'],midautumn:['pampas'],chuseok:['bojagi'],diwali:['rangoli','marigold'],halloween:['jackolantern','bats'],muertos:['marigolds','marigold'],harvest:['applepie','leaves'],advent:['winterlantern','evergreen'],hanukkah:['dreidel'],
+ solstice:['snowglobe','snow'],christmas:['tree','evergreen'],birthday:['present','bunting']};
+function decorOld(k,gk){const o=DECOR_OLD[st[k]];if(o){st[k]=o[0]||null;if(o[1]&&!st[gk])st[gk]=o[1];}}
+function decorNow(){decorOld('decor','garland');return DECOR_SETS.find(s=>s.id===st.decor)||null;}
 function decorOffered(){return DECOR_SETS;}
-// the shelf thing and the desk thing of the set that is up, with their places: {n, k, im, x, y, w, h}
-function decorBoxes(){const s=decorNow();if(!s)return [];const out=[];
- for(const k of DECOR_USE){const n=s.id+'_'+k,im=DECOR_IMG[n],sp=DECOR_SPOT[k];if(!ok(im))continue;const w=im.naturalWidth,h=im.naturalHeight;out.push({n,k,im,x:sp.x-Math.round(w/2),y:sp.y-h,w,h});}
- return out;}
-// what stands on the floor spot for the set that is up: 'pumpkin', 'tree' or the name of a decoration picture (drawn by js/seasonal.js)
+function decorBoxes(){return [];} // nothing stands on the shelf or the desk in this round
+// what stands on the floor spot: 'pumpkin', 'tree' or the name of a decoration picture (drawn by js/seasonal.js)
 function decorFloor(){const s=decorNow();return s?s.floor:null;}
-// true while a decoration stands in the bookcase cubby: the framed cat is put away (js/room.js) and cannot be tipped (js/fidgets.js)
-function decorInCubby(){return !!decorNow();}
-function drawDecor(){if(!st.started)return;for(const b of decorBoxes())g.drawImage(litPic(b.im,lightAt(b.x+b.w/2,b.y+b.h)),b.x,b.y);}
+function decorInCubby(){return false;} // the framed cat keeps its place
+function drawDecor(){}
+function garlandNow(){decorNow();return GARLAND_KINDS.some(q=>q[0]===st.garland)?st.garland:'';}
+function garlandSet(id){st.garland=GARLAND_KINDS.some(q=>q[0]===id)?id:'';sfx(st.garland?'chime':'tick');tell(st.garland?'A garland hangs in the window.':'The garland is back in the cupboard.',{kind:'info',key:'decor',now:true});save();}
 // the garland's little lights blink now and then (Jackie: "1 light animation for every occasion"): every 6 to 16 seconds they go dim and
 // bright three times, a frame swap between the garland's two pictures. Not with reduced motion.
 const LIGHTS_GAP=[6000,16000],LIGHTS_STEP=160;let lightsAt=0;
@@ -46,11 +65,6 @@ const WIN_AT={x:240,y:118,cx:444,top:150,lx:444,ly:560},WIN_MASK=img('decor/winm
    moment, a twinkle made of whole frame swaps; with reduced motion they hold still. */
 const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png'); // the right-hand wall's shape, kept for anything hung there later
 const LIGHTS_AT={x:35,y:38},TOP_AT={x:0,y:30},TOP_MASK=img('decor/topmask.png'),LIGHTS_TWINK=1700,LIGHTS_OUT=2;
-const LIGHTS_FOR={lny:'lantern',midautumn:'lantern',chuseok:'lantern',obon:'lantern',tanabata:'lantern',hina:'lantern',vesak:'lantern',diwali:'lantern',
- christmas:'multi',birthday:'multi',pride:'multi',holi:'multi',songkran:'multi',kodomo:'multi',juneteenth:'multi',kwanzaa:'multi',
- halloween:'ember',muertos:'ember',harvest:'ember',autumn:'ember',
- valentine:'pastel',blossom:'pastel',easter:'pastel',nowruz:'pastel',midsummer:'pastel',
- newyear:'star',eid:'star',hanukkah:'star',advent:'star',solstice:'star'};
 const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','pastel','ember'].forEach(n=>{LIGHTS_IMG[n+'_on']=img('decor/lights_'+n+'_on.png');LIGHTS_IMG[n+'_off']=img('decor/lights_'+n+'_off.png');});
 fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
 const lightsCv=document.createElement('canvas');
@@ -59,9 +73,8 @@ const LIGHTS_KINDS=[['warm','Warm white'],['multi','Many colours'],['lantern','P
    decoration categories into seasonal (spring summer fall winter), and then specific holidays"). Four of the thirty sets are the
    seasons' own; the rest are holidays. The lights' "Seasonal" choice goes with whatever is up, and with the time of year when
    nothing is: pastel in spring, many colours in summer, orange and purple in autumn, gold stars in winter. */
-const DECOR_SEASONS=[['blossom','Spring'],['midsummer','Summer'],['autumn','Fall'],['solstice','Winter']],LIGHTS_SEASON={spring:'pastel',summer:'multi',autumn:'ember',winter:'star'};
-const decorSeasonal=()=>DECOR_SEASONS.map(([id,name])=>({...DECOR_SETS.find(q=>q.id===id),name})),decorHolidays=()=>DECOR_SETS.filter(q=>!DECOR_SEASONS.some(z=>z[0]===q.id));
-function lightsAuto(decorId){return (decorId&&LIGHTS_FOR[decorId])||LIGHTS_SEASON[typeof seasonNow==='function'?seasonNow():'winter']||'warm';}
+const LIGHTS_SEASON={spring:'pastel',summer:'multi',autumn:'ember',winter:'star'};
+function lightsAuto(){return LIGHTS_SEASON[typeof seasonNow==='function'?seasonNow():'winter']||'warm';}
 function lightsStrand(){if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;return lightsAuto(st.decor);} // a strand you chose yourself stays up; otherwise it follows the decorations
 function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st.lightsDark=false;sfx('chime');const n=(LIGHTS_KINDS.find(q=>q[0]===id)||[])[1];tell(n?'The string lights are '+n.toLowerCase()+'.':'The string lights follow the season.',{kind:'info',key:'decor',now:true});save();}
 /* Always lit, day and night, unless you turn them off by tapping them; tap again and they are lit again (Jackie, Nov 27: "I want the
@@ -81,11 +94,11 @@ function drawStringLights(){if(!st.started||st.noLights||!ok(TOP_MASK))return;co
  else{x.drawImage(on,ox,oy);const B=LIGHTS_META&&LIGHTS_META[n]&&LIGHTS_META[n].bulbs;if(B)for(const i of lightsOut(B.length)){const [bx,by,bw,bh]=B[i];x.clearRect(ox+bx,oy+by,bw,bh);x.drawImage(dark,bx,by,bw,bh,ox+bx,oy+by,bw,bh);}}
  x.globalCompositeOperation='destination-in';x.drawImage(TOP_MASK,0,0);g.drawImage(cv,TOP_AT.x,TOP_AT.y);}
 const GARLANDS=[[WIN_AT,WIN_MASK,document.createElement('canvas')]];
-function drawGarland(n){if(!st.started)return;const s=decorNow(),[at,mask,cv]=GARLANDS[n];if(!s||!ok(mask))return;
- const dimmed=DECOR_IMG[s.id+'_w_dim'],im=lightsDim()&&ok(dimmed)&&!tsCalm()?dimmed:DECOR_IMG[s.id+'_w'];if(!ok(im))return;
+function drawGarland(n){if(!st.started)return;const id=garlandNow(),[at,mask,cv]=GARLANDS[n];if(!id||!ok(mask))return;
+ const im=DECOR_IMG['g_'+id];if(!ok(im))return;
  if(cv.width!==mask.naturalWidth){cv.width=mask.naturalWidth;cv.height=mask.naturalHeight;}const x=cv.getContext('2d');
  x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.drawImage(litPic(im,lightAt(at.lx||at.cx,at.ly||at.top+im.naturalHeight)),at.cx-at.x-Math.round(im.naturalWidth/2),at.top-at.y); // lit from the wall under the sill: the panes themselves are sky, which reads as full light even at night
  x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);g.drawImage(cv,at.x,at.y);}
 function drawDecorWindow(){drawGarland(0);}
 function drawDecorWall(){drawStringLights();} // the top of the wall: the string lights (the garland no longer hangs on the right-hand wall)
-function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'The room is decorated for '+s.name+'.':'The decorations are back in the cupboard.',{kind:'info',key:'decor',now:true});save();}
+function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'A decoration is out on the floor.':'The decoration is back in the cupboard.',{kind:'info',key:'decor',now:true});save();}

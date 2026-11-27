@@ -2,6 +2,20 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Decorations start over as single things, with garlands and blankets of their own (Nov 27)
+
+- Jackie: "Actually let's start completely over with decorations and string lights", after "maybe get chat to make a beach ball? and then rethink everything in that way -- like things that indicate a season or holiday or fun event", and "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS ETC". She sent back the sheets and asked "now that we have all that, how do we wrap them up?"
+- The thirty sets (garland, shelf piece, floor piece) are gone, pictures and all. A decoration is now one thing standing on the floor, chosen from 62 in four groups: Seasons and weather, Home and hobbies, Holidays January to July, Holidays August to December. The big pumpkin and the big tree, which rock and sway when tapped, are kept among them.
+- Jackie, seeing the cut sheet: "no telescope, guitar, globe". Those three are out.
+- A garland is chosen separately, from 13. In the study it hangs in the window; in the movie room it hangs on both shelf units.
+- Nothing goes in the bookcase cubby any more, so the framed cat stays put.
+- A holiday's thing is listed under the holiday's name (the hyacinth is "Nowruz", the kumquat tree "Lunar New Year"), following the research report. Things that belong to no one day are named for what they are.
+- The movie room's third drawer is Blankets: the room's own cream throw and six more (red check, daisies, green cable knit, patchwork, clouds, moon and stars). A chosen throw is laid over the left end of the couch's back, on a patch of the couch's own pixels that hides the cream one.
+- A save from the old sets turns into the nearest single thing, with a garland where one plainly matches.
+- Two pieces are cut but held back until she has seen them: the morning glory, whose bamboo frame ends in two small crosses, and the moon garland, which came back with a star beside each crescent. Both were ruled out in the prompt.
+- Messages no longer name the occasion ("A decoration is out on the floor."), since one thing can stand for more than one reason.
+- Not yet done: the ten new strands of string lights. The old six stay up until that sheet is cut, and "Seasonal" lights now follow the time of year only.
+
 ### The remote is a real remote: channels on a schedule, a number pad, a guide, the library, and commercials between films (Nov 27)
 
 - Jackie: "I am also starting to love the remote but i'd like it to be more like a real one so maybe we can just research and pull a lot more random videos to turn into playlists for channels as well as actual channels that we can do an up down button to randomly tune into and maybe an onscreen tv guide ... and then we could have the film library button as well ... play pause forward rewind etc would be for the active title so it would have to be on the side i guess so most of the screen is visible"; "you have to type in a specific number on the remote like a channel to get there"; "they can also be tv shows and shorts and super shorts as well as old commercials programmed in"; "and clips"; "the tv guide can be for channels not shows"; then she dropped the guide and at once took it back ("no actually a tv guide is great"); "don't forget to include titles there and in the film library that are public domain"; "as well as super super short films"; "in both"; "arrange the film library to score by length".
