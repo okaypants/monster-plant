@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Popcorn and soda are things to play with (Nov 27)
+
+- Jackie: "I don't like this 'popcorn for the couch' and 'cherry soda for the couch' and then they're placed randomly -- let's think of a more fun use for these". Offered five ideas, she said "I like all of the popcorn and soda options".
+- Pop it yourself: hold the popcorn machine and kernels pop while you hold. After about three seconds it overflows, kernels spill to the floor and the cat wakes for them. Let go, or just tap, and you choose the kind.
+- Hand it to someone: with one monster on the couch it goes straight to it; with more, you tap the one it is for. The bucket stands to its right and the cup to its left. Each monster has a favourite popcorn that follows its nature (sweet: caramel; spooky: charcoal; tidy: butter; wiggly: cheese; in between: seaweed). Given its favourite it hops and the game says it loves it. The favourite is not written in the journal yet.
+- Throw it at the screen: tap a bucket on the couch and kernels arc up, bounce off the screen and drop behind the couch. One goes astray toward the cat, which pounces.
+- Soda burps: a monster with a soda lets a bubble go every five to ten seconds, the colour of its soda. A fourth choice, swamp fizz, is two taps at once.
+- Intermission: halfway through a film longer than fifteen minutes the curtains close and the lights come up for a minute. A tap on the screen or Play goes on sooner.
+- The monsters now sit on the couch from the moment you come in, so there is someone to hand things to before a film starts.
+
 ### The Kalimbasizer is in the movie room, and you can score a film with it (Nov 27)
 
 - Jackie: "I think I'd like to replace the books with the kalimbasizer, where it has the option to track old public domain silents and shorts", "i mean the lotr boxset not the books", "and maybe it has the option to upload somewhere accessible that could be saved for the movie room? idk", then "I do like a monster-plant custom version of kalimbasizer".
