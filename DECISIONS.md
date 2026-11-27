@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The monsters and the cat watch from the couch; the amplifier puts on tonight's film (Nov 26)
+
+- Jackie, on ways of watching: "U do u". So I chose these, and they can be changed.
+- The watchers. Jackie: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K". While the curtains are open, each monster that is a kid or older, and the cat, sit on the couch as dark shapes against the screen, hidden from the middle down by the couch back. Each monster's own picture is used, filled in dark, since a dark shape looks the same from behind. Seeds and sprouts stay in the plant room.
+- Tonight's film. A tap on the amplifier puts on one film from the collection, the same all day and a different one tomorrow.
+- Seen. A film watched to its end is remembered on the device and marked "seen" in its list.
+
 ### The movie room has a collection of sixteen films on three shelves (Nov 26)
 
 - Jackie asked for "a movie collection with reels, vhs, and bluray". Tapping the film cans or reels, the tapes, or the discs on the left-hand shelving opens that shelf's list; choosing a film closes the curtains on whatever is showing and opens them on the new one. The remote on the right starts and pauses, like a tap on the screen.

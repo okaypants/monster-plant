@@ -37,7 +37,8 @@ let mvEl=null,mvState='closed',mvTimer=0;
 function movieRoomOpen(){return !!(mvEl&&mvEl.isConnected);}
 function mvPct(b){return 'left:'+(b.x/MV.W*100)+'%;top:'+(b.y/MV.H*100)+'%;width:'+(b.w/MV.W*100)+'%;height:'+(b.h/MV.H*100)+'%';}
 function mvSet(s){mvState=s;if(!mvEl)return;mvEl.dataset.state=s;const c=mvEl.querySelector('.mvcurtain');
- c.hidden=s==='open';if(s!=='open')c.src='movieroom/curtain_'+(s==='half'?'half':'closed')+'.png';}
+ c.hidden=s==='open';if(s!=='open')c.src='movieroom/curtain_'+(s==='half'?'half':'closed')+'.png';
+ const w=mvEl.querySelector('.mvseats');if(w){if(s!=='closed'&&w.hidden)mvSeats();w.hidden=s==='closed';}}
 function mvCurtains(open,then){clearTimeout(mvTimer);mvSet('half');mvTimer=setTimeout(()=>{mvSet(open?'open':'closed');if(then)then();},MV.step);}
 let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote');if(!n)return;clearTimeout(mvNoteT);n.textContent=t||'';n.hidden=!t;if(t&&!stay)mvNoteT=setTimeout(()=>{n.hidden=true;},5000);} // a film's name shows for a few seconds; trouble stays
 function mvPlay(){const v=mvEl.querySelector('video'),f=mvFilm;
@@ -45,16 +46,34 @@ function mvPlay(){const v=mvEl.querySelector('video'),f=mvFilm;
   mvCurtains(true,()=>{const p=v.play();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));});return;}
  if(mvState!=='open')return;
  if(v.paused){const p=v.play();if(p&&p.catch)p.catch(()=>{});mvEl.dataset.paused='';}else{v.pause();mvEl.dataset.paused='1';}}
-function mvEnd(){if(!mvEl||mvState==='closed')return;const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
+function mvEnd(){if(!mvEl||mvState==='closed')return;mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
+/* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
+   While the curtains are open, the monsters and the cat sit on the couch as dark shapes against the screen, their lower halves
+   hidden behind the couch back. A dark shape from behind is the same as from the front, so each monster's own picture is used,
+   filled in dark; the cat is its from-behind pose. They are drawn once when the film starts. */
+const MV_SEAT={top:697,dark:'#1b0f1e',xs:[770,650,890],catX:1000,show:.68};
+function mvShadow(src,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0,w,h);x.globalCompositeOperation='source-in';x.fillStyle=MV_SEAT.dark;x.fillRect(0,0,w,h);return c;}
+function mvSeats(){const c=mvEl&&mvEl.querySelector('.mvseats');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);let n=0;
+ const sit=(im,cx)=>{const y=Math.round(MV_SEAT.top-im.height*MV_SEAT.show);x.drawImage(im,Math.round(cx-im.width/2),y);};
+ if(st.started)for(const p of allRaw()){if(p.stage==null||p.stage<4||n>=MV_SEAT.xs.length)continue; // a seed or a sprout stays in the plant room
+  let pic=null;try{pic=plantPortrait(p.id,230,300);}catch(e){}if(pic&&pic.width>1)sit(mvShadow(pic,pic.width,pic.height),MV_SEAT.xs[n++]);}
+ const f=typeof CATF!=='undefined'&&(CATF.back||CATF.sit1);if(ok(f)&&st.started){const k=.8;sit(mvShadow(f,Math.round(f.naturalWidth*k),Math.round(f.naturalHeight*k)),MV_SEAT.catX);}
+ c.dataset.n=n;}
+/* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The amplifier on the right-hand shelf puts on tonight's film: one of the collection, the
+   same all day and a different one tomorrow. A film watched to its end is remembered on this device and marked "seen" in its list. */
+const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
+function mvSeen(){try{return JSON.parse(localStorage.getItem(MV_SEEN_KEY)||'[]');}catch(e){return [];}}
+function mvSeenAdd(f){try{const L=mvSeen();if(!L.includes(f.id)){L.push(f.id);localStorage.setItem(MV_SEEN_KEY,JSON.stringify(L));}}catch(e){}}
+function mvTonight(){const all=MV_SHELVES.flatMap(s=>s.films),d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);return all[n%all.length];}
 /* choosing a film: a tap on the reels, the tapes or the discs opens that shelf's list */
 let mvPickEl=null;
 function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
 function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
-function mvPick(sh){if(mvPickEl||!mvEl)return;sfx('tick');mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
+function mvPick(sh){if(mvPickEl||!mvEl)return;sfx('tick');const seen=mvSeen();mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
  mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
-  sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
+  sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
  mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
@@ -62,12 +81,14 @@ function openMovieRoom(){
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
  mvEl.innerHTML='<div class="mvstage"><video playsinline muted preload="none" style="'+mvPct(MV.screen)+'"></video>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
+  '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
   '<button type="button" class="mvtap" aria-label="Start or pause the film" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>sh.at.map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
+  '<button type="button" class="mvhot mvamp" aria-label="Tonight\'s film" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="Start or pause the film" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
- mvEl.querySelector('.mvtap').onclick=mvPlay;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES[+b.dataset.shelf]));mvEl.querySelector('.mvback').onclick=openRooms;
+ mvEl.querySelector('.mvtap').onclick=mvPlay;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES[+b.dataset.shelf]));mvEl.querySelector('.mvback').onclick=openRooms;
  ui.appendChild(mvEl);mvSet('closed');}
 function closeMovieRoom(){if(!mvEl)return;mvPickClose();clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
