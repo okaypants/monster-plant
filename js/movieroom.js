@@ -50,7 +50,7 @@ const MV_SHELVES=[
   {t:'A Trip to Jupiter',by:'Segundo de Chomón, France, 1909',len:'8 min',id:'silent-le-voyage-sur-jupiter-aka-a-trip-to-jupiter',f:'Le voyage sur Jupiter AKA A Trip to Jupiter.mp4'},
   {t:'Venice, Queen of the Adriatic',by:'Gaumont, France, 1912, in early colour',len:'8 min',id:'1912-chronochrome-gaumont-venice',f:'1912 Chronochrome Gaumont Venice.ia.mp4'}]}];
 const MV_REMOTE={x:1326,y:380,w:54,h:96};
-const mvSrc=f=>'https://archive.org/download/'+encodeURIComponent(f.id)+'/'+encodeURIComponent(f.f);
+const mvSrc=f=>f.src?f.src+'?t='+Math.floor(Date.now()/12e5):'https://archive.org/download/'+encodeURIComponent(f.id)+'/'+encodeURIComponent(f.f); // a live loop is asked for afresh every twenty minutes
 let mvFilm=MV_SHELVES[0].films[0];
 let mvEl=null,mvState='closed',mvTimer=0;
 function movieRoomOpen(){return !!(mvEl&&mvEl.isConnected);}
@@ -67,7 +67,7 @@ let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote'
 /* Jackie, Nov 27: "you can open the curtains but I think you should be able to close them too by clicking the screen and only
    control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
-function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm;if(v.dataset.film!==f.id+'/'+f.f){v.src=mvSrc(f);v.dataset.film=f.id+'/'+f.f;}return v;}
+function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}v.loop=!!f.loop;return v;}
 function mvStart(){const v=mvLoad(),p=v.play();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
 function mvScreen(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video');sfx('paper');
  if(mvState==='closed'){mvLoad();mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);}
@@ -75,7 +75,7 @@ function mvScreen(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector
 function mvPlay(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video'),f=mvFilm;
  if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
  if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';mvLightApply();}}
-function mvEnd(){if(!mvEl||mvState==='closed')return;mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
+function mvEnd(){if(!mvEl||mvState==='closed')return;if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
    hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
@@ -114,6 +114,34 @@ function mvSoundSet(on){mvSound=!!on;if(!mvEl)return;mvEl.querySelector('video')
 function mvLightApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),playing=mvState==='open'&&mvEl.dataset.paused!=='1'&&v&&v.getAttribute('src');
  const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;mvEl.querySelector('.mvknobon').hidden=mvLight!==0;mvEl.querySelectorAll('.mvsconce').forEach(e=>{e.hidden=lv!==0;});} // the wall lamps are lit only while the lights are right up; in the base picture they are off
 function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightApply();mvNote(MV_LIGHT_SAY[mvLight]);}
+/* THE REMOTE (Jackie, Nov 27: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote"). It
+   opens a small panel: start or pause what is on the screen, and Live, a short list of live pictures from public bodies.
+   Two kinds (research_notes/movieroom/live_streams.md):
+   - the weather satellites' pictures, which are plain public-domain video files that NOAA renews every few minutes. They play on
+     the room's own screen like a film, round and round, and are fetched afresh every twenty minutes;
+   - NASA's and the Geological Survey's live cameras, which are public domain but are only given out through YouTube's player.
+     YouTube does not allow anything to be drawn over its player, or the player to be small, so these open as a close-up of the
+     screen: the player alone, large, with nothing of the room in front of it. Their addresses change whenever the owner restarts
+     a stream, so they are kept together here to be corrected. */
+const MV_LIVE=[
+ {id:'goes-pnw',t:'The Pacific Northwest from space',by:'NOAA weather satellite, the last few hours',src:'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/GOES18-PNW-GEOCOLOR-600x600.mp4',loop:true},
+ {id:'goes-usa',t:'North America from space',by:'NOAA weather satellite, the last few hours',src:'https://cdn.star.nesdis.noaa.gov/GOES19/ABI/CONUS/GEOCOLOR/GOES19-CONUS-GEOCOLOR-625x375.mp4',loop:true},
+ {id:'iss-earth',t:'The Earth from the space station',by:'NASA, live',yt:'ROboUHfPUrU'},
+ {id:'iss',t:'The space station’s cameras',by:'NASA, live',yt:'M3HKLzjvKPc'},
+ {id:'kilauea',t:'Kīlauea volcano',by:'U.S. Geological Survey, live',yt:'HggWKlZv9yk'}];
+let mvTvEl=null;
+function mvTvClose(){if(mvTvEl){mvTvEl.remove();mvTvEl=null;}}
+function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl&&mvEl.querySelector('video');if(v&&!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}
+ mvTvEl=document.createElement('div');mvTvEl.className='screen mvtv';
+ mvTvEl.innerHTML='<div class="mvtvbar"><b></b><button type="button" class="mvrbtn mvtvx">Back to the room</button></div><div class="mvtvbox"><iframe title="" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+ mvTvEl.querySelector('b').textContent=ch.t+' · '+ch.by;const f=mvTvEl.querySelector('iframe');f.title=ch.t;f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.yt)+'?autoplay=1&playsinline=1&rel=0';
+ mvTvEl.querySelector('.mvtvx').onclick=mvTvClose;ui.appendChild(mvTvEl);sfx('tick');}
+function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite loop is shown like a film
+function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused;
+ const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(on?'Pause':'Play')+'</button><p>Live</p>'+
+  MV_LIVE.map((c,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
+ el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};
+ el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by+(c.yt?' · opens close up':'');b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
      and every monster in the room that is old enough to eat is a little fuller;
@@ -182,13 +210,13 @@ function openMovieRoom(){
   '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB_TAP)+'"></button>'+MV_LAMPS.map(r=>'<button type="button" class="mvhot mvlamp" aria-label="Room lights" style="'+mvPct(r)+'"></button>').join('')+
   '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
-  '<button type="button" class="mvhot mvremote" aria-label="Start or pause the film" style="'+mvPct(MV_REMOTE)+'"></button>'+
+  '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
- mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
+ mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvRemote;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
  mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(mvSound);mvCatEnter();mvThingsWire();mvLightApply();}
-function closeMovieRoom(){if(!mvEl)return;mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+function closeMovieRoom(){if(!mvEl)return;mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */
