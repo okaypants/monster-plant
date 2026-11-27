@@ -37,16 +37,40 @@ function lightsDim(){const now=performance.now();if(!lightsAt)lightsAt=now+rnd(L
    The garland is drawn only through the shape of the window's opening between the open curtains (decor/winmask.png), and before the
    closed curtains are drawn, so cloth always covers it. */
 const WIN_AT={x:240,y:118,cx:444,top:150},WIN_MASK=img('decor/winmask.png');
-/* ON THE RIGHT-HAND WALL (Jackie: "I thought we were putting garland on the right side of the room? But it also has to look cute, like
-   not cover everything"). The same garland hangs a second time on the bare wall above the right-hand shelves, drawn only through the
-   shape of that bare wall (decor/wallmask.png), so it sits behind the shell, the sampler and the plant and covers nothing. */
-const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png');
-const GARLANDS=[[WIN_AT,WIN_MASK,document.createElement('canvas')],[WALL_AT,WALL_MASK,document.createElement('canvas')]];
+/* STRING LIGHTS ALONG THE TOP OF THE WALL (Jackie, Nov 26: "we could have string lights all the way across the top very small";
+   asked which, "Across"). One strand runs the width of the room just under the ceiling, drawn only through the bare wallpaper there
+   (decor/topmask.png), so it passes behind the hanging plants and covers nothing. It replaces the garland that hung on the
+   right-hand wall; the occasion's garland stays in the window. Her sheet has six strands, each drawn lit and dark
+   (tools/lights_build.py): warm white on ordinary days, and one of the others while the room is decorated for an occasion.
+   They are lit at night and at dusk, and dark by day. While lit, two or three bulbs at a time show their dark picture for a
+   moment, a twinkle made of whole frame swaps; with reduced motion they hold still. */
+const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png'); // the right-hand wall's shape, kept for anything hung there later
+const LIGHTS_AT={x:35,y:38},TOP_AT={x:0,y:30},TOP_MASK=img('decor/topmask.png'),LIGHTS_TWINK=1400,LIGHTS_OUT=3;
+const LIGHTS_FOR={lny:'lantern',midautumn:'lantern',chuseok:'lantern',obon:'lantern',tanabata:'lantern',hina:'lantern',vesak:'lantern',diwali:'lantern',
+ christmas:'multi',birthday:'multi',pride:'multi',holi:'multi',songkran:'multi',kodomo:'multi',juneteenth:'multi',kwanzaa:'multi',
+ halloween:'ember',muertos:'ember',harvest:'ember',autumn:'ember',
+ valentine:'pastel',blossom:'pastel',easter:'pastel',nowruz:'pastel',midsummer:'pastel',
+ newyear:'star',eid:'star',hanukkah:'star',advent:'star',solstice:'star'};
+const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','pastel','ember'].forEach(n=>{LIGHTS_IMG[n+'_on']=img('decor/lights_'+n+'_on.png');LIGHTS_IMG[n+'_off']=img('decor/lights_'+n+'_off.png');});
+fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
+const lightsCv=document.createElement('canvas');
+function lightsStrand(){const s=decorNow();return (s&&LIGHTS_FOR[s.id])||'warm';}
+function lightsLit(){const tk=typeof timeKey==='function'?timeKey():'day';return tk!=='day';}
+function lightsOut(n){ // which bulbs are dark this moment: a few, chosen afresh every LIGHTS_TWINK ms, the same ones for the whole of that time
+ if((typeof tsCalm==='function'&&tsCalm())||!n)return [];const k=Math.floor(performance.now()/LIGHTS_TWINK),out=[];let h=(k*2654435761)>>>0;
+ for(let i=0;i<LIGHTS_OUT;i++){h=(Math.imul(h^(h>>>15),2246822519)+i*374761393)>>>0;out.push(h%n);}return out;}
+function drawStringLights(){if(!st.started||!ok(TOP_MASK))return;const n=lightsStrand(),on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off))return;
+ const cv=lightsCv;if(cv.width!==TOP_MASK.naturalWidth){cv.width=TOP_MASK.naturalWidth;cv.height=TOP_MASK.naturalHeight;}const x=cv.getContext('2d'),ox=LIGHTS_AT.x-TOP_AT.x,oy=LIGHTS_AT.y-TOP_AT.y;
+ x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);const dark=litPic(off,lightAt(W/2,LIGHTS_AT.y+40));
+ if(!lightsLit())x.drawImage(dark,ox,oy);
+ else{x.drawImage(on,ox,oy);const B=LIGHTS_META&&LIGHTS_META[n]&&LIGHTS_META[n].bulbs;if(B)for(const i of lightsOut(B.length)){const [bx,by,bw,bh]=B[i];x.clearRect(ox+bx,oy+by,bw,bh);x.drawImage(dark,bx,by,bw,bh,ox+bx,oy+by,bw,bh);}}
+ x.globalCompositeOperation='destination-in';x.drawImage(TOP_MASK,0,0);g.drawImage(cv,TOP_AT.x,TOP_AT.y);}
+const GARLANDS=[[WIN_AT,WIN_MASK,document.createElement('canvas')]];
 function drawGarland(n){if(!st.started)return;const s=decorNow(),[at,mask,cv]=GARLANDS[n];if(!s||!ok(mask))return;
  const dimmed=DECOR_IMG[s.id+'_w_dim'],im=lightsDim()&&ok(dimmed)&&!tsCalm()?dimmed:DECOR_IMG[s.id+'_w'];if(!ok(im))return;
  if(cv.width!==mask.naturalWidth){cv.width=mask.naturalWidth;cv.height=mask.naturalHeight;}const x=cv.getContext('2d');
  x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.drawImage(litPic(im,lightAt(at.cx,at.top+im.naturalHeight)),at.cx-at.x-Math.round(im.naturalWidth/2),at.top-at.y);
  x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);g.drawImage(cv,at.x,at.y);}
 function drawDecorWindow(){drawGarland(0);}
-function drawDecorWall(){drawGarland(1);}
+function drawDecorWall(){drawStringLights();} // the top of the wall: the string lights (the garland no longer hangs on the right-hand wall)
 function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'The room is decorated for '+s.name+'.':'The decorations are back in the cupboard.',{kind:'info',key:'decor',now:true});save();}

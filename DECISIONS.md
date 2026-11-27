@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### String lights run along the top of the wall (Nov 27)
+
+- Jackie, Nov 26: "we could have string lights all the way across the top very small"; asked whether to rebalance the garland or go across, "Across". Her ChatGPT sheet has six strands, each drawn lit and dark.
+- One strand runs the width of the room just under the ceiling, behind the hanging plants. The garland no longer hangs on the right-hand wall; the occasion's garland stays in the window.
+- These are my choices, which she has not yet confirmed: warm white on ordinary days and another strand while the room is decorated (lanterns for the East Asian festivals and Diwali, multicolour for Christmas and birthdays, orange and purple for autumn and Halloween, pastel for spring, gold stars for New Year, Eid, Hanukkah and Advent); lit at dusk and night, dark by day; while lit, three bulbs at a time go dark for a moment as a twinkle, and with reduced motion they hold still. They do not add light to the room.
+
 ### The viewfinder's window sits on the photograph (Nov 26)
 
 - Jackie: "Now the viewfinder just looks like half of a cropped picture poorly cropped and the images clearly aren't layered actually", with two screenshots: the De la Rue moon card showing the printed middle of the card with the moon cut off at the edge, and the Campbell moon card with strips of mount and its caption.
