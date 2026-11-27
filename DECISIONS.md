@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The sky around the room is constellations in small pixels (Nov 27)
+
+- Jackie: "i would like the blinking background for the empty space around the game to be constellations and smaller and all small pixels so that small amounts of the image aren't just empty and black".
+- The stars had been placed across the whole page, so a narrow strip beside the room often had none. Now a small sky repeats over the page: nine real constellations (Big Dipper, Orion, Cassiopeia, Cygnus, Lyra, Scorpius, Leo, Crux, Corona) as single-pixel stars joined by faint lines, with fainter stars between. Any strip has stars in it.
+- Half the constellation stars blink at one pace and half at another. With reduced motion they stay still. The sky is drawn by `tools/sky_build.py`.
+
 ### The light knob looks the same at every setting (Nov 27)
 
 - Jackie: "the lights on and lights off switches are dif tho". With the lights up, the knob had been covered by a differently drawn knob from the accessories sheet; turned down, it was the room's own.
