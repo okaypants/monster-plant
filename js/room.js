@@ -157,7 +157,7 @@ const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
 const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
 const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:766/* sized like the armchair and the desk beside it, as the book stack was */,chair:750/* a little behind the armchair's feet: whoever sits in it sits back in the seat (Jackie, Nov 27: "a little further back into the chair rn now it looks on the edge") */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
 function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
-const BASS_DEPTH=726,BASS_K=.6,BASS_TOP=594; // in the bassinet a monster is small enough to fit inside the hood, and the top of its head is BASS_TOP, just under the hood's arch; the rest of it is behind the mattress
+const BASS_DEPTH=726,BASS_K=.6,BASS_TOP=589; // in the bassinet a monster is small enough to fit inside the hood, and the top of its head is BASS_TOP, just under the hood's arch; the rest of it is behind the mattress (594 at first; Jackie, Nov 27: "lift the baby up just a tiny tiny bit")
 function spotDepth(k){if(k==='crate'&&bassinetOut())return BASS_DEPTH;return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
 /* NEVER SHARING A SPACE (Jackie, Nov 4): "I never want them sharing a space or on top of each other." A plant may only go where its sprite
    wouldn't overlap any other plant's (the side 15% of each box is mostly empty leaves, so it doesn't count). */

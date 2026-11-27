@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A monster sits a little higher in the bassinet, and a bonk there says bassinet (Nov 27)
+
+- Jackie: "lift the baby up just a tiny tiny bit in the bassinet". The top of its head is 5 pixels higher than before.
+- Jackie: "when it bonks or does things in there it should refer to bassinet not crate". While the bassinet is out, the line reads "bonked the bassinet". With the bassinet away it is the milk crate again.
+
 ### The sky around the room is constellations in small pixels (Nov 27)
 
 - Jackie: "i would like the blinking background for the empty space around the game to be constellations and smaller and all small pixels so that small amounts of the image aren't just empty and black".
