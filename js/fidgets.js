@@ -99,7 +99,17 @@ function ballToday(){return ballLog().looks.filter(l=>BALL_VISIONS[l[1]]).map(l=
 // which vision comes next: each is said once before any comes round again (the ones still to come are kept, shuffled, in localStorage)
 function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)||'[]')}catch(e){}bag=Array.isArray(bag)?bag.filter(i=>Number.isInteger(i)&&i>=0&&i<BALL_VISIONS.length):[];
  if(!bag.length)bag=BALL_VISIONS.map((_,i)=>i);const k=Math.floor(Math.random()*bag.length),i=bag.splice(k,1)[0];try{localStorage.setItem(BALL_BAG,JSON.stringify(bag))}catch(e){}return i;}
-function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
+/* THE SPELL (Jackie, Nov 26: "maybe whenever we use the crystal ball, his eyes turn green and things float, but only once every like
+   minute"). When the ball is used, and at most once a minute, for as long as the ball's vision lasts: the cat's eyes glow green if it
+   is sitting up (its glowing pose, js/cat.js), the things in the room lift a few pixels and bob (whole pixels), and a few green
+   motes drift up. Then everything settles back on its own spring. */
+const SPELL_GAP=60000,SPELL_LIFT=5;let spellT=-1e9;
+function spellOn(){return performance.now()-spellT<BALL_MS;}
+function spellStep(){if(!spellOn())return false;const u=(performance.now()-spellT)/1000;
+ FP.forEach((p,i)=>{const up=Math.min(1,u/.6)*(SPELL_LIFT+i%3);p.oy=-Math.round(up+Math.sin(u*2.2+i*1.7));p.vy=0;p.ox=0;p.vx=0;});
+ if(Math.random()<.18){const p=FP[Math.floor(Math.random()*FP.length)];fBits.push({x:p.x+rnd(0,p.w),y:p.y+p.h-rnd(0,20),vx:rnd(-.2,.2),vy:rnd(-.9,-.4),g:-.004,sway:true,life:rnd(70,120),c:Math.random()<.5?'#39ff14':'#b6ffa8'});if(fBits.length>160)fBits.shift();}
+ return true;}
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;if(now-spellT>=SPELL_GAP)spellT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
  ballCur={i,tints:Array.from({length:8},()=>T[Math.floor(Math.random()*T.length)]),eyes:Math.random()<BALL_EYES};sfx('chime');
  if(!st.ballMet){st.ballMet=1;tell('The crystal ball has visions of things to come.',{kind:'info',key:'ballHi'});}
  setTimeout(()=>tell(ballSay(BALL_VISIONS[i]),{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);
@@ -132,8 +142,9 @@ cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
  fDrag.last={x,y};});
 function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox+=p.vx;p.oy+=p.vy;if(Math.abs(p.ox)<.3&&Math.abs(p.vx)<.2){p.ox=0;p.vx=0;}if(Math.abs(p.oy)<.3&&Math.abs(p.vy)<.2){p.oy=0;p.vy=0;}}
 function fidgetStep(){
+ const spell=spellStep();
  for(const p of FP){
-  fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
+  if(!spell)fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}
  for(const s of fSpines){s.vy+=-.14*s.oy;s.vy*=.9;s.oy+=s.vy;}fSpines=fSpines.filter(s=>Math.abs(s.oy)>.3||Math.abs(s.vy)>.2);
  for(const v of FVINES){v.vx+=-.1*v.ox;v.vx*=.9;v.ox=clamp(v.ox+v.vx,-3,3);}
  for(const b of fBits){b.vy+=b.g!=null?b.g:.12;b.vx*=.98;if(b.sway)b.vx+=Math.sin(b.life/9)*.06;b.x+=b.vx;b.y+=b.vy;const fl=b.coin?coinFloor(b):b.fl;if(fl!=null&&b.y>=fl&&b.vy>0){b.y=fl;b.vy=b.vy>1?-b.vy*.45:0;b.vx*=.7;}b.life--;}fBits=fBits.filter(b=>b.life>0);

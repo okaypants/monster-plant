@@ -10,7 +10,7 @@ const CATF={};['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pe
 const OLD_CAT=true;
 /* THE WHITE CAT (Jackie, Nov 26: "now lets make the cat from house"): a white long-haired cat after the one in the film House, cut from
    Jackie's sheet (tools/house_cat_cut.py) pose for pose at the old cat's size, so it uses the old cat's code. CAT_DIR='old_cat' brings the
-   orange cat back. The white cat's petted frames have no back-scratcher drawn in, and there is a spare frame with glowing green eyes. */
+   orange cat back. The white cat's petted frames have no back-scratcher drawn in, and there is a frame with glowing green eyes for the crystal ball's spell. */
 const CAT_DIR='house_cat';
 if(OLD_CAT){const OLD=['curl1','curl2','loaf1','loaf2','side1','side2','sit1','sit2','pet1','pet2','walk1','walk2','yawn',
   'stand_side','stalk','pounce','playbow','leap_r','leap_l','groom1','groom2','annoyed','back','belly','eat']; // the second row: Jackie's extra poses in the old cat's style (Nov 18; tools/tofu_cut.py)
@@ -101,7 +101,8 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   cat.sc+=((cat.path.length?catSc(DEPTH.floor):CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
  // company: a cat napping near the plant keeps it a little company
  if(cat.state==='sleep'&&st.started&&st.stage>=4&&!st.night){const b=plantBox();if(Math.abs(cat.x-(b.x+b.w/2))<b.w*.9+120&&Math.abs(cat.y-SPOT[spotKey()].y)<160)st.needs.attention=Math.max(0,st.needs.attention-dt*.002);}}
-function catFrame(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
+function catFrame(){const f=catFrame0();return CATF.glow&&(f===CATF.sit1||f===CATF.sit2)&&typeof spellOn==='function'&&spellOn()&&!cat.force?CATF.glow:f;} // the crystal ball's spell: a sitting cat's eyes glow green (js/fidgets.js)
+function catFrame0(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
  if(cat.state==='sleep')return CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[cat.pose]]; // asleep: ONE frame per pose (Jackie, calm-down); the breathing is done in code (catBreath)
  if(cat.state==='wake')return cat.t<1.2?CATF.yawn:CATF[T%2.4<.18?'sit2':'sit1']; // sit2 = a slow blink now and then
  if(cat.state==='sniff')return CATF.sit1;if(cat.state==='look')return CATF[T%3.4<.3?'sit2':'sit1'];

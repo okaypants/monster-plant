@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The crystal ball casts a spell, at most once a minute (Nov 26)
+
+- Jackie: "maybe whenever we use the crystal ball, his eyes turn green and things float, but only once every like minute".
+- When the ball is used, and no more than once a minute, for as long as its vision lasts: the cat's eyes glow green, the things in the room lift a few pixels and bob, and a few green motes drift up. Then everything settles.
+- The eyes glow only if the cat is sitting up, because the glowing pose is a sitting one. Asleep or walking, the cat does not change. The glowing pose is cut to the sitting pose's height so the cat does not grow.
+- The things lift only about five pixels: each is drawn again a little higher over the room's picture, so a higher lift would show the thing twice.
+
+### The moon plates have room round the moon (Nov 26)
+
+- Jackie: "i wish the moon in the photos in the moon thing had a little more room to breathe - the borders are touching parts". Each of the 28 engravings is cut with a wider margin of paper. A few plates still sit close to one edge, where the circle was found a little off centre.
+
 ### The viewfinder shows the whole photograph, for real this time (Nov 26)
 
 - Jackie: "the image in the viewfinder in the other room is still zoomed in weird". The earlier fix made the frame take the picture's shape, but the picture itself was still only the middle of each half of the card, so heads, feet and the edges of the moon were cut off.

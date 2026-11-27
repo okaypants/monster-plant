@@ -28,7 +28,8 @@ def main():
     scale=218/cut['sit1'].shape[0]
     for n,px in cut.items():
         pm=px.astype(float);pm[...,:3]*=pm[...,3:]/255;h,w=px.shape[:2]
-        sm=np.asarray(Image.fromarray(pm.astype(np.uint8),'RGBA').resize((round(w*scale),round(h*scale)),Image.LANCZOS)).astype(float)
+        k=scale*cut['sit1'].shape[0]/h if n=='glow' else scale # the glowing pose was drawn a little bigger: it is made the sitting pose's height, so the cat does not grow when its eyes light
+        sm=np.asarray(Image.fromarray(pm.astype(np.uint8),'RGBA').resize((round(w*k),round(h*k)),Image.LANCZOS)).astype(float)
         A=sm[...,3:];rgb=np.where(A>0,sm[...,:3]*255/np.maximum(A,1),0).clip(0,255)
         out=Image.fromarray(np.dstack([rgb,np.where(A>=128,255,0)]).astype(np.uint8),'RGBA');out.save(os.path.join(OUT,'cat_'+n+'.png'),optimize=True);print(n,out.size)
 if __name__=='__main__':main()
