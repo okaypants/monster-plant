@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The screen opens and closes the curtains; the remote runs the film (Nov 27)
+
+- Jackie: "you can open the curtains but I think you should be able to close them too by clicking the screen and only control playback with the remote".
+- A tap on the curtains or the screen opens or closes the curtains and does nothing else; closing them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. Choosing a film from the menu still opens the curtains and starts it.
+
+### The string lights can be taken down (Nov 27)
+
+- Jackie: "we also need to be able to turn off the decorations". The occasion's decorations already had "Take them down" in the cupboard's Decorations list; the string lights, new today, had no way off.
+- The same list now ends with "Take the string lights down", which becomes "Hang the string lights" once they are down. The choice is kept with the save.
+
 ### Movie room: one film menu, smaller watchers, sound on the gold plate (Nov 27)
 
 - Jackie: "the plant needs to be smaller so the screen is less obscured, we need audio control (prob the gold box) and we need to work out what all the objects do a bit better. since the books etc don't work and the movie clicking is a bit random maybe we need all those movie clicks to lead to the same menu".

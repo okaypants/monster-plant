@@ -59,7 +59,8 @@ function lightsLit(){const tk=typeof timeKey==='function'?timeKey():'day';return
 function lightsOut(n){ // which bulbs are dark this moment: a few, chosen afresh every LIGHTS_TWINK ms, the same ones for the whole of that time
  if((typeof tsCalm==='function'&&tsCalm())||!n)return [];const k=Math.floor(performance.now()/LIGHTS_TWINK),out=[];let h=(k*2654435761)>>>0;
  for(let i=0;i<LIGHTS_OUT;i++){h=(Math.imul(h^(h>>>15),2246822519)+i*374761393)>>>0;out.push(h%n);}return out;}
-function drawStringLights(){if(!st.started||!ok(TOP_MASK))return;const n=lightsStrand(),on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off))return;
+function lightsSet(on){st.noLights=!on;sfx('tick');tell(on?'The string lights are up.':'The string lights are back in the cupboard.',{kind:'info',key:'decor',now:true});save();} // they can be taken down like the other decorations (Jackie, Nov 27: "we also need to be able to turn off the decorations")
+function drawStringLights(){if(!st.started||st.noLights||!ok(TOP_MASK))return;const n=lightsStrand(),on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off))return;
  const cv=lightsCv;if(cv.width!==TOP_MASK.naturalWidth){cv.width=TOP_MASK.naturalWidth;cv.height=TOP_MASK.naturalHeight;}const x=cv.getContext('2d'),ox=LIGHTS_AT.x-TOP_AT.x,oy=LIGHTS_AT.y-TOP_AT.y;
  x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);const dark=litPic(off,lightAt(W/2,LIGHTS_AT.y+40));
  if(!lightsLit())x.drawImage(dark,ox,oy);
