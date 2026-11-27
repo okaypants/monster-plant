@@ -712,7 +712,7 @@ function frame(t){const dt=Math.min(3,(t-lastT)/16.667);lastT=t;recent*=Math.pow
 requestAnimationFrame(frame);
 </script>
 
-<script src="js/scores.js"></script>
+<script>document.write('<script src="js/scores.js?v='+encodeURIComponent(new URLSearchParams(location.search).get("v")||"")+'"><\/script>')</script>
 <script>
 /* FILM MODE. The films come from the movie room's collection when this page is opened inside the game (same site, so the page can
    read the room's list); opened on its own it has no films and is the plain instrument. */

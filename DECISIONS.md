@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Movie room decorations: a garland on each shelf unit, the floor piece larger at the left (Nov 27)
+
+- Jackie, asked where decorations should go and how big: "garland across top left and top right unit and decoration on left side a little below the shelving and kinda larger but not huge".
+- The garland hangs twice, once along the top of each shelf unit, a little wider than in the study so it spans the unit. The floor piece stands on the floor at the left, just below the left unit, at 1.4 times its size in the study. The screen and the couch are left clear.
+- Before this there was one garland along the couch's back and a small floor piece in the front left corner.
+
+### Kalimba-Score's page is fetched afresh with every version (Nov 27)
+
+- Jackie: "kalimba score is still the same". The live site had the new instrument, but its page was opened by an address with no version in it, so a phone went on showing the copy it had saved. The version is now in that address, and in the address of the soundtrack store the page loads, so each update fetches both again.
+
 ### In the movie room the cat comes down to the floor to play (Nov 27)
 
 - Jackie: "the cat interacts weird with the toys in the movie room and also pops over the couch so it doesn't look natural when they are in front of the couch".

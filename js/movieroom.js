@@ -144,7 +144,7 @@ function mvKalimbaFilms(){return MV_SHELVES;} function mvKalimbaSrc(f){return mv
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
- const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='Kalimba-Score';f.setAttribute('allow','autoplay');kalEl.appendChild(f);document.body.appendChild(kalEl);document.documentElement.classList.add('kal-open');} /* it covers the whole screen, whichever way the phone is held, and while it is open the "turn your phone sideways" screen stays away: it is played upright, for the thumbs (Jackie, Nov 27: "I think we need to switch kalimba-score to a vertical for thumb comfort") */
+ const f=document.createElement('iframe');f.src='kalimba.html?v='+encodeURIComponent(window.MP_VERSION||'')+'&film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:''); /* the version is in the address so a phone fetches the instrument afresh after every update (Jackie, Nov 27: "kalimba score is still the same": its page was the one thing not tied to the version, so phones kept an old copy) */f.title='Kalimba-Score';f.setAttribute('allow','autoplay');kalEl.appendChild(f);document.body.appendChild(kalEl);document.documentElement.classList.add('kal-open');} /* it covers the whole screen, whichever way the phone is held, and while it is open the "turn your phone sideways" screen stays away: it is played upright, for the thumbs (Jackie, Nov 27: "I think we need to switch kalimba-score to a vertical for thumb comfort") */
 function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;document.documentElement.classList.remove('kal-open');if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
 addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score'){mvScoreStop();mvScoreKey='';mvScoresLoad();}});
 /* THE REMOTE (Jackie, Nov 27: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote"). It
@@ -347,9 +347,15 @@ function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)retu
  const B=LIGHTS_META&&LIGHTS_META[n]&&LIGHTS_META[n].bulbs;if(B)for(const i of lightsOut(B.length)){const [bx,by,bw,bh]=B[i];x.clearRect(ox+bx,oy+by,bw,bh);x.drawImage(off,bx,by,bw,bh,ox+bx,oy+by,bw,bh);}
  x.globalCompositeOperation='destination-in';x.drawImage(MV_TOP_MASK,0,0);}
 function mvLightsSet(n){st.mvLights=n||'';if(st.started)save();mvLightsDraw();sfx(n?'chime':'tick');mvNote(n?'The string lights are up.':'The string lights are back in the drawer.');}
-function mvDecorShow(){if(!mvEl)return;const id=st.mvDecor,g=mvEl.querySelector('.mvgarland'),f=mvEl.querySelector('.mvfloorpiece');if(g)g.hidden=true;if(f)f.hidden=true;if(!id)return;
- mvOnCouch('mvgarland','decor/'+id+'_w.png',{x:835,y:818,k:1});const s=typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
- if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:96,y:912,k:fl==='pumpkin'||fl==='tree'?.5:1});}
+/* WHERE THE MOVIE ROOM'S DECORATIONS GO (Jackie, Nov 27: "garland across top left and top right unit and decoration on left side a
+   little below the shelving and kinda larger but not huge"). The garland hangs twice, once along the top of each shelf unit, so
+   the screen and the couch are left clear. The floor piece stands on the floor at the left, just below the left unit, at
+   MV_DECOR.fk times its size in the study. (They used to be one garland along the couch's back and a small floor piece in the
+   front left corner.) */
+const MV_DECOR={gl:{x:238,y:196,k:1.05},gr:{x:1437,y:196,k:1.05},f:{x:192,y:806},fk:1.4};
+function mvDecorShow(){if(!mvEl)return;const id=st.mvDecor;for(const c of ['.mvgarland','.mvgarland2','.mvfloorpiece']){const e=mvEl.querySelector(c);if(e)e.hidden=true;}if(!id)return;
+ mvOnCouch('mvgarland','decor/'+id+'_w.png',MV_DECOR.gl);mvOnCouch('mvgarland2','decor/'+id+'_w.png',MV_DECOR.gr);const s=typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
+ if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:MV_DECOR.f.x,y:MV_DECOR.f.y,k:(fl==='pumpkin'||fl==='tree'?.5:1)*MV_DECOR.fk});}
 function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();mvLightsDraw();sfx(id?'chime':'tick');const s=id&&DECOR_SETS.find(q=>q.id===id);mvNote(s?'The movie room is decorated for '+s.name+'.':'The decorations are back in the drawer.');}
 /* THE DRAWERS' MENUS (Jackie, Nov 27: "within the drawers the menus should be neat with each image tightly managed"). All three
    are the same grid of equal tiles: a picture held inside a box of one size, with its name underneath. A decoration shows its floor
