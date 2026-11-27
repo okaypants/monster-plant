@@ -50,7 +50,7 @@ const MV_SHELVES=[
   {t:'A Trip to Jupiter',by:'Segundo de Chomón, France, 1909',len:'8 min',id:'silent-le-voyage-sur-jupiter-aka-a-trip-to-jupiter',f:'Le voyage sur Jupiter AKA A Trip to Jupiter.mp4'},
   {t:'Venice, Queen of the Adriatic',by:'Gaumont, France, 1912, in early colour',len:'8 min',id:'1912-chronochrome-gaumont-venice',f:'1912 Chronochrome Gaumont Venice.ia.mp4'}]}];
 const MV_REMOTE={x:1326,y:380,w:54,h:96};
-const mvSrc=f=>f.src?f.src+'?t='+Math.floor(Date.now()/12e5):'https://archive.org/download/'+encodeURIComponent(f.id)+'/'+encodeURIComponent(f.f); // a live loop is asked for afresh every twenty minutes
+const mvSrc=f=>f.src?(f.loop&&/noaa\.gov/.test(f.src)?f.src+'?t='+Math.floor(Date.now()/12e5):f.src)/* only the satellite loops are asked for afresh; the Internet Archive refuses a file's address with anything added to it, which is why the television channels said they could not start */:'https://archive.org/download/'+encodeURIComponent(f.id)+'/'+encodeURIComponent(f.f); // a live loop is asked for afresh every twenty minutes
 let mvFilm=null; /* nothing is on until you choose (Jackie, Nov 27: "when the screen opens by tapping IT shouldn't automatically play anything it should be black until you select") */
 let mvEl=null,mvState='closed',mvTimer=0;
 function movieRoomOpen(){return !!(mvEl&&mvEl.isConnected);}

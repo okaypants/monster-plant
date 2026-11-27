@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The television channels play, and Rooms is one cream button everywhere (Nov 27)
+
+- Jackie: "the tv channels say film could not be reached it needs a connection". The room added a refresh mark to every channel's address, which the satellite loops need and the Internet Archive refuses. Only the satellite loops get it now. All six shows and a satellite loop were then played in the room's screen, one after another, in the desktop browser. (When they were added they were only checked as loose files, not through the remote; that is how this was missed.)
+- Jackie: "rooms is invisible in some scenes and cream colored in others. choose one". The Rooms button is the cream button with a dark edge in both rooms. In the study it had been a faint dark pill.
+
 ### Goodnight is said at the cat's bed and from the journal; the armchair asks only when someone is in it (Nov 27)
 
 - Jackie: "make clicking the bed a goodnight situation and then make clicking the journal a goodnight potential too but never the couch", then "well the couch can be good night as well but only if someone is on it".
