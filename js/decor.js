@@ -24,22 +24,21 @@ const DECOR_GROUPS=[['Seasons and weather',[['boots','Rain boots'],['beachball',
  ['Home and hobbies',[['present','A birthday'],['newhome','New home'],['trophy','A win'],['sickday','Sick day'],['catbox','A box for the cat'],['backpack','Back to school'],['movienight','Movie night'],['fort','Blanket fort'],
   ['boardgame','Game night'],['teatray','Tea'],['ballgame','Game day'],['crafts','Crafts'],['books','Reading day'],['mop','Cleaning day']]],
  ['Holidays, January to July',[['newyear','New Year'],['kumquat','Lunar New Year'],['valentine','Valentine’s Day'],['peach','Peach blossom'],['holi','Holi'],['hyacinth','Nowruz'],['eggtree','Easter'],['waterjar','Songkran'],
-  ['eidlantern','Eid'],['irises','Children’s Day'],['lotus','Vesak'],['hibiscus','Juneteenth'],['midsummer','Midsummer'],['pride','Pride'],['tanabata','Tanabata']]],
+  ['eidlantern','Eid'],['irises','Children’s Day'],['lotus','Vesak'],['hibiscus','Juneteenth'],['midsummer','Midsummer'],['pride','Pride'],['tanabata','Tanabata'],['morningglory','Summer festival']]],
  ['Holidays, August to December',[['pampas','Mid-Autumn'],['bojagi','Chuseok'],['rangoli','Diwali'],['jackolantern','Halloween'],['marigolds','Day of the Dead'],['dreidel','Hanukkah'],['winterlantern','Winter lights'],['smalltree','Christmas'],['tree','The big tree'],
   ['kwanzaa','Kwanzaa'],['applepie','Harvest'],['snowglobe','Snow globe'],['poinsettia','Poinsettia'],['presents','Presents'],['paperlantern','Paper lantern'],['mandarins','Mandarins'],['skates','Ice skates']]]];
 /* Jackie, seeing the cut sheet, Nov 27: "no telescope, guitar, globe". Those three are out of the list and their pictures are not kept.
-   Two pieces are cut but not offered until Jackie has seen them: the morning glory (decor/t_morningglory.png), whose bamboo frame
-   ends in two small crosses, and the moon garland (decor/g_moons.png), which came back with a star beside each crescent. Both
-   were ruled out in the prompt (she took the maypole out of the summer set because it "is a cross"). */
+   Two pieces were first held back, the morning glory (its bamboo frame ends in two small crosses) and the moon garland (a star
+   beside each crescent); asked about them she said "all are fine", so both are in. */
 /* SETS, NOT SEPARATE PICKS (Jackie, Nov 27, after a first build where the garland had its own list: "No I don't want them separate, I
    want sets lol"). Every decoration is a set again: its thing for the floor and the garland that goes with it, put out and put
    away together by one choice. Thirteen garlands serve the sixty-two sets, so related sets share one. */
-const DECOR_GARLAND={boots:'rain',beachball:'citrus',leaves:'leaves',sledge:'snow',umbrellas:'rain',stormlamp:'rain',fan:'citrus',pinwheels:'bunting',moonlamp:'lanterns',seedlings:'blossom',squash:'leaves',pumpkin:'leaves',sunflower:'citrus',firewood:'evergreen',sandbucket:'citrus',picnic:'citrus',
+const DECOR_GARLAND={boots:'rain',beachball:'citrus',leaves:'leaves',sledge:'snow',umbrellas:'rain',stormlamp:'rain',fan:'citrus',pinwheels:'bunting',moonlamp:'moons',seedlings:'blossom',squash:'leaves',pumpkin:'leaves',sunflower:'citrus',firewood:'evergreen',sandbucket:'citrus',picnic:'citrus',
  present:'bunting',newhome:'bunting',trophy:'bunting',sickday:'hearts',catbox:'hearts',backpack:'leaves',movienight:'lanterns',fort:'lanterns',boardgame:'bunting',teatray:'blossom',ballgame:'bunting',crafts:'blossom',books:'leaves',mop:'citrus',
- newyear:'bunting',kumquat:'lanterns',valentine:'hearts',peach:'blossom',holi:'blossom',hyacinth:'blossom',eggtree:'eggs',waterjar:'blossom',eidlantern:'lanterns',irises:'blossom',lotus:'lanterns',hibiscus:'bunting',midsummer:'blossom',pride:'pennants',tanabata:'lanterns',
- pampas:'lanterns',bojagi:'leaves',rangoli:'marigold',jackolantern:'bats',marigolds:'marigold',dreidel:'snow',winterlantern:'evergreen',smalltree:'evergreen',tree:'evergreen',kwanzaa:'snow',applepie:'leaves',snowglobe:'snow',poinsettia:'evergreen',presents:'bunting',paperlantern:'lanterns',mandarins:'lanterns',skates:'snow'};
+ newyear:'bunting',kumquat:'lanterns',valentine:'hearts',peach:'blossom',holi:'blossom',hyacinth:'blossom',eggtree:'eggs',waterjar:'blossom',eidlantern:'lanterns',irises:'blossom',lotus:'lanterns',hibiscus:'bunting',midsummer:'blossom',pride:'pennants',tanabata:'lanterns',morningglory:'lanterns',
+ pampas:'moons',bojagi:'leaves',rangoli:'marigold',jackolantern:'bats',marigolds:'marigold',dreidel:'snow',winterlantern:'evergreen',smalltree:'evergreen',tree:'evergreen',kwanzaa:'snow',applepie:'leaves',snowglobe:'snow',poinsettia:'evergreen',presents:'bunting',paperlantern:'lanterns',mandarins:'lanterns',skates:'snow'};
 const DECOR_SETS=[].concat(...DECOR_GROUPS.map(([group,L])=>L.map(([id,name])=>({id,name,group,garland:DECOR_GARLAND[id],floor:id==='pumpkin'||id==='tree'?id:'t_'+id}))));
-const GARLAND_KINDS=[['blossom','Blossom'],['citrus','Orange and lemon'],['leaves','Autumn leaves'],['snow','Snowflakes'],['rain','Rain and clouds'],['hearts','Hearts'],['eggs','Painted eggs'],['bats','Bats'],['evergreen','Evergreen and bows'],['marigold','Marigolds'],['pennants','Rainbow pennants'],['lanterns','Paper lanterns'],['bunting','Birthday bunting']];
+const GARLAND_KINDS=[['blossom','Blossom'],['citrus','Orange and lemon'],['leaves','Autumn leaves'],['snow','Snowflakes'],['rain','Rain and clouds'],['moons','Moons'],['hearts','Hearts'],['eggs','Painted eggs'],['bats','Bats'],['evergreen','Evergreen and bows'],['marigold','Marigolds'],['pennants','Rainbow pennants'],['lanterns','Paper lanterns'],['bunting','Birthday bunting']];
 const DECOR_IMG={};for(const s of DECOR_SETS)if(s.floor[1]==='_')DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');for(const [id] of GARLAND_KINDS)DECOR_IMG['g_'+id]=img('decor/g_'+id+'.png');
 // what a save from the thirty old sets turns into: the nearest new set
 const DECOR_OLD={lny:'kumquat',hina:'peach',nowruz:'hyacinth',blossom:'peach',easter:'eggtree',songkran:'waterjar',eid:'eidlantern',kodomo:'irises',vesak:'lotus',juneteenth:'hibiscus',obon:'',autumn:'pumpkin',midautumn:'pampas',chuseok:'bojagi',diwali:'rangoli',halloween:'jackolantern',muertos:'marigolds',harvest:'applepie',advent:'winterlantern',hanukkah:'dreidel',solstice:'snowglobe',christmas:'tree',birthday:'present'};
@@ -69,17 +68,19 @@ const WIN_AT={x:240,y:118,cx:444,top:150,lx:444,ly:560},WIN_MASK=img('decor/winm
    moment, a twinkle made of whole frame swaps; with reduced motion they hold still. */
 const WALL_AT={x:1040,y:34,cx:1240,top:40},WALL_MASK=img('decor/wallmask.png'); // the right-hand wall's shape, kept for anything hung there later
 const LIGHTS_AT={x:35,y:38},TOP_AT={x:0,y:30},TOP_MASK=img('decor/topmask.png'),LIGHTS_TWINK=1700,LIGHTS_OUT=2;
-const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','pastel','ember'].forEach(n=>{LIGHTS_IMG[n+'_on']=img('decor/lights_'+n+'_on.png');LIGHTS_IMG[n+'_off']=img('decor/lights_'+n+'_off.png');});
+const LIGHTS_KINDS_IDS=['warm','blossom','sunshine','leaves','snow','rainbow','redgold','orange','bluewhite','lantern'],LIGHTS_OLD={multi:'rainbow',star:'warm',pastel:'blossom',ember:'orange'}; /* the second sheet's ten strands (Jackie, Nov 27); a save that names one of the first six gets the nearest of these */
+const LIGHTS_IMG={};let LIGHTS_META=null;LIGHTS_KINDS_IDS.forEach(n=>{LIGHTS_IMG[n+'_on']=img('decor/lights_'+n+'_on.png');LIGHTS_IMG[n+'_off']=img('decor/lights_'+n+'_off.png');});
 fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
 const lightsCv=document.createElement('canvas');
-const LIGHTS_KINDS=[['warm','Warm white'],['multi','Many colours'],['lantern','Paper lanterns'],['star','Gold stars'],['pastel','Pastel'],['ember','Orange and purple']];
+const LIGHTS_KINDS=[['warm','Warm white'],['blossom','Blossom'],['sunshine','Sunshine'],['leaves','Falling leaves'],['snow','Snow day'],['rainbow','Rainbow'],['redgold','Red and gold'],['orange','Orange and purple'],['bluewhite','Blue and white'],['lantern','Paper lanterns']];
 /* SEASONS AND HOLIDAYS (Jackie, Nov 27: "for the string lights choose seasonal for the general seasonal choice and then break up the
    decoration categories into seasonal (spring summer fall winter), and then specific holidays"). Four of the thirty sets are the
    seasons' own; the rest are holidays. The lights' "Seasonal" choice goes with whatever is up, and with the time of year when
    nothing is: pastel in spring, many colours in summer, orange and purple in autumn, gold stars in winter. */
-const LIGHTS_SEASON={spring:'pastel',summer:'multi',autumn:'ember',winter:'star'};
+/* STRING LIGHTS ARE NOT PART OF A SET (Jackie, Nov 27: "string lights aren't included in decoration packages"). Putting decorations out never changes the strand. "Seasonal" goes by the time of year alone: blossom in spring, sunshine in summer, falling leaves in autumn, snow day in winter. */
+const LIGHTS_SEASON={spring:'blossom',summer:'sunshine',autumn:'leaves',winter:'snow'};
 function lightsAuto(){return LIGHTS_SEASON[typeof seasonNow==='function'?seasonNow():'winter']||'warm';}
-function lightsStrand(){if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;return lightsAuto(st.decor);} // a strand you chose yourself stays up; otherwise it follows the decorations
+function lightsStrand(){if(LIGHTS_OLD[st.lightsKind])st.lightsKind=LIGHTS_OLD[st.lightsKind];if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;return lightsAuto();} // a strand you chose yourself stays up; otherwise it follows the decorations
 function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st.lightsDark=false;sfx('chime');const n=(LIGHTS_KINDS.find(q=>q[0]===id)||[])[1];tell(n?'The string lights are '+n.toLowerCase()+'.':'The string lights follow the season.',{kind:'info',key:'decor',now:true});save();}
 /* Always lit, day and night, unless you turn them off by tapping them; tap again and they are lit again (Jackie, Nov 27: "I want the
    string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them"). Off, the

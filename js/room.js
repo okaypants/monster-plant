@@ -189,7 +189,7 @@ function nudgeSun(){if(st.night||clockLive())return;st.dayT=Math.min(.7,st.dayT+
 /* ---------- props (code placeholders) ---------- */
 // hotspots on the v2 room art: carafe on the stool = water; SNACKS box = all treats; gummies + peat moss on the shelf = those treats
 const CAN={x:940,y:530,w:86,h:96}/* the cup under the water cooler's taps: pick it up to water */,COOLER={x:922,y:375,w:124,h:392},JAR={x:760,y:556,w:146,h:210}/* the mini fridge: all the treats */,GUMMY={x:-99,y:-99,w:1,h:1},PEAT={x:-99,y:-99,w:1,h:1},
- BED={x:1464,y:768,w:194,h:154}/* the cat's bed, where goodnight is said (js/input.js) */,LAMP={x:1268,y:400,w:176,h:148},FLOOR={x:138,y:255,w:186,h:198}/* the floor lamp's shade */,FLOOR_POLE={x:204,y:453,w:56,h:376},WALL_LAMP={x:926,y:156,w:108,h:168},SHELF={x:1480,y:314,w:160,h:80},CHAIR={x:445,y:470,w:312,h:296},WIN={x:250,y:100,w:400,h:410},
+ BASS_NIGHT={x:236,y:590,w:206,h:190}/* the bassinet, where goodnight is said (js/input.js) */,LAMP={x:1268,y:400,w:176,h:148},FLOOR={x:138,y:255,w:186,h:198}/* the floor lamp's shade */,FLOOR_POLE={x:204,y:453,w:56,h:376},WALL_LAMP={x:926,y:156,w:108,h:168},SHELF={x:1480,y:314,w:160,h:80},CHAIR={x:445,y:470,w:312,h:296},WIN={x:250,y:100,w:400,h:410},
  CUPBOARD={x:1484,y:582,w:158,h:156}/* the star door at the bottom of the right bookcase: Tofu's cupboard */;
 function drawCarafe(x,y){ // carried glass carafe (code stand-in until the carried version is drawn)
  g.save();g.translate(x,y);g.rotate(-.5);g.scale(1.6,1.6);const o=C.out;

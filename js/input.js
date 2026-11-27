@@ -41,11 +41,13 @@ cv.addEventListener('click',e=>{if(drag.justDropped){drag.justDropped=false;retu
  if(!held.tool&&!st.noLights&&typeof lightsTap==='function'&&inR(x,y,LIGHTS_TAP)){lightsTap();return;} // the string lights along the top of the wall: a tap turns them off or on (js/decor.js)
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,SAMPLER)){openSampler();return;} // the sampler on the top shelf opens its own app (js/sampler.js), day or night
  if(!held.tool&&!onPlantPx(x,y)&&inR(x,y,RADIO)){radioTap();fidgetPoke(x,y);return;} // the radio on the desk: on or off (js/radio.js), day or night
- /* GOODNIGHT IS AT THE BED (Jackie, Nov 27: "make clicking the bed a goodnight situation and then make clicking the journal a
-    goodnight potential too but never the couch"). By day a tap on the cat's bed, anywhere the cat itself is not, asks whether to
-    settle in for the night; the journal has a Goodnight button too (js/journal.js). The armchair asks only while someone is
-    in it, a monster or the cat ("well the couch can be good night as well but only if someone is on it"); empty, it does nothing. */
- if(!held.tool&&!st.night&&!onPlantPx(x,y)&&inR(x,y,BED)){fidgetPoke(x,y);openBubble(BED.x-430,BED.y-150,'Settle in for the night?'+tsChoices(CHOICES.night),{y:tuckIn,n:closeBubble});return;}
+ /* GOODNIGHT IS AT THE BASSINET (Jackie, Nov 27: "make clicking the bed a goodnight situation and then make clicking the journal a
+    goodnight potential too but never the couch"; the bed she meant was the monsters' bassinet, not the cat's bed, which had been
+    given the question by mistake: "the pet bed shouldn't signal a goodnight it should bounce. only the bassinet and the chair
+    when someone's in it"). By day a tap on the bassinet, anywhere the monster in it is not, asks whether to settle in for the
+    night; the journal has a Goodnight button too (js/journal.js). The armchair asks only while someone is in it, a monster or
+    the cat; empty, it does nothing. The cat's bed bounces like any other thing in the room. */
+ if(!held.tool&&!st.night&&bassinetOut()&&!onPlantPx(x,y)&&inR(x,y,BASS_NIGHT)){openBubble(BASS_NIGHT.x+40,BASS_NIGHT.y-110,'Settle in for the night?'+tsChoices(CHOICES.night),{y:tuckIn,n:closeBubble});return;}
  if(!held.tool&&!onPlantPx(x,y)&&fidgetPoke(x,y))return; // doodads work day or night
  if(st.night){ // night: lights and curtains still work; wake only on purpose
   if(inR(x,y,FLOOR)||inR(x,y,FLOOR_POLE)){st.lamp=!st.lamp;sfx(st.lamp?'chime':'sigh');save();return;}

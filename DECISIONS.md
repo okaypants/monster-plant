@@ -2,6 +2,26 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The remote: smaller numbers, a power key, an information key, no library key (Nov 27)
+
+- Jackie: "i think on the remote, the numbers can be a little smaller, and maybe no link to the dvds and stuff", "and also a power button for the screen so someone knows what to do to start", "maybe an information button instead of the library", "circled i".
+- The number keys were first made smaller, which was too far: "slightly bigger numbers than the examples for sure, everything should be big enough for fingers you know", "everything is very thin". Every key on the remote is now tall enough for a finger, with the numbers a little smaller than the play keys.
+- A red POWER key is the first key. With the screen dark it tunes to the channel last watched, or the first one. With something on it stops it and the curtains close.
+- The film library's key is gone from the remote; the films are still reached from the shelf. In its place is a circled i that says what is on at the bottom of the screen: the title, the channel or who made it, and the running time. With the screen dark it says to press POWER.
+- Jackie: "bigger channel up and down", then "make the channel up and down numbers better balance with the rest". Then "widen the channel up and down numbers and also make them a little taller". CH ▲ and CH ▼ each fill half the remote's width and stand a little taller than the number keys.
+- Jackie: "make the guide button like a button on the other side of the 0 with three lines stacked like a =". The guide is a key with three stacked lines to the left of 0; the circled i is to its right.
+
+### Goodnight is at the bassinet, not the cat's bed (Nov 27)
+
+- Jackie: "the pet bed shouldn't signal a goodnight it should bounce. only the bassinet and the chair when someone's in it."
+- Her earlier "make clicking the bed a goodnight situation" had been built on the cat's bed by mistake. The cat's bed bounces again when tapped. A tap on the bassinet by day, anywhere the monster in it is not, asks "Settle in for the night?" The armchair still asks only while a monster or the cat is in it, and the journal keeps its Goodnight button.
+
+### Ten new strands of string lights, kept apart from the sets; the two held pieces go in (Nov 27)
+
+- The second sheet's ten strands replace the first six in both rooms: warm white, blossom, sunshine, falling leaves, snow day, rainbow, red and gold, orange and purple, blue and white, paper lanterns. A save that names an old strand gets the nearest new one.
+- Jackie: "string lights aren't included in decoration packages". Putting a set out never changes the lights. "Seasonal" goes by the time of year alone: blossom in spring, sunshine in summer, falling leaves in autumn, snow day in winter.
+- Asked about the morning glory (two small crosses on its frame), the moon garland (a star beside each crescent), and Hanukkah and Kwanzaa hanging snowflakes for want of a garland of their own, Jackie: "all are fine". The morning glory is in as "Summer festival", and the moon garland hangs with the moon lamp and Mid-Autumn. 63 sets, 14 garlands.
+
 ### The crystal ball and the framed cat trade places (Nov 27)
 
 - Jackie: "ok yes i do want the crystal ball and framed cat to trade places".
