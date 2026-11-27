@@ -76,7 +76,7 @@ function mvScreen(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;con
  else{v.pause();mvEl.dataset.paused='1';mvCurtains(false);}}
 function mvPlay(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const v=mvEl.querySelector('video'),f=mvFilm;
  if(!f){mvPick();mvNote('Choose something to watch.');return;}
- if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
+ if(mvState==='closed'){mvNote(f.chan!=null?'':f.t+', '+f.by); /* a channel says what it is on the screen itself, so the cream note stays away and does not cover it */sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
  if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';mvLightApply();}}
 function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(mvChan&&!mvChan.live){mvTune(mvChan,true);return;} /* on a channel something else simply begins, from its start */if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
