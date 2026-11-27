@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The crystal ball's order, second version (Nov 27)
+
+- Jackie: "i want the crystal ball to cloud then after a couple clouds the cat's eyes to glow then after a couple beats the stuff to bounce and THEN the prophecy and after its all done his eyes will go back to normal".
+- The ball clouds eight times, one cloud every 550 ms (a little slower than before, so the order can be seen). After two clouds the cat's eyes light. About a second later the things lift and bob (still at most once a minute). About a second after that the prophecy is spoken. The things settle. The eyes stay lit until the prophecy's words have gone, and only then go back to normal.
+
 ### The remote opens play and live channels (Nov 27)
 
 - Jackie: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote".

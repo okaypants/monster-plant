@@ -79,7 +79,7 @@ const COIN_COLORS=['#ffd23f','#ffdf6b','#f7c21e']; // gold coins (Jackie, Nov 17
    It used to give yes and no answers by the colour of the mist, after John Melville's 1910 book on crystal gazing; Jackie had those
    replaced (Nov 25). What it says is kept with the day's other readings (the moon box's Today page, js/tarot.js). */
 const BALL_TINT={white:[236,236,242],dark:[74,72,92],green:[70,186,112],blue:[66,140,232],red:[226,70,74],yellow:[242,206,62]},BALL_KEY='mp-ball2',BALL_BAG='mp-ball-bag';
-const BALL_MS=3200,BALL_EYES=.25;let ballT=-1e9,ballCur=null; /* what the ball is doing now: {i: which vision, tints: the mist's colour in each of its eight steps (a hard cut from one to the next), eyes: whether a pair of cat's eyes shows in the middle of it} */
+const BALL_MS=4400,BALL_EYES=.25; /* eight clouds of 550 ms each */let ballT=-1e9,ballCur=null; /* what the ball is doing now: {i: which vision, tints: the mist's colour in each of its eight steps (a hard cut from one to the next), eyes: whether a pair of cat's eyes shows in the middle of it} */
 function ballStep(){const d=performance.now()-ballT;return d<0||d>=BALL_MS?-1:Math.floor(d/(BALL_MS/8));}
 function ballFrame(){const k=ballStep();return k<0?1:[2,3,4,5,5,4,3,2][k]||1;}
 function ballTint(){const k=ballStep();return k<0||!ballCur?null:ballCur.tints[k];} // the colour of the mist at this step (js/room.js ballPic)
@@ -103,13 +103,16 @@ function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)
    minute"). Every time the ball is used, for as long as its vision lasts, the cat sits up with its eyes glowing green, whatever it was
    doing (its glowing pose, js/cat.js). At most once a minute the things in the room also lift a few pixels and bob (whole pixels), and a few green
    motes drift up. Then everything settles back on its own spring. */
-/* THE ORDER OF IT (Jackie, Nov 27: "click > swirling > cats eyes a little after swirling starts -> items float > prophecy"). The tap
-   starts the ball swirling. BALL_EYES_AT ms later the cat's eyes light. BALL_FLOAT_AT ms after the tap the things begin to lift (when
-   it is their turn: at most once a minute). BALL_SAY_AT ms after the tap the prophecy is spoken. Eyes and floating both last until a
-   little after the prophecy has appeared. */
-const SPELL_GAP=60000,SPELL_LIFT=5,BALL_EYES_AT=600,BALL_FLOAT_AT=1300,BALL_SAY_AT=2500,BALL_END=3900;let spellT=-1e9,eyesT=-1e9;
-function spellOn(){const d=performance.now()-spellT;return d>=0&&d<BALL_END-BALL_FLOAT_AT;}
-function eyesOn(){const d=performance.now()-eyesT;return d>=0&&d<BALL_END-BALL_EYES_AT;} // the cat's eyes glow every time the ball is used (Jackie, Nov 27: "the cat's eyes are supposed to turn green anytime i do the crystal ball"); only the floating waits a minute
+/* THE ORDER OF IT (Jackie, Nov 27: "i want the crystal ball to cloud then after a couple clouds the cat's eyes to glow then after a
+   couple beats the stuff to bounce and THEN the prophecy and after its all done his eyes will go back to normal").
+   The tap starts the clouds: eight of them, one every 550 ms. After two clouds (BALL_EYES_AT) the cat's eyes light. A couple of
+   beats later (BALL_FLOAT_AT) the things in the room lift and bob, when it is their turn: at most once a minute. Once they have
+   bobbed a while (BALL_SAY_AT) the prophecy is spoken. The things settle soon after. The eyes stay lit until the prophecy has
+   been read and its words have gone, and only then go back to normal. */
+const SPELL_GAP=60000,SPELL_LIFT=5,BALL_EYES_AT=1100,BALL_FLOAT_AT=2000,BALL_SAY_AT=3300,BALL_FLOAT_END=4200,BALL_EYES_MAX=25000;let spellT=-1e9,eyesT=-1e9;
+function spellOn(){const d=performance.now()-spellT;return d>=0&&d<BALL_FLOAT_END-BALL_FLOAT_AT;}
+function ballSaying(){return typeof CAP!=='undefined'&&((CAP.cur&&CAP.cur.rk==='ballSign')||CAP.q.some(x=>x.rk==='ballSign'));}
+function eyesOn(){const d=performance.now()-eyesT;return d>=0&&d<BALL_EYES_MAX&&(d<BALL_SAY_AT-BALL_EYES_AT+800||ballSaying());} // lit from two clouds in until the prophecy has gone (with a little time for it to appear)
 function spellStep(){if(!spellOn())return false;const u=(performance.now()-spellT)/1000;
  FP.forEach((p,i)=>{const up=Math.min(1,u/.6)*(SPELL_LIFT+i%3);p.oy=-Math.round(up+Math.sin(u*2.2+i*1.7));p.vy=0;p.ox=0;p.vx=0;});
  if(Math.random()<.18){const p=FP[Math.floor(Math.random()*FP.length)];fBits.push({x:p.x+rnd(0,p.w),y:p.y+p.h-rnd(0,20),vx:rnd(-.2,.2),vy:rnd(-.9,-.4),g:-.004,sway:true,life:rnd(70,120),c:Math.random()<.5?'#39ff14':'#b6ffa8'});if(fBits.length>160)fBits.shift();}
