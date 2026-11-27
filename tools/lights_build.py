@@ -9,27 +9,21 @@ import os,json
 from PIL import Image
 import numpy as np
 from scipy import ndimage as nd
-ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));OUT=os.path.join(ROOT,'decor')
-NAMES=['warm','multi','lantern','star','pastel','ember'];TOP_BOX=(0,30,1670,112) # the strip of wall the lights hang in
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));OUT=os.environ.get('LIGHTS_OUT') or os.path.join(ROOT,'decor')
+NAMES=['warm','blossom','sunshine','leaves','snow','rainbow','redgold','orange','bluewhite','lantern'] # the second sheet (Jackie, Nov 27): ten strands; the first sheet's six are gone
+SHEET='string_lights2.png';TOP_BOX=(0,30,1670,112) # the strip of wall the lights hang in
 def strands():
-    a=np.asarray(Image.open(os.path.join(ROOT,'art_src','decor','string_lights.png')).convert('RGB')).astype(int);r,g,b=a[...,0],a[...,1],a[...,2]
-    fg=~((r>205)&(b>205)&(g<100)&(np.abs(r-b)<45));fg=nd.binary_opening(fg,iterations=1)|(fg&(a.sum(2)<200));rows=np.where(fg.sum(1)>40)[0]
-    bands=[];s=rows[0];p=rows[0]
-    for y in rows[1:]:
-        if y-p>6:bands.append((s,p+1));s=y
-        p=y
-    bands.append((s,p+1));cnt=fg.sum(1);full=[]
-    for y0,y1 in bands: # a lit strand and its dark one drawn touching: parted at the emptiest row between them
-        if y1-y0>100:
-            lo,hi=y0+int((y1-y0)*.3),y0+int((y1-y0)*.7);m=lo+int(np.argmin(cnt[lo:hi]));full+=[(y0,m),(m,y1)]
-        else:full.append((y0,y1))
-    bands=full;assert len(bands)==12,bands
-    out=[]
-    for y0,y1 in bands:
-        m=fg[y0:y1];lab,k=nd.label(m);m=nd.binary_fill_holes(lab==(1+int(np.argmax(nd.sum(m,lab,range(1,k+1))))));xs=np.where(m.any(0))[0];x0,x1=xs.min(),xs.max()+1;c=a[y0:y1,x0:x1].copy();k=m[:,x0:x1]
-        near=nd.binary_dilation(~k,iterations=3)&k;pink=near&(c[...,0]-c[...,1]>45)&(c[...,2]-c[...,1]>45)&(c[...,2]>70)
-        idx=nd.distance_transform_edt(~k|pink,return_distances=False,return_indices=True);c[pink]=c[idx[0][pink],idx[1][pink]]
-        out.append(np.dstack([c,np.where(k,255,0)]).astype(np.uint8))
+    """Every strand on the sheet, top to bottom: lit, dark, lit, dark... A strand is one joined piece running the width of the sheet
+    (they sag into each other's rows, so they are told apart by being joined, not by rows)."""
+    a=np.asarray(Image.open(os.path.join(ROOT,'art_src','decor',SHEET)).convert('RGB')).astype(int);r,g,b=a[...,0],a[...,1],a[...,2]
+    fg=~((r>190)&(b>190)&(g<110)&(np.abs(r-b)<60));lab,k=nd.label(fg);out=[]
+    for i,sl in enumerate(nd.find_objects(lab),1):
+        if sl[1].stop-sl[1].start<1000:continue
+        m=nd.binary_fill_holes(lab[sl]==i);c=a[sl].copy()
+        near=nd.binary_dilation(~m,iterations=3)&m;pink=near&(c[...,0]-c[...,1]>45)&(c[...,2]-c[...,1]>45)&(c[...,2]>70)
+        idx=nd.distance_transform_edt(~m|pink,return_distances=False,return_indices=True);c[pink]=c[idx[0][pink],idx[1][pink]]
+        out.append((sl[0].start,np.dstack([c,np.where(m,255,0)]).astype(np.uint8)))
+    out=[q for _,q in sorted(out,key=lambda t:t[0])];assert len(out)==2*len(NAMES),len(out)
     return out
 def top_mask():
     room=np.asarray(Image.open(os.path.join(ROOT,'room2.png')).convert('RGBA')).astype(int);x0,y0,x1,y1=TOP_BOX;s=room[y0:y1,x0:x1];r,g,b=s[...,0],s[...,1],s[...,2]
@@ -55,5 +49,6 @@ def main():
                 ys=np.where(A[:,xs.min():xs.max()+1].any(1))[0];bulbs.append([int(xs.min())-2,int(ys.min()),int(xs.max()-xs.min())+5,int(ys.max()-ys.min())+1])
         Image.fromarray(on,'RGBA').save(os.path.join(OUT,'lights_%s_on.png'%n),optimize=True);Image.fromarray(off,'RGBA').save(os.path.join(OUT,'lights_%s_off.png'%n),optimize=True)
         meta[n]={'w':W,'h':H,'bulbs':bulbs};print(n,W,H,'shift',dx,dy,len(bulbs),'bulbs')
-    json.dump(meta,open(os.path.join(OUT,'lights.json'),'w'),separators=(',',':'));top_mask()
+    json.dump(meta,open(os.path.join(OUT,'lights.json'),'w'),separators=(',',':'))
+    if not os.environ.get('LIGHTS_OUT'):top_mask()
 if __name__=='__main__':main()

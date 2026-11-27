@@ -5,14 +5,15 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'frame frame_tilt frame_blink frame_glow cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 moon3w moon4w nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+const OBJ={};'frame frame_tilt frame_blink frame_glow cup coin trunk_open ball1 ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 moon3w moon4w nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
 /* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the cat's framed picture in the bookcase (the wind-up cat
    painted into the room is taken out of its cubby, and the frame stands there), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
    middle of its bottom edge rests. */
-const THINGS=[{n:'frame',x:97,y:438,pic:()=>typeof decorInCubby==='function'&&decorInCubby()?null:typeof framePic==='function'?framePic():'frame'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
+/* THE CRYSTAL BALL AND THE FRAMED CAT TRADED PLACES (Jackie, Nov 27: "i do want the crystal ball and framed cat to trade places"): the frame stands on the right-hand bookcase's top shelf and the ball in the left-hand bookcase's cubby. The ball used to be painted into the room's picture; tools/ball_swap.py lifted it out as obj_ball1.png */
+const THINGS=[{n:'frame',x:1561,y:300,pic:()=>typeof decorInCubby==='function'&&decorInCubby()?null:typeof framePic==='function'?framePic():'frame'},{n:'cup',x:982,y:620,pic:()=>null}, /* no cup stands under the taps: it appears in your hand when you tap the water cooler (Jackie, Nov 25) */
  
- {n:'moon',x:1355,y:367,pic:()=>moonDialPic()},{n:'ball',x:1561,y:299,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
+ {n:'moon',x:1355,y:367,pic:()=>moonDialPic()},{n:'ball',x:97,y:438,pic:()=>ballPic()},{n:'trunk',x:1562,y:479,pic:()=>thingOpen('trunk')?'trunk_open':null},
  {n:'cupboard',x:1563,y:738,pic:()=>typeof cubIsOpen==='function'&&cubIsOpen()?'cup_open':null},
  {n:'nocrate',x:338,y:786,pic:()=>bassinetOut()?'nocrate':null},{n:'bass',x:338,y:778,pic:()=>bassinetOut()?(bassAsleep()?'bass_bed':'bass'):null}];
 const thingBy=n=>THINGS.find(t=>t.n===n);
@@ -36,7 +37,7 @@ function moonDialPic(){const ahead=typeof moonDialAt==='function'?moonDialAt():n
     the old crescent (lit left), moon4 and moon3 the last quarter and shrinking gibbous as drawn (lit left), and their mirror
     images moon4w and moon3w for the first quarter and growing gibbous. */
  return f<.2?'moon1':f<.32?'moon4w':f<.44?'moon3w':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon5';}
-function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;if(typeof ballEyesOn==='function'&&ballEyesOn())return ballEyesPic();const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
+function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return 'ball1';if(typeof ballEyesOn==='function'&&ballEyesOn())return ballEyesPic();const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
 function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
 const roomReady=()=>ok(ROOM2);
 const mkCv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingEnabled=false;return c;};

@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The crystal ball and the framed cat trade places (Nov 27)
+
+- Jackie: "ok yes i do want the crystal ball and framed cat to trade places".
+- The crystal ball stands in the cubby of the left-hand bookcase, and the framed cat on the top shelf of the right-hand one. Both still do what they did: a tap on the ball starts the mist and the prophecy, a tap on the frame tips it, and the cat in it still blinks.
+- The ball had been painted into the room's picture. `tools/ball_swap.py` lifted it out as a picture of its own and left the shelf bare behind it, using the shelf's own pixels.
+
 ### Decorations are sets again: one choice puts out the thing and its garland (Nov 27)
 
 - Jackie, after the first build of the new decorations gave garlands a list of their own: "No I don't want them separate, I want sets lol".

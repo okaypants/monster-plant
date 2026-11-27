@@ -352,4 +352,5 @@ def build_frame():
     return {'frame':list(up.size)}
 if __name__=='__main__':
     room,meta=build_room();sh=build_objs();build_carry(sh[2]);build_curtains(room);meta.update(build_sash(room,meta['panes']));build_views(meta['panes']);meta.update(build_bassinet(room));meta.update(build_cupboard());meta.update(build_frame())
+    import ball_swap;ball_swap.lift() # the crystal ball is lifted out of the room's picture, since it now stands in the left-hand bookcase (tools/ball_swap.py)
     print(json.dumps(meta))

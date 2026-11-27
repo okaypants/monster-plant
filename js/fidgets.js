@@ -5,7 +5,7 @@
 // 'thing' = the room thing (js/room.js THINGS) this box belongs to: while it bounces, its own picture is drawn moved, never a copy over it
 const FP=[
  {n:'ammonite',x:1094,y:146,w:108,h:84,k:.18,d:.12,kick:{vy:-4},puff:true},
- {n:'frame',x:56,y:350,w:84,h:90,k:.10,d:.10},
+ {n:'frame',x:1519,y:212,w:84,h:90,k:.10,d:.10},
  {n:'pillow',x:582,y:532,w:122,h:116,k:.14,d:.16,kick:{vy:5}},
  {n:'drum',x:1220,y:140,w:186,h:88,k:.25,d:.18,kick:{vy:3}},
  {n:'moondial',x:1304,y:266,w:102,h:104,k:.16,d:.06,does:'moon'},
@@ -18,7 +18,7 @@ const FP=[
  {n:'box1',x:112,y:460,w:80,h:90,k:.2,d:.1,kick:{vy:-4},does:'coins'},
  {n:'lockbox',x:28,y:676,w:100,h:64,k:.2,d:.1,kick:{vy:-4},does:'safe'},
  {n:'moonbox',x:1502,y:408,w:120,h:72,k:.2,d:.1,does:'trunk'},
- {n:'ball',x:1524,y:216,w:76,h:86,k:.25,d:.12,does:'ball'},
+ {n:'ball',x:59,y:353,w:76,h:86,k:.25,d:.12,does:'ball'},
  {n:'crate',x:242,y:626,w:190,h:152,k:.2,d:.14,kick:{vy:-3},does:'record'},
  {n:'deskchair',x:1214,y:546,w:154,h:232,k:.12,d:.16,kick:{vx:5}},
 ];
@@ -209,7 +209,7 @@ const IDLE_ITEMS=[{n:'mini fridge',x:772,y:580,w:124,h:176,k:'plain'},
  {n:'floor lamp',x:134,y:248,w:194,h:224,k:'shade',key:'lamp'},{n:'desk lamp',x:1268,y:402,w:174,h:146,k:'obj'},
  {n:'desk drawers (journal)',x:1082,y:570,w:96,h:132,k:'plain'},{n:'readable books',...SHELF,k:'plain'},
  {n:'sampler',x:1220,y:140,w:186,h:88,k:'obj'},
- {n:'crystal ball',x:1524,y:216,w:76,h:86,k:'obj'},
+ {n:'crystal ball',x:59,y:353,w:76,h:86,k:'obj'},
  {n:'pumpkin',k:'sprite',when:()=>seasonItem()==='pumpkin'},{n:'tree',k:'sprite',when:()=>seasonItem()==='tree'}]; // seasonal items (js/seasonal.js) nudge their own sprite, only while they're out
 const IDLE_GAP=[10,10],IDLE_FRAMES=[1,0,1,0],IDLE_MS=110,ART_PX=5; // seconds between tries; ONE ART PIXEL on two frames.
 // ART_PX: the room art's own pixels are ~5 room units wide, so a 1-unit nudge was invisible (on a phone, under half a screen dot). Jackie: "the little items still don't wiggle".
