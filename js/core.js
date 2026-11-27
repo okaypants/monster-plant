@@ -11,8 +11,13 @@ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeo
 // covers the room until each one has arrived (or failed, so it can never wait forever), then main.js starts the game.
 let LOAD_LEFT=0,LOAD_GO=null,LOADED=false;
 function loadDone(){if(LOADED||!LOAD_GO||LOAD_LEFT>0)return;LOADED=true;const go=LOAD_GO;LOAD_GO=null;go();const l=document.getElementById('loading');if(l)l.remove();}
-function whenLoaded(go){LOAD_GO=go;loadDone();}
-function img(src){const i=new Image();if(!LOADED){LOAD_LEFT++;const d=()=>{LOAD_LEFT--;loadDone();};i.addEventListener('load',d,{once:true});i.addEventListener('error',d,{once:true});}i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
+/* SO THE ROOM COMES UP PROMPTLY (Jackie, Nov 27: "sometimes monster plant doesn't load screen right away anymore"). The game had come
+   to ask for several hundred pictures before it would show the room, 160 of them decorations that are not needed to draw it. Two
+   things now: the decorations' pictures are fetched without being waited for, and the loading screen never waits more than
+   LOAD_MAX_MS; anything still on its way then simply appears when it arrives, as every drawing already checks its picture is in. */
+const LOAD_MAX_MS=7000,LOAD_LAZY=/^decor\//;
+function whenLoaded(go){LOAD_GO=go;loadDone();if(!LOADED&&!(typeof TESTING!=='undefined'&&TESTING))setTimeout(()=>{if(!LOADED){LOAD_LEFT=0;loadDone();}},LOAD_MAX_MS);}
+function img(src){const i=new Image();if(!LOADED&&!LOAD_LAZY.test(src)){LOAD_LEFT++;const d=()=>{LOAD_LEFT--;loadDone();};i.addEventListener('load',d,{once:true});i.addEventListener('error',d,{once:true});}i.onerror=()=>showErr('could not load '+src);i.src=src;return i;}
 const ok=i=>i&&i.complete&&i.naturalWidth>0;
 // REAL BOTTOM (Nov 3): empty rows under a picture's lowest solid pixel (the pot's bottom, the cat's paws), measured once per picture.
 // Plants and the cat are placed so that pixel sits exactly on the spot's surface line, not the picture's edge.

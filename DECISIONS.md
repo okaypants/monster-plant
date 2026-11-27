@@ -13,6 +13,13 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Cut by hand after reading the titles: films about hunting, a disaster, youth gangs, a wartime strike, pests, a diet drink, two early erotic films, things still owned (a Jetsons promo, a Kellogg's advertisement, Lost in Space), and three Betty Boop cartoons with caricature, harassment or cruelty in them. Old cartoons are taken only from named series, with known bad episodes left out. Titles and descriptions with words for war, weapons, drugs, drink, tobacco, slurs and the like are dropped by the tool.
 - Nobody has watched these 109 through. The choosing was by title, description and what the Archive says of each film.
 
+### The room comes up without waiting for every picture (Nov 27)
+
+- Jackie: "sometimes monster plant doesn't load screen right away anymore".
+- The loading screen waited for every picture the game asks for at the start: several hundred, 160 of them decorations that are not needed to draw the room. Decoration pictures are now fetched without being waited for, and the loading screen never waits longer than seven seconds; anything still arriving then shows up when it lands.
+- Also true, and not changed: after each update the game loads once, sees it is out of date, and loads again. With many updates in one day that made every visit slow.
+- Not measured on a phone.
+
 ### Kalimba-Score opens with an introduction the first time (Nov 27)
 
 - Jackie: "I also want an intro page for kalimba-score saying that most of the films in this collection are early 20th century films often with no recoverable score so with the kalimba-score the viewer can become the live accompanist or write and record the score itself for future permanent viewing. and then note that the kalimba-score is adapted from the kalimbasizer, a pocket thumb synthesizer."
