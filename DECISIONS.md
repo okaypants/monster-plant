@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Movie room: one film menu, smaller watchers, sound on the gold plate (Nov 27)
+
+- Jackie: "the plant needs to be smaller so the screen is less obscured, we need audio control (prob the gold box) and we need to work out what all the objects do a bit better. since the books etc don't work and the movie clicking is a bit random maybe we need all those movie clicks to lead to the same menu".
+- One menu. The film cans, the reels, the tapes and the discs all open the same list now, with all six collections as buttons along the top. It opens on the collection you last looked at.
+- Smaller watchers. The monsters on the couch are about two thirds the size they were, so only the tops of their heads reach the bottom of the screen.
+- Sound. The gold plate on the right-hand wall turns the film's sound on and off, and its dial shows turned up while sound is on. Sound starts off each time you come in, because the music on these copies was added by whoever uploaded them and is not known to be free to use. Jackie asked for the control knowing the films had been muted.
+- What each thing does now: curtains or remote start and pause; the film things open the menu; the amplifier puts on tonight's film; the gold plate is sound; the cat can be woken and petted; Leave leaves. Still doing nothing: the books, the box set, the popcorn machine, the soda fountain, the cups, the buckets and the 3D glasses.
+- She also suggested "the remote can maybe change to a streaming live tv that you find". Not built; what can be streamed lawfully needs looking into first.
+
 ### The cat's eyes glow green every time the crystal ball is used (Nov 27)
 
 - Jackie: "the cat's eyes are supposed to turn green anytime i do the crystal ball".
