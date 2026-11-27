@@ -74,9 +74,9 @@
 .ostars.o2{box-shadow:13vw 20vh 0 1px #fdebc9,4vw 84vh 0 0 #fdebc9,26vw 7vh 0 1px #6c61a4,90vw 14vh 0 1px #fdebc9,90vw 93vh 0 0 #fdebc9,66vw 4vh 0 1px #6c61a4,30vw 95vh 0 1px #fdebc9,97vw 34vh 0 0 #fdebc9;animation:ost 2.4s step-end infinite}
 @keyframes ost{0%{visibility:visible}70%{visibility:hidden}}
 @media (prefers-reduced-motion:reduce){.ostars.o2{animation:none}}
-/* THE DARK ENDS OF A WIDE SCREEN (Jackie, Nov 26: "maybe we can put the little glimmering dots kind of like on the opening screen, so it looks like space or something back there"; Nov 27: "i would like the blinking background for the empty space around the game to be constellations and smaller and all small pixels so that small amounts of the image aren't just empty and black"). A small sky of constellations and single-pixel stars (tools/sky_build.py) repeats over the whole page behind the room, so even a thin strip past the room's edges has stars in it. Half the constellation stars blink at one pace and half at another. */
-#sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:url(../sky_a.png) 0 0/384px 384px;image-rendering:pixelated}
-#sky i{position:absolute;inset:0;background-size:384px 384px;image-rendering:pixelated}
+/* THE DARK ENDS OF A WIDE SCREEN (Jackie, Nov 26: "maybe we can put the little glimmering dots kind of like on the opening screen, so it looks like space or something back there"; Nov 27: "i would like the blinking background for the empty space around the game to be constellations and smaller and all small pixels so that small amounts of the image aren't just empty and black"). A wide sky of thirty constellations and single-pixel stars (tools/sky_build.py; 960 by 600, shown at twice that) lies over the whole page behind the room, so even a thin strip past the room's edges has stars in it. Half the constellation stars blink at one pace and half at another. */
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:url(../sky_a.png) 0 0/1920px 1200px;image-rendering:pixelated}
+#sky i{position:absolute;inset:0;background-size:1920px 1200px;image-rendering:pixelated}
 #sky i:nth-child(1){background-image:url(../sky_b.png);animation:ost 3.1s step-end infinite}
 #sky i:nth-child(2){background-image:url(../sky_c.png);animation:ost 4.7s step-end -2s infinite}
 #sky i:nth-child(3){display:none}
