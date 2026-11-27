@@ -67,17 +67,31 @@ function mvPlay(){const v=mvEl.querySelector('video'),f=mvFilm;
  if(v.paused){const p=v.play();if(p&&p.catch)p.catch(()=>{});mvEl.dataset.paused='';}else{v.pause();mvEl.dataset.paused='1';}}
 function mvEnd(){if(!mvEl||mvState==='closed')return;mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
-   While the curtains are open, the monsters and the cat sit on the couch as dark shapes against the screen, their lower halves
-   hidden behind the couch back. A dark shape from behind is the same as from the front, so each monster's own picture is used,
-   filled in dark; the cat is its from-behind pose. They are drawn once when the film starts. */
-const MV_SEAT={top:697,dark:'#1b0f1e',xs:[770,650,890],catX:1000,show:.68};
+   While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
+   hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
+   filled in dark. They are drawn once when the film starts. */
+const MV_SEAT={top:697,dark:'#1b0f1e',xs:[770,650,890],show:.68};
 function mvShadow(src,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0,w,h);x.globalCompositeOperation='source-in';x.fillStyle=MV_SEAT.dark;x.fillRect(0,0,w,h);return c;}
 function mvSeats(){const c=mvEl&&mvEl.querySelector('.mvseats');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);let n=0;
  const sit=(im,cx)=>{const y=Math.round(MV_SEAT.top-im.height*MV_SEAT.show);x.drawImage(im,Math.round(cx-im.width/2),y);};
  if(st.started)for(const p of allRaw()){if(p.stage==null||p.stage<4||n>=MV_SEAT.xs.length)continue; // a seed or a sprout stays in the plant room
   let pic=null;try{pic=plantPortrait(p.id,230,300);}catch(e){}if(pic&&pic.width>1)sit(mvShadow(pic,pic.width,pic.height),MV_SEAT.xs[n++]);}
- const f=typeof CATF!=='undefined'&&(CATF.back||CATF.sit1);if(ok(f)&&st.started){const k=.8;sit(mvShadow(f,Math.round(f.naturalWidth*k),Math.round(f.naturalHeight*k)),MV_SEAT.catX);}
  c.dataset.n=n;}
+/* THE CAT IN THE MOVIE ROOM (Jackie, Nov 26: "The cat can come in that room and sleep and interact on the floor or in the back of
+   the couch", "On the back"). Each time you come in, the cat is asleep in one of three places: along the top of the couch back, or
+   on the floor at either end of the rug. A tap wakes it and it sits up; a tap while it sits is a pet (its two petted poses, swapped);
+   left alone for a while it goes back to sleep. Its own pictures, swapped whole; it is not a dark shape. */
+const MV_CAT_SPOTS=[{x:1000,y:702,k:.44,sleep:['loaf2','curl1']},{x:205,y:912,k:.62,sleep:['curl1','side1']},{x:1475,y:912,k:.62,sleep:['curl1','loaf2']}],MV_CAT_NAP=12000;
+let mvCat=null,mvCatT=0;
+function mvCatShow(name){const im=mvEl&&mvEl.querySelector('.mvcat'),f=typeof CATF!=='undefined'&&CATF[name];if(!im||!f||!mvCat)return;
+ const put=()=>{const w=f.naturalWidth*mvCat.k,h=f.naturalHeight*mvCat.k;im.src=f.src;im.dataset.pose=name;im.style.cssText='left:'+((mvCat.x-w/2)/MV.W*100)+'%;top:'+((mvCat.y-h)/MV.H*100)+'%;width:'+(w/MV.W*100)+'%;height:'+(h/MV.H*100)+'%';im.hidden=false;};
+ if(ok(f))put();else f.addEventListener('load',put,{once:true});}
+function mvCatSleep(){if(!mvCat)return;mvCat.awake=false;mvCatShow(mvCat.nap);}
+function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');
+ if(!mvCat.awake){mvCat.awake=true;mvCatShow('sit1');}
+ else{mvCatShow('pet1');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('pet2');},260);setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit2');},700);}
+ mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
+function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[Math.floor(Math.random()*MV_CAT_SPOTS.length)];mvCat={...sp,nap:sp.sleep[Math.floor(Math.random()*sp.sleep.length)],awake:false};mvCatSleep();}
 /* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The amplifier on the right-hand shelf puts on tonight's film: one of the collection, the
    same all day and a different one tomorrow. A film watched to its end is remembered on this device and marked "seen" in its list. */
 const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
@@ -105,11 +119,12 @@ function openMovieRoom(){
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<button type="button" class="mvhot mvamp" aria-label="Tonight\'s film" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="Start or pause the film" style="'+mvPct(MV_REMOTE)+'"></button>'+
+  '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvPlay;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES[+b.dataset.shelf]));mvEl.querySelector('.mvback').onclick=openRooms;
- ui.appendChild(mvEl);mvSet('closed');}
-function closeMovieRoom(){if(!mvEl)return;mvPickClose();clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+ mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvCatEnter();}
+function closeMovieRoom(){if(!mvEl)return;mvPickClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */

@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### In the movie room only the monsters sit on the couch; the cat has its own places (Nov 26)
+
+- Jackie: "Maybe it's just your monster(s)", and "The cat can come in that room and sleep and interact on the floor or in the back of the couch", "On the back".
+- Only the monsters are dark shapes on the couch now. The cat is itself, in its own colours, asleep in one of three places each time you come in: along the top of the couch back, or on the floor at either end of the rug. A tap wakes it and it sits up; a tap while it sits is a pet; left alone for twelve seconds it goes back to sleep.
+
+### The viewfinder's picture is smaller and its second photograph fainter (Nov 26)
+
+- Jackie: "The images in the viewer are still weirdly zoomed", "And I think they can be offset slightly less".
+- The look-through picture no longer fills the screen (it is about four fifths of the height it was), and more plain mount is trimmed from its edges. The second photograph lies over the first at 30 percent, down from 50, so the doubling of near and far things is fainter. I am not sure this is what she meant by "zoomed"; she may need to say more.
+
 ### Three stranger collections join the movie room (Nov 26)
 
 - Jackie wanted "unusual things like really old film of things swimming ... vibey". From the research in research_notes/movieroom/strange_collections.md, three collections are added, sixteen films in all, each loaded in the game to confirm it plays:
