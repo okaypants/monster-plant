@@ -99,10 +99,49 @@ function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');
  mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
 function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[Math.floor(Math.random()*MV_CAT_SPOTS.length)];mvCat={...sp,nap:sp.sleep[Math.floor(Math.random()*sp.sleep.length)],awake:false};mvCatSleep();}
 /* SOUND (Jackie, Nov 27: "we need audio control (prob the gold box)"). The gold plate on the right-hand wall turns the film's sound
-   on and off. It starts off each time you come in: the films are silent-era, and the music on these copies was added later by
-   whoever uploaded them, so it is not known to be free to use. With sound on, the plate shows its dial turned up. */
-const MV_KNOB={x:1592,y:290,w:64,h:68};let mvSound=false;
+   on and off. It starts on (Jackie, Nov 27: "I want sound on movies etc if available"). The films are silent-era, and the music on these
+   copies was added later by whoever uploaded them, so it is not known to be free to use; she chose sound knowing that. With sound on, the plate shows its dial turned up. */
+const MV_KNOB={x:1592,y:290,w:64,h:68};let mvSound=true;
 function mvSoundSet(on){mvSound=!!on;if(!mvEl)return;const v=mvEl.querySelector('video');v.muted=!mvSound;mvEl.querySelector('.mvknobon').hidden=!mvSound;}
+/* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
+   the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
+     and every monster in the room that is old enough to eat is a little fuller;
+   the soda fountain and the cups offer three sodas; the tap pours, a cup lands on the couch, and nobody in the room is thirsty;
+   the 3D glasses turn the film amber, blue or rose, as silent films were often tinted, and then plain again;
+   the row of books opens the books about film, and the box set opens its three books, each read a page at a time. */
+const MV_CORN=[['butter','Butter popcorn'],['caramel','Caramel popcorn'],['cheese','Cheese popcorn'],['seaweed','Seaweed popcorn'],['charcoal','Charcoal popcorn']],
+ MV_SODA=[['red','Cherry soda'],['blue','Blueberry soda'],['yellow','Lemon soda']],MV_TINTS=['','amber','blue','rose'],MV_TINT_NAME={'':'No tint.',amber:'Amber tint.',blue:'Blue tint.',rose:'Rose tint.'},
+ MV_SPOTS={machine:{x:126,y:162,w:148,h:186},buckets:{x:1316,y:504,w:66,h:88},fountain:{x:1326,y:178,w:150,h:170},cups:{x:1476,y:240,w:78,h:108},glasses:{x:1384,y:540,w:80,h:52},boxset:{x:1470,y:496,w:82,h:96},books:{x:110,y:500,w:260,h:92}},
+ MV_ON={corn:{x:560,y:697,k:.42},cup:{x:1262,y:697,k:.4},pop:{x:124,y:160,w:152,h:192},pour:{x:1322,y:174,w:158,h:176}};
+let mvTrayEl=null,mvPopT=0,mvBooks=null,mvTint=0;
+function mvTrayClose(){if(mvTrayEl){mvTrayEl.remove();mvTrayEl=null;}}
+function mvPanel(cls,html){mvTrayClose();mvPickClose();const el=document.createElement('div');el.className='screen mvpick '+cls;el.innerHTML='<div class="mvpbox">'+html+'<button type="button" class="mvpx" aria-label="Close">×</button></div>';
+ el.querySelector('.mvpx').onclick=mvTrayClose;el.onclick=e=>{if(e.target===el)mvTrayClose();};ui.appendChild(el);mvTrayEl=el;return el;}
+function mvOver(cls,src,box,ms){if(!mvEl)return null;let im=mvEl.querySelector('.'+cls);if(!im){im=document.createElement('img');im.className='mvover '+cls;im.alt='';im.draggable=false;mvEl.querySelector('.mvstage').insertBefore(im,mvEl.querySelector('.mvcat'));}
+ im.src=src;im.style.cssText=mvPct(box);im.hidden=false;if(ms)setTimeout(()=>{im.hidden=true;},ms);return im;}
+function mvOnCouch(cls,src,at){const pic=new Image();pic.onload=()=>{const w=pic.naturalWidth*at.k,h=pic.naturalHeight*at.k;mvOver(cls,src,{x:at.x-w/2,y:at.y-h,w,h});};pic.src=src;}
+function mvServe(kind,id,name){mvTrayClose();sfx('chime');
+ if(kind==='corn'){mvOver('mvpop','movieroom/acc_machine_pop.png',MV_ON.pop,1600);mvOnCouch('mvcorn','movieroom/acc_corn_'+id+'.png',MV_ON.corn);if(st.started)eachPlant(()=>{if(st.stage>=4)st.full=clamp((st.full||0)+.35,0,1);});}
+ else{mvOver('mvpour','movieroom/acc_soda_pour_'+id+'.png',MV_ON.pour,1400);mvOnCouch('mvcup','movieroom/acc_cup_'+id+'.png',MV_ON.cup);if(st.started)eachPlant(()=>{if(st.stage>=0)st.needs.thirst=0;});}
+ if(st.started)save();mvNote(name+' for the couch.');}
+function mvOffer(kind){const L=kind==='corn'?MV_CORN:MV_SODA,pre=kind==='corn'?'acc_corn_':'acc_cup_';
+ const el=mvPanel('mvoffer','<div class="mvplist"><h2>'+(kind==='corn'?'Popcorn':'Soda')+'</h2><div class="mvtiles">'+L.map(([id,name])=>'<button type="button" class="mvtile" data-id="'+id+'"><img src="movieroom/'+pre+id+'.png" alt="" draggable="false"><span>'+name+'</span></button>').join('')+'</div></div>');
+ el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{const it=L.find(q=>q[0]===b.dataset.id);mvServe(kind,it[0],it[1]);});}
+function mvGlasses(){mvTint=(mvTint+1)%MV_TINTS.length;if(mvEl)mvEl.dataset.tint=MV_TINTS[mvTint];sfx('tick');mvNote(MV_TINT_NAME[MV_TINTS[mvTint]]);}
+/* reading: a book's pages one at a time */
+function mvRead(book,i=0){const n=book.pages.length;i=clamp(i,0,n-1);
+ const el=mvPanel('mvread','<div class="mvplist"><h2></h2><p class="mvrby"></p><p class="mvrtext"></p><div class="mvrfoot"><button type="button" class="mvrbtn mvrprev">Back</button><span>Page '+(i+1)+' of '+n+'</span><button type="button" class="mvrbtn mvrnext">'+(i<n-1?'Next':'Close the book')+'</button></div></div>');
+ el.querySelector('h2').textContent=book.t;el.querySelector('.mvrby').textContent=book.by;el.querySelector('.mvrtext').textContent=book.pages[i];
+ const pv=el.querySelector('.mvrprev');pv.disabled=i===0;pv.onclick=()=>mvRead(book,i-1);el.querySelector('.mvrnext').onclick=()=>i<n-1?mvRead(book,i+1):mvTrayClose();sfx('paper');}
+function mvShelfOfBooks(title,about,books){const el=mvPanel('mvbooks','<img src="movieroom/acc_book_open.png" alt="" draggable="false"><div class="mvplist"><h2>'+title+'</h2><p>'+about+'</p>'+
+  books.map((b,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
+ el.querySelectorAll('.mvpfilm').forEach(b=>{const k=books[+b.dataset.i];b.querySelector('b').textContent=k.t;b.querySelector('span').textContent=k.by;b.onclick=()=>mvRead(k);});}
+function mvBoxSet(){mvShelfOfBooks('The box set','Three small books about a famous trilogy.',MV_BOXSET);}
+function mvFilmBooks(){if(mvBooks&&mvBooks.length)mvShelfOfBooks('Books about film','Old books about the movies, in their own words.',mvBooks);else{mvNote('These books are still being copied out.');}}
+fetch('movieroom/books.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.books)mvBooks=j.books.filter(b=>b.pages&&b.pages.length).map(b=>({t:b.title,by:b.by+', '+b.year,pages:b.pages}));}).catch(()=>{});
+function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvthing';b.dataset.k=k;b.setAttribute('aria-label',label);b.style.cssText=mvPct(MV_SPOTS[k]);b.onclick=fn;st2.insertBefore(b,mvEl.querySelector('.mvnote'));};
+ add('machine','Popcorn',()=>mvOffer('corn'));add('buckets','Popcorn',()=>mvOffer('corn'));add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
+ add('glasses','Tint the film',mvGlasses);add('boxset','The box set',mvBoxSet);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
 /* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The amplifier on the right-hand shelf puts on tonight's film: one of the collection, the
    same all day and a different one tomorrow. A film watched to its end is remembered on this device and marked "seen" in its list. */
 const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
@@ -123,7 +162,7 @@ function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLa
 function openMovieRoom(){
  if(mvEl)return;
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
- mvEl.innerHTML='<div class="mvstage"><video playsinline muted preload="none" style="'+mvPct(MV.screen)+'"></video>'+
+ mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
@@ -136,8 +175,8 @@ function openMovieRoom(){
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
- mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(false);mvCatEnter();}
-function closeMovieRoom(){if(!mvEl)return;mvPickClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+ mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(mvSound);mvCatEnter();mvThingsWire();}
+function closeMovieRoom(){if(!mvEl)return;mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */

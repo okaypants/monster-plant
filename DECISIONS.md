@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Everything on the movie room's shelves does something, and films play with sound (Nov 27)
+
+- Jackie: "I want sound on movies etc if available - I want to work on all the stuff in the shelves they should work".
+- Sound is on when you come in. The gold plate still turns it off and on. The music on these copies was added by whoever uploaded them and is not known to be free to use; she chose sound knowing that.
+- Popcorn machine and the stack of buckets: five kinds of popcorn (butter, caramel, cheese, seaweed, charcoal). The machine pops, a bucket lands on the couch, and every monster old enough to eat is a little fuller.
+- Soda fountain and the cups: three sodas, which I named cherry, blueberry and lemon. The tap pours, a cup lands on the couch, and nobody in the room is thirsty.
+- 3D glasses: they turn the film amber, blue or rose and then plain again, as silent films were often tinted. This is my idea for them; they are not real 3D.
+- Box set: three small books read a page at a time (js/moviebooks.js): the old stories behind The Lord of the Rings, a first book of Elvish, and how the films were made. Written for the game in plain words, with single Elvish words only and nothing quoted from Tolkien or the films.
+- Row of books: opens the books about film. Their real passages are being copied out from the old books; until they arrive it says so.
+- Flavours do not change a monster's nature, only fill it up. That question is still Jackie's.
+
 ### The screen opens and closes the curtains; the remote runs the film (Nov 27)
 
 - Jackie: "you can open the curtains but I think you should be able to close them too by clicking the screen and only control playback with the remote".
