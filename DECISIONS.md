@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Stand-in pictures and plain word buttons in the movie room carry a fitting emoji (Nov 27)
+
+- Jackie: "Use relevant emojis anytime crude but images are made" (dictated; read as: where a crude stand-in was drawn or a button is only a word, use an emoji that fits).
+- The "Take them down" tile shows a box in place of a plain cross. The remote reads ▶️ Play, ⏸️ Pause and 🎞️ Film library. Your films reads 📤 Share, 🗑️ Remove and 📥 Add a soundtrack someone sent you. The Rooms button already had its door.
+
 ### Soundtracks are recorded very small and can be passed to other people as a file (Nov 27)
 
 - Jackie: "I think the song files need to be really small, really small, and like poor quality is fine if they're dealing with these black and white movies and we need to be able to share them via whatever with other people and then for them to be able to like load it into their own things so that they can like watch the movie with other people's scores if they want easily".
