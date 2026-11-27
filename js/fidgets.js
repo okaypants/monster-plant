@@ -103,17 +103,21 @@ function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)
    minute"). Every time the ball is used, for as long as its vision lasts, the cat sits up with its eyes glowing green, whatever it was
    doing (its glowing pose, js/cat.js). At most once a minute the things in the room also lift a few pixels and bob (whole pixels), and a few green
    motes drift up. Then everything settles back on its own spring. */
-const SPELL_GAP=60000,SPELL_LIFT=5;let spellT=-1e9,eyesT=-1e9;
-function spellOn(){return performance.now()-spellT<BALL_MS;}
-function eyesOn(){return performance.now()-eyesT<BALL_MS;} // the cat's eyes glow every time the ball is used (Jackie, Nov 27: "the cat's eyes are supposed to turn green anytime i do the crystal ball"); only the floating waits a minute
+/* THE ORDER OF IT (Jackie, Nov 27: "click > swirling > cats eyes a little after swirling starts -> items float > prophecy"). The tap
+   starts the ball swirling. BALL_EYES_AT ms later the cat's eyes light. BALL_FLOAT_AT ms after the tap the things begin to lift (when
+   it is their turn: at most once a minute). BALL_SAY_AT ms after the tap the prophecy is spoken. Eyes and floating both last until a
+   little after the prophecy has appeared. */
+const SPELL_GAP=60000,SPELL_LIFT=5,BALL_EYES_AT=600,BALL_FLOAT_AT=1300,BALL_SAY_AT=2500,BALL_END=3900;let spellT=-1e9,eyesT=-1e9;
+function spellOn(){const d=performance.now()-spellT;return d>=0&&d<BALL_END-BALL_FLOAT_AT;}
+function eyesOn(){const d=performance.now()-eyesT;return d>=0&&d<BALL_END-BALL_EYES_AT;} // the cat's eyes glow every time the ball is used (Jackie, Nov 27: "the cat's eyes are supposed to turn green anytime i do the crystal ball"); only the floating waits a minute
 function spellStep(){if(!spellOn())return false;const u=(performance.now()-spellT)/1000;
  FP.forEach((p,i)=>{const up=Math.min(1,u/.6)*(SPELL_LIFT+i%3);p.oy=-Math.round(up+Math.sin(u*2.2+i*1.7));p.vy=0;p.ox=0;p.vx=0;});
  if(Math.random()<.18){const p=FP[Math.floor(Math.random()*FP.length)];fBits.push({x:p.x+rnd(0,p.w),y:p.y+p.h-rnd(0,20),vx:rnd(-.2,.2),vy:rnd(-.9,-.4),g:-.004,sway:true,life:rnd(70,120),c:Math.random()<.5?'#39ff14':'#b6ffa8'});if(fBits.length>160)fBits.shift();}
  return true;}
-function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;eyesT=now;if(now-spellT>=SPELL_GAP)spellT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;eyesT=now+BALL_EYES_AT;if(now+BALL_FLOAT_AT-spellT>=SPELL_GAP)spellT=now+BALL_FLOAT_AT;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
  ballCur={i,tints:Array.from({length:8},()=>T[Math.floor(Math.random()*T.length)]),eyes:Math.random()<BALL_EYES};sfx('chime');
  if(!st.ballMet){st.ballMet=1;tell('The crystal ball has visions of things to come.',{kind:'info',key:'ballHi'});}
- setTimeout(()=>tell(ballSay(BALL_VISIONS[i]),{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);
+ setTimeout(()=>tell(ballSay(BALL_VISIONS[i]),{kind:'info',key:'ballSign',now:true,long:true}),BALL_SAY_AT);
  try{const s=ballLog(),d=new Date();s.looks.push([d.getHours()*60+d.getMinutes(),i]);if(s.looks.length>12)s.looks.shift();localStorage.setItem(BALL_KEY,JSON.stringify(s));}catch(e){}
  if(st.started&&bump('shakes')>=30)earnPot('frost');}
 /* THE MOON DIAL: its face shows tonight's moon, and a tap opens the moon page (js/moonpage.js), one card about tonight's moon. */
