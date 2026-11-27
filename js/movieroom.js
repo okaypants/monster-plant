@@ -288,7 +288,7 @@ function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn
    - the right-hand unit's drawer holds the string lights: a strand along the top of the wall, behind the plants, twinkling as
      in the study room.
    What is up is remembered with the save (mvDecor, mvLights). */
-const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},toys:{x:412,y:606,w:200,h:50},lights:{x:1312,y:604,w:250,h:60}},MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
+const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},lights:{x:412,y:606,w:200,h:50},toys:{x:628,y:606,w:202,h:50}}/* the first three drawers from the left, in the order you would dress a room: decorations, then string lights, then the cat's toys (Jackie, Nov 27: "we also want the drawers to be logically organized left to right"); the other three are empty for now */,MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
 let mvLightsT=0;
 function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)return;const x=c.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,c.width,c.height);let n=st.mvLights;
  if(!n||typeof LIGHTS_IMG==='undefined')return;if(n==='auto')n=lightsAuto(st.mvDecor); /* Seasonal: with the movie room's decorations, or the time of year */const on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off)||!MV_TOP_MASK.complete)return;const ox=35,oy=6;x.drawImage(on,ox,oy);
@@ -299,13 +299,17 @@ function mvDecorShow(){if(!mvEl)return;const id=st.mvDecor,g=mvEl.querySelector(
  mvOnCouch('mvgarland','decor/'+id+'_w.png',{x:835,y:818,k:1});const s=typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
  if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:96,y:912,k:fl==='pumpkin'||fl==='tree'?.5:1});}
 function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();mvLightsDraw();sfx(id?'chime':'tick');const s=id&&DECOR_SETS.find(q=>q.id===id);mvNote(s?'The movie room is decorated for '+s.name+'.':'The decorations are back in the drawer.');}
-function mvDrawer(k){
- if(k==='decor'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Decorations</h2><div class="mvtiles mvchips">'+(st.mvDecor?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+'<div class="mvhead">Seasons</div>'+decorSeasonal().map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'<div class="mvhead">Holidays</div>'+decorHolidays().map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'</div></div>');
-  el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvDecorSet(b.dataset.id);});return;}
- if(k==='lights'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>String lights</h2><div class="mvtiles mvchips">'+(st.mvLights?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+[['auto','Seasonal']].concat(LIGHTS_KINDS).map(([id,n])=>'<button type="button" class="mvrbtn'+(st.mvLights===id?' on':'')+'" data-id="'+id+'">'+n+'</button>').join('')+'</div></div>');
-  el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvLightsSet(b.dataset.id);});return;}
- const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Cat toys</h2><div class="mvtiles">'+CUB_TOYS.map(t=>'<button type="button" class="mvtile" data-id="'+t.id+'"><img src="'+CUB_IMG[t.id].src+'" alt="" draggable="false"><span>'+t.name+'</span></button>').join('')+'</div></div>');
- el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{mvTrayClose();mvToy(CUB_TOYS.find(t=>t.id===b.dataset.id));});}
+/* THE DRAWERS' MENUS (Jackie, Nov 27: "within the drawers the menus should be neat with each image tightly managed"). All three
+   are the same grid of equal tiles: a picture held inside a box of one size, with its name underneath. A decoration shows its floor
+   piece, a strand shows its first few bulbs, a toy shows itself. Taking things down is the first tile when something is up. */
+function mvDrawerTile(id,name,pic,on){return '<button type="button" class="mvdt'+(on?' on':'')+'" data-id="'+id+'"><i'+(pic?' style="background-image:url('+pic+')"':'')+(pic&&pic.includes('lights_')?' class="strand"':'')+'>'+(pic?'':'\u00d7')+'</i><span>'+name+'</span></button>';}
+function mvDecorPic(s){return s.floor==='pumpkin'?PUMPKIN[0].src:s.floor==='tree'?TREE[0].src:'decor/'+s.floor+'.png';}
+function mvDrawer(k){let h='',pick;
+ if(k==='decor'){const t=s=>mvDrawerTile(s.id,s.name,mvDecorPic(s),st.mvDecor===s.id);pick=mvDecorSet;
+  h='<h2>Decorations</h2><div class="mvdgrid">'+(st.mvDecor?mvDrawerTile('','Take them down',''):'')+'<div class="mvhead">Seasons</div>'+decorSeasonal().map(t).join('')+'<div class="mvhead">Holidays</div>'+decorHolidays().map(t).join('')+'</div>';}
+ else if(k==='lights'){pick=mvLightsSet;h='<h2>String lights</h2><div class="mvdgrid">'+(st.mvLights?mvDrawerTile('','Take them down',''):'')+[['auto','Seasonal']].concat(LIGHTS_KINDS).map(([id,n])=>mvDrawerTile(id,n,'decor/lights_'+(id==='auto'?lightsAuto(st.mvDecor):id)+'_on.png',st.mvLights===id)).join('')+'</div>';}
+ else{pick=id=>mvToy(CUB_TOYS.find(t=>t.id===id));h='<h2>Cat toys</h2><div class="mvdgrid">'+CUB_TOYS.map(t=>mvDrawerTile(t.id,t.name,CUB_IMG[t.id].src)).join('')+'</div>';}
+ const el=mvPanel('mvdrawer','<div class="mvplist">'+h+'</div>');el.querySelectorAll('.mvdt').forEach(b=>b.onclick=()=>{mvTrayClose();pick(b.dataset.id);});}
 function mvToy(t){if(!mvCat){mvNote('The cat is not here.');return;}const left=mvCat.x>835?-1:1;mvOnCouch('mvtoy',CUB_IMG[t.id].src,{x:mvCat.x+left*86,y:mvCat.y,k:mvCat.k*1.1});sfx('chime');
  clearTimeout(mvCatT);mvCat.awake=true;let at=0;for(const [pose,sec] of t.seq){if(!at)mvCatShow(pose);else setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow(pose);},at*1000);at+=sec;} // the same poses, in the same order, as with that toy in the study room
  if(t.pic)setTimeout(()=>{const im=mvEl&&mvEl.querySelector('.mvtoy');if(im)im.src=CUB_IMG[t.pic].src;},300);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);

@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room's drawers run decorations, string lights, cat toys, and their menus are one neat grid (Nov 27)
+
+- Jackie: "We also want the drawers to be logically organized left to right and within the drawers the menus should be neat with each image tightly managed."
+- The first three drawers from the left are decorations, string lights and cat toys, in the order you would dress a room. The other three are empty for now. (The string lights were in the far right drawer and the toys in the second.)
+- All three menus are the same grid of equal tiles: a picture held inside a box of one size with its name under it. A decoration shows its floor piece, a strand shows its first bulbs on a dark strip, a toy shows itself. The toys' pictures used to spill over their tiles, and the other two menus were words only.
+
 ### The remote says Film library, not Play, when nothing is chosen (Nov 27)
 
 - Jackie: "on the remote it says 'play' which suggests like turning on the tv and randomly watching something but is actually opening the film library. call that the DVR maybe. or VOD."
