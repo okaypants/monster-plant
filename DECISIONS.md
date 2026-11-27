@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Kalimba-Score always shows the big screen, set up opens over it, and the sideways pads are keys (Nov 27)
+
+- Jackie: "it was confusing because when the screen is small it looks like a kalimba which isn't good. it should always be big screen AND you have options to set up. For the horizontal, I love but actually lets turn those back into keys -- just like it is but like keys."
+- Inside the game the film is always big, even before one is chosen: the dark screen then says "tap to choose a film". The view with the film small is gone.
+- SET UP opens the instrument's options (sound, key, scale, shape, octave, glide, hold, takes) in a strip above the film and closes them again. The film shrinks a little while the strip is open.
+- Sideways, each side is now a kalimba turned on its side: a rail down the outer edge and a tine for each note reaching in toward the film, long for the low notes at the bottom and shorter going up. A thumb plucks a tine by touching it and runs through them by sliding; where along the tine it lands still sets the tone. A plucked tine lights and throws a few sparks. The ribbon that followed the thumb and the swish of air went with the pads.
+
 ### Movie room decorations: a garland on each shelf unit, the floor piece larger at the left (Nov 27)
 
 - Jackie, asked where decorations should go and how big: "garland across top left and top right unit and decoration on left side a little below the shelving and kinda larger but not huge".

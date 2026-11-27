@@ -124,7 +124,11 @@ html.film #kbar{display:block}
 html.film #kside{grid-template-columns:repeat(5,1fr);gap:5px}
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
-html:not(.film) .kx{display:none} /* the film's own controls show only with the film big */
+html:not(.film) .kx{display:none}
+#ksetup{display:none}html.film.setup #ksetup{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;flex:none}
+html.film #ksetup .cap{display:block;grid-column:auto;height:auto;min-height:0;padding:4px 6px;overflow:hidden}html.film #ksetup .cap .lbl{font-size:8px}html.film #ksetup .cap .val{margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}html.film #ksetup .cap .num{display:none}
+html.film #ksetup .cap.oct{display:flex;padding:0}html.film #ksetup #bRec,html.film #ksetup #bKeys,html.film #ksetup #bMet{display:none} /* recording and the click have their own buttons under the film, and the number of keys is fixed here */
+#knofilm{position:absolute;left:0;top:0;right:0;z-index:1;border:0;background:transparent;color:#FBF8F1;font:600 14px 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;cursor:pointer;aspect-ratio:4/3;max-height:100%} /* the film's own controls show only with the film big */
 /* the bar under the film: where you are, the parts you have recorded (orange), and a loop if one is set (outlined). Drag along it to move. */
 #kbar{display:none;position:relative;flex:none;height:16px;border:1.4px solid var(--ink);border-radius:8px;background:#2A2A28;overflow:hidden;touch-action:none;cursor:pointer}
 #kbarP i{position:absolute;top:3px;bottom:3px;background:#FF6A2B;opacity:.8;border-radius:3px}#kbarL{position:absolute;top:0;bottom:0;display:none;border-left:2px solid #FBF8F1;border-right:2px solid #FBF8F1;background:rgba(251,248,241,.18)}
@@ -533,21 +537,23 @@ function padDown(e){const P=padAt(e.clientX,e.clientY),nid=++uid;if(!P){pointers
   pointers.set(e.pointerId,{pad:P,zone:r.zone,h:padOn(P,r.zone,r.bright,.85,nid),nid,x:e.clientX,y:e.clientY,t:performance.now(),trail:[[e.clientX,e.clientY]],sw:0});padSpark(e.clientX,e.clientY,10,2.6)}
 function padMove(e){const p=pointers.get(e.pointerId);if(!p||!p.pad)return;const P=p.pad,x=clamp(e.clientX,P.x,P.x+P.w),y=clamp(e.clientY,P.y,P.y+P.h),tn=performance.now(),dt=Math.max(1,tn-p.t),sp=Math.hypot(x-p.x,y-p.y)/dt; // pixels a millisecond
   const r=padRead(P,x,y);if(r.zone!==p.zone){const v=clamp(.45+sp*.5,.45,1);if(!(p.h&&p.h.mono))padOff(p.h,p.nid);p.h=padOn(P,r.zone,r.bright,v,p.nid);p.zone=r.zone;padSpark(x,y,5,1.6+sp*2.5)}
-  if(sp>1.1&&tn-p.sw>170){p.sw=tn;swish(clamp(sp*.35,.2,.8),P.pn)}
-  if(sp>.15)padSpark(x,y,1,.8+sp*1.6);p.trail.push([x,y]);if(p.trail.length>14)p.trail.shift();p.x=x;p.y=y;p.t=tn}
+  p.x=x;p.y=y;p.t=tn}
+/* THE PADS ARE KEYS (Jackie, Nov 27: "For the horizontal, I love but actually lets turn those back into keys -- just like it is
+   but like keys"). Each side is a kalimba turned on its side: a rail down the outer edge and a tine for every note reaching in
+   toward the film, long for the low notes at the bottom and shorter going up. A thumb plucks a tine by touching it and runs
+   through them by sliding; where along the tine it lands still sets the tone. A plucked tine lights and throws a few sparks. */
+function padKey(P,i,z){const zh=P.h/z,h=Math.min(zh*.74,44),len=(P.w-30)*(1-.3*i/Math.max(1,z-1)),y=P.y+P.h-(i+.5)*zh-h/2,x=P.side?P.x+P.w-12-len:P.x+12;return{x,y,w:len,h}}
 function drawPads(time){const day=SOUNDS[soundI][1],body=NIGHT?nightBody()[0]:day,S=TUNE()[2],z=S.length+1,ink=NIGHT?CREAM:INK;
-  for(const P of G.pads){ctx.save();ctx.fillStyle=INK;rr(P.x+3,P.y+4,P.w,P.h,26);ctx.fill();ctx.fillStyle=body;rr(P.x,P.y,P.w,P.h,26);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.clip();
-    const zh=P.h/z;for(let i=0;i<z;i++){const y=P.y+P.h-(i+1)*zh,fl=P.flash[i]||0;if(fl>.02){ctx.globalAlpha=fl*.5;ctx.fillStyle=CREAM;ctx.fillRect(P.x,y,P.w,zh);P.flash[i]=fl*.9}
-      ctx.globalAlpha=(i%S.length===0)?.5:.16;ctx.fillStyle=ink;ctx.fillRect(P.x+10,y+zh-1,P.w-20,(i%S.length===0)?2:1); // the line under each note; the home note's is stronger
-      ctx.globalAlpha=.45;ctx.font="500 9px 'IBM Plex Mono',monospace";ctx.textAlign=P.side?'right':'left';ctx.textBaseline='middle';ctx.fillText(i%S.length+1,P.side?P.x+P.w-9:P.x+9,y+zh/2)}
-    ctx.restore()}
-  pointers.forEach(p=>{if(!p.pad||p.trail.length<2)return;ctx.save();ctx.lineCap='round';ctx.strokeStyle=CREAM;for(let i=1;i<p.trail.length;i++){ctx.globalAlpha=i/p.trail.length*.8;ctx.lineWidth=2+i/p.trail.length*9;ctx.beginPath();ctx.moveTo(p.trail[i-1][0],p.trail[i-1][1]);ctx.lineTo(p.trail[i][0],p.trail[i][1]);ctx.stroke()}
-    ctx.globalAlpha=.9;ctx.fillStyle=CREAM;ctx.beginPath();ctx.arc(p.x,p.y,13,0,TAU);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.restore()});
-  for(let i=sparks.length-1;i>=0;i--){const q=sparks[i];q.x+=q.vx;q.y+=q.vy;q.vy+=.06;q.life-=.032;if(q.life<=0){sparks.splice(i,1);continue}ctx.globalAlpha=q.life;ctx.fillStyle=q.hot?TE:CREAM;ctx.beginPath();ctx.arc(q.x,q.y,q.r*q.life+.4,0,TAU);ctx.fill()}
-  ctx.globalAlpha=1;const L=G.pads[0],R=G.pads[1];ctx.save();ctx.textAlign='center';ctx.textBaseline='middle'; // what the display strip says, at the top of the pads
-  if(time-lcdMsgT<2600){ctx.globalAlpha=.85;ctx.fillStyle=ink;ctx.font="600 9px 'IBM Plex Mono',monospace";const words=lcdMsg.split(' · ');words.forEach((w,i)=>ctx.fillText(w,L.x+L.w/2,L.y+16+i*12))}
-  if(rec){ctx.globalAlpha=1;ctx.fillStyle='#E5372B';ctx.font="600 10px 'IBM Plex Mono',monospace";ctx.fillText((Math.floor(time/500)%2?'● ':'  ')+'REC '+fmt((time-recStart)/1000),R.x+R.w/2,R.y+16)}
-  else{ctx.globalAlpha=.5;ctx.fillStyle=ink;ctx.font="500 8px 'IBM Plex Mono',monospace";ctx.fillText(`${SOUNDS[soundI][0].toUpperCase()} · ${TUNE()[0].toUpperCase()}`,R.x+R.w/2,R.y+16)}
+  for(const P of G.pads){ctx.save();ctx.fillStyle=INK;rr(P.x+3,P.y+4,P.w,P.h,26);ctx.fill();ctx.fillStyle=body;rr(P.x,P.y,P.w,P.h,26);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();ctx.restore();
+    for(let i=0;i<z;i++){const k=padKey(P,i,z),fl=P.flash[i]||0,dx=(P.side?-1:1)*fl*3;if(fl>.02)P.flash[i]=fl*.88;ctx.save();
+      ctx.fillStyle=INK;ctx.globalAlpha=.9;rr(k.x+2+dx,k.y+3,k.w,k.h,k.h/2);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle=fl>.05?mix(NIGHT?'#D9D6CE':CREAM,TE,fl*.55):(NIGHT?'#D9D6CE':CREAM);rr(k.x+dx,k.y,k.w,k.h,k.h/2);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();
+      ctx.fillStyle=INK;ctx.globalAlpha=(i%S.length===0)?.95:.6;ctx.font="600 12px 'IBM Plex Mono',monospace";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i%S.length+1,P.side?k.x+dx+k.h*.55:k.x+dx+k.w-k.h*.55,k.y+k.h/2+.5);ctx.restore()}
+    const rx=P.side?P.x+P.w-22:P.x+22;ctx.save();rr(rx-3.5,P.y+14,7,P.h-28,3.5);ctx.fillStyle=NIGHT?'#6B6E7C':CREAM;ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.2;ctx.stroke(); // the rail the tines are held under
+    ctx.fillStyle=NIGHT?CREAM:INK;ctx.globalAlpha=.55;for(let i=0;i<z;i++){const k=padKey(P,i,z);ctx.beginPath();ctx.arc(rx,k.y+k.h/2,1.5,0,TAU);ctx.fill()}ctx.restore()}
+  for(let i=sparks.length-1;i>=0;i--){const q=sparks[i];q.x+=q.vx;q.y+=q.vy;q.vy+=.06;q.life-=.04;if(q.life<=0){sparks.splice(i,1);continue}ctx.globalAlpha=q.life;ctx.fillStyle=q.hot?TE:CREAM;ctx.beginPath();ctx.arc(q.x,q.y,q.r*q.life+.4,0,TAU);ctx.fill()}
+  ctx.globalAlpha=1;const L=G.pads[0],R=G.pads[1];ctx.save();ctx.textAlign='center';ctx.textBaseline='middle'; // what the display strip says, across the top of the keys
+  if(time-lcdMsgT<2600){ctx.font="600 9px 'IBM Plex Mono',monospace";const words=lcdMsg.split(' · ');const w=Math.max(...words.map(q=>ctx.measureText(q).width))+14;ctx.globalAlpha=.9;ctx.fillStyle=LCDBG;rr(L.x+L.w/2-w/2,L.y+7,w,6+words.length*12,6);ctx.fill();ctx.fillStyle='#EDEAE2';words.forEach((q,i)=>ctx.fillText(q,L.x+L.w/2,L.y+16+i*12))}
+  if(rec){ctx.font="600 10px 'IBM Plex Mono',monospace";const t=(Math.floor(time/500)%2?'● ':'  ')+'REC '+fmt((time-recStart)/1000),w=ctx.measureText(t).width+14;ctx.globalAlpha=.92;ctx.fillStyle=LCDBG;rr(R.x+R.w/2-w/2,R.y+7,w,18,6);ctx.fill();ctx.fillStyle='#E5372B';ctx.fillText(t,R.x+R.w/2,R.y+16)}
   ctx.restore();if(grainPat){ctx.save();ctx.globalCompositeOperation='multiply';ctx.globalAlpha=.22;ctx.translate(-rnd(180),-rnd(180));ctx.fillStyle=grainPat;ctx.fillRect(0,0,W+180,H+180);ctx.restore()}}
 function resize(){TOP=Math.ceil($('panel').getBoundingClientRect().bottom)+2;DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);buildGrain();geo()}
 addEventListener('resize',resize);resize();
@@ -719,7 +725,12 @@ requestAnimationFrame(frame);
 const KF={films:[],film:null,scoring:false,arming:false,count:0,parts:[],player:null,dirty:false,t0:0,loop:null,by:'',card:0};
 try{if(parent!==window&&parent.mvKalimbaFilms){KF.films=parent.mvKalimbaFilms().flatMap(sh=>sh.films.map(f=>({...f,shelf:sh.name})));KF.src=parent.mvKalimbaSrc;}}catch(e){}
 const kv=$('kv'),KCARDS=[['#1C1C1B','#FBF8F1','night'],['#F2B8A2','#1C1C1B','peach'],['#BFD8B8','#1C1C1B','moss'],['#C9C3E6','#1C1C1B','dusk']]; // title card colours: ground, lettering
-function kfView(on){document.documentElement.classList.toggle('film',!!on&&!!KF.film);$('kViewV').textContent=document.documentElement.classList.contains('film')?'set up':'big film';resize();}
+/* ALWAYS THE BIG SCREEN (Jackie, Nov 27: with the film small "it looks like a kalimba which isn't good. it should always be big
+   screen AND you have options to set up"). Inside the game the film is always big, even before one is chosen (the screen then
+   says to tap it to choose). SET UP no longer swaps to a different view: it opens the instrument's options (sound, key, scale,
+   rows, shape, octave, glide, hold, takes) in a strip above the film, and DONE on the same button puts them away. */
+function kfView(){document.documentElement.classList.add('film');resize();}
+function kfSetup(on){const d=document.documentElement;d.classList.toggle('setup',on===undefined?!d.classList.contains('setup'):!!on);$('kViewV').textContent=d.classList.contains('setup')?'close':'set up';resize();}
 /* A FILM'S SOUNDTRACK IS BUILT IN PARTS (Jackie, Nov 27: "you should be able to record in parts and record the parts easily that will
    assemble into a single recording you can save into a finished movie"; "and maybe easily loop something? or multi track lol").
    Move to any moment of the film and RECORD: it counts 3, 2, 1 and records a part from there until you stop. Parts show orange on
@@ -729,8 +740,8 @@ function kfView(on){document.documentElement.classList.toggle('film',!!on&&!!KF.
 function kfPlayerMake(){if(KF.player)KF.player.free();KF.player=KF.parts.length?scorePlayer({parts:KF.parts}):null;kfBar();const n=KF.parts.length;$('kSaveV').textContent=n?n+(n>1?' parts':' part'):'no parts';$('kSaveL').textContent=KF.dirty?'SAVE ●':'SAVE';}
 function kfBar(){const d=kv.duration||0,b=$('kbarP'),L=$('kbarL');b.innerHTML='';if(!d){L.style.display='none';return}for(const p of KF.parts){const i=document.createElement('i');i.style.left=(p.t/d*100)+'%';i.style.width=Math.max(.8,p.dur/d*100)+'%';b.appendChild(i);}
   if(KF.loop&&KF.loop.b!=null){L.style.display='block';L.style.left=(KF.loop.a/d*100)+'%';L.style.width=((KF.loop.b-KF.loop.a)/d*100)+'%';}else L.style.display='none';}
-function kfSet(f){kfQuiet();KF.film=f;KF.parts=[];KF.dirty=false;KF.loop=null;$('kLoopV').textContent='off';$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();
-    scoreGet(f).then(r=>{if(KF.film!==f||KF.dirty)return;KF.parts=scoreParts(r).map(p=>({t:p.t,dur:p.dur,blob:p.blob,mime:p.mime}));KF.by=(r&&r.by)||'';KF.card=(r&&r.card)||0;kfPlayerMake();}).catch(()=>{});}kfPlayerMake();kfView(true);}
+function kfSet(f){kfQuiet();KF.film=f;{const tip=$('knofilm');if(tip)tip.style.display=f?'none':''}KF.parts=[];KF.dirty=false;KF.loop=null;$('kLoopV').textContent='off';$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();
+    scoreGet(f).then(r=>{if(KF.film!==f||KF.dirty)return;KF.parts=scoreParts(r).map(p=>({t:p.t,dur:p.dur,blob:p.blob,mime:p.mime}));KF.by=(r&&r.by)||'';KF.card=(r&&r.card)||0;kfPlayerMake();}).catch(()=>{});}kfPlayerMake();kfView();}
 function kfPick(){if(!KF.films.length){say('open me from the movie room for films');return}if(KF.dirty){kfKeep();return}
   openSheet('FILM',KF.films.map(f=>({label:f.t,sub:f.by+' · '+f.len,sel:KF.film===f,quiet:true,act:()=>kfSet(f)})),220)}
 /* MOVING ABOUT WHILE YOU PRACTISE (Jackie, Nov 27: "you should also be able to easily go back or forward when practicing during
@@ -775,8 +786,10 @@ $('kkYes').onclick=()=>{const f=KF.film,P=KF.parts;if(!f)return;if(!P.length){$(
   try{localStorage.setItem('mp-scorer',by)}catch(e){}return scorePut(f,{parts:P,by,card:kkCard,meta:`${SOUNDS[soundI][0]} · ${TUNE()[0]}`}).then(()=>{KF.by=by;KF.card=kkCard;KF.dirty=false;kfPlayerMake();kfKeepEnd();say('saved to your films');try{parent.postMessage('mp-kalimba-score','*')}catch(e){}});}).catch(()=>{$('kkInfo').textContent='It could not be kept on this device.';});};
 $('kkeep').addEventListener('pointerdown',e=>e.stopPropagation());
 press($('kPick'),kfPick);press($('kPlay'),kfPlay);press($('kGo'),kfGo);press($('kRew'),()=>kfSeekTo(kv.currentTime-10));press($('kFwd'),()=>kfSeekTo(kv.currentTime+10));press($('kLoop'),kfLoop);press($('kMet'),metSheet);press($('kSave'),kfKeep);
-press($('kView'),()=>kfView(!document.documentElement.classList.contains('film')));press($('kBack'),()=>{if(kfBusy())kfStop();if(KF.dirty){kfKeep();say('save or undo first');return}kfQuiet();if(KF.player)KF.player.stop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
+press($('kView'),()=>kfSetup());press($('kBack'),()=>{if(kfBusy())kfStop();if(KF.dirty){kfKeep();say('save or undo first');return}kfQuiet();if(KF.player)KF.player.stop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
 if(!KF.films.length){$('kfilm').style.display='none';}
+else{const box=document.createElement('div');box.id='ksetup';const P=$('panel');[...P.children].forEach(c=>{if(c.id!=='kfilm')box.appendChild(c)});P.insertBefore(box,$('kfilm')); // the instrument's own options, gathered into one strip that SET UP shows
+  const tip=document.createElement('button');tip.id='knofilm';tip.type='button';tip.textContent='tap to choose a film';$('kfilm').insertBefore(tip,$('kbar'));press(tip,kfPick);kfView();}
 try{const want=new URLSearchParams(location.search).get('film');if(want){const f=KF.films.find(q=>q.id===want);if(f)kfSet(f);}}catch(e){}
 addEventListener('load',()=>setTimeout(resize,50));
 </script>
