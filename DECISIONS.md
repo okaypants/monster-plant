@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Trouble messages never stay up, and the remote's display is taller (Nov 27)
+
+- Jackie: "sometimes a 'the film could not start it needs a connection' gets stuck on screen i hate it". Two causes. Starting something else before the last thing had begun was being reported as a failure, which it is not; that no longer says anything. And a real failure's message stayed until something replaced it; it now goes after eight seconds, or at once when a picture starts playing.
+- Jackie: "now make the info stuff at the very top taller bringing all the buttons down a little". The remote's display is nearly twice as tall.
+
 ### Rewind and fast forward, for films only (Nov 27)
 
 - Jackie: "change the >> button and << button to fast forward and rewind not next", "but only for films not tv".
