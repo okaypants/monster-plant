@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The remote says Film library, not Play, when nothing is chosen (Nov 27)
+
+- Jackie: "on the remote it says 'play' which suggests like turning on the tv and randomly watching something but is actually opening the film library. call that the DVR maybe. or VOD."
+- With no film chosen the button reads "Film library" and opens it. With a film chosen it reads Play or Pause, and a second "Film library" button sits beside it. "Film library" was used in place of DVR or VOD because it says what opens; she can change the word.
+
 ### Summer has no maypole (Nov 27)
 
 - Jackie: "in summer decorations, there's a cross -- get rid of it and repurpose something else". The floor piece was a midsummer maypole, which is a cross. Its picture is removed, and the pot of many-coloured flowers stands there for now.

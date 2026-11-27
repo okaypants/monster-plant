@@ -177,9 +177,9 @@ function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl.querySelector('video');
 addEventListener('resize',()=>mvTvPlace());
 function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite loop is shown like a film
 function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused;
- const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(on?'Pause':'Play')+'</button><p>Live</p>'+
+ const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(!mvFilm?'Film library':on?'Pause':'Play')+'</button>'+(mvFilm?' <button type="button" class="mvrbtn mvrlib">Film library</button>':'')+'<p>Live</p>'+
   MV_LIVE.map((c,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
- el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};
+ el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};const lib=el.querySelector('.mvrlib');if(lib)lib.onclick=()=>{mvTrayClose();mvPick();};
  el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by;b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
