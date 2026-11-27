@@ -156,19 +156,29 @@ const MV_LIVE=[
  {id:'iss-earth',t:'The Earth from the space station',by:'NASA, live',yt:'ROboUHfPUrU'},
  {id:'iss',t:'The space station’s cameras',by:'NASA, live',yt:'M3HKLzjvKPc'},
  {id:'kilauea',t:'Kīlauea volcano',by:'U.S. Geological Survey, live',yt:'HggWKlZv9yk'}];
+/* A live camera on the room's own screen (Jackie, Nov 27: "Can you not figure out a way to kind of incorporate the youtube ones into
+   the screen w/o a popup?"). YouTube's rules stand: its player may not be smaller than 200 pixels either way, and nothing may be
+   drawn over it. On a phone the room's screen is smaller than that. So the room leans in: the curtains open, the whole room is
+   enlarged about the middle of its screen until the screen nearly fills the view, and the player is set exactly in the screen at
+   its real size, with nothing over it (the monsters' heads fall just below it). Back steps the room out again. */
+const MV_TV={x:500,y:164,w:670,h:377}; // the largest 16:9 that is clear of the curtains, in the room's own pixels
 let mvTvEl=null;
-function mvTvClose(){if(mvTvEl){mvTvEl.remove();mvTvEl=null;}}
-function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl&&mvEl.querySelector('video');if(v&&!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}
- mvTvEl=document.createElement('div');mvTvEl.className='screen mvtv';
- mvTvEl.innerHTML='<div class="mvtvbar"><b></b><button type="button" class="mvrbtn mvtvx">Back to the room</button></div><div class="mvtvbox"><iframe title="" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
- mvTvEl.querySelector('b').textContent=ch.t+' · '+ch.by;const f=mvTvEl.querySelector('iframe');f.title=ch.t;f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.yt)+'?autoplay=1&playsinline=1&rel=0';
- mvTvEl.querySelector('.mvtvx').onclick=mvTvClose;ui.appendChild(mvTvEl);sfx('tick');}
+function mvTvClose(){if(!mvTvEl)return;mvTvEl.remove();mvTvEl=null;const st2=mvEl&&mvEl.querySelector('.mvstage');if(st2){st2.style.transform='translateY(-50%)';st2.style.transformOrigin='';}if(mvEl)delete mvEl.dataset.tv;}
+function mvTvPlace(){if(!mvTvEl||!mvEl)return;const st2=mvEl.querySelector('.mvstage'),H=mvEl.getBoundingClientRect(),k=H.width/MV.W,sh=MV.H*k; // k: screen pixels to one room pixel before leaning in
+ const f=Math.max(1,Math.min(H.width*.94/(MV_TV.w*k),H.height*.86/(MV_TV.h*k))),cx=(MV_TV.x+MV_TV.w/2)*k,cy=(MV_TV.y+MV_TV.h/2)*k,top0=H.height/2-sh/2;
+ st2.style.transformOrigin=cx+'px '+cy+'px';st2.style.transform='translate('+(H.width/2-cx)+'px,'+(H.height/2-(top0+cy))+'px) translateY(-50%) scale('+f+')';
+ const w=Math.max(200,MV_TV.w*k*f),h=Math.max(200,MV_TV.h*k*f);mvTvEl.style.cssText='left:'+(H.width/2-w/2)+'px;top:'+(H.height/2-h/2)+'px;width:'+w+'px;height:'+h+'px';}
+function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
+ const show=()=>{if(!mvEl)return;mvTvEl=document.createElement('div');mvTvEl.className='mvtv';mvTvEl.innerHTML='<iframe title="" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><button type="button" class="mvrbtn mvtvx">Back</button>';
+  const f=mvTvEl.querySelector('iframe');f.title=ch.t;f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.yt)+'?autoplay=1&playsinline=1&rel=0';mvTvEl.querySelector('.mvtvx').onclick=mvTvClose;mvEl.appendChild(mvTvEl);mvEl.dataset.tv='1';mvTvPlace();mvNote('');sfx('tick');};
+ if(mvState==='closed')mvCurtains(true,show);else show();}
+addEventListener('resize',()=>mvTvPlace());
 function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite loop is shown like a film
 function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused;
  const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(on?'Pause':'Play')+'</button><p>Live</p>'+
   MV_LIVE.map((c,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
  el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};
- el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by+(c.yt?' · opens close up':'');b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}
+ el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by;b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
      and every monster in the room that is old enough to eat is a little fuller;
@@ -185,7 +195,7 @@ function mvPanel(cls,html){mvTrayClose();mvPickClose();const el=document.createE
  el.querySelector('.mvpx').onclick=mvTrayClose;el.onclick=e=>{if(e.target===el)mvTrayClose();};ui.appendChild(el);mvTrayEl=el;return el;}
 function mvOver(cls,src,box,ms){if(!mvEl)return null;const one=cls.split(' ').pop();let im=mvEl.querySelector('.'+one);if(!im){im=document.createElement('img');im.className='mvover '+cls;im.alt='';im.draggable=false;mvEl.querySelector('.mvstage').insertBefore(im,mvEl.querySelector('.mvcat'));}
  im.src=src;im.style.cssText=mvPct(box);im.hidden=false;if(ms)setTimeout(()=>{im.hidden=true;},ms);return im;}
-function mvOnCouch(cls,src,at){const pic=new Image();pic.onload=()=>{const w=pic.naturalWidth*at.k,h=pic.naturalHeight*at.k;mvOver(cls,src,{x:at.x-w/2,y:at.y-h,w,h});};pic.src=src;}
+function mvOnCouch(cls,src,at){const im=mvOver(cls,src,{x:at.x,y:at.y,w:0,h:0});if(!im)return null;const fit=()=>{const w=im.naturalWidth*at.k,h=im.naturalHeight*at.k;im.style.cssText=mvPct({x:at.x-w/2,y:at.y-h,w,h})+(im.onclick?';pointer-events:auto;cursor:pointer':'');};if(im.complete&&im.naturalWidth)fit();else im.addEventListener('load',fit,{once:true});return im;} // it is there at once and takes its size when its picture arrives
 /* POPCORN AND SODA, SECOND VERSION (Jackie, Nov 27: "I don't like this 'popcorn for the couch' and 'cherry soda for the couch' and then
    they're placed randomly -- let's think of a more fun use for these", then of five ideas, "I like all of the popcorn and soda
    options").
@@ -234,7 +244,7 @@ function mvHand(kind,id,name){mvTrayClose();if(kind==='soda')mvOver('mvpour','mo
 function mvGive(w,kind,id,name){mvHeld=null;if(mvEl)delete mvEl.dataset.give;sfx('chime');const y=MV_SEAT.top;
  if(kind==='corn'){w.corn=id;mvOnCouch('mvcorn mvcorn'+w.id,'movieroom/acc_corn_'+id+'.png',{x:w.x+64,y,k:.36});const fav=MV_FAV(w)===id;
   if(st.started)withPlant(w.id,()=>{st.full=clamp((st.full||0)+.35,0,1);});if(fav){mvHop(w,3);mvNote(w.name+' loves '+name.toLowerCase()+'.');}else mvNote(w.name+' has the '+name.toLowerCase()+'.');
-  const b=mvEl.querySelector('.mvcorn'+w.id);if(b){b.style.pointerEvents='auto';b.style.cursor='pointer';b.onclick=()=>mvThrow(w);}}
+  const b=mvEl.querySelector('.mvcorn'+w.id);if(b){b.onclick=()=>mvThrow(w);b.style.pointerEvents='auto';b.style.cursor='pointer';}}
  else{w.soda=id;const im=mvOnCouch('mvcup mvcup'+w.id,'movieroom/acc_cup_'+(id==='swamp'?'yellow':id)+'.png',{x:w.x-64,y,k:.34});mvBurpT=performance.now()+2500;mvFxGo();
   if(st.started)withPlant(w.id,()=>{st.needs.thirst=0;});mvNote(w.name+' has the '+name.toLowerCase()+'.');setTimeout(()=>{const c=mvEl&&mvEl.querySelector('.mvcup'+w.id);if(c)c.classList.toggle('mvswamp',id==='swamp');},60);}
  if(st.started)save();}

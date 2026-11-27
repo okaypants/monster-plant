@@ -84,9 +84,10 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .mvrtext{font-size:max(16px,calc(var(--S)*34px));line-height:1.45;min-height:calc(var(--S)*250px);margin:0}
 .mvrfoot{display:flex;justify-content:space-between;align-items:center;gap:12px}.mvrfoot span{font-size:max(14px,calc(var(--S)*19px))}
 .mvrbtn{font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*22px));color:#3a2418;background:#f3e2c6;border:max(2px,calc(var(--S)*3px)) solid #3a2418;border-radius:10px;padding:calc(var(--S)*6px) calc(var(--S)*16px);cursor:pointer}.mvrbtn:disabled{opacity:.35;cursor:default}
-.screen.mvtv{z-index:59;background:#0b060d;gap:calc(var(--S)*14px);padding:calc(var(--S)*16px)}
-.mvtvbar{display:flex;gap:16px;align-items:center;justify-content:space-between;width:min(96%,calc(78vh*16/9));color:#fdebc9;font-size:max(14px,calc(var(--S)*22px))}
-.mvtvbox{width:min(96%,calc(78vh*16/9));aspect-ratio:16/9;min-width:200px;min-height:200px;background:#000}.mvtvbox iframe{display:block;width:100%;height:100%;border:0}
+.mvtv{position:absolute;z-index:3;background:#000;min-width:200px;min-height:200px}.mvtv iframe{display:block;width:100%;height:100%;border:0}
+.mvtvx{position:absolute;right:calc(100% + 10px);top:0;white-space:nowrap}
+.mvstage{transition:transform .32s steps(4)}
+.movieroom[data-tv] .mvback,.movieroom[data-tv] .mvhot{visibility:hidden}
 .mvremotep .mvpbox>img{width:calc(var(--S)*110px)}
 .mvfx{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
 .mvswamp{filter:hue-rotate(38deg) saturate(.75) brightness(.78)}

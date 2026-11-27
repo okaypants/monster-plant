@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A monster sits up in the bassinet's hood, and further back in the armchair (Nov 27)
+
+- Jackie: "I would like monster plants in the bassinet to look like they are further back and in the bassinet to maybe up a little more but also smaller rn it looks tucked behind the wicker front", then "in the bassinet, the monster plant should be in or behind the cream part not the crate part".
+- In the bassinet a monster's pot now stands at the top of the front rail (it had been 26 pixels down behind it), so the monster sits in the cream hood, and it is drawn 14 percent smaller to fit inside the hood.
+- "I would like the monster plant to look a little further back into the chair rn now it looks on the edge." In the armchair a monster sits 13 pixels higher and a little smaller. The cat's place on the chair moves back with it.
+
+### Live cameras play in the room's own screen (Nov 27)
+
+- Jackie: "Can you not figure out a way to kind of incorporate the youtube ones into the screen w/o a popup?"
+- YouTube's player may not be under 200 pixels either way and nothing may be drawn over it; on a phone the room's screen is smaller than that. So the room leans in: the curtains open, the room is enlarged about the middle of its screen in four steps until the screen nearly fills the view, and the player is set in the screen at its real size with nothing over it. Back steps the room out again. On a phone held sideways the player comes out about 596 by 335.
+
 ### Popcorn and soda are things to play with (Nov 27)
 
 - Jackie: "I don't like this 'popcorn for the couch' and 'cherry soda for the couch' and then they're placed randomly -- let's think of a more fun use for these". Offered five ideas, she said "I like all of the popcorn and soda options".
