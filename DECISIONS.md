@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The viewfinder's window sits on the photograph (Nov 26)
+
+- Jackie: "Now the viewfinder just looks like half of a cropped picture poorly cropped and the images clearly aren't layered actually", with two screenshots: the De la Rue moon card showing the printed middle of the card with the moon cut off at the edge, and the Campbell moon card with strips of mount and its caption.
+- The cause: the window was placed by rule about the middle of each half of the card, and on cards whose photographs are not centred it landed off the photograph. Three earlier tries at finding the photograph by rule each fixed some cards and spoiled others.
+- Now a pixel counts as picture if it is not the mount's colour or has detail, and only where the other photograph agrees; the window is the unbroken run of columns and rows that are mostly picture (tools/viewer_build.py). Eleven cards where that still missed have their photograph's place set by eye (`BY_EYE`). All 65 were checked on contact sheets.
+- The second photograph lies over the first at 50 percent again. At 30 percent, tried the same day, the layering could not be seen at all.
+
 ### In the movie room only the monsters sit on the couch; the cat has its own places (Nov 26)
 
 - Jackie: "Maybe it's just your monster(s)", and "The cat can come in that room and sleep and interact on the floor or in the back of the couch", "On the back".
