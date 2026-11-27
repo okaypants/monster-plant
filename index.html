@@ -75,7 +75,7 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .movieroom[data-state=open]:not([data-paused="1"]) .mvroom{filter:brightness(.62)}
 .mvtap{position:absolute;background:none;border:0;padding:0;cursor:pointer}
 .mvnote{position:absolute;left:50%;bottom:31%;transform:translateX(-50%);background:var(--ts-paper,#fdebc9);color:var(--ts-ink,#3a2418);border:max(2px,calc(var(--S)*4px)) solid var(--ts-ink,#3a2418);border-radius:10px;padding:6px 14px;font-weight:800;font-size:max(14px,calc(var(--S)*22px));pointer-events:none}
-.mvback{position:absolute;left:1.2%;bottom:5%;font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*22px));padding:6px 14px;border-radius:10px;border:max(2px,calc(var(--S)*4px)) solid #3a2418;background:#fdebc9;color:#3a2418;cursor:pointer}
+.mvback{position:absolute;left:6px;top:calc(6px + 1.8%);font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*22px));padding:6px 14px;border-radius:10px;border:max(2px,calc(var(--S)*4px)) solid #3a2418;background:#fdebc9;color:#3a2418;cursor:pointer}
 .screen.sampler{display:block;padding:0;background:#19101b;z-index:55}.screen.sampler iframe{display:block;width:100%;height:100%;border:0}
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
 .jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:600}
@@ -322,6 +322,12 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .btray{border-radius:22px!important;padding:8px 10px!important;align-items:flex-start}
 #dbgBtn{position:absolute;right:6px;top:calc(6px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:16px;padding:6px 12px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
 #dbgBtn:hover{opacity:1}
+#leaveBtn{position:absolute;left:6px;top:calc(6px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:16px;padding:6px 12px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
+#leaveBtn:hover{opacity:1}
+.screen.rooms{z-index:60}.rmtitle{margin:0;color:#fdebc9;font-size:max(18px,calc(var(--S)*34px))}
+.rmrow{display:flex;gap:calc(var(--S)*40px);justify-content:center;align-items:flex-start;flex-wrap:wrap}
+.rmcard{font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*24px));color:#3a2418;background:#fdebc9;border:max(2px,calc(var(--S)*5px)) solid #3a2418;border-radius:14px;padding:calc(var(--S)*14px);cursor:pointer;display:flex;flex-direction:column;gap:calc(var(--S)*10px);align-items:center}
+.rmcard img{display:block;width:calc(var(--S)*480px);height:auto;border-radius:8px}
 #fsBtn{position:absolute;right:92px;top:calc(6px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:18px;line-height:1;padding:6px 10px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
 :fullscreen #fsBtn,:-webkit-full-screen #fsBtn{opacity:.4}
 /* debug drawer: slides in on the right; the room shrinks to fit beside it (FIT_RIGHT in core.js). Big touch targets for phones. */
@@ -373,6 +379,7 @@ body.testing #testBadge{display:block}
 <div id="nameTags" aria-label="Your monsters"></div>
 <div id="caption" role="status" aria-live="polite"><div class="ci tsb"><span class="ct"></span></div><div class="tail"></div></div>
 <button id="fsBtn" type="button" aria-label="Full screen">⛶</button>
+<button id="leaveBtn" type="button">Leave</button>
 <button id="dbgBtn" type="button">debug</button>
 </div>
 </div>

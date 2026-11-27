@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Each room has a Leave button that opens a screen of rooms (Nov 26)
+
+- Jackie: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a screen". This is the way into the movie room, so no door has to be fitted into the plant room's wall.
+- A Leave button sits at the top left of each room. It opens "Where would you like to go?" with a picture of each room; the room you are in is marked "(you are here)". The rooms are named The plant room and The movie room (my names; Jackie has not named them). Leaving the movie room pauses the film, and going to the plant room stops it.
+- The movie room no longer opens from the debug drawer.
+- Jackie's sheet of 24 accessories is cut into movieroom/acc_*.png (tools/movieroom_cut.py): the popping machine, five popcorn flavours, three taps pouring and three cups, a film can, a tape, a disc, the three box-set cases, 3D glasses, the remote, two dimmers, an open book, the amplifier and a door shut and open. None are used in the room yet.
+- On films, Jackie: "for films as we choose them consider that many movies have fallen into public domain before their time". A second research pass on those films is in research_notes/movieroom/lapsed_films.md when it returns.
+
 ### The movie room uses Jackie's second set of three pictures (Nov 26)
 
 - Jackie sent a new matching set from ChatGPT: curtains closed, halfway and open. The screen is a little taller, and the buckets on the bottom right shelf stand empty. The room is rebuilt from this set, with the closed and halfway curtains set into the new open picture as before.

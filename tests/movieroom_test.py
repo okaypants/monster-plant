@@ -2,8 +2,8 @@
 
 Run from the repository root:  python tests/movieroom_test.py
 The room opens over the main room with its curtains closed and no film loaded. Tapping the curtains opens them in two steps
-(closed, halfway, open) and starts the film; a tap while it plays pauses it; when the film ends the curtains close again; Back
-returns to the main room. The film itself is not fetched here: requests to the Internet Archive are blocked and play() is
+(closed, halfway, open) and starts the film; a tap while it plays pauses it; when the film ends the curtains close again. Each room has
+a Leave button that opens a screen of rooms to choose from. The film itself is not fetched here: requests to the Internet Archive are blocked and play() is
 stubbed, so the test needs no connection. A picture goes to tests/screenshots/movieroom/. Exit code 1 if a check fails.
 """
 import asyncio, os, sys
@@ -28,7 +28,12 @@ async def main():
         await pg.reload(); await pg.wait_for_function('typeof LOADED!=="undefined"&&LOADED', timeout=20000)
         btn = pg.locator(".screen button").first
         if await btn.count(): await btn.click()
-        await pg.evaluate("()=>{__step(1);openMovieRoom();}")
+        # the way in: Leave in the plant room opens the screen of rooms
+        r = await pg.evaluate("()=>{__step(1);document.getElementById('leaveBtn').click();const c=[...document.querySelectorAll('.rmcard')];return {n:c.length,names:c.map(x=>x.textContent),room:roomNow()};}")
+        check("Leave opens a screen with both rooms, marking where you are", r["n"] == 2 and "you are here" in r["names"][0] and r["names"][1] == "The movie room" and r["room"] == "main", r)
+        await pg.screenshot(path=os.path.join(OUT, "rooms.png"))
+        r = await pg.evaluate("()=>{document.querySelector('.rmcard[data-id=movie]').click();return {open:movieRoomOpen(),rooms:!!document.querySelector('.rooms')};}")
+        check("choosing the movie room goes there", r["open"] and not r["rooms"], r)
         await pg.evaluate("()=>Promise.all([...document.querySelectorAll('.mvstage img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;})))")  # the test's clock is stopped, so wait on the pictures themselves
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video'),c=document.querySelector('.mvcurtain');return {open:movieRoomOpen(),state:mvState,src:v.getAttribute('src'),muted:v.muted,cur:c.getAttribute('src'),hidden:c.hidden};}")
         check("the room opens with its curtains closed and no film loaded", r["open"] and r["state"] == "closed" and not r["src"] and r["cur"].endswith("curtain_closed.png") and not r["hidden"], r)
@@ -46,8 +51,9 @@ async def main():
         check("a tap pauses the film and another goes on", r["a"] is True and r["b"] is False and r["state"] == "open", r)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));const a=mvState;__step(.5);const c=document.querySelector('.mvcurtain');return {a,b:mvState,cur:c.getAttribute('src'),hidden:c.hidden};}")
         check("when the film ends the curtains close", r["a"] == "half" and r["b"] == "closed" and r["cur"].endswith("curtain_closed.png") and not r["hidden"], r)
-        r = await pg.evaluate("()=>{document.querySelector('.mvback').click();return {open:movieRoomOpen(),left:!!document.querySelector('.movieroom')};}")
-        check("Back returns to the main room", not r["open"] and not r["left"], r)
+        r = await pg.evaluate("()=>{document.querySelector('.mvtap').click();__step(.5);const v=document.querySelector('.mvstage video');document.querySelector('.mvback').click();const paused=v.paused,here=document.querySelector('.rmcard[data-id=movie]').textContent;"
+                              "document.querySelector('.rmcard[data-id=main]').click();return {paused,here,open:movieRoomOpen(),left:!!document.querySelector('.movieroom'),rooms:!!document.querySelector('.rooms')};}")
+        check("Leave in the movie room pauses the film, and choosing the plant room goes back", r["paused"] is True and "you are here" in r["here"] and not r["open"] and not r["left"] and not r["rooms"], r)
         check("no page errors", not errs, errs[:3])
         await b.close()
     print("\n%d failed" % len(fails) if fails else "\nall passed"); sys.exit(1 if fails else 0)
