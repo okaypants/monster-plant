@@ -2,6 +2,26 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### In the bassinet only a monster's face shows (Nov 27)
+
+- Jackie: "The monster in the bassinet is still too near - maybe it should be deep behind the white part but below the lowest arch of the bassinet like just a little face poking up", then "the black line above the cream in the bassinet should be where the monster pops up from".
+- A monster in the bassinet is drawn small enough to fit inside the hood, with the top of its head just under the arch, and everything below the dark line along the top of the cream mattress is hidden behind the mattress.
+
+### The couch: seats apart, sizes true, snacks beside (Nov 27)
+
+- Jackie: "the monsters should be seated a bit further apart and should be relative to their actual sizes, although babies can't go". Seats are 275 apart. A teenager is drawn smaller than a grown monster. Kids, sprouts and seeds stay in the study room.
+- On the snacks she first asked for them hidden behind the monster, then: "wait i changed my mind", "if the monsters are separate the popcorn and drinks may not overlap - just don't let them overlap". The bucket and the cup stand side by side to the monster's right, clear of the monster, of each other and of the next monster.
+- A tap on a monster that has popcorn, or on its bucket, throws some.
+- "the popcorn doesn't pop": on a phone a tap on the machine was over before anything showed. A tap now pops for a little over a second before the kinds are offered, and holding still overflows.
+- "the swamp fizz isn't green when it's w the monster": fixed; the room's dimming had been overriding its tint.
+- The drinks are Jackie's: "honeysuckle tea, cherry soda, beetle brew, and swamp fizz". Swamp fizz is a plain fourth choice ("some people might play on their computers so two taps at once doesn't work").
+
+### Decorations are listed as seasons and holidays, and the lights have a Seasonal choice (Nov 27)
+
+- Jackie: "for the string lights choose seasonal for the general seasonal choice and then break up the decoration categories into seasonal (spring summer fall winter), and then specific holidays".
+- In the cupboard and in the movie room's drawer, decorations come under two headings: Seasons (Spring, Summer, Fall, Winter, which are the First day of spring, Midsummer, Autumn and Winter solstice sets) and Holidays (the other twenty-six).
+- The lights' first choice is Seasonal: the strand that goes with whatever is up, and with the time of year when nothing is (pastel in spring, many colours in summer, orange and purple in autumn, gold stars in winter). It is the default, so on an ordinary day the lights are now the season's and no longer warm white.
+
 ### The way out reads "Rooms" with a door, and three of the movie room's drawers are in use (Nov 27)
 
 - Jackie, on a better word than Leave: "Yeah or a door and Rooms -- use a door emoji". Both rooms' button now reads "🚪 Rooms".

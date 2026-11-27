@@ -81,12 +81,12 @@ function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(!mvFilm.loop&&m
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
    hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
    filled in dark. They are drawn once when the film starts. */
-const MV_SEAT={top:697,dark:'#0a060d',xs:[770,650,890],show:.66}; // small enough that only the tops of their heads reach the screen (Jackie, Nov 27: "the plant needs to be smaller so the screen is less obscured")
+const MV_SEAT={top:697,dark:'#0a060d',xs:[835,560,1110],show:.66,box:{teen:[125,170],adult:[170,230]}}; /* seats well apart, and each monster at its own size: a teenager is smaller than a grown one. Kids and younger stay in the study room (Jackie, Nov 27: "the monsters should be seated a bit further apart and should be relative to their actual sizes, although babies can't go") */ // small enough that only the tops of their heads reach the screen (Jackie, Nov 27: "the plant needs to be smaller so the screen is less obscured")
 function mvShadow(src,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0,w,h);x.globalCompositeOperation='source-in';x.fillStyle=MV_SEAT.dark;x.fillRect(0,0,w,h);return c;}
 let mvWho=[]; // who is on the couch: {id, name, x (seat), pic (dark shape), hop (pixels up, for a moment)}
 function mvSeats(){const c=mvEl&&mvEl.querySelector('.mvseats');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
- if(!mvWho.length&&st.started)for(const p of allRaw()){if(p.stage==null||p.stage<4||mvWho.length>=MV_SEAT.xs.length)continue; // a seed or a sprout stays in the study room
-  let pic=null;try{pic=plantPortrait(p.id,150,200);}catch(e){}if(pic&&pic.width>1)mvWho.push({id:p.id,name:p.name||'The monster',ge:p.ge||0,lc:p.lc||0,x:MV_SEAT.xs[mvWho.length],pic:mvShadow(pic,pic.width,pic.height),hop:0});}
+ if(!mvWho.length&&st.started)for(const p of allRaw()){if(p.stage==null||p.stage<6||mvWho.length>=MV_SEAT.xs.length)continue; // seeds, sprouts and kids stay in the study room
+  let pic=null;const bx=MV_SEAT.box[p.stage>=8?'adult':'teen'];try{pic=plantPortrait(p.id,bx[0],bx[1]);}catch(e){}if(pic&&pic.width>1)mvWho.push({id:p.id,name:p.name||'The monster',ge:p.ge||0,lc:p.lc||0,x:MV_SEAT.xs[mvWho.length],pic:mvShadow(pic,pic.width,pic.height),hop:0});}
  for(const w of mvWho)x.drawImage(w.pic,Math.round(w.x-w.pic.width/2),Math.round(MV_SEAT.top-w.pic.height*MV_SEAT.show)-w.hop);
  c.dataset.n=mvWho.length;}
 function mvHop(w,n=2){let k=0;const up=()=>{w.hop=6;mvSeats();setTimeout(()=>{w.hop=0;mvSeats();if(++k<n)setTimeout(up,130);},130);};up();} // a happy hop: six pixels up and down again, whole pixels
@@ -182,20 +182,20 @@ function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
      and every monster in the room that is old enough to eat is a little fuller;
-   the soda fountain and the cups offer three sodas; the tap pours, a cup lands on the couch, and nobody in the room is thirsty;
+   the soda fountain and the cups offer four drinks; the tap pours, a cup lands on the couch, and nobody in the room is thirsty;
    the 3D glasses turn the film amber, blue or rose, as silent films were often tinted, and then plain again;
    the row of books opens the books about film, and the box set opens its three books, each read a page at a time. */
 const MV_CORN=[['butter','Butter popcorn'],['caramel','Caramel popcorn'],['cheese','Cheese popcorn'],['seaweed','Seaweed popcorn'],['charcoal','Charcoal popcorn']],
- MV_SODA=[['red','Cherry soda'],['blue','Blueberry soda'],['yellow','Lemon soda']],MV_TINTS=['','amber','blue','rose'],MV_TINT_NAME={'':'No tint.',amber:'Amber tint.',blue:'Blue tint.',rose:'Rose tint.'},
+ MV_SODA=[['yellow','Honeysuckle tea'],['red','Cherry soda'],['blue','Beetle brew'],['swamp','Swamp fizz']], /* Jackie's names (Nov 27): "they'll be honeysuckle tea, cherry soda, beetle brew, and swamp fizz" */MV_TINTS=['','amber','blue','rose'],MV_TINT_NAME={'':'No tint.',amber:'Amber tint.',blue:'Blue tint.',rose:'Rose tint.'},
  MV_SPOTS={machine:{x:126,y:162,w:148,h:186},buckets:{x:1316,y:504,w:66,h:88},fountain:{x:1326,y:178,w:150,h:170},cups:{x:1480,y:176,w:78,h:172},glasses:{x:1384,y:540,w:80,h:52},boxset:{x:1470,y:496,w:82,h:96},books:{x:110,y:500,w:260,h:92}},
  MV_ON={corn:{x:560,y:697,k:.42},cup:{x:1262,y:697,k:.4},pop:{x:124,y:160,w:152,h:192},pour:{x:1322,y:174,w:158,h:176}};
 let mvTrayEl=null,mvPopT=0,mvBooks=null,mvTint=0;
 function mvTrayClose(){if(mvTrayEl){mvTrayEl.remove();mvTrayEl=null;}}
 function mvPanel(cls,html){mvTrayClose();mvPickClose();const el=document.createElement('div');el.className='screen mvpick '+cls;el.innerHTML='<div class="mvpbox">'+html+'<button type="button" class="mvpx" aria-label="Close">×</button></div>';
  el.querySelector('.mvpx').onclick=mvTrayClose;el.onclick=e=>{if(e.target===el)mvTrayClose();};ui.appendChild(el);mvTrayEl=el;return el;}
-function mvOver(cls,src,box,ms){if(!mvEl)return null;const one=cls.split(' ').pop();let im=mvEl.querySelector('.'+one);if(!im){im=document.createElement('img');im.className='mvover '+cls;im.alt='';im.draggable=false;mvEl.querySelector('.mvstage').insertBefore(im,mvEl.querySelector('.mvcat'));}
+function mvOver(cls,src,box,ms,under){if(!mvEl)return null;const one=cls.split(' ').pop();let im=mvEl.querySelector('.'+one);if(!im){im=document.createElement('img');im.className='mvover '+cls;im.alt='';im.draggable=false;mvEl.querySelector('.mvstage').insertBefore(im,mvEl.querySelector(under?'.mvseats':'.mvcat'));} // under: behind the monsters on the couch
  im.src=src;im.style.cssText=mvPct(box);im.hidden=false;if(ms)setTimeout(()=>{im.hidden=true;},ms);return im;}
-function mvOnCouch(cls,src,at){const im=mvOver(cls,src,{x:at.x,y:at.y,w:0,h:0});if(!im)return null;const fit=()=>{const w=im.naturalWidth*at.k,h=im.naturalHeight*at.k;im.style.cssText=mvPct({x:at.x-w/2,y:at.y-h,w,h})+(im.onclick?';pointer-events:auto;cursor:pointer':'');};if(im.complete&&im.naturalWidth)fit();else im.addEventListener('load',fit,{once:true});return im;} // it is there at once and takes its size when its picture arrives
+function mvOnCouch(cls,src,at,under){const im=mvOver(cls,src,{x:at.x,y:at.y,w:0,h:0},0,under);if(!im)return null;const fit=()=>{const w=im.naturalWidth*at.k,h=im.naturalHeight*at.k;im.style.cssText=mvPct({x:at.x-w/2,y:at.y-h,w,h})+(im.onclick?';pointer-events:auto;cursor:pointer':'');};if(im.complete&&im.naturalWidth)fit();else im.addEventListener('load',fit,{once:true});return im;} // it is there at once and takes its size when its picture arrives
 /* POPCORN AND SODA, SECOND VERSION (Jackie, Nov 27: "I don't like this 'popcorn for the couch' and 'cherry soda for the couch' and then
    they're placed randomly -- let's think of a more fun use for these", then of five ideas, "I like all of the popcorn and soda
    options").
@@ -203,10 +203,9 @@ function mvOnCouch(cls,src,at){const im=mvOver(cls,src,{x:at.x,y:at.y,w:0,h:0});
      and the cat comes awake for them. Let go (or just tap) and you choose the kind.
    - Hand it to someone: with more than one monster on the couch you tap the one it is for; the bucket or cup sits beside that
      monster. Each monster has a favourite popcorn that follows its nature, found by trying; given its favourite, it hops.
-   - Throw it at the screen: tap a bucket on the couch and kernels arc up, bounce off the screen and drop behind the couch. One
+   - Throw it at the screen: tap a monster that has popcorn and kernels arc up, bounce off the screen and drop behind the couch. One
      goes astray toward the cat, which pounces.
-   - Soda burps: a monster with a soda lets a bubble go now and then, the colour of its soda, and it floats up. Two taps at once
-     make swamp fizz.
+   - Soda burps: a monster with a soda lets a bubble go now and then, the colour of its soda, and it floats up.
    - Intermission: halfway through a film longer than fifteen minutes the curtains close for a minute and the lights come up.
    All of the motion is small squares on the room's pixel grid, moved by whole pixels. */
 const MV_FAV=w=>w.ge>.3?'caramel':w.ge<-.3?'charcoal':w.lc>.3?'butter':w.lc<-.3?'cheese':'seaweed';
@@ -232,9 +231,11 @@ function mvPopDown(){if(mvPopping)return;const t0=performance.now();mvPopping={t
   if(held>3200){if(!mvPopping.spilled){mvPopping.spilled=true;mvNote('It’s overflowing.');} // over the top, down to the floor on the left, for the cat
    mvKernel(MV_ON.pop.x+rnd(10,140),MV_ON.pop.y+150,rnd(-3.5,-1),rnd(-4,-1),{end:1e9,floor:rnd(880,925),life:900,land:Math.random()<.2?()=>mvCatPounce(140):null});}
   mvPopT=setTimeout(tick,90);};tick();}
-function mvPopUp(){if(!mvPopping)return;clearTimeout(mvPopT);mvPopping=null;const im=mvEl&&mvEl.querySelector('.mvpop');if(im)im.hidden=true;mvOffer('corn');}
+const MV_POP_MIN=1300; // a tap still pops for a moment before the kinds are offered (Jackie, Nov 27: "the popcorn doesn't pop": on a phone a tap was over before anything showed)
+function mvPopUp(){if(!mvPopping||mvPopping.ending)return;const left=MV_POP_MIN-(performance.now()-mvPopping.t0),end=()=>{if(!mvPopping)return;clearTimeout(mvPopT);mvPopping=null;const im=mvEl&&mvEl.querySelector('.mvpop');if(im)im.hidden=true;if(mvEl)mvOffer('corn');};
+ if(left>0){mvPopping.ending=true;setTimeout(end,left);}else end();}
 /* choosing, then handing over */
-function mvOffer(kind){const L=kind==='corn'?MV_CORN:MV_SODA.concat([['swamp','Swamp fizz (two taps at once)']]),pre=kind==='corn'?'acc_corn_':'acc_cup_';
+function mvOffer(kind){const L=kind==='corn'?MV_CORN:MV_SODA,pre=kind==='corn'?'acc_corn_':'acc_cup_';
  const el=mvPanel('mvoffer','<div class="mvplist"><h2>'+(kind==='corn'?'Popcorn':'Soda')+'</h2><div class="mvtiles">'+L.map(([id,name])=>'<button type="button" class="mvtile" data-id="'+id+'"><img'+(id==='swamp'?' class="mvswamp"':'')+' src="movieroom/'+pre+(id==='swamp'?'yellow':id)+'.png" alt="" draggable="false"><span>'+name+'</span></button>').join('')+'</div></div>');
  el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{const it=L.find(q=>q[0]===b.dataset.id);mvHand(kind,it[0],it[1].replace(/ \(.*/,''));});}
 function mvHand(kind,id,name){mvTrayClose();if(kind==='soda')mvOver('mvpour','movieroom/acc_soda_pour_'+(id==='swamp'?'yellow':id)+'.png',MV_ON.pour,1400);
@@ -242,20 +243,22 @@ function mvHand(kind,id,name){mvTrayClose();if(kind==='soda')mvOver('mvpour','mo
  if(mvWho.length===1){mvGive(mvWho[0],kind,id,name);return;}
  mvHeld={kind,id,name};mvNote('Who is the '+name.toLowerCase()+' for? Tap a monster.',true);mvEl.dataset.give='1';}
 function mvGive(w,kind,id,name){mvHeld=null;if(mvEl)delete mvEl.dataset.give;sfx('chime');const y=MV_SEAT.top;
- if(kind==='corn'){w.corn=id;mvOnCouch('mvcorn mvcorn'+w.id,'movieroom/acc_corn_'+id+'.png',{x:w.x+64,y,k:.36});const fav=MV_FAV(w)===id;
-  if(st.started)withPlant(w.id,()=>{st.full=clamp((st.full||0)+.35,0,1);});if(fav){mvHop(w,3);mvNote(w.name+' loves '+name.toLowerCase()+'.');}else mvNote(w.name+' has the '+name.toLowerCase()+'.');
+ /* the bucket and the cup stand side by side on the monster's right, clear of the monster and of each other; the seats are far enough apart that the next monster is clear of them too (Jackie, Nov 27: "if the monsters are separate the popcorn and drinks may not overlap - just don't let them overlap") */
+ const edge=w.x+w.pic.width/2;
+ if(kind==='corn'){w.corn=id;mvOnCouch('mvcorn mvcorn'+w.id,'movieroom/acc_corn_'+id+'.png',{x:edge+31,y,k:.36});const fav=MV_FAV(w)===id;
+  if(st.started)withPlant(w.id,()=>{st.full=clamp((st.full||0)+.35,0,1);});if(fav){mvHop(w,3);mvNote(w.name+' loves '+name.toLowerCase()+'. Tap '+w.name+' to throw some.');}else mvNote(w.name+' has the '+name.toLowerCase()+'. Tap '+w.name+' to throw some.');
   const b=mvEl.querySelector('.mvcorn'+w.id);if(b){b.onclick=()=>mvThrow(w);b.style.pointerEvents='auto';b.style.cursor='pointer';}}
- else{w.soda=id;const im=mvOnCouch('mvcup mvcup'+w.id,'movieroom/acc_cup_'+(id==='swamp'?'yellow':id)+'.png',{x:w.x-64,y,k:.34});mvBurpT=performance.now()+2500;mvFxGo();
-  if(st.started)withPlant(w.id,()=>{st.needs.thirst=0;});mvNote(w.name+' has the '+name.toLowerCase()+'.');setTimeout(()=>{const c=mvEl&&mvEl.querySelector('.mvcup'+w.id);if(c)c.classList.toggle('mvswamp',id==='swamp');},60);}
+ else{w.soda=id;mvOnCouch('mvcup mvcup'+w.id,'movieroom/acc_cup_'+(id==='swamp'?'yellow':id)+'.png',{x:edge+84,y,k:.34});mvBurpT=performance.now()+2500;mvFxGo();
+  if(st.started)withPlant(w.id,()=>{st.needs.thirst=0;});mvNote(w.name+' has the '+name.toLowerCase()+'.');{const c=mvEl.querySelector('.mvcup'+w.id);if(c)c.classList.toggle('mvswamp',id==='swamp');}}
  if(st.started)save();}
-function mvWhoTap(i){const w=mvWho[i];if(!w)return;if(mvHeld){mvGive(w,mvHeld.kind,mvHeld.id,mvHeld.name);return;}mvHop(w,1);}
+function mvWhoTap(i){const w=mvWho[i];if(!w)return;if(mvHeld){mvGive(w,mvHeld.kind,mvHeld.id,mvHeld.name);return;}if(w.corn)mvThrow(w);else mvHop(w,1);} // a monster with popcorn throws some when tapped
 /* intermission */
 const MV_INTER={min:900,ms:60000};let mvInter=null,mvInterDone='';
 function mvInterCheck(){if(!mvEl||mvInter||!mvFilm||mvFilm.loop)return;const v=mvEl.querySelector('video'),k=v.dataset.film;if(!(v.duration>MV_INTER.min)||mvInterDone===k||v.paused||v.currentTime<v.duration/2||v.currentTime>v.duration/2+20)return;
  mvInterDone=k;mvInter={light:mvLight};v.pause();mvEl.dataset.paused='1';mvLight=0;mvCurtains(false,()=>{mvNote('Intermission. Tap the screen to go on.',true);});mvInter.t=setTimeout(mvInterEnd,MV_INTER.ms);}
 function mvInterEnd(){if(!mvInter)return false;clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;mvNote('');mvCurtains(true,mvStart);return true;}
 /* throwing popcorn at the screen */
-function mvThrow(w){if(!w.corn)return;sfx('tick');const x0=w.x+64,y0=MV_SEAT.top-60,sc=MV.screen;
+function mvThrow(w){if(!w.corn)return;sfx('tick');const x0=w.x+w.pic.width/2,y0=MV_SEAT.top-60,sc=MV.screen;
  for(let i=0;i<6;i++){const tx=sc.x+rnd(.2,.8)*sc.w;mvKernel(x0,y0,(tx-x0)/rnd(26,34),rnd(-17,-13),{hitY:sc.y+rnd(.25,.8)*sc.h});}
  if(mvCat)mvKernel(x0,y0,(mvCat.x-x0)/40,-12,{end:1e9,floor:mvCat.y-6,life:500,land:()=>mvCatPounce(x0)});mvHop(w,1);}
 function mvGlasses(){mvTint=(mvTint+1)%MV_TINTS.length;if(mvEl)mvEl.dataset.tint=MV_TINTS[mvTint];sfx('tick');mvNote(MV_TINT_NAME[MV_TINTS[mvTint]]);}
@@ -271,7 +274,7 @@ function mvBoxSet(){mvShelfOfBooks('The box set','Three small books about a famo
 function mvFilmBooks(){mvShelfOfBooks('Books about film','Old books about the movies, in their own words, and three small books about a famous trilogy.',(mvBooks||[]).concat(MV_BOXSET));} // the box set's three books live here now that the Kalimbasizer has its place
 fetch('movieroom/books.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.books)mvBooks=j.books.filter(b=>b.pages&&b.pages.length).map(b=>({t:b.title,by:b.by+', '+b.year,pages:b.pages}));}).catch(()=>{});
 function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvthing';b.dataset.k=k;b.setAttribute('aria-label',label);b.style.cssText=mvPct(MV_SPOTS[k]);b.onclick=fn;st2.insertBefore(b,mvEl.querySelector('.mvnote'));};
- add('machine','Popcorn',()=>{});add('buckets','Popcorn',()=>mvOffer('corn'));{const m=st2.querySelector('.mvthing[data-k=machine]');m.onclick=null;m.addEventListener('pointerdown',e=>{e.preventDefault();mvPopDown();});['pointerup','pointercancel','pointerleave'].forEach(ev=>m.addEventListener(ev,mvPopUp));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')mvOffer('corn');});}
+ add('machine','Popcorn',()=>{});add('buckets','Popcorn',()=>mvOffer('corn'));{const m=st2.querySelector('.mvthing[data-k=machine]');m.onclick=null;m.style.touchAction='none';m.addEventListener('pointerdown',e=>{e.preventDefault();try{m.setPointerCapture(e.pointerId);}catch(x){}mvPopDown();});['pointerup','pointercancel'].forEach(ev=>m.addEventListener(ev,mvPopUp));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')mvOffer('corn');});}
  mvWho.forEach((w,i)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvwho';b.dataset.i=i;b.setAttribute('aria-label',w.name);const h=w.pic.height*MV_SEAT.show;b.style.cssText=mvPct({x:w.x-w.pic.width/2,y:MV_SEAT.top-h,w:w.pic.width,h});b.onclick=()=>mvWhoTap(i);st2.insertBefore(b,mvEl.querySelector('.mvnote'));});add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
  for(const k in MV_DRAWERS){MV_SPOTS['dr_'+k]=MV_DRAWERS[k];add('dr_'+k,k==='decor'?'The decorations drawer':k==='toys'?'The cat toys drawer':'The string lights drawer',()=>mvDrawer(k));}
  add('glasses','Tint the film',mvGlasses);add('boxset','The Kalimbasizer',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
@@ -285,19 +288,19 @@ function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn
    What is up is remembered with the save (mvDecor, mvLights). */
 const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},toys:{x:412,y:606,w:200,h:50},lights:{x:1312,y:604,w:250,h:60}},MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
 let mvLightsT=0;
-function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)return;const x=c.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,c.width,c.height);const n=st.mvLights;
- if(!n||typeof LIGHTS_IMG==='undefined')return;const on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off)||!MV_TOP_MASK.complete)return;const ox=35,oy=6;x.drawImage(on,ox,oy);
+function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)return;const x=c.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,c.width,c.height);let n=st.mvLights;
+ if(!n||typeof LIGHTS_IMG==='undefined')return;if(n==='auto')n=lightsAuto(st.mvDecor); /* Seasonal: with the movie room's decorations, or the time of year */const on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off)||!MV_TOP_MASK.complete)return;const ox=35,oy=6;x.drawImage(on,ox,oy);
  const B=LIGHTS_META&&LIGHTS_META[n]&&LIGHTS_META[n].bulbs;if(B)for(const i of lightsOut(B.length)){const [bx,by,bw,bh]=B[i];x.clearRect(ox+bx,oy+by,bw,bh);x.drawImage(off,bx,by,bw,bh,ox+bx,oy+by,bw,bh);}
  x.globalCompositeOperation='destination-in';x.drawImage(MV_TOP_MASK,0,0);}
 function mvLightsSet(n){st.mvLights=n||'';if(st.started)save();mvLightsDraw();sfx(n?'chime':'tick');mvNote(n?'The string lights are up.':'The string lights are back in the drawer.');}
 function mvDecorShow(){if(!mvEl)return;const id=st.mvDecor,g=mvEl.querySelector('.mvgarland'),f=mvEl.querySelector('.mvfloorpiece');if(g)g.hidden=true;if(f)f.hidden=true;if(!id)return;
  mvOnCouch('mvgarland','decor/'+id+'_w.png',{x:835,y:818,k:1});const s=typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
  if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:96,y:912,k:fl==='pumpkin'||fl==='tree'?.5:1});}
-function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();sfx(id?'chime':'tick');const s=id&&DECOR_SETS.find(q=>q.id===id);mvNote(s?'The movie room is decorated for '+s.name+'.':'The decorations are back in the drawer.');}
+function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();mvLightsDraw();sfx(id?'chime':'tick');const s=id&&DECOR_SETS.find(q=>q.id===id);mvNote(s?'The movie room is decorated for '+s.name+'.':'The decorations are back in the drawer.');}
 function mvDrawer(k){
- if(k==='decor'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Decorations</h2><div class="mvtiles mvchips">'+(st.mvDecor?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+DECOR_SETS.map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'</div></div>');
+ if(k==='decor'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Decorations</h2><div class="mvtiles mvchips">'+(st.mvDecor?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+'<div class="mvhead">Seasons</div>'+decorSeasonal().map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'<div class="mvhead">Holidays</div>'+decorHolidays().map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'</div></div>');
   el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvDecorSet(b.dataset.id);});return;}
- if(k==='lights'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>String lights</h2><div class="mvtiles mvchips">'+(st.mvLights?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+LIGHTS_KINDS.map(([id,n])=>'<button type="button" class="mvrbtn'+(st.mvLights===id?' on':'')+'" data-id="'+id+'">'+n+'</button>').join('')+'</div></div>');
+ if(k==='lights'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>String lights</h2><div class="mvtiles mvchips">'+(st.mvLights?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+[['auto','Seasonal']].concat(LIGHTS_KINDS).map(([id,n])=>'<button type="button" class="mvrbtn'+(st.mvLights===id?' on':'')+'" data-id="'+id+'">'+n+'</button>').join('')+'</div></div>');
   el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvLightsSet(b.dataset.id);});return;}
  const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Cat toys</h2><div class="mvtiles">'+CUB_TOYS.map(t=>'<button type="button" class="mvtile" data-id="'+t.id+'"><img src="'+CUB_IMG[t.id].src+'" alt="" draggable="false"><span>'+t.name+'</span></button>').join('')+'</div></div>');
  el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{mvTrayClose();mvToy(CUB_TOYS.find(t=>t.id===b.dataset.id));});}
