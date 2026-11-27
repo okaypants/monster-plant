@@ -23,7 +23,7 @@ function scoreGetKey(k){return scoresDo('readonly',s=>s.get(k)).catch(()=>null);
    the film's key with '#' and a few letters after it, so it never replaces theirs. Nothing is sent anywhere by the game itself. */
 const scoreFilmKey=k=>String(k).split('#')[0];
 function scoreFile(k){return scoreGetKey(k).then(r=>{if(!r)return null;const head=new TextEncoder().encode(JSON.stringify({v:1,key:scoreFilmKey(k),film:r.film||'',title:r.title||'',by:r.by||'',card:r.card||0,dur:r.dur||0,mime:r.mime||''})),n=new Uint8Array(4);new DataView(n.buffer).setUint32(0,head.length);
- const name=((r.title||r.film||'soundtrack')+(r.by?' by '+r.by:'')).replace(/[^\w \-]+/g,'').trim().slice(0,60)||'soundtrack';return new File([new TextEncoder().encode('MPS1'),n,head,r.blob],name+'.mpscore',{type:'application/octet-stream'});});}
+ const name=((r.film||'soundtrack')+(r.by?' scored by '+r.by:'')).replace(/[^\w \-]+/g,'').trim().slice(0,60)||'soundtrack';return new File([new TextEncoder().encode('MPS1'),n,head,r.blob],name+'.mpscore',{type:'application/octet-stream'});});}
 function scoreFromFile(file){return file.arrayBuffer().then(buf=>{const u=new Uint8Array(buf);if(u.length<12||String.fromCharCode(u[0],u[1],u[2],u[3])!=='MPS1')throw new Error('not a soundtrack');const n=new DataView(buf).getUint32(4);if(n>4000||8+n>=u.length)throw new Error('not a soundtrack');
  const h=JSON.parse(new TextDecoder().decode(u.subarray(8,8+n)));if(!h||typeof h.key!=='string'||!/^audio\//.test(h.mime||''))throw new Error('not a soundtrack');
  return {key:h.key,film:String(h.film||'').slice(0,80),title:String(h.title||'').slice(0,40),by:String(h.by||'').slice(0,30),card:Math.max(0,Math.min(3,h.card|0)),dur:+h.dur||0,mime:h.mime,blob:new Blob([u.subarray(8+n)],{type:h.mime})};});}
