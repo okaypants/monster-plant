@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room's lit lamps and closed curtains come from the refined set too (Nov 27)
+
+- Jackie sent the refined room with its wall lamps lit and with its curtains closed. The lit lamps, with their glow on the wallpaper, and the closed curtains are cut from those and replace the pieces borrowed from the earlier picture, so everything in the room is in the same crisp style. The closed picture lined up with the base exactly; the lit one sat a pixel higher and was cut to match.
+
 ### The movie room has its refined picture (Nov 27)
 
 - Jackie: "the movie room image can be refined. For instance, the cup stack looks weird, the popcorn bucket stack is weird, and the popcorn maker thing is not very 32 bit (actually a lot of it is really smooth); and the sconces are pre-lit." After three rounds with ChatGPT she approved the new picture ("Nice"; of its buckets, "the popcorn buckets are perfect").

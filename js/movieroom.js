@@ -178,7 +178,7 @@ function openMovieRoom(){
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
-  '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:2,y:118,w:96,h:160})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1572,y:118,w:96,h:160})+'">'+
+  '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:0,y:100,w:106,h:200})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1564,y:100,w:106,h:200})+'">'+
   '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB)+'"></button>'+
   '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+

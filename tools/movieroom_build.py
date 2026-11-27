@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The movie room's pictures (Jackie, Nov 26), from her three ChatGPT pictures in art_src/movieroom/:
   open.png            the room with the curtains open, the wall lamps off and the screen flat magenta (the refined picture of Nov 27)
-  sconce_l_lit.png, sconce_r_lit.png  the two wall lamps lit, cut from the earlier picture (at 2,118 and 1572,118)
+  sconce_l_lit.png, sconce_r_lit.png  the two wall lamps lit with their glow on the wallpaper, cut from her lamps-lit picture (at 0,100 and 1564,100)
   curtain_closed.png  the stretch between the two shelf units (at 366,98) with the curtains closed
   curtain_half.png    the same stretch with the curtains halfway, magenta showing between them
 Writes movieroom/room.png, movieroom/curtain_closed.png and movieroom/curtain_half.png with the magenta made see-through, so the
