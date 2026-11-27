@@ -106,10 +106,10 @@ function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)
 /* THE ORDER OF IT (Jackie, Nov 27: "i want the crystal ball to cloud then after a couple clouds the cat's eyes to glow then after a
    couple beats the stuff to bounce and THEN the prophecy and after its all done his eyes will go back to normal").
    The tap starts the clouds: eight of them, one every 550 ms. After two clouds (BALL_EYES_AT) the cat's eyes light. A couple of
-   beats later (BALL_FLOAT_AT) the things in the room lift and bob, when it is their turn: at most once a minute. Once they have
-   bobbed a while (BALL_SAY_AT) the prophecy is spoken. The things settle soon after. The eyes stay lit until the prophecy has
+   beats later (BALL_FLOAT_AT) the things in the room lift and bob, when it is their turn: at most once a minute. The things settle and the
+   clouds clear, and only then (BALL_SAY_AT; Jackie, later the same day: "the prediction ... should come after everything") is the prophecy spoken. The eyes stay lit until the prophecy has
    been read and its words have gone, and only then go back to normal. */
-const SPELL_GAP=60000,SPELL_LIFT=5,BALL_EYES_AT=1100,BALL_FLOAT_AT=2000,BALL_SAY_AT=3300,BALL_FLOAT_END=4200,BALL_EYES_MAX=25000;let spellT=-1e9,eyesT=-1e9;
+const SPELL_GAP=60000,SPELL_LIFT=5,BALL_EYES_AT=1100,BALL_FLOAT_AT=2000,BALL_SAY_AT=5700,BALL_FLOAT_END=4200,BALL_EYES_MAX=25000;let spellT=-1e9,eyesT=-1e9;
 function spellOn(){const d=performance.now()-spellT;return d>=0&&d<BALL_FLOAT_END-BALL_FLOAT_AT;}
 function ballSaying(){return typeof CAP!=='undefined'&&((CAP.cur&&CAP.cur.rk==='ballSign')||CAP.q.some(x=>x.rk==='ballSign'));}
 function eyesOn(){const d=performance.now()-eyesT;return d>=0&&d<BALL_EYES_MAX&&(d<BALL_SAY_AT-BALL_EYES_AT+800||ballSaying());} // lit from two clouds in until the prophecy has gone (with a little time for it to appear)
