@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The first room is called the study room, and the movie room's curtains draw like its curtains (Nov 27)
+
+- Jackie: "Should we have the curtains animated like in the plant room? Which we'll actually call the study room".
+- The rooms screen now reads "The study room" where it read "The plant room" (that name had been mine).
+- The movie room's curtains no longer jump through three pictures. The picture of the closed curtains is uncovered from each side toward the middle in twelve whole steps, and covered again the same way to open, as the study room's are. The halfway picture from ChatGPT is no longer used.
+
 ### Movie room: the gold knob is the lights and the receiver is the sound (Nov 27)
 
 - Jackie: "Maybe the far right gold knob can control lighting (I'd like to be able to turn the room way down during a movie) and the receiver can do audio".

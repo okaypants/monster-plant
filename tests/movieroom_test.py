@@ -28,7 +28,7 @@ async def main():
         await pg.reload(); await pg.wait_for_function('typeof LOADED!=="undefined"&&LOADED', timeout=20000)
         btn = pg.locator(".screen button").first
         if await btn.count(): await btn.click()
-        # the way in: Leave in the plant room opens the screen of rooms
+        # the way in: Leave in the study room opens the screen of rooms
         r = await pg.evaluate("()=>{__step(1);document.getElementById('leaveBtn').click();const c=[...document.querySelectorAll('.rmcard')];return {n:c.length,names:c.map(x=>x.textContent),room:roomNow()};}")
         check("Leave opens a screen with both rooms, marking where you are", r["n"] == 2 and "you are here" in r["names"][0] and r["names"][1] == "The movie room" and r["room"] == "main", r)
         await pg.screenshot(path=os.path.join(OUT, "rooms.png"))
@@ -91,7 +91,7 @@ async def main():
         check("films watched to the end are marked seen in their list", r["list"] >= 2 and r["seen"] >= 1, r)
         r = await pg.evaluate("()=>{document.querySelector('.mvtap').click();__step(.5);const v=document.querySelector('.mvstage video');document.querySelector('.mvback').click();const paused=v.paused,here=document.querySelector('.rmcard[data-id=movie]').textContent;"
                               "document.querySelector('.rmcard[data-id=main]').click();return {paused,here,open:movieRoomOpen(),left:!!document.querySelector('.movieroom'),rooms:!!document.querySelector('.rooms')};}")
-        check("Leave in the movie room pauses the film, and choosing the plant room goes back", r["paused"] is True and "you are here" in r["here"] and not r["open"] and not r["left"] and not r["rooms"], r)
+        check("Leave in the movie room pauses the film, and choosing the study room goes back", r["paused"] is True and "you are here" in r["here"] and not r["open"] and not r["left"] and not r["rooms"], r)
         check("no page errors", not errs, errs[:3])
         await b.close()
     print("\n%d failed" % len(fails) if fails else "\nall passed"); sys.exit(1 if fails else 0)
