@@ -86,7 +86,8 @@ function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='ar
 function jPages(){const P=allRaw().filter(q=>q.stage>=0).slice(0,MAX_PLANTS).map(q=>'p'+q.id);P.push('cat');if(worldItems().length)P.push('world');P.push('safe');return P;} // 'safe': Keep it safe (js/keepsafe.js), always last
 function openJournal(page){sfx('paper');closeJournal();
  const P=jPages();jPage=page&&P.includes(page)?page:P.includes('p'+st.id)?'p'+st.id:P[0];
- jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button></div>';
+ jEl=document.createElement('div');jEl.className='screen journal';jEl.innerHTML='<div class="jbook"><div class="jribs"></div><div class="jcover jstep"><div class="jpage jstep jl"></div><div class="jpage jstep jr"></div></div><button type="button" class="jclose tsb" aria-label="Close">×</button>'+(st.night?'':'<button type="button" class="jnight tsb">🌙 Goodnight</button>')+'</div>'; /* closing the day from the journal (Jackie, Nov 27: "make clicking the journal a goodnight potential too") */
+ {const gn=jEl.querySelector('.jnight');if(gn)gn.addEventListener('click',e=>{e.stopPropagation();closeJournal();tuckIn();});}
  jEl.addEventListener('click',e=>{if(e.target===jEl)closeJournal();}); // tap outside the book
  jEl.querySelector('.jclose').addEventListener('click',e=>{e.stopPropagation();closeJournal();});
  ui.appendChild(jEl);fitBook();renderJournal();}
