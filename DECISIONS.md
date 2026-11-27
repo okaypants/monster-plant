@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Summer has no maypole (Nov 27)
+
+- Jackie: "in summer decorations, there's a cross -- get rid of it and repurpose something else". The floor piece was a midsummer maypole, which is a cross. Its picture is removed, and the pot of many-coloured flowers stands there for now.
+- She then asked for a beach ball from ChatGPT, and to start decorations and string lights over; this is the stopgap until then.
+
 ### A monster sits a little higher in the bassinet, and a bonk there says bassinet (Nov 27)
 
 - Jackie: "lift the baby up just a tiny tiny bit in the bassinet". The top of its head is 5 pixels higher than before.
