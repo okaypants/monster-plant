@@ -36,7 +36,7 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "curtains_closed.png"))
         # the screen sits where the picture's screen is
         g = await pg.evaluate("()=>{const s=document.querySelector('.mvstage').getBoundingClientRect(),v=document.querySelector('.mvstage video').getBoundingClientRect();return [(v.left-s.left)/s.width*1670,(v.top-s.top)/s.height*941,v.width/s.width*1670,v.height/s.height*941];}")
-        check("the film sits behind the picture's screen", abs(g[0]-414) < 2 and abs(g[1]-118) < 2 and abs(g[2]-843) < 2 and abs(g[3]-451) < 2, g)
+        check("the film sits behind the picture's screen", abs(g[0]-428) < 2 and abs(g[1]-117) < 2 and abs(g[2]-816) < 2 and abs(g[3]-468) < 2, g)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');window.__plays=0;v.play=()=>{window.__plays++;Object.defineProperty(v,'paused',{value:false,configurable:true});return Promise.resolve();};v.pause=()=>{Object.defineProperty(v,'paused',{value:true,configurable:true});};"
                               "document.querySelector('.mvtap').click();const a=mvState;__step(.1);const b=mvState;__step(.4);return {a,b,c:mvState,plays:window.__plays,src:v.getAttribute('src'),hidden:document.querySelector('.mvcurtain').hidden,muted:v.muted,note:document.querySelector('.mvnote').textContent};}")
         check("a tap opens the curtains in two steps and starts the film", r["a"] == "half" and r["b"] == "half" and r["c"] == "open" and r["plays"] == 1 and r["hidden"], r)

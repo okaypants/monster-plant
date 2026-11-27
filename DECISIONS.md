@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room uses Jackie's second set of three pictures (Nov 26)
+
+- Jackie sent a new matching set from ChatGPT: curtains closed, halfway and open. The screen is a little taller, and the buckets on the bottom right shelf stand empty. The room is rebuilt from this set, with the closed and halfway curtains set into the new open picture as before.
+- The new open picture has gold tasselled tie-backs. Jackie said of the earlier closed picture "I hate the gold ropes", so these are flagged to her and may be swapped.
+
 ### The movie room's first version: the screen, the curtains and one film (Nov 26)
 
 - Built to try the screen before anything else. The room's picture lies over a film that plays behind its see-through screen (js/movieroom.js, tools/movieroom_build.py). The curtains are closed when you come in; tap them and they open in two steps and the film starts; tap again to pause; when the film ends they close. While a film plays the room dims.

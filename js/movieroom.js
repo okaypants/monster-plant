@@ -5,7 +5,7 @@
    start watching"), open in two steps (frame swaps), and close again when it ends. Everything you touch here is about watching.
    The film streams from the Internet Archive, so it needs a connection; it plays muted (the copy's music is not known to be free).
    For now the room opens from the debug drawer; the door from the main room waits for its art. */
-const MV={W:1670,H:941,screen:{x:414,y:118,w:843,h:451},curtain:{x:366,y:98,w:940,h:504},step:260};
+const MV={W:1670,H:941,screen:{x:428,y:117,w:816,h:468},curtain:{x:366,y:98,w:940,h:504},step:260};
 const MV_FILMS=[{t:'A Trip to the Moon',by:'Georges Méliès, 1902',src:'https://archive.org/download/ATripToTheMoon20Fps/TripToTheMoon20Fps_512kb.mp4'}];
 let mvEl=null,mvState='closed',mvTimer=0;
 function movieRoomOpen(){return !!(mvEl&&mvEl.isConnected);}
