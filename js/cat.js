@@ -101,7 +101,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   cat.sc+=((cat.path.length?catSc(DEPTH.floor):CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
  // company: a cat napping near the plant keeps it a little company
  if(cat.state==='sleep'&&st.started&&st.stage>=4&&!st.night){const b=plantBox();if(Math.abs(cat.x-(b.x+b.w/2))<b.w*.9+120&&Math.abs(cat.y-SPOT[spotKey()].y)<160)st.needs.attention=Math.max(0,st.needs.attention-dt*.002);}}
-function catFrame(){const f=catFrame0();return CATF.glow&&(f===CATF.sit1||f===CATF.sit2)&&typeof spellOn==='function'&&spellOn()&&!cat.force?CATF.glow:f;} // the crystal ball's spell: a sitting cat's eyes glow green (js/fidgets.js)
+function catFrame(){const f=catFrame0();return CATF.glow&&typeof eyesOn==='function'&&eyesOn()&&!cat.force&&cat.state!=='away'?CATF.glow:f;} // the crystal ball: the cat sits up with glowing green eyes while the vision lasts, whatever it was doing (js/fidgets.js)
 function catFrame0(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
  if(cat.state==='sleep')return CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[cat.pose]]; // asleep: ONE frame per pose (Jackie, calm-down); the breathing is done in code (catBreath)
  if(cat.state==='wake')return cat.t<1.2?CATF.yawn:CATF[T%2.4<.18?'sit2':'sit1']; // sit2 = a slow blink now and then

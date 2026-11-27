@@ -100,16 +100,17 @@ function ballToday(){return ballLog().looks.filter(l=>BALL_VISIONS[l[1]]).map(l=
 function ballNext(){let bag=[];try{bag=JSON.parse(localStorage.getItem(BALL_BAG)||'[]')}catch(e){}bag=Array.isArray(bag)?bag.filter(i=>Number.isInteger(i)&&i>=0&&i<BALL_VISIONS.length):[];
  if(!bag.length)bag=BALL_VISIONS.map((_,i)=>i);const k=Math.floor(Math.random()*bag.length),i=bag.splice(k,1)[0];try{localStorage.setItem(BALL_BAG,JSON.stringify(bag))}catch(e){}return i;}
 /* THE SPELL (Jackie, Nov 26: "maybe whenever we use the crystal ball, his eyes turn green and things float, but only once every like
-   minute"). When the ball is used, and at most once a minute, for as long as the ball's vision lasts: the cat's eyes glow green if it
-   is sitting up (its glowing pose, js/cat.js), the things in the room lift a few pixels and bob (whole pixels), and a few green
+   minute"). Every time the ball is used, for as long as its vision lasts, the cat sits up with its eyes glowing green, whatever it was
+   doing (its glowing pose, js/cat.js). At most once a minute the things in the room also lift a few pixels and bob (whole pixels), and a few green
    motes drift up. Then everything settles back on its own spring. */
-const SPELL_GAP=60000,SPELL_LIFT=5;let spellT=-1e9;
+const SPELL_GAP=60000,SPELL_LIFT=5;let spellT=-1e9,eyesT=-1e9;
 function spellOn(){return performance.now()-spellT<BALL_MS;}
+function eyesOn(){return performance.now()-eyesT<BALL_MS;} // the cat's eyes glow every time the ball is used (Jackie, Nov 27: "the cat's eyes are supposed to turn green anytime i do the crystal ball"); only the floating waits a minute
 function spellStep(){if(!spellOn())return false;const u=(performance.now()-spellT)/1000;
  FP.forEach((p,i)=>{const up=Math.min(1,u/.6)*(SPELL_LIFT+i%3);p.oy=-Math.round(up+Math.sin(u*2.2+i*1.7));p.vy=0;p.ox=0;p.vx=0;});
  if(Math.random()<.18){const p=FP[Math.floor(Math.random()*FP.length)];fBits.push({x:p.x+rnd(0,p.w),y:p.y+p.h-rnd(0,20),vx:rnd(-.2,.2),vy:rnd(-.9,-.4),g:-.004,sway:true,life:rnd(70,120),c:Math.random()<.5?'#39ff14':'#b6ffa8'});if(fBits.length>160)fBits.shift();}
  return true;}
-function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;if(now-spellT>=SPELL_GAP)spellT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
+function ballGaze(){const now=performance.now();if(now-ballT<BALL_MS||typeof BALL_VISIONS==='undefined')return;ballT=now;eyesT=now;if(now-spellT>=SPELL_GAP)spellT=now;const i=ballNext(),T=Object.keys(BALL_TINT).concat([null]);
  ballCur={i,tints:Array.from({length:8},()=>T[Math.floor(Math.random()*T.length)]),eyes:Math.random()<BALL_EYES};sfx('chime');
  if(!st.ballMet){st.ballMet=1;tell('The crystal ball has visions of things to come.',{kind:'info',key:'ballHi'});}
  setTimeout(()=>tell(ballSay(BALL_VISIONS[i]),{kind:'info',key:'ballSign',now:true,long:true}),BALL_MS*.55);

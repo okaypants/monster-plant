@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat's eyes glow green every time the crystal ball is used (Nov 27)
+
+- Jackie: "the cat's eyes are supposed to turn green anytime i do the crystal ball".
+- Before, the eyes glowed at most once a minute, with the floating, and only if the cat happened to be sitting up. Now, every time the ball is used and for as long as its vision lasts, the cat sits up with its eyes glowing, whatever it was doing (asleep, loafing, walking), and then goes back to it. Only the things floating still wait a minute between times.
+
 ### A scorched monster no longer gets brown rings round its eyes and mouth (Nov 27)
 
 - Jackie: "The baby is blurry", then "I think it was turning grey", then "for some reason the baby only looks weird in the bassinet on my phone and it takes a little bit being in there". Her screenshot, enlarged, showed brown rings round the baby's eyes and mouth and a brown fringe inside its outline.
