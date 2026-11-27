@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The viewfinder shows the whole photograph, for real this time (Nov 26)
+
+- Jackie: "the image in the viewfinder in the other room is still zoomed in weird". The earlier fix made the frame take the picture's shape, but the picture itself was still only the middle of each half of the card, so heads, feet and the edges of the moon were cut off.
+- Each card's window is now opened to the full photograph: as wide as the distance between the card's two photographs, the card's full height, with plain mount trimmed off the edges (tools/viewer_build.py, `whole`). The two photographs still line up as before.
+- Some cards now show a strip of mount or their printed caption at the edge. That is the cost of never cutting the photograph.
+
 ### Each room has a Leave button that opens a screen of rooms (Nov 26)
 
 - Jackie: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a screen". This is the way into the movie room, so no door has to be fitted into the plant room's wall.
