@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The window garland and the floor decoration go dark with the room (Nov 27)
+
+- Jackie, with a screenshot of the room at night with the lamps off: "The lighting is a little off" (and on Nov 26: "the lighting for the garland in the window is pretty bad along with some added items"). The window's garland and the harvest basket on the floor stood at full daytime brightness in a dark room.
+- The cause: each thing takes its light from the room's picture at its own feet, now against daytime. The garland's feet are in the window, which is sky and reads as full light at night; the basket's are in a corner that is nearly black by day, where the reading is meaningless. The garland now reads the wall under the sill and the floor piece reads the floor just to its right.
+- The string lights stay bright in the dark on purpose: they are lit.
+
 ### The crystal ball goes in order: swirl, eyes, float, prophecy (Nov 27)
 
 - Jackie: "I would like the pacing for the crystal ball to go: click > swirling > cats eyes a little after swirling starts -> items float > prophecy".

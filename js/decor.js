@@ -36,7 +36,7 @@ function lightsDim(){const now=performance.now();if(!lightsAt)lightsAt=now+rnd(L
 /* INSIDE THE WINDOW (Jackie: "garland and stuff should go behind the curtains, but in front of the windows ... they're like inside").
    The garland is drawn only through the shape of the window's opening between the open curtains (decor/winmask.png), and before the
    closed curtains are drawn, so cloth always covers it. */
-const WIN_AT={x:240,y:118,cx:444,top:150},WIN_MASK=img('decor/winmask.png');
+const WIN_AT={x:240,y:118,cx:444,top:150,lx:444,ly:560},WIN_MASK=img('decor/winmask.png');
 /* STRING LIGHTS ALONG THE TOP OF THE WALL (Jackie, Nov 26: "we could have string lights all the way across the top very small";
    asked which, "Across"). One strand runs the width of the room just under the ceiling, drawn only through the bare wallpaper there
    (decor/topmask.png), so it passes behind the hanging plants and covers nothing. It replaces the garland that hung on the
@@ -70,7 +70,7 @@ const GARLANDS=[[WIN_AT,WIN_MASK,document.createElement('canvas')]];
 function drawGarland(n){if(!st.started)return;const s=decorNow(),[at,mask,cv]=GARLANDS[n];if(!s||!ok(mask))return;
  const dimmed=DECOR_IMG[s.id+'_w_dim'],im=lightsDim()&&ok(dimmed)&&!tsCalm()?dimmed:DECOR_IMG[s.id+'_w'];if(!ok(im))return;
  if(cv.width!==mask.naturalWidth){cv.width=mask.naturalWidth;cv.height=mask.naturalHeight;}const x=cv.getContext('2d');
- x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.drawImage(litPic(im,lightAt(at.cx,at.top+im.naturalHeight)),at.cx-at.x-Math.round(im.naturalWidth/2),at.top-at.y);
+ x.globalCompositeOperation='source-over';x.clearRect(0,0,cv.width,cv.height);x.drawImage(litPic(im,lightAt(at.lx||at.cx,at.ly||at.top+im.naturalHeight)),at.cx-at.x-Math.round(im.naturalWidth/2),at.top-at.y); // lit from the wall under the sill: the panes themselves are sky, which reads as full light even at night
  x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);g.drawImage(cv,at.x,at.y);}
 function drawDecorWindow(){drawGarland(0);}
 function drawDecorWall(){drawStringLights();} // the top of the wall: the string lights (the garland no longer hangs on the right-hand wall)

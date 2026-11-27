@@ -43,8 +43,9 @@ function stackOff(){return {x:0,y:0};} // it no longer rides on the crate
 function seasonIdle(n){return idleOn&&idleOn.it.n===n?idleOffset(performance.now()):0;}
 function seasonBox(){const k=seasonItem();if(!k)return null;const f=k==='pumpkin'?PUMPKIN[0]:k==='tree'?TREE[0]:DECOR_IMG[k];if(!ok(f))return null;const at=seasonAt(),sc=(k==='pumpkin'?PUMPKIN_SC:k==='tree'?TREE_SC:1)*at.k,w=Math.round(f.naturalWidth*sc),h=Math.round(f.naturalHeight*sc);
  return {k,sc,osc:ORN_SC*at.k,x:at.x-Math.round(w/2),y:at.y-h,w,h};}
+/* its light is read from the floor just to its right. Under the piece itself the room's picture is nearly black by day (the corner by the lamp's foot), which made the reading useless and left the piece at full brightness in a dark room (Jackie, Nov 27: "The lighting is a little off") */
 function drawSeasonItem(){const b=seasonBox();if(!b)return;const now=performance.now(),o=stackOff(),x0=b.x+o.x+seasonIdle(b.k),y0=b.y+o.y;
- const L=lightAt(b.x+b.w/2,b.y+b.h),put=(im,x,y,sc)=>{if(ok(im))g.drawImage(litPic(im,L),Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
+ const L=lightAt(b.x+b.w+60,b.y+b.h-20),put=(im,x,y,sc)=>{if(ok(im))g.drawImage(litPic(im,L),Math.round(x),Math.round(y),Math.round(im.naturalWidth*sc),Math.round(im.naturalHeight*sc));};
  if(b.k==='pumpkin'){const rock=now<sRock?1+Math.floor((sRock-now)/SWAP_MS)%2:0;put(PUMPKIN[rock],x0,y0,b.sc);return;}
  if(b.k!=='tree'){put(DECOR_IMG[b.k],x0,y0,b.sc);return;} // another set's floor decoration: one still picture
  put(TREE[now<sSway?Math.floor((sSway-now)/SWAP_MS)%2:0],x0,y0,b.sc);
