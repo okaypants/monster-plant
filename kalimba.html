@@ -108,7 +108,7 @@ html.film #panel{left:var(--padw,0px);right:auto;top:0;bottom:0;width:calc(100vw
 html.film #panel>.cap{display:none}html.film #panel>.cap.oct{display:none}
 html.film #kfilm{flex:1;min-height:0;height:auto;flex-direction:column;position:relative}
 html.film #kv{flex:1;min-height:0;height:auto;width:100%;aspect-ratio:auto}
-html.film #kside{flex:none;grid-template-columns:repeat(5,1fr);gap:5px} /* with the film big there are ten buttons in two rows */html.film #kbar{display:block}
+html.film #kside{flex:none;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-right:3px} /* with the film big there are ten buttons in two rows; each column may shrink below its words, so the row never runs off the screen */html.film #kbar{display:block}
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:4px 6px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 #kside{grid-template-columns:1.4fr 1fr 1fr}
@@ -116,18 +116,19 @@ html.film .cap.kcap{display:block;min-height:0;height:auto;padding:4px 6px}html.
    upright and a film chosen, the film is across the top, its bar and buttons under it, and the keys fill the bottom half where
    the thumbs are. */
 @media (max-aspect-ratio:11/10){
-html.film #panel{display:flex;flex-direction:column;max-width:none;padding:8px 8px 0;box-sizing:border-box}
+html.film #panel{display:flex;flex-direction:column;max-width:none;width:100%;padding:8px 8px 0;box-sizing:border-box;overflow:hidden}
 html.film #panel>.cap{display:none}
 html.film #kfilm{flex-direction:column;height:auto;gap:6px}
 html.film #kv{width:100%;height:auto;aspect-ratio:4/3;max-height:40vh}
 html.film #kbar{display:block}
-html.film #kside{grid-template-columns:repeat(5,1fr);gap:5px}
+html.film #kside{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-right:3px}html.film #kfilm{padding-right:3px}
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 html:not(.film) .kx{display:none}
-#ksetup{display:none}html.film.setup #ksetup{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;flex:none}
+#ksetup{display:none}html.film.setup #ksetup{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;flex:none;padding-right:3px}html.film #kv,html.film #kbar{box-sizing:border-box}html.film .cap{min-width:0}
 html.film #ksetup .cap{display:block;grid-column:auto;height:auto;min-height:0;padding:4px 6px;overflow:hidden}html.film #ksetup .cap .lbl{font-size:8px}html.film #ksetup .cap .val{margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}html.film #ksetup .cap .num{display:none}
 html.film #ksetup .cap.oct{display:flex;padding:0}html.film #ksetup #bRec,html.film #ksetup #bKeys,html.film #ksetup #bMet{display:none} /* recording and the click have their own buttons under the film, and the number of keys is fixed here */
+#kx{position:absolute;right:9px;top:6px;z-index:3;width:36px;height:36px;border-radius:50%;border:1.4px solid #1C1C1B;background:#FBF8F1;color:#1C1C1B;box-shadow:2px 2px 0 #1C1C1B;font:700 17px 'IBM Plex Mono',ui-monospace,monospace;line-height:1;cursor:pointer;padding:0}html:not(.film) #kx{display:none}
 #knofilm{position:absolute;left:0;top:0;right:0;z-index:1;border:0;background:transparent;color:#FBF8F1;font:600 14px 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;cursor:pointer;aspect-ratio:4/3;max-height:100%} /* the film's own controls show only with the film big */
 /* the bar under the film: where you are, the parts you have recorded (orange), and a loop if one is set (outlined). Drag along it to move. */
 #kbar{display:none;position:relative;flex:none;height:16px;border:1.4px solid var(--ink);border-radius:8px;background:#2A2A28;overflow:hidden;touch-action:none;cursor:pointer}
@@ -169,7 +170,7 @@ html.film #ksetup .cap.oct{display:flex;padding:0}html.film #ksetup #bRec,html.f
     <button class="cap kcap kx" id="kSave"><span class="lbl" id="kSaveL">SAVE</span><span class="val" id="kSaveV">no parts</span></button>
     <button class="cap kcap" id="kPick"><span class="lbl">FILM</span><span class="val" id="kName">choose a film</span></button>
     <button class="cap kcap" id="kView"><span class="lbl">VIEW</span><span class="val" id="kViewV">set up</span></button>
-    <button class="cap kcap" id="kBack"><span class="lbl">DONE</span><span class="val">back</span></button></div></div>
+    <button class="cap kcap" id="kBack"><span class="lbl">LEAVE</span><span class="val">close</span></button></div><button id="kx" type="button" aria-label="Close and go back to the movie room">✕</button></div>
 </div>
 <div id="kkeep"><div class="box"><h3>YOUR SOUNDTRACK</h3><p id="kkInfo"></p><div id="kkParts"></div><input id="kkBy" maxlength="30" placeholder="Scored by (your name)" autocomplete="off"><div class="cards" id="kkCards"></div><div class="row"><button id="kkNo">undo changes</button><button id="kkOn">keep working</button><button id="kkYes" class="go">save to my films</button></div></div></div>
 <div id="sheet"><div class="bg"></div><div class="pane"><div class="hd"><span id="shTitle"></span><button id="shDone">DONE</button></div><div class="grid" id="shGrid"></div></div></div>
@@ -786,7 +787,9 @@ $('kkYes').onclick=()=>{const f=KF.film,P=KF.parts;if(!f)return;if(!P.length){$(
   try{localStorage.setItem('mp-scorer',by)}catch(e){}return scorePut(f,{parts:P,by,card:kkCard,meta:`${SOUNDS[soundI][0]} · ${TUNE()[0]}`}).then(()=>{KF.by=by;KF.card=kkCard;KF.dirty=false;kfPlayerMake();kfKeepEnd();say('saved to your films');try{parent.postMessage('mp-kalimba-score','*')}catch(e){}});}).catch(()=>{$('kkInfo').textContent='It could not be kept on this device.';});};
 $('kkeep').addEventListener('pointerdown',e=>e.stopPropagation());
 press($('kPick'),kfPick);press($('kPlay'),kfPlay);press($('kGo'),kfGo);press($('kRew'),()=>kfSeekTo(kv.currentTime-10));press($('kFwd'),()=>kfSeekTo(kv.currentTime+10));press($('kLoop'),kfLoop);press($('kMet'),metSheet);press($('kSave'),kfKeep);
-press($('kView'),()=>kfSetup());press($('kBack'),()=>{if(kfBusy())kfStop();if(KF.dirty){kfKeep();say('save or undo first');return}kfQuiet();if(KF.player)KF.player.stop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
+/* THE WAY OUT IS ALWAYS IN SIGHT (Jackie, Nov 27: "i also wasn't sure how to leave kalimba-score and freaked out"). A round ✕ sits on the top right corner of the film the whole time, and the last button reads LEAVE · ✕ close. Both go back to the movie room; with unsaved parts they ask about saving first. */
+function kfLeave(){if(kfBusy())kfStop();if(KF.dirty){kfKeep();say('save or undo first');return}kfQuiet();if(KF.player)KF.player.stop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}}
+press($('kView'),()=>kfSetup());press($('kBack'),kfLeave);press($('kx'),kfLeave);
 if(!KF.films.length){$('kfilm').style.display='none';}
 else{const box=document.createElement('div');box.id='ksetup';const P=$('panel');[...P.children].forEach(c=>{if(c.id!=='kfilm')box.appendChild(c)});P.insertBefore(box,$('kfilm')); // the instrument's own options, gathered into one strip that SET UP shows
   const tip=document.createElement('button');tip.id='knofilm';tip.type='button';tip.textContent='tap to choose a film';$('kfilm').insertBefore(tip,$('kbar'));press(tip,kfPick);kfView();}

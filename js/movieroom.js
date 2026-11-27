@@ -148,8 +148,10 @@ function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySe
 /* A phone turned from sideways to upright while the game is on its home screen can go on reporting the old, shorter height, which
    left a dark strip under the instrument. So the instrument's ground is sized from the screen itself there, and again whenever
    the phone turns. In a browser tab, where the screen is taller than the page, the page's own height is used. */
-function kalFit(){if(!kalEl)return;const alone=navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches),up=(window.matchMedia&&matchMedia('(orientation: portrait)').matches);
- const vh=Math.max(innerHeight,document.documentElement.clientHeight,(window.visualViewport&&visualViewport.height)||0),sh=up?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);kalEl.style.height=(alone?Math.max(vh,sh):vh)+'px';kalEl.style.bottom='auto';}
+function kalFit(){if(!kalEl)return;const alone=navigator.standalone===true||(window.matchMedia&&(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches));
+ let top=0;{const p=document.createElement('div');p.style.cssText='position:fixed;left:0;top:0;width:0;height:env(safe-area-inset-top,0px);visibility:hidden';document.body.appendChild(p);top=p.getBoundingClientRect().height||0;p.remove();}
+ const vh=Math.max(innerHeight,document.documentElement.clientHeight,(window.visualViewport&&visualViewport.height)||0),full=Math.max(screen.width,screen.height),up=window.matchMedia&&matchMedia('(orientation: portrait)').matches;
+ kalEl.style.height=(alone&&up?Math.min(vh+top,full):vh)+'px';kalEl.style.bottom='auto';} // from the home screen, upright, the page reports itself shorter than the screen by the clock bar: that much is added back, never past the screen's own height
 ['resize','orientationchange'].forEach(ev=>addEventListener(ev,()=>{kalFit();setTimeout(kalFit,350);}));
 function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;document.documentElement.classList.remove('kal-open');if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
 addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score'){mvScoreStop();mvScoreKey='';mvScoresLoad();}});

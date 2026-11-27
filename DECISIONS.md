@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Kalimba-Score has a ✕ always in sight, fits every screen, and the lights menu has no dark strip (Nov 27)
+
+- Jackie, with a second iPhone screenshot: "I think you need to review how the view is handled in a variety of contexts as for instance it looks bad in my phone". The film and the buttons ran off the right edge and the bottom was cut off above a dark strip.
+- The right edge: the rows of buttons could not shrink below the width of their words, and the film's frame was counted outside its width. Both are fixed. The layout was then measured at eleven sizes, from a 320 by 568 phone to a 1366 by 768 desktop, upright and sideways, with set up open and closed: nothing runs past an edge at any of them.
+- The bottom: from the home screen with the phone upright, an iPhone lays the page out shorter than the screen by the height of the clock bar. The page is now made that much taller so it can be drawn to the bottom, and the instrument's height adds the same amount back. This cannot be seen from a desktop, so it waits on her next screenshot.
+- Jackie: "i also wasn't sure how to leave kalimba-score and freaked out - not asmr". A round ✕ now sits on the top right corner of the film the whole time, and the last button reads LEAVE, close. Both go back to the movie room; with unsaved parts they ask about saving first.
+- Jackie: "the menu for decorations and stuff has a background". The dark strip behind each strand in the string lights menu is gone. (This is my reading of which background she meant.)
+
 ### Kalimba-Score always shows the big screen, set up opens over it, and the sideways pads are keys (Nov 27)
 
 - Jackie: "it was confusing because when the screen is small it looks like a kalimba which isn't good. it should always be big screen AND you have options to set up. For the horizontal, I love but actually lets turn those back into keys -- just like it is but like keys."
