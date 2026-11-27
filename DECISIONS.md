@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Decorations and string lights are starting over as a box of separate things (Nov 27)
+
+- Jackie: "Actually let's start completely over with decorations and string lights", "let's do deep research into everything to make sure there's nothing incidentally stereotypical or offensive but also genuinely adds something to the room", "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS ETC". Offered three shapes, she said "Go with your recs".
+- The shape: no sets. Each decoration is one recognisable object you can put out with any other, grouped as seasons and weather, milestones and gatherings, and holidays. The research is in `reports/Respectful seasonal and holiday decor.md`.
+- Rules taken from it: plants, food, toys and household things may stand on the floor; the central object of a day (the Hanukkah lamp, Kwanzaa's candle holder, the hina dolls) goes on the shelf only, drawn exactly; deities, holy books, altars and offerings are left out; no people, no writing, no cross shapes; nothing is put up by the calendar without the player choosing it.
+- The first round is floor objects only: four sheets of sixteen and one sheet of ten light strands, for ChatGPT to draw. The old thirty sets stay in the game until the new art is in.
+
+### The viewfinder keeps its pictures lined up (Nov 27)
+
+- Jackie asked for the frames of the two photographs to line up exactly if possible. On most cards the two prints were cut and mounted a few pixels differently, so lining up the frames doubles the picture more. Shown both on two cards, she said "old one is better". Nothing was changed.
+
 ### The remote's channels are old television that plays in the room; the YouTube cameras are gone (Nov 27)
 
 - Jackie: "remove the youtube ones from the TV and instead find live feeds that will just play in the room as is if possible otherwise find tv shows or something you can put in there", "something that seems tv like i guess as long as it's kind of good", "creative?", "whatever".
