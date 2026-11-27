@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A kalimba stands where the box set was (Nov 27)
+
+- Jackie had ChatGPT redraw the movie room with a small kalimba on the bottom right shelf ("4 looked crazy so I did three": it has three tines). Only the kalimba is taken from that picture and set into the room's base, which it lined up with exactly. Tapping it opens the Kalimbasizer, as tapping the box set's place did.
+
 ### In the bassinet only a monster's face shows (Nov 27)
 
 - Jackie: "The monster in the bassinet is still too near - maybe it should be deep behind the white part but below the lowest arch of the bassinet like just a little face poking up", then "the black line above the cream in the bassinet should be where the monster pops up from".
