@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Rewind and fast forward, for films only (Nov 27)
+
+- Jackie: "change the >> button and << button to fast forward and rewind not next", "but only for films not tv".
+- The two keys used to jump ten seconds. A press now runs the film back or on at about eight times its speed, with the picture showing as it goes. The same key again, or play, watches from there. It stops by itself at either end of the film. The key in use is lit amber.
+- On a channel the keys still do nothing but say that a channel can't be wound.
+
+### TV and FILM keys on the remote (Nov 27)
+
+- Jackie: "maybe have a wide tv and a wide film button below the numbers to switch between tv and the films we have in the film catalogue".
+- Two wide keys sit under the number pad. TV tunes to the channel last watched, or the first one. FILM opens the film library. Whichever is on is lit amber.
+
 ### The remote: smaller numbers, a power key, an information key, no library key (Nov 27)
 
 - Jackie: "i think on the remote, the numbers can be a little smaller, and maybe no link to the dvds and stuff", "and also a power button for the screen so someone knows what to do to start", "maybe an information button instead of the library", "circled i".
