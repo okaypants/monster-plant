@@ -5,6 +5,7 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 ### The game's instrument is called Kalimba-Score (Nov 27)
 
 - Jackie, asked what to call the Kalimbasizer inside the game: "Call it kalimba-score, a practical kalimbasizer".
+- Jackie on the opening picture: "basically same aesthetic but slightly more indicative of what we're doing". The kalimba in it keeps its shape and colours; its sound hole is now a small film reel that turns slowly, and its bar is a clapperboard's striped arm. (Offered a wider movie restyle of the whole instrument first, she said none of that, only the opening picture.)
 - Its start screen reads KALIMBA-SCORE with "a practical Kalimbasizer" under it. The kalimba on the movie room's shelf and the page's title carry the new name, and a take saved from it is named kalimba-score. Only the name changed; its look and its buttons are as they were.
 
 ### Stand-in pictures and plain word buttons in the movie room carry a fitting emoji (Nov 27)
