@@ -13,6 +13,16 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - Cut by hand after reading the titles: films about hunting, a disaster, youth gangs, a wartime strike, pests, a diet drink, two early erotic films, things still owned (a Jetsons promo, a Kellogg's advertisement, Lost in Space), and three Betty Boop cartoons with caricature, harassment or cruelty in them. Old cartoons are taken only from named series, with known bad episodes left out. Titles and descriptions with words for war, weapons, drugs, drink, tobacco, slurs and the like are dropped by the tool.
 - Nobody has watched these 109 through. The choosing was by title, description and what the Archive says of each film.
 
+### A quieter Rooms button, channels that land somewhere new, bigger play keys, and no channel films in the library (Nov 27)
+
+- Jackie: "i wish the rooms button was less intense and the channels started on random things when you switched back to them from the playlist of possibilities for the self constructed channels including commercials, and i wish the play button etc were bigger", then "the channels should not be in the film archive tho".
+- The Rooms button is a small, see-through cream pill with a thin edge, in both rooms. (Earlier the same day it had been made a solid cream button with a heavy edge so it would look the same everywhere; that was too much.)
+- Tuning to a channel picks any item of its playlist, commercials included, never the one just seen. A long film is joined part-way through; a short one or a commercial starts at its beginning. When it ends another is picked. The round-the-clock schedule is gone, since going back to a channel found the same film.
+- Jackie: "the viewer shouldn't be able to control where they catch it", "but if they leave the channel after watching, they should be able to catch it again for like 5 minutes", "esp if they watched for longer than 10 seconds", "those rules may be too convoluted tho". One rule was kept: a channel you leave goes on showing the same thing for five minutes, moved along by the time you were away; after that it has moved on. The ten-second condition was left out as she doubted it. Back and on do nothing on a channel, and a line says so.
+- Then: "let's say if you watched for more than 5 minutes you should be allowed to pick up where you left off". A channel watched for five minutes or more keeps your exact place in what was on, however long you are away.
+- Back, play and forward are the largest keys on the remote.
+- The "From the channels" shelf is out of the film library, and out of Kalimba-Score's list. The one-minute films stay as a shelf as well as a channel, as she asked for those "in both".
+
 ### The room comes up without waiting for every picture (Nov 27)
 
 - Jackie: "sometimes monster plant doesn't load screen right away anymore".

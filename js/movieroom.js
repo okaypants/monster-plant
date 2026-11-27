@@ -78,7 +78,7 @@ function mvPlay(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const
  if(!f){mvPick();mvNote('Choose something to watch.');return;}
  if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
  if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';mvLightApply();}}
-function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(mvChan&&!mvChan.live){mvTune(mvChan);return;} /* on a channel the next film simply begins */if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
+function mvEnd(){if(!mvEl||mvState==='closed'||!mvFilm)return;if(mvChan&&!mvChan.live){mvTune(mvChan,true);return;} /* on a channel something else simply begins, from its start */if(!mvFilm.loop&&mvFilm.f)mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
    hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
@@ -205,20 +205,20 @@ function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite l
    title so it would have to be on the side i guess so most of the screen is visible"; "maybe there's an onscreen tv guide and
    then you have to type in a specific number on the remote like a channel to get there").
    A CHANNEL is a number, a name and a playlist (movieroom/channels.json, made by tools/channels_build.py; the old television and
-   the satellite loops are added here). Every channel runs round the clock: its playlist is laid end to end and the clock says
-   which film is on and how far in, so tuning in lands part-way through, as on a real set, and when a film ends the next begins.
+   the satellite loops are added here). Tuning to a channel lands on something from its playlist, a long film part-way through as on a real set, and when it ends
+   something else begins (see mvChanPick).
    THE REMOTE is a slim panel down the right of the room, so the screen stays in view. It has a number pad (type a channel's
    number), channel up and down, back ten seconds, play or pause, on ten seconds, GUIDE and the film library.
    THE GUIDE is drawn on the screen itself: every channel with its number, its name and what kind of thing it shows. A tap on a
    row tunes to it, or its number can be typed on the remote. */
-let MV_MORE=[]; /* shelves of the film library made from the channels (Jackie, Nov 27: "don't forget to include titles there and in the film library", "as well as super super short films", "in both"): the very short first films, and everything the channels show, each to be watched from its start or scored */
+let MV_MORE=[]; /* shelves of the film library made from the channels (Jackie, Nov 27: "don't forget to include titles there and in the film library", "as well as super super short films", "in both"): the very short first films, each to be watched from its start or scored */
 let MV_CH=[],mvChan=null,mvSeekTo=0,mvRemEl=null,mvDigits='',mvDigitT=0,mvGuideT=0;
 const MV_CH_OWN=[{n:4,add:[{src:MV_LIVE[3].src,t:'The Crystal Egg',y:'1951',d:1427},{src:MV_LIVE[4].src,t:'The Case of the Haunted Gainsborough',y:'1954',d:1600},{src:MV_LIVE[5].src,t:'Captain Z-Ro: Leonardo da Vinci',y:'1956',d:1587},{src:MV_LIVE[6].src,t:'Burns and Allen: The Kleebob Card Game',y:'1950',d:1766},{src:MV_LIVE[7].src,t:'You Bet Your Life',y:'1950s',d:1765}]}],
  MV_CH_LIVE=[{n:8,name:'The Northwest from Space',about:'A weather satellite, the last few hours',live:MV_LIVE[0]},{n:9,name:'North America from Space',about:'A weather satellite, the last few hours',live:MV_LIVE[1]},{n:10,name:'Test Card',about:'Nothing is on',live:MV_LIVE[2]}];
 function mvChannelsSet(j){const L=((j&&j.channels)||[]).map(c=>({n:c.n,name:c.name,about:c.about,list:(c.list||[]).slice()}));for(const o of MV_CH_OWN){let c=L.find(q=>q.n===o.n);if(!c){c={n:o.n,name:'The Late Show',about:'Old television: drama, comedy and quiz',list:[]};L.push(c);}c.list=o.add.concat(c.list);}
  {const lenOf=d=>d<90?Math.round(d)+' sec':Math.round(d/60)+' min',mk=(c,it)=>({id:it.id||('tv:'+it.t),f:it.f,src:it.src,t:it.t,by:c.name+(it.y?', '+it.y:''),len:lenOf(it.d),d:it.d}),sh=L.find(c=>c.n===11),rest=L.filter(c=>c.n>0&&c.n!==11);MV_MORE=[];
   if(sh&&sh.list.length)MV_MORE.push({id:'short',name:'One-minute films',pic:'movieroom/acc_reel.png',about:'The very first films, a minute or less each.',films:sh.list.map(it=>mk(sh,it)).sort((a,b)=>a.d-b.d)});
-  const all=rest.flatMap(c=>c.list.map(it=>mk(c,it))).sort((a,b)=>a.d-b.d);if(all.length)MV_MORE.push({id:'tv',name:'From the channels',pic:'movieroom/acc_vhs.png',about:'Everything the channels show, shortest first, to watch from the start.',films:all});}
+  /* what the channels show stays on the channels (Jackie, Nov 27: "the channels should not be in the film archive tho"); only the one-minute films are also a shelf */}
  const ads=(L.find(c=>c.n===0)||{list:[]}).list; /* old commercials are programmed in between the films, two at a time, as a station would (Jackie, Nov 27: "old commercials programmed in") */
  for(const c of L){if(c.n===0||!ads.length)continue;const out=[];c.list.forEach((it,k)=>{out.push(it);for(let j=0;j<2;j++)out.push(Object.assign({ad:1},ads[(k*2+j+c.n*5)%ads.length]));});c.list=out;}
  MV_CH=L.filter(c=>c.n>0&&c.list.length).concat(MV_CH_LIVE).sort((a,b)=>a.n-b.n);}
@@ -227,12 +227,29 @@ mvChannelsSet(null);fetch('movieroom/channels.json').then(r=>r.ok?r.json():null)
 function mvOnAir(ch,at){if(ch.live)return {it:{t:ch.about,d:0},off:0,left:0,next:null,live:true};const L=ch.list,tot=L.reduce((a,b)=>a+b.d,0);let p=((at===undefined?Date.now()/1000:at)+ch.n*977)%tot,i=0;while(p>=L[i].d){p-=L[i].d;i++;}return {it:L[i],i,off:p,left:L[i].d-p,next:L[(i+1)%L.length]};}
 function mvChanFilm(ch,it){return ch.live?Object.assign({},ch.live,{chan:ch.n}):{id:it.id,f:it.f,src:it.src,t:it.t,by:'Channel '+ch.n+' · '+ch.name+(it.ad?' · a word from our sponsors':it.y?' · '+it.y:''),len:mvClock(it.d),chan:ch.n};}
 function mvBanner(ch,title){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;b.innerHTML='<b></b><span></span>';b.querySelector('b').textContent=ch.n+'  '+ch.name;b.querySelector('span').textContent=title||'';b.hidden=false;clearTimeout(mvBanner.t);mvBanner.t=setTimeout(()=>{b.hidden=true;},4000);}
-function mvTune(ch,fromStart){if(!mvEl||!ch)return;mvChan=ch;const a=mvOnAir(ch),f=mvChanFilm(ch,a.it);mvSeekTo=ch.live||fromStart?0:a.off;mvRemShow();mvGuideClose();sfx('tick');
+/* A channel lands on something different each time (Jackie, Nov 27: "i wish ... the channels started on random things when you
+   switched back to them from the playlist of possibilities ... including commercials"). Tuning in picks any item of the channel's
+   playlist, commercials among them, never the one just seen; a long one is joined part-way through, a short one or a commercial
+   from its start. When it ends another is picked. (At first each channel followed the clock, so going back found the same film.)
+   Where you come in is the channel's doing, not yours ("the viewer shouldn't be able to control where they catch it"): back and
+   on do nothing on a channel. But a channel you have left is still showing the same thing for MV_CH_HOLD seconds, moved along by
+   the time you were away, so you can go back and catch it ("if they leave the channel after watching, they should be able to
+   catch it again for like 5 minutes"). She thought a further rule about having watched ten seconds "may be too convoluted", so
+   there is only that rule, and one more she added: "if you watched for more than 5 minutes you should be allowed to pick up where
+   you left off". So a channel watched for MV_CH_KEEP seconds or more keeps your exact place in what was on, however long you
+   are away. */
+const MV_CH_HOLD=300,MV_CH_KEEP=300;
+function mvChanLeave(){const ch=mvChan;if(!ch||ch.live||!mvEl)return;const now=Date.now()/1000,v=mvEl.querySelector('video');ch.leftAt=now;if(ch.on&&ch.since&&now-ch.since>=MV_CH_KEEP)ch.resume={it:ch.on.it,pos:v.currentTime||0};}
+function mvChanPick(ch,fromStart){if(ch.live)return {it:{t:ch.about,d:0},off:0};const now=Date.now()/1000;
+ if(!fromStart&&ch.resume){const r=ch.resume;ch.resume=null;if(r.pos<r.it.d-3){ch.on={it:r.it,t0:now-r.pos};return {it:r.it,off:r.pos};}} // watched five minutes or more before leaving: it picks up exactly where you left it
+ if(!fromStart&&ch.on&&ch.leftAt&&now-ch.leftAt<MV_CH_HOLD){const pos=now-ch.on.t0;if(pos<ch.on.it.d-3)return {it:ch.on.it,off:pos};} // back within five minutes: the same thing is still on, further along by the time away
+ const L=ch.list;let i=Math.floor(Math.random()*L.length);if(L.length>1&&ch.on&&L[i]===ch.on.it)i=(i+1+Math.floor(Math.random()*(L.length-1)))%L.length;const it=L[i],off=fromStart||it.ad||it.d<200?0:Math.floor(Math.random()*it.d*.7);ch.on={it,t0:now-off};return {it,off};}
+function mvTune(ch,fromStart){if(!mvEl||!ch)return;if(mvChan&&mvChan!==ch)mvChanLeave();if(mvChan!==ch||!ch.since)ch.since=Date.now()/1000;ch.leftAt=0;mvChan=ch;const a=mvChanPick(ch,fromStart),f=mvChanFilm(ch,a.it);mvSeekTo=a.off;mvRemShow();mvGuideClose();sfx('tick');
  if(mvState==='open'&&!mvInter){mvFilm=f;mvEl.dataset.paused='';if(mvMode==='mine')mvMode='film';mvStart();mvBanner(ch,ch.live?ch.about:a.it.t);mvNote('');}
  else{mvChoose(f);mvChan=ch;setTimeout(()=>mvBanner(ch,ch.live?ch.about:a.it.t),900);}}
 function mvTuneBy(d){if(!MV_CH.length)return;const i=mvChan?MV_CH.indexOf(mvChan):(d>0?-1:0);mvTune(MV_CH[((i+d)%MV_CH.length+MV_CH.length)%MV_CH.length]);}
 function mvDigit(k){mvDigits=(mvDigits+k).slice(-2);mvRemShow();sfx('tick');clearTimeout(mvDigitT);mvDigitT=setTimeout(()=>{const n=+mvDigits;mvDigits='';const ch=MV_CH.find(c=>c.n===n);if(ch)mvTune(ch);else{mvNote('Nothing is on channel '+n+'.');mvRemShow();}},mvDigits.length>=2?350:1300);}
-function mvSkip(d){if(!mvEl||!mvFilm||mvState!=='open')return;const v=mvEl.querySelector('video');try{v.currentTime=Math.max(0,Math.min((v.duration||1e9)-1,v.currentTime+d));}catch(e){}sfx('tick');}
+function mvSkip(d){if(!mvEl||!mvFilm||mvState!=='open')return;if(mvChan){mvNote('A channel can’t be wound back or on.');sfx('tick');return;}const v=mvEl.querySelector('video');try{v.currentTime=Math.max(0,Math.min((v.duration||1e9)-1,v.currentTime+d));}catch(e){}sfx('tick');}
 function mvRemShow(){if(!mvRemEl)return;const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused,d=mvRemEl.querySelector('.mvremd');
  d.textContent=mvDigits?'CH '+mvDigits+'_':mvChan?'CH '+mvChan.n+' · '+mvChan.name:mvFilm?mvFilm.t:'Nothing on';mvRemEl.querySelector('.mvrplay').textContent=on?'⏸':'▶';}
 function mvRemote(){if(!mvEl)return;if(mvRemEl){mvRemClose();return;}mvTrayClose();sfx('tick');mvRemEl=document.createElement('div');mvRemEl.className='mvrem';
@@ -459,7 +476,7 @@ function mvTonight(){const all=MV_SHELVES.flatMap(s=>s.films),d=new Date(),n=Mat
 /* choosing a film: a tap on the reels, the tapes or the discs opens that shelf's list */
 let mvPickEl=null,mvLast=MV_SHELVES[0];
 function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
-function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;if(f.chan==null)mvChan=null; /* something from the library or the shelves: no channel is on */if(mvRemEl)setTimeout(mvRemShow,50);
+function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;if(f.chan==null){mvChanLeave();mvChan=null;} /* something from the library or the shelves: no channel is on */if(mvRemEl)setTimeout(mvRemShow,50);
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
 /* YOUR FILMS (Jackie, Nov 27: "when it records we can elect to add it to our own film library section with a custom title card").
