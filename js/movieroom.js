@@ -5,7 +5,7 @@
    start watching"), draw open like the study room's, and close again when it ends. Everything you touch here is about watching.
    The film streams from the Internet Archive, so it needs a connection; it plays muted (the copy's music is not known to be free).
    You get here from the Leave button (below). */
-const MV={W:1670,H:941,screen:{x:428,y:117,w:816,h:468},curtain:{x:366,y:98,w:940,h:504},step:260};
+const MV={W:1670,H:941,screen:{x:424,y:118,w:824,h:468},curtain:{x:366,y:98,w:940,h:504},step:260};
 /* THE COLLECTION (Jackie, Nov 26: "a movie collection with reels, vhs, and bluray"). Shelves of films, each opened by tapping its things on the left-hand shelving; a shelf can hold more than one
    collection, shown as buttons at the top of its list. Every film is public domain in the United States (published before 1931) and its Internet
    Archive copy was confirmed to exist (research_notes/movieroom/channels.md). They are silent films and play muted. None has been
@@ -112,7 +112,7 @@ function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[M
 const MV_KNOB={x:1592,y:290,w:64,h:68},MV_LIGHTS=[1,.62,.34,.14],MV_LIGHT_SAY=['Lights up.','Lights low.','Lights lower.','Lights nearly out.'];let mvSound=true,mvLight=0;
 function mvSoundSet(on){mvSound=!!on;if(!mvEl)return;mvEl.querySelector('video').muted=!mvSound;}
 function mvLightApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),playing=mvState==='open'&&mvEl.dataset.paused!=='1'&&v&&v.getAttribute('src');
- const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;mvEl.querySelector('.mvknobon').hidden=mvLight!==0;}
+ const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;mvEl.querySelector('.mvknobon').hidden=mvLight!==0;mvEl.querySelectorAll('.mvsconce').forEach(e=>{e.hidden=lv!==0;});} // the wall lamps are lit only while the lights are right up; in the base picture they are off
 function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightApply();mvNote(MV_LIGHT_SAY[mvLight]);}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
@@ -122,7 +122,7 @@ function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightA
    the row of books opens the books about film, and the box set opens its three books, each read a page at a time. */
 const MV_CORN=[['butter','Butter popcorn'],['caramel','Caramel popcorn'],['cheese','Cheese popcorn'],['seaweed','Seaweed popcorn'],['charcoal','Charcoal popcorn']],
  MV_SODA=[['red','Cherry soda'],['blue','Blueberry soda'],['yellow','Lemon soda']],MV_TINTS=['','amber','blue','rose'],MV_TINT_NAME={'':'No tint.',amber:'Amber tint.',blue:'Blue tint.',rose:'Rose tint.'},
- MV_SPOTS={machine:{x:126,y:162,w:148,h:186},buckets:{x:1316,y:504,w:66,h:88},fountain:{x:1326,y:178,w:150,h:170},cups:{x:1476,y:240,w:78,h:108},glasses:{x:1384,y:540,w:80,h:52},boxset:{x:1470,y:496,w:82,h:96},books:{x:110,y:500,w:260,h:92}},
+ MV_SPOTS={machine:{x:126,y:162,w:148,h:186},buckets:{x:1316,y:504,w:66,h:88},fountain:{x:1326,y:178,w:150,h:170},cups:{x:1480,y:176,w:78,h:172},glasses:{x:1384,y:540,w:80,h:52},boxset:{x:1470,y:496,w:82,h:96},books:{x:110,y:500,w:260,h:92}},
  MV_ON={corn:{x:560,y:697,k:.42},cup:{x:1262,y:697,k:.4},pop:{x:124,y:160,w:152,h:192},pour:{x:1322,y:174,w:158,h:176}};
 let mvTrayEl=null,mvPopT=0,mvBooks=null,mvTint=0;
 function mvTrayClose(){if(mvTrayEl){mvTrayEl.remove();mvTrayEl=null;}}
@@ -178,6 +178,7 @@ function openMovieRoom(){
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
+  '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:2,y:118,w:96,h:160})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1572,y:118,w:96,h:160})+'">'+
   '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB)+'"></button>'+
   '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+

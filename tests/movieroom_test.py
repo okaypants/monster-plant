@@ -41,7 +41,7 @@ async def main():
         await pg.screenshot(path=os.path.join(OUT, "curtains_closed.png"))
         # the screen sits where the picture's screen is
         g = await pg.evaluate("()=>{const s=document.querySelector('.mvstage').getBoundingClientRect(),v=document.querySelector('.mvstage video').getBoundingClientRect();return [(v.left-s.left)/s.width*1670,(v.top-s.top)/s.height*941,v.width/s.width*1670,v.height/s.height*941];}")
-        check("the film sits behind the picture's screen", abs(g[0]-428) < 2 and abs(g[1]-117) < 2 and abs(g[2]-816) < 2 and abs(g[3]-468) < 2, g)
+        check("the film sits behind the picture's screen", abs(g[0]-424) < 2 and abs(g[1]-118) < 2 and abs(g[2]-824) < 2 and abs(g[3]-468) < 2, g)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');window.__plays=0;v.play=()=>{window.__plays++;Object.defineProperty(v,'paused',{value:false,configurable:true});return Promise.resolve();};v.pause=()=>{Object.defineProperty(v,'paused',{value:true,configurable:true});};"
                               "document.querySelector('.mvremote').click();const a=mvState;__step(.1);const b=mvState;__step(.4);return {a,b,c:mvState,plays:window.__plays,src:v.getAttribute('src'),hidden:document.querySelector('.mvcurtain').hidden,muted:v.muted,note:document.querySelector('.mvnote').textContent};}")
         check("the remote opens the curtains in two steps and starts the film", r["a"] == "half" and r["b"] == "half" and r["c"] == "open" and r["plays"] == 1 and r["hidden"], r)
@@ -58,6 +58,8 @@ async def main():
         r = await pg.evaluate("()=>{const m=document.querySelector('.movieroom'),k=document.querySelector('.mvknob'),b=()=>+m.style.getPropertyValue('--mvb'),L=[b()];for(let i=0;i<4;i++){k.click();L.push(b());}const note=document.querySelector('.mvnote').textContent;"
                               "k.click();k.click();k.click();const low=b();document.querySelector('.mvremote').click();__step(.6);const playing=b();mvLight=0;mvLightApply();const playUp=b();document.querySelector('.mvremote').click();const paused=b();mvScreen();__step(.5);return {L,note,low,playing,playUp,paused};}")
         check("the gold knob steps the room's light down and round again", r["L"] == [1, .62, .34, .14, 1] and r["note"] == "Lights up." and r["low"] == .14, r)
+        r3 = await pg.evaluate("()=>{const sc=()=>[...document.querySelectorAll('.mvsconce')].map(e=>e.hidden);mvLight=0;mvLightApply();const up=sc();mvLight=2;mvLightApply();const low=sc();mvLight=0;mvLightApply();return {up,low};}")
+        check("the wall lamps are lit while the lights are up and off when they are turned down", r3["up"] == [False, False] and r3["low"] == [True, True], r3)
         check("while a film plays the room is never brighter than low, and the knob can take it lower", r["playing"] == .14 and r["playUp"] == .62 and r["paused"] == 1, r)
         # the shelves: popcorn, soda, the glasses, the box set
         r = await pg.evaluate("()=>{const hot=k=>[...document.querySelectorAll('.mvthing')].find(b=>b.dataset.k===k);st.full=0;st.needs.thirst=.8;hot('machine').click();const tiles=document.querySelectorAll('.mvtile').length;document.querySelector('.mvtile[data-id=caramel]').click();"

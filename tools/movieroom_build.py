@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """The movie room's pictures (Jackie, Nov 26), from her three ChatGPT pictures in art_src/movieroom/:
-  open.png            the room with the curtains open and the screen flat magenta
+  open.png            the room with the curtains open, the wall lamps off and the screen flat magenta (the refined picture of Nov 27)
+  sconce_l_lit.png, sconce_r_lit.png  the two wall lamps lit, cut from the earlier picture (at 2,118 and 1572,118)
   curtain_closed.png  the stretch between the two shelf units (at 366,98) with the curtains closed
   curtain_half.png    the same stretch with the curtains halfway, magenta showing between them
 Writes movieroom/room.png, movieroom/curtain_closed.png and movieroom/curtain_half.png with the magenta made see-through, so the
@@ -22,4 +23,5 @@ def main():
     os.makedirs(OUT,exist_ok=True)
     hole('open.png').save(os.path.join(OUT,'room.png'),optimize=True);hole('curtain_half.png').save(os.path.join(OUT,'curtain_half.png'),optimize=True)
     Image.open(os.path.join(SRC,'curtain_closed.png')).convert('RGBA').save(os.path.join(OUT,'curtain_closed.png'),optimize=True)
+    for n in ('l','r'):Image.open(os.path.join(SRC,'sconce_%s_lit.png'%n)).convert('RGBA').save(os.path.join(OUT,'sconce_%s_lit.png'%n),optimize=True) # the wall lamps lit, laid over the base (where they are off) while the room's lights are up
 if __name__=='__main__':main()

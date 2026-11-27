@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room has its refined picture (Nov 27)
+
+- Jackie: "the movie room image can be refined. For instance, the cup stack looks weird, the popcorn bucket stack is weird, and the popcorn maker thing is not very 32 bit (actually a lot of it is really smooth); and the sconces are pre-lit." After three rounds with ChatGPT she approved the new picture ("Nice"; of its buckets, "the popcorn buckets are perfect").
+- The new base has crisper pixels throughout, a redrawn popcorn machine, a pull-down cup dispenser with one cup under it in place of the cup stack, plain red ties on the curtains in place of the gold tassels, and wall lamps that are off.
+- It lined up exactly with the old picture, so the closed curtains from the old set are still used. The wall lamps lit are cut from the old picture and laid over the new one while the room's lights are right up; turned down, the lamps are off as drawn.
+- The film's place on the screen and the tap spot for the cups were re-measured.
+
 ### The string lights are always lit, and a tap turns them off (Nov 27)
 
 - Jackie: "I want the string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them".
