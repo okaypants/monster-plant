@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### String lights have their own list in the cupboard (Nov 27)
+
+- Jackie: "string lights should be a separate menu in the cabinet".
+- The cupboard now asks: Cat toys, Decorations, String lights. The String lights list has take down or hang, turn off or on, and the strand: Follow the decorations (the default), or one of the six to keep up whatever the occasion. The Decorations list no longer mentions the lights.
+
 ### A monster sits up in the bassinet's hood, and further back in the armchair (Nov 27)
 
 - Jackie: "I would like monster plants in the bassinet to look like they are further back and in the bassinet to maybe up a little more but also smaller rn it looks tucked behind the wicker front", then "in the bassinet, the monster plant should be in or behind the cream part not the crate part".

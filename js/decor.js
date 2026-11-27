@@ -54,7 +54,9 @@ const LIGHTS_FOR={lny:'lantern',midautumn:'lantern',chuseok:'lantern',obon:'lant
 const LIGHTS_IMG={};let LIGHTS_META=null;['warm','multi','lantern','star','pastel','ember'].forEach(n=>{LIGHTS_IMG[n+'_on']=img('decor/lights_'+n+'_on.png');LIGHTS_IMG[n+'_off']=img('decor/lights_'+n+'_off.png');});
 fetch('decor/lights.json').then(r=>r.json()).then(j=>{LIGHTS_META=j;}).catch(()=>{});
 const lightsCv=document.createElement('canvas');
-function lightsStrand(){const s=decorNow();return (s&&LIGHTS_FOR[s.id])||'warm';}
+const LIGHTS_KINDS=[['warm','Warm white'],['multi','Many colours'],['lantern','Paper lanterns'],['star','Gold stars'],['pastel','Pastel'],['ember','Orange and purple']];
+function lightsStrand(){if(st.lightsKind&&LIGHTS_IMG[st.lightsKind+'_on'])return st.lightsKind;const s=decorNow();return (s&&LIGHTS_FOR[s.id])||'warm';} // a strand you chose yourself stays up; otherwise it follows the decorations
+function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st.lightsDark=false;sfx('chime');const n=(LIGHTS_KINDS.find(q=>q[0]===id)||[])[1];tell(n?'The string lights are '+n.toLowerCase()+'.':'The string lights follow the decorations.',{kind:'info',key:'decor',now:true});save();}
 /* Always lit, day and night, unless you turn them off by tapping them; tap again and they are lit again (Jackie, Nov 27: "I want the
    string lights to always be lit up and twinkles here and there or you can turn them off i guess if you click them"). Off, the
    strand hangs dark; taking it down altogether is still in the cupboard. */

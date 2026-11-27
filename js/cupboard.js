@@ -22,17 +22,24 @@ function cubIsOpen(){return !!cubEl||!!cub.item;}
 function cubTray(){if(cubEl){cubEl.remove();}cubEl=document.createElement('div');cubEl.className='ttray tsb';
  cubEl.addEventListener('pointerdown',e=>e.stopPropagation());cubEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(cubEl);return cubEl;}
 function cubBtn(txt,fn,cls){const b=document.createElement('button');b.type='button';b.className='cubpick'+(cls?' '+cls:'');b.textContent=txt;b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');fn();});return b;}
-function cubOpen(){sfx('tick');if(!cubEl){const el=cubTray();el.dataset.k='pick';el.append(cubBtn('Cat toys',cubToys),cubBtn('Decorations',cubDecor));}cubPlace();cub.t=performance.now();}
+function cubOpen(){sfx('tick');if(!cubEl){const el=cubTray();el.dataset.k='pick';el.append(cubBtn('Cat toys',cubToys),cubBtn('Decorations',cubDecor),cubBtn('String lights',cubLights));}cubPlace();cub.t=performance.now();}
 function cubToys(){const el=cubTray();el.dataset.k='toys';
   for(const s of CUB_TOYS){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
    const im=document.createElement('img');im.src=CUB_IMG[s.id].src;im.alt='';im.draggable=false;b.appendChild(im);
    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();cubGrab(s,e);});el.appendChild(b);}
  cubPlace();cub.t=performance.now();}
+/* STRING LIGHTS have their own list (Jackie, Nov 27: "string lights should be a separate menu in the cabinet"): take them down or hang
+   them, turn them off or on, and choose the strand. "Follow the decorations" is the strand that goes with whatever the room is
+   decorated for, warm white when it is not; any other choice stays up whatever the occasion. */
+function cubLights(){const el=cubTray();el.dataset.k='lights';el.classList.add('cubdecor','cublightsmenu');
+ el.appendChild(cubBtn(st.noLights?'Hang the string lights':'Take the string lights down',()=>{lightsSet(!!st.noLights);cubClose();},'cubdown'));
+ if(!st.noLights)el.appendChild(cubBtn(st.lightsDark?'Turn them on':'Turn them off',()=>{lightsTap();cubClose();},'cubdown'));
+ for(const [id,name] of [['','Follow the decorations']].concat(LIGHTS_KINDS)){const b=cubBtn(name,()=>{lightsPick(id);cubClose();},(st.lightsKind||'')===id?'on':'');b.dataset.id=id||'auto';el.appendChild(b);}
+ cubPlace();cub.t=performance.now();}
 // the list of what to decorate for. Taking things down comes first, where it is seen without scrolling (Jackie, Nov 27: "I need the
 // option to remove decorations"; it had been the last of thirty-one buttons); the set that is up is marked
 function cubDecor(){const el=cubTray();el.dataset.k='decor';el.classList.add('cubdecor');
  if(st.decor)el.appendChild(cubBtn('Take the decorations down',()=>{decorSet(null);cubClose();},'cubdown'));
- el.appendChild(cubBtn(st.noLights?'Hang the string lights':'Take the string lights down',()=>{lightsSet(!!st.noLights);cubClose();},'cubdown cublights'));
  for(const s of decorOffered()){const b=cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':'');b.dataset.id=s.id;el.appendChild(b);}
  cubPlace();cub.t=performance.now();}
 function cubPlace(){if(!cubEl)return;const w=cubEl.offsetWidth,h=cubEl.offsetHeight;if(cubEl.dataset.k==='decor'){cubEl.style.left=Math.round(clamp((CUPBOARD.x+CUPBOARD.w)*S-w,4,W*S-w-4))+'px';cubEl.style.top=Math.round(Math.max(48,(H*S-h)/2))+'px';return;} // the long list stands beside the cupboard, in the middle of the screen's height
