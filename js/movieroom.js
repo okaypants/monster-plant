@@ -126,17 +126,19 @@ function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightA
    start together, and what you play is kept on this device as that film's soundtrack (js/scores.js).
    The receiver then has three settings where a film has one: the film's own sound, your soundtrack, and off. Your soundtrack
    plays in step with the film: it starts, pauses and stops with it. */
-let kalEl=null,mvScores=new Set(),mvMode='film',mvScoreA=null,mvScoreKey='';
+let kalEl=null,mvScores=new Set(),mvMode='film',mvScoreP=null,mvScoreKey='';
 function mvScoresLoad(){return scoreKeys().then(k=>{mvScores=new Set(k);});}
 let mvScorePick=''; /* which soundtrack to play for a film that has more than one (yours, and others added from files): the one chosen in Your films, else your own, else the first there is */
 function mvScoreFor(f){if(!f)return '';const fk=scoreKey(f);if(mvScorePick&&scoreFilmKey(mvScorePick)===fk&&mvScores.has(mvScorePick))return mvScorePick;if(mvScores.has(fk))return fk;for(const k of mvScores)if(scoreFilmKey(k)===fk)return k;return '';}
 function mvHasScore(f){return !!mvScoreFor(f);}
-function mvScoreStop(){if(mvScoreA){try{mvScoreA.pause();}catch(e){}}}
+function mvScoreStop(){if(mvScoreP)mvScoreP.stop();}
+/* A soundtrack is a set of parts on the film's timeline (js/scores.js); the player sounds whichever belong to the moment. It is
+   asked again each time the film reports its place, so parts start and stop as the film reaches them. */
+function mvScoreTick(){if(!mvEl||!mvScoreP||mvMode!=='mine')return;const v=mvEl.querySelector('video');mvScoreP.sync(v.currentTime,!v.paused&&mvState==='open');}
 function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine=mvMode==='mine'&&mvHasScore(mvFilm);v.muted=mvMode!=='film';mvSound=mvMode!=='off';
  if(!mine){mvScoreStop();return;}
- const k=mvScoreFor(mvFilm),go=()=>{if(!mvScoreA||mvMode!=='mine')return;if(v.paused||mvState!=='open'){mvScoreA.pause();return;}if(Math.abs(mvScoreA.currentTime-v.currentTime)>.35){try{mvScoreA.currentTime=Math.min(v.currentTime,mvScoreA.duration||v.currentTime);}catch(e){}}const p=mvScoreA.play();if(p&&p.catch)p.catch(()=>{});};
- if(mvScoreKey===k&&mvScoreA){go();return;}
- mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreA&&mvScoreA.src)URL.revokeObjectURL(mvScoreA.src);mvScoreA=new Audio(URL.createObjectURL(t.blob));mvScoreKey=k;go();});}
+ const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreTick();return;}
+ mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreKey=k;mvScoreTick();});}
 function mvSoundStep(){const L=mvHasScore(mvFilm)?['film','mine','off']:['film','off'];mvMode=L[(L.indexOf(mvMode)+1)%L.length]||'film';sfx('tick');mvSoundApply();mvNote(mvMode==='film'?'The film’s own sound.':mvMode==='mine'?'Your soundtrack.':'Sound off.');}
 function mvKalimbaFilms(){return MV_SHELVES;} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
@@ -356,7 +358,7 @@ function mvAddFile(file){return scoreFromFile(file).then(rec=>{if(!mvFilmByKey(r
 function mvPickMine(){scoreList().then(L=>{if(!mvPickEl)return;const box=mvPickEl.querySelector('.mvmine');if(!box)return;const used=L.reduce((n,q)=>n+q.size,0);
  box.innerHTML=(L.length?L.map((q,i)=>'<div class="mvminerow"><button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button><button type="button" class="mvrbtn mvmines" data-i="'+i+'">📤 Share</button><button type="button" class="mvrbtn mvminex" data-i="'+i+'">🗑️ Remove</button></div>').join(''):'<p>Nothing here yet. Tap the kalimba on the shelf, choose a film, and press Record.</p>')+'<button type="button" class="mvrbtn mvmineadd">📥 Add a soundtrack someone sent you</button><input type="file" class="mvminefile" hidden><p class="mvmineuse">Using '+scoreSize(used)+' of '+scoreSize(SCORES_MAX)+'.</p>';
  box.querySelectorAll('.mvmines').forEach(b=>b.onclick=()=>mvShare(L[+b.dataset.i].key));const fi=box.querySelector('.mvminefile');box.querySelector('.mvmineadd').onclick=()=>fi.click();fi.onchange=()=>{if(fi.files&&fi.files[0])mvAddFile(fi.files[0]);};
- box.querySelectorAll('.mvpfilm').forEach(b=>{const q=L[+b.dataset.i],f=mvFilmByKey(q.key);b.querySelector('b').textContent=q.film;b.querySelector('span').textContent=(q.by?'scored by '+q.by+' · ':'')+mvClock(q.dur)+' · '+scoreSize(q.size);b.disabled=!f;b.onclick=()=>{mvMode='mine';mvScorePick=q.key;mvCardNext=q;mvChoose(f);};});
+ box.querySelectorAll('.mvpfilm').forEach(b=>{const q=L[+b.dataset.i],f=mvFilmByKey(q.key);b.querySelector('b').textContent=q.film;b.querySelector('span').textContent=(q.by?'scored by '+q.by+' · ':'')+mvClock(q.dur)+(q.parts>1?' · '+q.parts+' parts':'')+' · '+scoreSize(q.size);b.disabled=!f;b.onclick=()=>{mvMode='mine';mvScorePick=q.key;mvCardNext=q;mvChoose(f);};});
  box.querySelectorAll('.mvminex').forEach(b=>b.onclick=()=>{const q=L[+b.dataset.i];scoreDropKey(q.key).then(()=>{if(mvScoreKey===q.key){mvScoreStop();mvScoreKey='';}return mvScoresLoad();}).then(()=>{mvNote('Removed from your films.');mvPickMine();});});});}
 function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES.concat(MV_MINE); /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
  mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><button type="button" class="mvrbtn mvtonight"></button>'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+(sh===MV_MINE?'<div class="mvmine"></div>':'')+
@@ -378,7 +380,7 @@ function openMovieRoom(){
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback" aria-label="Go to another room">🚪 Rooms</button></div>';
- const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
+ const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));v.addEventListener('timeupdate',mvScoreTick);v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvRemote;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=mvSoundStep;mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
  mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundApply();mvCatEnter();mvThingsWire();mvLightApply();mvScoresLoad();mvDecorShow();mvLightsDraw();MV_TOP_MASK.complete||MV_TOP_MASK.addEventListener('load',mvLightsDraw,{once:true});clearInterval(mvLightsT);mvLightsT=setInterval(mvLightsDraw,LIGHTS_TWINK);}
 function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}

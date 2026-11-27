@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A soundtrack is recorded in parts, with stepping, a bar, a loop and layering (Nov 27)
+
+- Jackie: "I think you should be able to record in parts and record the parts easily that will assemble into a single recording you can save into a finished movie. I think you should also be able to easily go back or forward when practicing during playback", then "and maybe easily loop something? or multi track lol idk".
+- RECORD now records a part from wherever the film is, after the 3, 2, 1 count, until you stop. Parts show orange on a bar under the film. SAVE keeps all the parts as the film's one soundtrack: one entry in Your films, one file to share. Nothing is kept until SAVE. Choosing a film you scored before brings its parts back so you can add to it.
+- SAVE lists the parts, each with "take out", and offers "undo changes" (back to what was last saved), "keep working" and "save to my films".
+- Moving about: BACK and ON step ten seconds, and dragging along the bar goes anywhere. LOOP: the first tap marks the start of a stretch, the second its end, and the film goes round that stretch until a third tap.
+- Layering: where parts cover the same moment they are all heard together, so a second pass over a stretch adds to the first. Parts already recorded are heard while you practise and while you record another.
+- The parts are kept side by side, each with its start time, and played in step with the film. They are not melted into one sound file, because a phone has no quick way to do that; to the player it is one soundtrack. Files shared before this still open.
+- With the film big there are eight buttons in two rows, so choosing another film moved to the set up view.
+
 ### The game's instrument is called Kalimba-Score (Nov 27)
 
 - Jackie, asked what to call the Kalimbasizer inside the game: "Call it kalimba-score, a practical kalimbasizer".
