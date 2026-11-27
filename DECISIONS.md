@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The night sky is behind Kalimba-Score, and upright it stands in from both sides (Nov 27)
+
+- Jackie: "i love everything so far except the perspective in the kalimbasizer so maybe we need to cut back both sides when its vertical and add the space background like in the rest of the game".
+- The instrument's ground is the same sky of constellations as round the rooms, with its blinking stars. Upright, the instrument is a rounded card 88 hundredths of the screen wide, so the sky shows down both edges. Anything the phone leaves uncovered at the top or bottom is sky too, which also deals with the strip that showed black at the bottom. Sideways it still fills the screen.
+- With less width, two buttons' words were shortened so they are not cut off: the play button shows only the pause mark while playing, and SAVE reads "none" before any part is recorded.
+
 ### Kalimba-Score has a ✕ always in sight, fits every screen, and the lights menu has no dark strip (Nov 27)
 
 - Jackie, with a second iPhone screenshot: "I think you need to review how the view is handled in a variety of contexts as for instance it looks bad in my phone". The film and the buttons ran off the right edge and the bottom was cut off above a dark strip.

@@ -122,7 +122,7 @@ html.film #kfilm{flex-direction:column;height:auto;gap:6px}
 html.film #kv{width:100%;height:auto;aspect-ratio:4/3;max-height:40vh}
 html.film #kbar{display:block}
 html.film #kside{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-right:3px}html.film #kfilm{padding-right:3px}
-html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 5px 5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:12px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 html:not(.film) .kx{display:none}
 #ksetup{display:none}html.film.setup #ksetup{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;flex:none;padding-right:3px}html.film #kv,html.film #kbar{box-sizing:border-box}html.film .cap{min-width:0}
@@ -167,7 +167,7 @@ html.film #ksetup .cap.oct{display:flex;padding:0}html.film #ksetup #bRec,html.f
     <button class="cap kcap kx" id="kLoop"><span class="lbl">LOOP</span><span class="val" id="kLoopV">off</span></button>
     <button class="cap kcap kx" id="kMet"><span class="lbl">CLICK</span><span class="val" id="kMetV">off</span></button>
     <button class="cap kcap kx" id="kGo"><span class="lbl">RECORD</span><span class="val" id="kGoV">● rec</span><i class="led"></i></button>
-    <button class="cap kcap kx" id="kSave"><span class="lbl" id="kSaveL">SAVE</span><span class="val" id="kSaveV">no parts</span></button>
+    <button class="cap kcap kx" id="kSave"><span class="lbl" id="kSaveL">SAVE</span><span class="val" id="kSaveV">none</span></button>
     <button class="cap kcap" id="kPick"><span class="lbl">FILM</span><span class="val" id="kName">choose a film</span></button>
     <button class="cap kcap" id="kView"><span class="lbl">VIEW</span><span class="val" id="kViewV">set up</span></button>
     <button class="cap kcap" id="kBack"><span class="lbl">LEAVE</span><span class="val">close</span></button></div><button id="kx" type="button" aria-label="Close and go back to the movie room">✕</button></div>
@@ -738,7 +738,7 @@ function kfSetup(on){const d=document.documentElement;d.classList.toggle('setup'
    the bar under the film. Record over a stretch you have already done and both are heard, one over the other. SAVE keeps all the
    parts as the film's one soundtrack in Your films; nothing is kept until then. Choosing a film you have scored before brings its
    parts back, so you can add to it. */
-function kfPlayerMake(){if(KF.player)KF.player.free();KF.player=KF.parts.length?scorePlayer({parts:KF.parts}):null;kfBar();const n=KF.parts.length;$('kSaveV').textContent=n?n+(n>1?' parts':' part'):'no parts';$('kSaveL').textContent=KF.dirty?'SAVE ●':'SAVE';}
+function kfPlayerMake(){if(KF.player)KF.player.free();KF.player=KF.parts.length?scorePlayer({parts:KF.parts}):null;kfBar();const n=KF.parts.length;$('kSaveV').textContent=n?n+(n>1?' parts':' part'):'none';$('kSaveL').textContent=KF.dirty?'SAVE ●':'SAVE';}
 function kfBar(){const d=kv.duration||0,b=$('kbarP'),L=$('kbarL');b.innerHTML='';if(!d){L.style.display='none';return}for(const p of KF.parts){const i=document.createElement('i');i.style.left=(p.t/d*100)+'%';i.style.width=Math.max(.8,p.dur/d*100)+'%';b.appendChild(i);}
   if(KF.loop&&KF.loop.b!=null){L.style.display='block';L.style.left=(KF.loop.a/d*100)+'%';L.style.width=((KF.loop.b-KF.loop.a)/d*100)+'%';}else L.style.display='none';}
 function kfSet(f){kfQuiet();KF.film=f;{const tip=$('knofilm');if(tip)tip.style.display=f?'none':''}KF.parts=[];KF.dirty=false;KF.loop=null;$('kLoopV').textContent='off';$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();
@@ -748,7 +748,7 @@ function kfPick(){if(!KF.films.length){say('open me from the movie room for film
 /* MOVING ABOUT WHILE YOU PRACTISE (Jackie, Nov 27: "you should also be able to easily go back or forward when practicing during
    playback"). BACK and ON step ten seconds; dragging along the bar goes anywhere. LOOP: the first tap marks where a stretch starts,
    the second where it ends, and the film then goes round that stretch until a third tap lets it run on. */
-function kfPlayUI(){$('kPlayV').textContent=kv.paused?'▶ play':'❚❚ pause';}
+function kfPlayUI(){$('kPlayV').textContent=kv.paused?'▶ play':'❚❚';}
 function kfBusy(){return KF.scoring||!!KF.count}
 function kfQuiet(){clearTimeout(KF.count);KF.count=0;KF.arming=false;$('kcount').classList.remove('on');if(KF.scoring){KF.scoring=false;const n0=takes.length;stopRec();setTimeout(()=>{if(takes.length>n0){takes.pop();syncTakes()}},500);} /* a part cut off by leaving is not kept */try{kv.pause()}catch(e){}$('kGo').classList.remove('recording');$('kGoV').textContent='● rec';kfPlayUI();}
 function kfPlay(){if(!KF.film){kfPick();return}if(kfBusy())return;if(kv.paused){if(kv.ended)try{kv.currentTime=0}catch(e){}const p=kv.play();if(p&&p.catch)p.catch(()=>say('the film needs a connection'));}else kv.pause();}
