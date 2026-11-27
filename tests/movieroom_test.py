@@ -29,7 +29,7 @@ async def main():
         btn = pg.locator(".screen button").first
         if await btn.count(): await btn.click()
         await pg.evaluate("()=>{__step(1);openMovieRoom();}")
-        await pg.wait_for_function("()=>{const i=document.querySelector('.mvroom');return i&&i.complete&&i.naturalWidth>0;}")
+        await pg.evaluate("()=>Promise.all([...document.querySelectorAll('.mvstage img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;})))")  # the test's clock is stopped, so wait on the pictures themselves
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video'),c=document.querySelector('.mvcurtain');return {open:movieRoomOpen(),state:mvState,src:v.getAttribute('src'),muted:v.muted,cur:c.getAttribute('src'),hidden:c.hidden};}")
         check("the room opens with its curtains closed and no film loaded", r["open"] and r["state"] == "closed" and not r["src"] and r["cur"].endswith("curtain_closed.png") and not r["hidden"], r)
         check("nothing is asked of the Internet Archive on entering", not asked, asked)
