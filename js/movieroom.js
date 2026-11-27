@@ -155,9 +155,18 @@ addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWin
 const MV_LIVE=[
  {id:'goes-pnw',t:'The Pacific Northwest from space',by:'NOAA weather satellite, the last few hours',src:'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/GOES18-PNW-GEOCOLOR-600x600.mp4',loop:true},
  {id:'goes-usa',t:'North America from space',by:'NOAA weather satellite, the last few hours',src:'https://cdn.star.nesdis.noaa.gov/GOES19/ABI/CONUS/GEOCOLOR/GOES19-CONUS-GEOCOLOR-625x375.mp4',loop:true},
- {id:'iss-earth',t:'The Earth from the space station',by:'NASA, live',yt:'ROboUHfPUrU'},
- {id:'iss',t:'The space station’s cameras',by:'NASA, live',yt:'M3HKLzjvKPc'},
- {id:'kilauea',t:'Kīlauea volcano',by:'U.S. Geological Survey, live',yt:'HggWKlZv9yk'}];
+ /* Old television that plays in the room's own screen as it is (Jackie, Nov 27: "remove the youtube ones from the TV and instead find
+    live feeds that will just play in the room as is if possible otherwise find tv shows or something you can put in there";
+    "something that seems tv like i guess as long as it's kind of good"). Each is a file on the Internet Archive marked public
+    domain there (the test card is under a Creative Commons attribution licence), checked on Nov 27 to answer as a video. */
+ {id:'tv-test',t:'Test card',by:'Television test patterns, 1950s · Internet Archive',src:'https://archive.org/download/IMB_SF_R30_C9/IMB_SF_R30_C9_512kb.mp4',loop:true},
+ {id:'tv-egg',t:'The Crystal Egg',by:'Tales of Tomorrow, 1951 · science fiction',src:'https://archive.org/download/tales_of_tomorrow_09_the_crystal_egg/tales_of_tomorrow_9_the_crystal_egg.mp4'},
+ {id:'tv-holmes',t:'The Case of the Haunted Gainsborough',by:'Sherlock Holmes, 1954 · mystery',src:'https://archive.org/download/SherlockHolmes1954/Sherlock%20Holmes%2035%20The%20Case%20of%20the%20Haunted%20Gainsborough.mp4'},
+ {id:'tv-zro',t:'Leonardo da Vinci',by:'Captain Z-Ro, 1956 · a time machine show for children',src:'https://archive.org/download/CaptainZ-Ro/Ep23-560520LeonardoDaVinci.mp4'},
+ {id:'tv-burns',t:'The Kleebob Card Game',by:'Burns and Allen, 1950 · comedy',src:'https://archive.org/download/pdburnsallen/S01e01TheKleebobCardGame.mp4'},
+ {id:'tv-bet',t:'You Bet Your Life',by:'Groucho Marx, 1950s · quiz show',src:'https://archive.org/download/You_Bet_Your_Life_Groucho/You_Bet_Your_Life_Groucho_Marx.ia.mp4'}];
+/* The live cameras that were here (NASA's and the Geological Survey's) are only given out through YouTube's player, which had to
+   open as a close-up; they were taken off. What follows is how that close-up worked, kept in case a camera comes back. */
 /* A live camera on the room's own screen (Jackie, Nov 27: "Can you not figure out a way to kind of incorporate the youtube ones into
    the screen w/o a popup?"). YouTube's rules stand: its player may not be smaller than 200 pixels either way, and nothing may be
    drawn over it. On a phone the room's screen is smaller than that. So the room leans in: the curtains open, the whole room is
@@ -177,7 +186,7 @@ function mvTv(ch){mvTrayClose();mvTvClose();const v=mvEl.querySelector('video');
 addEventListener('resize',()=>mvTvPlace());
 function mvLiveOn(ch){if(ch.yt){mvTv(ch);return;}mvChoose(ch);} // a satellite loop is shown like a film
 function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.paused;
- const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(!mvFilm?'Film library':on?'Pause':'Play')+'</button>'+(mvFilm?' <button type="button" class="mvrbtn mvrlib">Film library</button>':'')+'<p>Live</p>'+
+ const el=mvPanel('mvremotep','<img src="movieroom/acc_remote_on.png" alt="" draggable="false"><div class="mvplist"><h2>The remote</h2><button type="button" class="mvrbtn mvrplay">'+(!mvFilm?'Film library':on?'Pause':'Play')+'</button>'+(mvFilm?' <button type="button" class="mvrbtn mvrlib">Film library</button>':'')+'<p>Channels</p>'+
   MV_LIVE.map((c,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button>').join('')+'</div>');
  el.querySelector('.mvrplay').onclick=()=>{mvTrayClose();mvPlay();};const lib=el.querySelector('.mvrlib');if(lib)lib.onclick=()=>{mvTrayClose();mvPick();};
  el.querySelectorAll('.mvpfilm').forEach(b=>{const c=MV_LIVE[+b.dataset.i];b.querySelector('b').textContent=c.t;b.querySelector('span').textContent=c.by;b.onclick=()=>{mvTrayClose();mvLiveOn(c);};});sfx('tick');}

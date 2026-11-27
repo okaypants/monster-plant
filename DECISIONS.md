@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The remote's channels are old television that plays in the room; the YouTube cameras are gone (Nov 27)
+
+- Jackie: "remove the youtube ones from the TV and instead find live feeds that will just play in the room as is if possible otherwise find tv shows or something you can put in there", "something that seems tv like i guess as long as it's kind of good", "creative?", "whatever".
+- The three YouTube cameras are taken off. The two weather satellite loops stay; they are the only live pictures found that play in a plain screen on every phone.
+- Six shows from the Internet Archive are added, each marked public domain there and checked to answer as a video: a 1950s test card (loops; Creative Commons attribution), The Crystal Egg (Tales of Tomorrow, 1951), a Sherlock Holmes episode (1954), a Captain Z-Ro episode about Leonardo da Vinci (1956), a Burns and Allen episode (1950) and You Bet Your Life with Groucho Marx. Reels of old commercials were left out because they advertise cigarettes. Nobody has watched these six through yet.
+- The remote's list is headed "Channels".
+
 ### The Kalimbasizer shows the film big, lets you play along, counts you in, and keeps soundtracks in Your films (Nov 27)
 
 - Jackie: "i think the in game kalimbasizer needs fewer keys or something to have a larger screen to watch maybe? or maybe a UI shift, and we need to be able to like play along before we record, i guess, and then get a lead in before it starts recording when it does happen. And then when it records we can elect to add it to our own film library section with a custom title card? ... and still stay low memory? i don't want to kill ppls phones", then "how do we make sure this doesn't kill anyones phone cumulatively overtime". Asked to choose, she said "Go with your recs" and "make decisions".
