@@ -48,7 +48,7 @@ async def main():
         errs = []
         pg.on("pageerror", lambda e: errs.append(str(e)))
         await pg.goto(f"http://localhost:{PORT}/index.html", wait_until="load")
-        await pg.evaluate("()=>{const s=fresh();Object.assign(s,{started:true,stage:6,species:4,id:1,day:3,dayT:.3,mode:'actions',curtain:'open',giftSeed:1,catTrust:.1,free:{x:400,y:918}});localStorage.setItem(KEY,JSON.stringify(s));}")
+        await pg.evaluate("()=>{const s=fresh();Object.assign(s,{started:true,stage:6,species:4,id:1,day:3,dayT:.3,mode:'actions',curtain:'open',giftSeed:1,catTrust:.1,free:{x:400,y:918}});localStorage.setItem('mp-radio',JSON.stringify({band:'crates',chose:1}));localStorage.setItem(KEY,JSON.stringify(s));}")
         await pg.reload(wait_until="load")
         await pg.click(".screen button")
         await pg.evaluate("()=>{capClear();__step(2);}")
@@ -96,6 +96,7 @@ async def main():
         check(await pg.evaluate("()=>WORLD.length>=50&&WORLD.every(w=>w.u.startsWith('https://')&&w.n&&w.k&&w.p&&w.c&&['talk','misc','music'].includes(w.g))&&WORLD.map(w=>['talk','misc','music'].indexOf(w.g)).every((g,i,a)=>!i||g>=a[i-1])&&WORLD.every((w,i,a)=>!i||w.g!==a[i-1].g||w.c==='Online'||(a[i-1].c!=='Online'&&w.c.localeCompare(a[i-1].c)>=0))"), "WORLD should have 50 or more https stations, each with a name, what it plays and where")
         await pg.evaluate("()=>{capClear();CAP.log=[];}")
         check(await pg.evaluate("()=>!!radio.panel"), "the dial should stay open when the radio switches itself off")
+        check(await pg.evaluate("()=>{const k=localStorage.getItem('mp-radio');localStorage.removeItem('mp-radio');const d=(()=>{try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');return r.chose&&r.band==='crates'?'crates':'world'}catch(e){return 'world'}})();localStorage.setItem('mp-radio',k);return d==='world'&&document.querySelector('.rpanel [data-b=world]').textContent==='RADIO'}"), "with nothing chosen the real radio should be the band, and its button should read RADIO")
         await pg.click(".rpanel [data-b=world]")
         check(await pg.evaluate("()=>radio.band==='world'&&radio.on&&radio.el.src===WORLD[radio.wi].u"), "WORLD should tune to the remembered station")
         w0 = await pg.evaluate("()=>radio.wi")
@@ -124,7 +125,7 @@ async def main():
             if await pg.evaluate("()=>!radio.on"):
                 break
         log = await pg.evaluate("()=>CAP.log.concat(CAP.q).map(l=>l.t)")
-        check(await pg.evaluate("()=>!radio.on") and any("No signal on the WORLD band" in t for t in log), f"with no internet WORLD should give up and say so, log {log}")
+        check(await pg.evaluate("()=>!radio.on") and any("No signal on the radio" in t for t in log), f"with no internet WORLD should give up and say so, log {log}")
         fails += errs
         await b.close()
     for f in fails:

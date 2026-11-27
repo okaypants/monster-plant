@@ -12,9 +12,9 @@
    Off when the game starts; quiet while the sampler is open. */
 const RADIO={x:1073,y:478,w:124,h:64}; // the same box as the 'radio' fidget in js/fidgets.js
 const RADIO_VOL=.55,RADIO_MINE=.35; // how loud; the chance one of your songs is next (it comes after two records at the latest)
-const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'crates',wi:0,panel:null,hiss:null,pre:[null,null,null,null,null]};
-try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');if(r.band==='world')radio.band='world';if(r.wi>=0)radio.wi=r.wi;if(Array.isArray(r.pre))radio.pre=[0,1,2,3,4].map(k=>r.pre[k]||null)}catch(e){}
-function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi,pre:radio.pre}))}catch(e){}}
+const radio={on:false,el:null,src:null,gain:null,tok:0,since:0,last:null,fails:0,hold:false,band:'world',wi:0,panel:null,hiss:null,pre:[null,null,null,null,null]};
+try{const r=JSON.parse(localStorage.getItem('mp-radio')||'{}');radio.chose=r.chose?1:0;if(r.chose&&r.band==='crates')radio.band='crates'; /* the real radio is what you get first (Jackie, Nov 27: "i want the radio to be the default (as radio not world)"); the Crates only if you have chosen them since */if(r.wi>=0)radio.wi=r.wi;if(Array.isArray(r.pre))radio.pre=[0,1,2,3,4].map(k=>r.pre[k]||null)}catch(e){}
+function radioKeep(){try{localStorage.setItem('mp-radio',JSON.stringify({band:radio.band,wi:radio.wi,pre:radio.pre,chose:radio.chose||0}))}catch(e){}}
 function radioTap(){if(radio.panel){radioPanelClose();return}if(!radio.on)radioOn(true);radioPanel()}
 function radioOn(quiet){if(!AC)audioInit();radio.on=true;radio.fails=0;wakeOn();if(!quiet)tell('The radio is on.',{kind:'info',key:'radioOn'});if(radio.band==='world')worldPlay(radio.wi);else radioNext();radioPanelShow()}
 function radioOff(said){radio.on=false;radio.tok++;radioStop();hissStop();wakeOff();radioPanelShow();if(said)tell('The radio is off.',{kind:'info',key:'radioOff'})}
@@ -167,17 +167,17 @@ function worldPlay(i){if(!(radio.wi<WORLD.length))radio.wi=0;
   const s=WORLD[i];hiss(.9);radioPanelShow();
   if(!radio.el){radio.el=new Audio();radio.el.setAttribute('playsinline','');radio.el.preload='none'}
   const a=radio.el;a.volume=RADIO_VOL;a.onended=null;
-  a.onerror=()=>{if(tok!==radio.tok)return;radioPanelShow('No signal. Trying the next one…');if(++radio.fails<4)setTimeout(()=>{if(tok===radio.tok)worldPlay(i+1)},1500);else{radioOff(false);tell('No signal on the WORLD band. The radio needs the internet.',{kind:'info',key:'worldNone'})}};
+  a.onerror=()=>{if(tok!==radio.tok)return;radioPanelShow('No signal. Trying the next one…');if(++radio.fails<4)setTimeout(()=>{if(tok===radio.tok)worldPlay(i+1)},1500);else{radioOff(false);tell('No signal on the radio. The radio needs the internet.',{kind:'info',key:'worldNone'})}};
   a.onplaying=()=>{if(tok!==radio.tok)return;radio.fails=0;hissStop(.35);radioPanelShow()};
   a.src=s.u;a.play().catch(e=>{if(tok===radio.tok&&e.name!=='AbortError')a.onerror()});
   if(!radio.panel)tell('On the radio: '+s.n+', '+s.p+'.',{kind:'ambient'})}
-function radioBand(b){if(radio.band===b)return;radio.band=b;radioKeep();if(!radio.on)radioOn(true);else if(b==='world')worldPlay(radio.wi);else{hissStop();radioNext()}radioPanelShow()}
+function radioBand(b){if(radio.band===b)return;radio.band=b;radio.chose=1;radioKeep();if(!radio.on)radioOn(true);else if(b==='world')worldPlay(radio.wi);else{hissStop();radioNext()}radioPanelShow()}
 function radioStep(d){if(!radio.on){radioOn(true);return}if(radio.band==='world')worldPlay(radio.wi+d);else{radio.since++;radioNext()}}
 
 /* ---------- the dial: a little panel above the radio ---------- */
 function radioPanel(){
   if(radio.panel)return;hissLoad();const el=document.createElement('div');el.className='rpanel tsb tspop';el.innerHTML=
-   '<div class="rtop"><button type="button" class="rbtn" data-b="crates">CRATES</button><button type="button" class="rbtn" data-b="world">WORLD</button>'+
+   '<div class="rtop"><button type="button" class="rbtn" data-b="crates">CRATES</button><button type="button" class="rbtn" data-b="world">RADIO</button>'+
    '<button type="button" class="rbtn rpow">ON</button><button type="button" class="rbtn rx" aria-label="Close">✕</button></div>'+
    '<div class="rdial"><div class="rticks"></div><div class="rneedle"></div></div>'+
    '<div class="rrow"><button type="button" class="rbtn rarrow" data-d="-1" aria-label="Back">◀</button><div class="rname"><b></b><span></span><em></em></div><button type="button" class="rbtn rarrow" data-d="1" aria-label="Next">▶</button></div>'+

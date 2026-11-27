@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The radio starts on the real radio, and its button says RADIO (Nov 27)
+
+- Jackie: "In the radio, i want the radio to be the default (as radio not world)".
+- The band of real stations is what you get first, and its button reads RADIO where it read WORLD. The Crates are still there; once you choose them yourself the radio remembers and comes back to them. A choice of the Crates saved before today is not kept, since it was only the old default.
+
 ### The crystal ball's order, second version (Nov 27)
 
 - Jackie: "i want the crystal ball to cloud then after a couple clouds the cat's eyes to glow then after a couple beats the stuff to bounce and THEN the prophecy and after its all done his eyes will go back to normal".
