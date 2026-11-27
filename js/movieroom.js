@@ -273,7 +273,38 @@ fetch('movieroom/books.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.books
 function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvthing';b.dataset.k=k;b.setAttribute('aria-label',label);b.style.cssText=mvPct(MV_SPOTS[k]);b.onclick=fn;st2.insertBefore(b,mvEl.querySelector('.mvnote'));};
  add('machine','Popcorn',()=>{});add('buckets','Popcorn',()=>mvOffer('corn'));{const m=st2.querySelector('.mvthing[data-k=machine]');m.onclick=null;m.addEventListener('pointerdown',e=>{e.preventDefault();mvPopDown();});['pointerup','pointercancel','pointerleave'].forEach(ev=>m.addEventListener(ev,mvPopUp));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')mvOffer('corn');});}
  mvWho.forEach((w,i)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvwho';b.dataset.i=i;b.setAttribute('aria-label',w.name);const h=w.pic.height*MV_SEAT.show;b.style.cssText=mvPct({x:w.x-w.pic.width/2,y:MV_SEAT.top-h,w:w.pic.width,h});b.onclick=()=>mvWhoTap(i);st2.insertBefore(b,mvEl.querySelector('.mvnote'));});add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
+ for(const k in MV_DRAWERS){MV_SPOTS['dr_'+k]=MV_DRAWERS[k];add('dr_'+k,k==='decor'?'The decorations drawer':k==='toys'?'The cat toys drawer':'The string lights drawer',()=>mvDrawer(k));}
  add('glasses','Tint the film',mvGlasses);add('boxset','The Kalimbasizer',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
+/* THE DRAWERS (Jackie, Nov 27: "Maybe we should put something in each drawer in the movie room"; "Decorations go in a drawer. Cat toys
+   in another. String lights in another."). The room has six drawers. Three are used so far:
+   - the left-hand unit's drawer holds the decorations: choose an occasion and its garland hangs across the back of the couch
+     and its floor piece stands at the left end of the rug (the screen is never covered);
+   - the first drawer under the screen holds the cat's toys: choose one and the cat wakes to play with it;
+   - the right-hand unit's drawer holds the string lights: a strand along the top of the wall, behind the plants, twinkling as
+     in the study room.
+   What is up is remembered with the save (mvDecor, mvLights). */
+const MV_DRAWERS={decor:{x:118,y:604,w:246,h:60},toys:{x:412,y:606,w:200,h:50},lights:{x:1312,y:604,w:250,h:60}},MV_TOP_MASK=new Image();MV_TOP_MASK.src='movieroom/topmask.png';
+let mvLightsT=0;
+function mvLightsDraw(){const c=mvEl&&mvEl.querySelector('.mvlights');if(!c)return;const x=c.getContext('2d');x.globalCompositeOperation='source-over';x.clearRect(0,0,c.width,c.height);const n=st.mvLights;
+ if(!n||typeof LIGHTS_IMG==='undefined')return;const on=LIGHTS_IMG[n+'_on'],off=LIGHTS_IMG[n+'_off'];if(!ok(on)||!ok(off)||!MV_TOP_MASK.complete)return;const ox=35,oy=6;x.drawImage(on,ox,oy);
+ const B=LIGHTS_META&&LIGHTS_META[n]&&LIGHTS_META[n].bulbs;if(B)for(const i of lightsOut(B.length)){const [bx,by,bw,bh]=B[i];x.clearRect(ox+bx,oy+by,bw,bh);x.drawImage(off,bx,by,bw,bh,ox+bx,oy+by,bw,bh);}
+ x.globalCompositeOperation='destination-in';x.drawImage(MV_TOP_MASK,0,0);}
+function mvLightsSet(n){st.mvLights=n||'';if(st.started)save();mvLightsDraw();sfx(n?'chime':'tick');mvNote(n?'The string lights are up.':'The string lights are back in the drawer.');}
+function mvDecorShow(){if(!mvEl)return;const id=st.mvDecor,g=mvEl.querySelector('.mvgarland'),f=mvEl.querySelector('.mvfloorpiece');if(g)g.hidden=true;if(f)f.hidden=true;if(!id)return;
+ mvOnCouch('mvgarland','decor/'+id+'_w.png',{x:835,y:818,k:1});const s=typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
+ if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:96,y:912,k:fl==='pumpkin'||fl==='tree'?.5:1});}
+function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();sfx(id?'chime':'tick');const s=id&&DECOR_SETS.find(q=>q.id===id);mvNote(s?'The movie room is decorated for '+s.name+'.':'The decorations are back in the drawer.');}
+function mvDrawer(k){
+ if(k==='decor'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Decorations</h2><div class="mvtiles mvchips">'+(st.mvDecor?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+DECOR_SETS.map(s=>'<button type="button" class="mvrbtn'+(st.mvDecor===s.id?' on':'')+'" data-id="'+s.id+'">'+s.name+'</button>').join('')+'</div></div>');
+  el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvDecorSet(b.dataset.id);});return;}
+ if(k==='lights'){const el=mvPanel('mvdrawer','<div class="mvplist"><h2>String lights</h2><div class="mvtiles mvchips">'+(st.mvLights?'<button type="button" class="mvrbtn" data-id="">Take them down</button>':'')+LIGHTS_KINDS.map(([id,n])=>'<button type="button" class="mvrbtn'+(st.mvLights===id?' on':'')+'" data-id="'+id+'">'+n+'</button>').join('')+'</div></div>');
+  el.querySelectorAll('.mvrbtn').forEach(b=>b.onclick=()=>{mvTrayClose();mvLightsSet(b.dataset.id);});return;}
+ const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Cat toys</h2><div class="mvtiles">'+CUB_TOYS.map(t=>'<button type="button" class="mvtile" data-id="'+t.id+'"><img src="'+CUB_IMG[t.id].src+'" alt="" draggable="false"><span>'+t.name+'</span></button>').join('')+'</div></div>');
+ el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{mvTrayClose();mvToy(CUB_TOYS.find(t=>t.id===b.dataset.id));});}
+function mvToy(t){if(!mvCat){mvNote('The cat is not here.');return;}const left=mvCat.x>835?-1:1;mvOnCouch('mvtoy',CUB_IMG[t.id].src,{x:mvCat.x+left*86,y:mvCat.y,k:mvCat.k*1.1});sfx('chime');
+ clearTimeout(mvCatT);mvCat.awake=true;let at=0;for(const [pose,sec] of t.seq){if(!at)mvCatShow(pose);else setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow(pose);},at*1000);at+=sec;} // the same poses, in the same order, as with that toy in the study room
+ if(t.pic)setTimeout(()=>{const im=mvEl&&mvEl.querySelector('.mvtoy');if(im)im.src=CUB_IMG[t.pic].src;},300);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);
+ const who=typeof catName==='function'?catName():'The cat';mvNote(who+' '+t.say);}
 /* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The button at the top of the film menu puts on tonight's film: one of the collection, the
    same all day and a different one tomorrow. A film watched to its end is remembered on this device and marked "seen" in its list. */
 const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
@@ -296,7 +327,7 @@ function openMovieRoom(){
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
  mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain mvcurtL" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'"><img class="mvcurtain mvcurtR" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
-  '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+'<canvas class="mvfx" width="'+MV.W+'" height="'+MV.H+'"></canvas>'+
+  '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+'<canvas class="mvfx" width="'+MV.W+'" height="'+MV.H+'"></canvas>'+'<canvas class="mvlights" width="'+MV.W+'" height="100"></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:0,y:100,w:106,h:200})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1564,y:100,w:106,h:200})+'">'+
@@ -305,11 +336,11 @@ function openMovieRoom(){
   '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
-  '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
+  '<div class="mvnote" hidden></div><button type="button" class="mvback" aria-label="Go to another room">🚪 Rooms</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvRemote;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=mvSoundStep;mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
- mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundApply();mvCatEnter();mvThingsWire();mvLightApply();mvScoresLoad();}
-function closeMovieRoom(){if(!mvEl)return;if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+ mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundApply();mvCatEnter();mvThingsWire();mvLightApply();mvScoresLoad();mvDecorShow();mvLightsDraw();MV_TOP_MASK.complete||MV_TOP_MASK.addEventListener('load',mvLightsDraw,{once:true});clearInterval(mvLightsT);mvLightsT=setInterval(mvLightsDraw,LIGHTS_TWINK);}
+function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */

@@ -24,4 +24,12 @@ def main():
     hole('open.png').save(os.path.join(OUT,'room.png'),optimize=True);hole('curtain_half.png').save(os.path.join(OUT,'curtain_half.png'),optimize=True)
     Image.open(os.path.join(SRC,'curtain_closed.png')).convert('RGBA').save(os.path.join(OUT,'curtain_closed.png'),optimize=True)
     for n in ('l','r'):Image.open(os.path.join(SRC,'sconce_%s_lit.png'%n)).convert('RGBA').save(os.path.join(OUT,'sconce_%s_lit.png'%n),optimize=True) # the wall lamps lit, laid over the base (where they are off) while the room's lights are up
-if __name__=='__main__':main()
+def top_mask():
+    """movieroom/topmask.png: the bare wallpaper along the top of the movie room, which the string lights are drawn through so they
+    pass behind the hanging plants and the top of the shelving."""
+    from scipy import ndimage as nd2
+    a=np.asarray(Image.open(os.path.join(SRC,'open.png')).convert('RGB')).astype(int)[0:100];r,g,b=a[...,0],a[...,1],a[...,2]
+    paper=(r<95)&(g>35)&(g<150)&(b>55)&(b<175)&(b>r+12)&(g>r);paper=nd2.binary_opening(nd2.binary_closing(paper,iterations=2),iterations=2)
+    lab,k=nd2.label(paper);m=lab==(1+int(np.argmax(nd2.sum(paper,lab,range(1,k+1)))));m=nd2.binary_erosion(nd2.binary_fill_holes(m)&paper|m,iterations=1)
+    o=np.zeros(a.shape[:2]+(4,),np.uint8);o[m]=255;Image.fromarray(o,'RGBA').save(os.path.join(OUT,'topmask.png'),optimize=True)
+if __name__=='__main__':main();top_mask()

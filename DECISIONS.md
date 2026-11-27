@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The way out reads "Rooms" with a door, and three of the movie room's drawers are in use (Nov 27)
+
+- Jackie, on a better word than Leave: "Yeah or a door and Rooms -- use a door emoji". Both rooms' button now reads "🚪 Rooms".
+- "Decorations go in a drawer. Cat toys in another. String lights in another. Then let's brainstorm the other 4." The room has six drawers, as she then noticed, so three are still empty.
+  - Left-hand unit's drawer, decorations: choose an occasion and its garland hangs across the back of the couch and its floor piece stands at the left end of the rug. The screen is never covered.
+  - First drawer under the screen, cat toys: choose one and the cat wakes and plays with it, in the same poses as in the study room.
+  - Right-hand unit's drawer, string lights: one of the six strands along the top of the wall, behind the plants, twinkling.
+- What is up in the movie room is kept with the save, separately from the study room's.
+
 ### String lights have their own list in the cupboard (Nov 27)
 
 - Jackie: "string lights should be a separate menu in the cabinet".
