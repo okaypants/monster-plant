@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room has a collection of sixteen films on three shelves (Nov 26)
+
+- Jackie asked for "a movie collection with reels, vhs, and bluray". Tapping the film cans or reels, the tapes, or the discs on the left-hand shelving opens that shelf's list; choosing a film closes the curtains on whatever is showing and opens them on the new one. The remote on the right starts and pauses, like a tap on the screen.
+- Reels, "Magic lantern": six trick films and fairy stories (Méliès, Chomón, the 1903 Alice in Wonderland). Tapes, "Paper, puppets and ink": six early cartoons and puppet films from Japan, Russia, Germany, America and France. Discs, "Slapstick matinee": three Keaton shorts and a Chaplin. The shelf names are mine.
+- All sixteen were published before 1931, so they are public domain in the United States, and each one's Internet Archive copy was loaded in the game to confirm it plays. They are silent films and play muted. None has been watched all the way through yet.
+- Jackie on what to add next: "super cool collections to watch - weird interesting fascinating to someone like me, a film nerd from the start of film to now internationally but esp the 20th century", "unusual things like really old film of things swimming ... vibey", "old opera or ballet whatever", and she loves the Criterion set of Jean Painlevé's science films with Yo La Tengo's music, Len Lye, and old home movies. Research for these is in research_notes/movieroom/strange_collections.md when it returns.
+
 ### The moon dial shows the moon lit on the same side as the window's moon (Nov 26)
 
 - Jackie: "the moon in the window should match the moon in the spinning thing".

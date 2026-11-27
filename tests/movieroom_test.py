@@ -51,6 +51,13 @@ async def main():
         check("a tap pauses the film and another goes on", r["a"] is True and r["b"] is False and r["state"] == "open", r)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));const a=mvState;__step(.5);const c=document.querySelector('.mvcurtain');return {a,b:mvState,cur:c.getAttribute('src'),hidden:c.hidden};}")
         check("when the film ends the curtains close", r["a"] == "half" and r["b"] == "closed" and r["cur"].endswith("curtain_closed.png") and not r["hidden"], r)
+        # the collection: a tap on the tapes opens their list, and choosing a film plays it
+        r = await pg.evaluate("()=>{[...document.querySelectorAll('.mvhot')].find(b=>b.dataset.shelf==='1').click();const L=[...document.querySelectorAll('.mvpfilm')];const n=L.length,title=document.querySelector('.mvplist h2').textContent;L[2].click();__step(.6);"
+                              "const v=document.querySelector('.mvstage video');return {n,title,pick:!!document.querySelector('.mvpick'),state:mvState,src:v.getAttribute('src'),note:document.querySelector('.mvnote').textContent,shelves:MV_SHELVES.length,all:MV_SHELVES.every(s=>s.films.every(f=>f.t&&f.by&&f.len&&f.id&&f.f))};}")
+        check("a tap on the tapes lists that shelf's films", r["n"] == 6 and r["title"] == "Paper, puppets and ink" and r["shelves"] == 3 and r["all"], r)
+        check("choosing a film opens the curtains on it", not r["pick"] and r["state"] == "open" and "silent-rozhdestvo" in r["src"] and "Insects" in r["note"], r)
+        r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));__step(.5);return mvState;}")
+        check("that film ends and the curtains close", r == "closed", r)
         r = await pg.evaluate("()=>{document.querySelector('.mvtap').click();__step(.5);const v=document.querySelector('.mvstage video');document.querySelector('.mvback').click();const paused=v.paused,here=document.querySelector('.rmcard[data-id=movie]').textContent;"
                               "document.querySelector('.rmcard[data-id=main]').click();return {paused,here,open:movieRoomOpen(),left:!!document.querySelector('.movieroom'),rooms:!!document.querySelector('.rooms')};}")
         check("Leave in the movie room pauses the film, and choosing the plant room goes back", r["paused"] is True and "you are here" in r["here"] and not r["open"] and not r["left"] and not r["rooms"], r)
