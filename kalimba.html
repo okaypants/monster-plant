@@ -112,6 +112,18 @@ html.film #kside{flex:none;grid-template-columns:repeat(4,1fr);gap:5px}html.film
 html.film .cap.kcap{display:block;min-height:0;height:auto;padding:4px 6px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 }
 #kside{grid-template-columns:1.4fr 1fr 1fr}
+/* UPRIGHT, FOR THE THUMBS (Jackie, Nov 27: "I think we need to switch kalimba-score to a vertical for thumb comfort"). With the phone
+   upright and a film chosen, the film is across the top, its bar and buttons under it, and the keys fill the bottom half where
+   the thumbs are. */
+@media (max-aspect-ratio:11/10){
+html.film #panel{display:flex;flex-direction:column;max-width:none;padding:8px 8px 0;box-sizing:border-box}
+html.film #panel>.cap{display:none}
+html.film #kfilm{flex-direction:column;height:auto;gap:6px}
+html.film #kv{width:100%;height:auto;aspect-ratio:4/3;max-height:40vh}
+html.film #kbar{display:block}
+html.film #kside{grid-template-columns:repeat(4,1fr);gap:5px}html.film #kPick{display:none}
+html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 7px}html.film .cap.kcap .lbl{font-size:8px}html.film .cap.kcap .val{margin-top:2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+}
 html:not(.film) .kx{display:none} /* the film's own controls show only with the film big */
 /* the bar under the film: where you are, the parts you have recorded (orange), and a loop if one is set (outlined). Drag along it to move. */
 #kbar{display:none;position:relative;flex:none;height:16px;border:1.4px solid var(--ink);border-radius:8px;background:#2A2A28;overflow:hidden;touch-action:none;cursor:pointer}
@@ -642,6 +654,7 @@ $('start').addEventListener('click',e=>{e.preventDefault();unlockAudio();started
    the kalimba"). The tap that opened this from the movie room's shelf is the gesture that lets sound start; where a phone still
    holds the sound back, the first touch here wakes it. Opened on its own, outside the game, the opening screen is still shown. */
 if(parent!==window){$('start').style.display='none';started=true;try{unlockAudio();applyShape()}catch(e){}
+  setTimeout(()=>{if(isLand())say('turn the phone upright to play with your thumbs')},600);
   document.addEventListener('pointerdown',()=>{if(!AC||AC.state!=='running')unlockAudio()},{capture:true,passive:true});}
 
 let lastT=performance.now();

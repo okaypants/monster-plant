@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Kalimba-Score is played with the phone upright (Nov 27)
+
+- Jackie: "I think we need to switch kalimba-score to a vertical for thumb comfort".
+- While it is open it covers the whole screen whichever way the phone is held, and the "turn your phone sideways" screen stays away. Upright, the film is across the top, its bar and eight buttons under it, and two rows of seven keys fill the bottom half where the thumbs are.
+- It opens from the sideways game, so a line on its display says to turn the phone upright. Sideways still works as before, with the film on the left. Closing it upright brings back the game's "turn your phone sideways" screen.
+
 ### A soundtrack is recorded in parts, with stepping, a bar, a loop and layering (Nov 27)
 
 - Jackie: "I think you should be able to record in parts and record the parts easily that will assemble into a single recording you can save into a finished movie. I think you should also be able to easily go back or forward when practicing during playback", then "and maybe easily loop something? or multi track lol idk".

@@ -144,8 +144,8 @@ function mvKalimbaFilms(){return MV_SHELVES;} function mvKalimbaSrc(f){return mv
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
- const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='Kalimba-Score';f.setAttribute('allow','autoplay');kalEl.appendChild(f);ui.appendChild(kalEl);}
-function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
+ const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='Kalimba-Score';f.setAttribute('allow','autoplay');kalEl.appendChild(f);document.body.appendChild(kalEl);document.documentElement.classList.add('kal-open');} /* it covers the whole screen, whichever way the phone is held, and while it is open the "turn your phone sideways" screen stays away: it is played upright, for the thumbs (Jackie, Nov 27: "I think we need to switch kalimba-score to a vertical for thumb comfort") */
+function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;document.documentElement.classList.remove('kal-open');if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
 addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score'){mvScoreStop();mvScoreKey='';mvScoresLoad();}});
 /* THE REMOTE (Jackie, Nov 27: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote"). It
    opens a small panel: start or pause what is on the screen, and Live, a short list of live pictures from public bodies.
