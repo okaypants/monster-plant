@@ -2,6 +2,16 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The Kalimbasizer shows the film big, lets you play along, counts you in, and keeps soundtracks in Your films (Nov 27)
+
+- Jackie: "i think the in game kalimbasizer needs fewer keys or something to have a larger screen to watch maybe? or maybe a UI shift, and we need to be able to like play along before we record, i guess, and then get a lead in before it starts recording when it does happen. And then when it records we can elect to add it to our own film library section with a custom title card? ... and still stay low memory? i don't want to kill ppls phones", then "how do we make sure this doesn't kill anyones phone cumulatively overtime". Asked to choose, she said "Go with your recs" and "make decisions".
+- With a film chosen, the film fills the left of the screen and the keys are two rows of seven on the right. VIEW goes back to the whole instrument with the film small.
+- PLAY ALONG runs the film with nothing kept. RECORD sends the film to its start, counts 3, 2, 1 over it, then starts the film and the recorder together.
+- After a recording you are asked whether to keep it: a title (up to 40 letters) and one of four card colours, then "add to my films" or "throw it away". Nothing is kept unless you say so.
+- The movie room's film menu has a last tab, Your films, listing each one with its length and size and a Remove button. Choosing one plays the film with your sound after its title card.
+- Phones: a soundtrack is recorded small (about a quarter of a megabyte a minute), there is one a film, and all together may take no more than 40 MB; past that one must be removed first. The films are never stored.
+- Decided against, for now: saving the notes played and replaying them on the instrument. It would be far smaller, but the instrument has held notes, glides and sound knobs, and a replay that sounded different from what was played could not be checked on a phone from here. The small recording with a hard limit meets the worry without that risk.
+
 ### The movie room's drawers run decorations, string lights, cat toys, and their menus are one neat grid (Nov 27)
 
 - Jackie: "We also want the drawers to be logically organized left to right and within the drawers the menus should be neat with each image tightly managed."

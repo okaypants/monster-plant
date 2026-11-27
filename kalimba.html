@@ -97,6 +97,26 @@ html.night .cap.oct button:first-child{padding-left:5px}
 .cap.kcap{grid-column:auto;height:auto;min-height:58px}
 #kGo.recording{background:var(--selbg);color:var(--selfg)}#kGo.recording .led{background:#E5372B;box-shadow:0 0 8px #E5372B;animation:blink 1s steps(2) infinite}
 @media (max-width:560px){#kside{grid-template-columns:1fr}.cap.kcap{min-height:0;padding:5px 9px}.cap.kcap .val{margin-top:3px;font-size:13px}}
+/* WATCHING WHILE YOU PLAY (Jackie, Nov 27: "the in game kalimbasizer needs fewer keys or something to have a larger screen to watch
+   maybe? or maybe a UI shift"). With a film chosen and the screen sideways, the film takes the left of the screen at full height and
+   the keys the right, two rows of seven. SET UP goes back to the whole instrument with the film small. */
+@media (min-aspect-ratio:11/10){
+html.film #panel{left:0;right:auto;top:0;bottom:0;width:46vw;max-width:none;margin:0;display:flex;flex-direction:column;padding:8px 6px 8px 10px;box-sizing:border-box}
+html.film #panel>.cap{display:none}html.film #panel>.cap.oct{display:none}
+html.film #kfilm{flex:1;min-height:0;height:auto;flex-direction:column;position:relative}
+html.film #kv{flex:1;min-height:0;height:auto;width:100%;aspect-ratio:auto}
+html.film #kside{flex:none;grid-template-columns:1.5fr 1fr 1fr;gap:6px}
+html.film .cap.kcap{display:block;min-height:0;height:auto;padding:5px 9px}html.film .cap.kcap .val{margin-top:3px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+}
+#kside{grid-template-columns:1.4fr 1fr 1fr}
+#kcount{position:absolute;left:0;top:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;font:700 clamp(40px,22vh,120px) 'IBM Plex Mono',monospace;color:#FBF8F1;text-shadow:3px 3px 0 #1C1C1B;pointer-events:none}
+#kcount.on{display:flex}#kfilm{position:relative}
+#kkeep{position:fixed;inset:0;z-index:9;display:none;align-items:center;justify-content:center;background:rgba(28,28,27,.55);font-family:'IBM Plex Mono',ui-monospace,monospace}
+#kkeep.on{display:flex}#kkeep .box{background:var(--cap);color:var(--text);border:1.4px solid var(--ink);border-radius:18px;box-shadow:4px 4px 0 var(--ink);padding:14px 16px;width:min(92vw,430px);display:flex;flex-direction:column;gap:9px}
+#kkeep h3{margin:0;font-size:15px;letter-spacing:.06em}#kkeep p{margin:0;font-size:12px;opacity:.75}
+#kkeep input{font:inherit;font-size:16px;padding:8px 10px;border:1.4px solid var(--ink);border-radius:10px;background:#FBF8F1;color:#1C1C1B}
+#kkeep .cards{display:flex;gap:8px}#kkeep .cards button{flex:1;height:38px;border:1.4px solid var(--ink);border-radius:10px;font:inherit;font-size:11px;cursor:pointer}#kkeep .cards button.on{outline:3px solid #FF6A2B;outline-offset:1px}
+#kkeep .row{display:flex;gap:8px}#kkeep .row button{flex:1;font:inherit;font-size:13px;font-weight:600;padding:10px 6px;border:1.4px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);background:#FBF8F1;color:#1C1C1B;cursor:pointer}#kkeep .row button.go{background:#FF6A2B}
 </style>
 </head>
 <body>
@@ -113,11 +133,14 @@ html.night .cap.oct button:first-child{padding-left:5px}
   <button class="cap wide nar" id="bMet"><span class="lbl">CLICK</span><span class="val">off</span></button>
   <button class="cap wide nar" id="bRec"><span class="lbl">REC</span><span class="val">●</span><i class="led"></i></button>
   <button class="cap wide nar" id="bTakes"><span class="lbl">TAKES</span><span class="val">0</span></button>
-  <div id="kfilm"><video id="kv" playsinline muted preload="none"></video><div id="kside">
+  <div id="kfilm"><video id="kv" playsinline muted preload="none"></video><div id="kcount"></div><div id="kside">
     <button class="cap kcap" id="kPick"><span class="lbl">FILM</span><span class="val" id="kName">choose a film</span></button>
-    <button class="cap kcap" id="kGo"><span class="lbl">SCORE IT</span><span class="val" id="kGoV">▶ play + rec</span><i class="led"></i></button>
+    <button class="cap kcap" id="kPlay"><span class="lbl">PLAY ALONG</span><span class="val" id="kPlayV">▶ play</span></button>
+    <button class="cap kcap" id="kGo"><span class="lbl">RECORD</span><span class="val" id="kGoV">● record</span><i class="led"></i></button>
+    <button class="cap kcap" id="kView"><span class="lbl">VIEW</span><span class="val" id="kViewV">set up</span></button>
     <button class="cap kcap" id="kBack"><span class="lbl">DONE</span><span class="val">back</span></button></div></div>
 </div>
+<div id="kkeep"><div class="box"><h3>KEEP THIS SOUNDTRACK?</h3><p id="kkInfo"></p><input id="kkTitle" maxlength="40" placeholder="A title for the card" autocomplete="off"><div class="cards" id="kkCards"></div><div class="row"><button id="kkNo">throw it away</button><button id="kkYes" class="go">add to my films</button></div></div></div>
 <div id="sheet"><div class="bg"></div><div class="pane"><div class="hd"><span id="shTitle"></span><button id="shDone">DONE</button></div><div class="grid" id="shGrid"></div></div></div>
 <div id="start"><svg viewBox="-4 -4 300 342" aria-hidden="true"><rect x="10" y="10" width="280" height="322" rx="50" fill="#1C1C1B"/><rect x="0" y="0" width="280" height="322" rx="50" fill="#F2B8A2" stroke="#1C1C1B" stroke-width="4"/><circle cx="140" cy="280" r="17" fill="#1C1C1B"/><rect class="tn" style="animation-delay:0.36s" x="26" y="36" width="24" height="118" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0.24s" x="60" y="36" width="24" height="150" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0.12s" x="94" y="36" width="24" height="180" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0s" x="128" y="36" width="24" height="208" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0.18s" x="162" y="36" width="24" height="180" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0.3s" x="196" y="36" width="24" height="150" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect class="tn" style="animation-delay:0.42s" x="230" y="36" width="24" height="118" rx="12" fill="#FBF8F1" stroke="#1C1C1B" stroke-width="4"/><rect x="14" y="60" width="252" height="15" rx="7.5" fill="#1C1C1B"/><circle cx="24" cy="67.5" r="3" fill="#F2B8A2"/><circle cx="256" cy="67.5" r="3" fill="#F2B8A2"/></svg><h1>KALIMBASIZER</h1><div class="go">tap to start</div><button id="thm">theme · auto</button></div>
 <script>
@@ -240,7 +263,8 @@ const stepsOf=S=>S.map((v,i)=>((i+1<S.length?S[i+1]:12)-v)).map(d=>d===1?'H':d==
 const OPTS={p:[[1,5],[2,5],[1,7],[2,7],[3,7],[2,8],[3,8]],l:[[1,7],[1,9],[2,9],[2,11],[2,13],[2,15]]};
 let soundI=0,optP=3,optL=4;
 const isLand=()=>W>H*1.1;
-const cfg=()=>isLand()?OPTS.l[optL]:OPTS.p[optP];
+const filmView=()=>isLand()&&document.documentElement.classList.contains('film'); // the film big on the left, the keys on the right
+const cfg=()=>filmView()?[2,7]:isLand()?OPTS.l[optL]:OPTS.p[optP];
 function baseRoot(){const[,root,S]=TUNE(),[r,n]=cfg(),N=r*n;let d=clamp(Math.floor(N/S.length/2-.5),0,3);while(d>0&&root/Math.pow(2,d)<60)d--;return root/Math.pow(2,d)}
 let octave=0,glideI=1;const GLIDES=[['off',0],['short',1],['long',2.6]];
 function freqOf(i){const S=TUNE()[2],n=S.length;return baseRoot()*Math.pow(2,octave+(Math.floor(i/n)*12+S[i%n])/12)}
@@ -347,7 +371,7 @@ function monoOff(id){if(!mono)return;mono.stack=mono.stack.filter(s=>s.id!==id);
 let G={},rows=[];
 function layoutOrder(n){const cols=new Array(n),c=Math.floor((n-1)/2);let k=0;for(let j=0;k<n&&j<4*n;j++){const off=j===0?0:(j%2?-(j+1)/2:j/2),i=c+off;if(i>=0&&i<n&&cols[i]===undefined)cols[i]=k++}return cols}
 function geo(){const land=isLand(),[R,n]=cfg();
-  const bx=10,bw=W-20,by=TOP+10,bh=H-by-12,lcd=land?30:50,contentTop=by+12+lcd+10,contentBot=by+bh-14,rowH=(contentBot-contentTop)/R,pad=Math.max(10,bw*.025);
+  const LEFT=filmView()?Math.round(W*.46):0,bx=LEFT+10,bw=W-LEFT-20,by=(LEFT?0:TOP)+10,bh=H-by-12,lcd=land?30:50,contentTop=by+12+lcd+10,contentBot=by+bh-14,rowH=(contentBot-contentTop)/R,pad=Math.max(10,bw*.025);
   const colW=(bw-2*pad)/n,tw=Math.min(colW*.8,62,rowH*.42);
   G={bx,bw,by,bh,lcd,contentTop,rowH,pad,colW,tw,R,n};
   const order=layoutOrder(n),old=rows.flat();
@@ -485,7 +509,7 @@ function syncTakes(){$('bTakes').querySelector('.val').textContent=takes.length}
 function setRecUI(on){$('bRec').classList.toggle('recording',on);$('bRec').querySelector('.val').textContent=on?'0:00':'●'}
 function startRec(){if(!AC||REC_MIME===null||!masterOut)return;
   if(!recDest){recDest=AC.createMediaStreamDestination();masterOut.connect(recDest)}
-  recChunks=[];let r;try{r=REC_MIME?new MediaRecorder(recDest.stream,{mimeType:REC_MIME}):new MediaRecorder(recDest.stream)}catch(e){say('rec not available');return}
+  recChunks=[];let r;const small=typeof KF!=='undefined'&&KF.arming?{audioBitsPerSecond:32000}:{}; /* a film's soundtrack is recorded small, so many of them fit on a phone */try{r=REC_MIME?new MediaRecorder(recDest.stream,{mimeType:REC_MIME,...small}):new MediaRecorder(recDest.stream,small)}catch(e){say('rec not available');return}
   r.ondataavailable=e=>{if(e.data&&e.data.size)recChunks.push(e.data)};
   r.onstop=()=>{const mime=r.mimeType||REC_MIME||'audio/webm',blob=new Blob(recChunks,{type:mime}),dur=(performance.now()-recStart)/1000;rec=null;setRecUI(false);
     if(blob.size<200||dur<.4){say('too short · not kept');return}
@@ -611,18 +635,39 @@ requestAnimationFrame(frame);
 <script>
 /* FILM MODE. The films come from the movie room's collection when this page is opened inside the game (same site, so the page can
    read the room's list); opened on its own it has no films and is the plain instrument. */
-const KF={films:[],film:null,scoring:false};
+const KF={films:[],film:null,scoring:false,arming:false,count:0};
 try{if(parent!==window&&parent.mvKalimbaFilms){KF.films=parent.mvKalimbaFilms().flatMap(sh=>sh.films.map(f=>({...f,shelf:sh.name})));KF.src=parent.mvKalimbaSrc;}}catch(e){}
-const kv=$('kv');
-function kfSet(f){KF.film=f;$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();}}
+const kv=$('kv'),KCARDS=[['#1C1C1B','#FBF8F1','night'],['#F2B8A2','#1C1C1B','peach'],['#BFD8B8','#1C1C1B','moss'],['#C9C3E6','#1C1C1B','dusk']]; // title card colours: ground, lettering
+function kfView(on){document.documentElement.classList.toggle('film',!!on&&!!KF.film);$('kViewV').textContent=document.documentElement.classList.contains('film')?'set up':'big film';resize();}
+function kfSet(f){kfQuiet();KF.film=f;$('kName').textContent=f?f.t:'choose a film';if(f){kv.src=KF.src(f);kv.load();}kfView(true);}
 function kfPick(){if(!KF.films.length){say('open me from the movie room for films');return}
   openSheet('FILM',KF.films.map(f=>({label:f.t,sub:f.by+' · '+f.len,sel:KF.film===f,quiet:true,act:()=>kfSet(f)})),220)}
-function kfStop(){if(!KF.scoring)return;KF.scoring=false;kv.pause();$('kGo').classList.remove('recording');$('kGoV').textContent='▶ play + rec';const n0=takes.length,f=KF.film;stopRec();
-  let tries=0;const wait=()=>{if(takes.length>n0){const tk=takes[takes.length-1];tk.name=f.t;scorePut(f,tk).then(()=>{say('kept for '+f.t);try{parent.postMessage('mp-kalimba-score','*')}catch(e){}}).catch(()=>say('could not keep it'));}else if(++tries<30)setTimeout(wait,100);};wait();}
-function kfGo(){if(KF.scoring){kfStop();return}if(!KF.film){kfPick();return}if(REC_MIME===null){say('rec not supported here');return}if(!AC)return;if(rec)stopRec();
-  try{kv.currentTime=0}catch(e){}const p=kv.play();if(p&&p.catch)p.catch(()=>say('the film needs a connection'));startRec();if(!rec){kv.pause();return}KF.scoring=true;$('kGo').classList.add('recording');$('kGoV').textContent='■ stop';}
-kv.addEventListener('ended',kfStop);
-press($('kPick'),kfPick);press($('kGo'),kfGo);press($('kBack'),()=>{if(KF.scoring)kfStop();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
+/* PLAY ALONG, THEN RECORD (Jackie, Nov 27: "we need to be able to like play along before we record, i guess, and then get a lead in
+   before it starts recording when it does happen"). PLAY ALONG runs the film with nothing kept, as often as you like. RECORD sends
+   the film back to its start, counts 3, 2, 1 over it, and then the film and the recorder start together. */
+function kfPlayUI(){$('kPlayV').textContent=kv.paused?'▶ play':'❚❚ pause';}
+function kfQuiet(){clearTimeout(KF.count);KF.count=0;KF.arming=false;$('kcount').classList.remove('on');if(KF.scoring){KF.scoring=false;stopRec();}try{kv.pause()}catch(e){}$('kGo').classList.remove('recording');$('kGoV').textContent='● record';kfPlayUI();}
+function kfPlay(){if(!KF.film){kfPick();return}if(KF.scoring||KF.count)return;if(kv.paused){if(kv.ended)try{kv.currentTime=0}catch(e){}const p=kv.play();if(p&&p.catch)p.catch(()=>say('the film needs a connection'));}else kv.pause();}
+kv.addEventListener('play',kfPlayUI);kv.addEventListener('pause',kfPlayUI);
+function kfStop(){if(KF.count){kfQuiet();say('not recorded');return}if(!KF.scoring)return;KF.scoring=false;KF.arming=false;kv.pause();$('kGo').classList.remove('recording');$('kGoV').textContent='● record';const n0=takes.length,f=KF.film;stopRec();
+  let tries=0;const wait=()=>{if(takes.length>n0){const tk=takes.pop();syncTakes();kfKeep(f,tk);}else if(++tries<30)setTimeout(wait,100);};wait();}
+function kfGo(){if(KF.scoring||KF.count){kfStop();return}if(!KF.film){kfPick();return}if(REC_MIME===null){say('rec not supported here');return}if(!AC)return;if(rec)stopRec();
+  kv.pause();try{kv.currentTime=0}catch(e){}$('kGo').classList.add('recording');$('kGoV').textContent='■ stop';const c=$('kcount');let n=3;
+  const tick=()=>{if(n>0){c.textContent=n;c.classList.add('on');say('recording in '+n);try{pop(note(n===1?12:0),0,.5)}catch(e){}n--;KF.count=setTimeout(tick,800);return}
+    KF.count=0;c.classList.remove('on');KF.arming=true;startRec();if(!rec){kfQuiet();return}const p=kv.play();if(p&&p.catch)p.catch(()=>say('the film needs a connection'));KF.scoring=true;};tick();}
+kv.addEventListener('ended',()=>{if(KF.scoring)kfStop();});
+/* KEEPING IT (Jackie, Nov 27: "when it records we can elect to add it to our own film library section with a custom title card").
+   After a recording you choose: add it to Your films in the movie room, with a title and a card colour, or throw it away. */
+let kkTake=null,kkFilm=null,kkCard=0;
+function kfKeep(f,tk){kkTake=tk;kkFilm=f;kkCard=0;$('kkTitle').value='';$('kkInfo').textContent=f.t+' · '+fmt(tk.dur)+' · '+scoreSize(tk.blob.size);
+  $('kkCards').innerHTML=KCARDS.map((c,i)=>'<button data-i="'+i+'" style="background:'+c[0]+';color:'+c[1]+'"'+(i?'':' class="on"')+'>'+c[2]+'</button>').join('');
+  $('kkCards').querySelectorAll('button').forEach(b=>b.onclick=()=>{kkCard=+b.dataset.i;$('kkCards').querySelectorAll('button').forEach(q=>q.classList.toggle('on',q===b));});$('kkeep').classList.add('on');}
+function kfKeepEnd(){$('kkeep').classList.remove('on');kkTake=null;}
+$('kkNo').onclick=()=>{kfKeepEnd();say('thrown away');};
+$('kkYes').onclick=()=>{const tk=kkTake,f=kkFilm;if(!tk)return;scoreRoom(f,tk.blob.size).then(ok=>{if(!ok){$('kkInfo').textContent='Your films is full. Remove one in the movie room, then record again.';return}
+  tk.name=f.t;tk.title=$('kkTitle').value.trim().slice(0,40);tk.card=kkCard;return scorePut(f,tk).then(()=>{kfKeepEnd();say('added to your films');try{parent.postMessage('mp-kalimba-score','*')}catch(e){}});}).catch(()=>{$('kkInfo').textContent='It could not be kept on this device.';});};
+$('kkeep').addEventListener('pointerdown',e=>e.stopPropagation());
+press($('kPick'),kfPick);press($('kPlay'),kfPlay);press($('kGo'),kfGo);press($('kView'),()=>kfView(!document.documentElement.classList.contains('film')));press($('kBack'),()=>{kfQuiet();try{parent.postMessage('mp-kalimba-close','*')}catch(e){}});
 if(!KF.films.length){$('kfilm').style.display='none';}
 try{const want=new URLSearchParams(location.search).get('film');if(want){const f=KF.films.find(q=>q.id===want);if(f)kfSet(f);}}catch(e){}
 addEventListener('load',()=>setTimeout(resize,50));

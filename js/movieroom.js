@@ -68,7 +68,7 @@ let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote'
    control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
 function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film';return v;}
-function mvStart(){const v=mvLoad(),p=v.play();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
+function mvStart(){const v=mvLoad(),p=v.play();mvCardShow();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
 function mvScreen(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const v=mvEl.querySelector('video');sfx('paper');
  if(mvState==='closed'){mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);} // the curtains only: whatever was on is still there, paused, and if nothing was chosen the screen is black
  else{v.pause();mvEl.dataset.paused='1';mvCurtains(false);}}
@@ -142,7 +142,7 @@ function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySe
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
  const f=document.createElement('iframe');f.src='kalimba.html?film='+encodeURIComponent(mvFilm&&mvFilm.f?mvFilm.id:'');f.title='The Kalimbasizer';f.setAttribute('allow','autoplay');kalEl.appendChild(f);ui.appendChild(kalEl);}
 function closeKalimba(){if(!kalEl)return;kalEl.remove();kalEl=null;if(typeof radioHold==='function')radioHold(false);mvScoresLoad();}
-addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score')mvScoresLoad();});
+addEventListener('message',e=>{if(!kalEl||e.source!==kalEl.firstChild.contentWindow)return;if(e.data==='mp-kalimba-close')closeKalimba();else if(e.data==='mp-kalimba-score'){mvScoreStop();mvScoreKey='';mvScoresLoad();}});
 /* THE REMOTE (Jackie, Nov 27: "the remote can maybe change to a streaming live tv that you find", then "Let's build the remote"). It
    opens a small panel: start or pause what is on the screen, and Live, a short list of live pictures from public bodies.
    Two kinds (research_notes/movieroom/live_streams.md):
@@ -326,15 +326,29 @@ function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
 function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
-function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES; /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
- mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><button type="button" class="mvrbtn mvtonight"></button>'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
+/* YOUR FILMS (Jackie, Nov 27: "when it records we can elect to add it to our own film library section with a custom title card").
+   The film menu's last tab lists the films you have played a soundtrack for on the Kalimbasizer, each under the title you gave it,
+   with how long it is and how much room it takes. Choosing one plays the film with your sound, after its title card. Remove takes
+   one off this device. All of them together are held to SCORES_MAX (js/scores.js), and the films themselves are never stored. */
+const MV_MINE={id:'mine',name:'Your films',pic:'movieroom/acc_reel.png',about:'Films with a soundtrack you played on the Kalimbasizer. They are kept on this device only.',films:[]},MV_CARDS=[['#1C1C1B','#FBF8F1'],['#F2B8A2','#1C1C1B'],['#BFD8B8','#1C1C1B'],['#C9C3E6','#1C1C1B']];
+let mvCardNext=null,mvCardT=0;
+const mvFilmByKey=k=>{for(const sh of MV_SHELVES)for(const f of sh.films)if(scoreKey(f)===k)return f;return null;};
+const mvClock=d=>Math.floor(d/60)+':'+String(Math.floor(d%60)).padStart(2,'0');
+function mvCardShow(){const c=mvEl&&mvEl.querySelector('.mvcard'),q=mvCardNext;mvCardNext=null;if(!c||!q||!mvFilm||scoreKey(mvFilm)!==q.key)return;const col=MV_CARDS[q.card]||MV_CARDS[0];
+ c.style.background=col[0];c.style.color=col[1];c.innerHTML='<b></b><span></span>';c.querySelector('b').textContent=q.title||q.film;c.querySelector('span').textContent=(q.title?q.film+' · ':'')+'music played on the Kalimbasizer';c.hidden=false;clearTimeout(mvCardT);mvCardT=setTimeout(()=>{c.hidden=true;},3500);}
+function mvPickMine(){scoreList().then(L=>{if(!mvPickEl)return;const box=mvPickEl.querySelector('.mvmine');if(!box)return;const used=L.reduce((n,q)=>n+q.size,0);
+ box.innerHTML=(L.length?L.map((q,i)=>'<div class="mvminerow"><button type="button" class="mvpfilm" data-i="'+i+'"><b></b><span></span></button><button type="button" class="mvrbtn mvminex" data-i="'+i+'">Remove</button></div>').join(''):'<p>Nothing here yet. Tap the kalimba on the shelf, choose a film, and press Record.</p>')+'<p class="mvmineuse">Using '+scoreSize(used)+' of '+scoreSize(SCORES_MAX)+'.</p>';
+ box.querySelectorAll('.mvpfilm').forEach(b=>{const q=L[+b.dataset.i],f=mvFilmByKey(q.key);b.querySelector('b').textContent=q.title||q.film;b.querySelector('span').textContent=(q.title?q.film+' · ':'')+mvClock(q.dur)+' · '+scoreSize(q.size);b.disabled=!f;b.onclick=()=>{mvMode='mine';mvCardNext=q;mvChoose(f);};});
+ box.querySelectorAll('.mvminex').forEach(b=>b.onclick=()=>{const q=L[+b.dataset.i];scoreDropKey(q.key).then(()=>{if(mvScoreKey===q.key){mvScoreStop();mvScoreKey='';}return mvScoresLoad();}).then(()=>{mvNote('Removed from your films.');mvPickMine();});});});}
+function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES.concat(MV_MINE); /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
+ mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><button type="button" class="mvrbtn mvtonight"></button>'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+(sh===MV_MINE?'<div class="mvmine"></div>':'')+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
- mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;{const tb=mvPickEl.querySelector('.mvtonight'),tf=mvTonight();tb.textContent='Tonight’s film: '+tf.t;tb.onclick=()=>{mvChoose(tf);mvNote('Tonight’s film is '+tf.t+'.');};}mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES.find(q=>q.id===b.dataset.id)));
+ mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;{const tb=mvPickEl.querySelector('.mvtonight'),tf=mvTonight();tb.textContent='Tonight’s film: '+tf.t;tb.onclick=()=>{mvChoose(tf);mvNote('Tonight’s film is '+tf.t+'.');};}mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
  if(mvEl)return;
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
- mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video>'+
+ mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video><div class="mvcard" hidden style="'+mvPct(MV.screen)+'"></div>'+
   '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvcurtain mvcurtL" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'"><img class="mvcurtain mvcurtR" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+'<canvas class="mvfx" width="'+MV.W+'" height="'+MV.H+'"></canvas>'+'<canvas class="mvlights" width="'+MV.W+'" height="100"></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
