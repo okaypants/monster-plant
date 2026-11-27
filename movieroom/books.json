@@ -1,1 +1,160 @@
-{"books":[]}
+{
+ "books": [
+  {
+   "id": "lutz-animated-cartoons",
+   "title": "Animated Cartoons: How They Are Made, Their Origin and Development",
+   "by": "E. G. Lutz",
+   "year": 1920,
+   "kind": "animation",
+   "source": "https://gutenberg.pglaf.org/7/3/4/5/73455/73455-0.txt",
+   "pages": [
+    "Now, as stated before, the phenomenon of the persistence of vision is the fundamental physiological fact upon which the whole possibility of seeing screen pictures rests. One of the first devices made that depended upon it, and that very simply demonstrated this faculty of the retina for holding a visional image for a time, was an optical toy called the thaumatrope. It dates from about 1826. It was a cardboard disk with two holes close to the edge at opposite points.",
+    "Strings were passed through these holes and fastened and the dangling ends held and rolled between the thumbs and fingers so that the disk was made to twirl rapidly. Each side of the disk had a picture printed or drawn upon it. These two pictures when viewed together while the disk was twirled appeared as one complete picture. A favorite design for depiction was an empty bird-cage on one side and a bird on the other.",
+    "The designs were placed with respect to each other in the same way as the marks and insignia of the two sides of most coins. (The coins of Great Britain are an exception, on them the designs are placed differently. In reading their marks or looking at the images of the two sides, we turn the coin over like the page of a book.)",
+    "The thaumatrope illustrates the persistence of vision in a very elementary way. Simply explained, the face of one side of the disk with its design is before the eye, the design impresses its true image upon the retina, the disk turns away and the picture disappears, but its after-image remains on the retina. The disk having turned, brings the other picture into view. Its true image is impressed upon the retina to blend with the after-image of the first picture. In rapid sequence this turning continues and the two images commingle to give the fantasy of a perfect design."
+   ]
+  },
+  {
+   "id": "croy-how-motion-pictures-are-made",
+   "title": "How Motion Pictures Are Made",
+   "by": "Homer Croy",
+   "year": 1918,
+   "kind": "animation, how movies are made",
+   "source": "https://archive.org/details/cu31924026115554/page/n329/mode/1up",
+   "pages": [
+    "With the widening view given by the accumulative success of trick films it was seen that other materials than furniture and silverware could be used to give the illusion of motion. Pianos had walked down the street and tables had been made to set themselves without a hand to help them—as far as the audience was concerned. If inanimate objects could be made to assume motion by photographing them in one position, moving them to another and photographing them again, then drawings showing successive phases of action might be made to move by the same principle.",
+    "Studying the possibilities of giving a series of drawings the animation of life was Windsor McCay, who completed a set of drawings each showing a slight advance in action, and exposed them in 1910. The series, “Little Nemo,” was followed by a film depicting the adventures of a mosquito. On the completion of this “Gertie” appeared, which showed the prehistoric adventures of a dinosaur and the trouble it had when an elephant disrupted its rule. The film shown in vaudeville became well known.",
+    "To show five hundred feet of the dinosaur picture necessitated the making of ten thousand separate and distinct drawings. One scene in particular showed the Mesozoic creature, disturbed by the attention of the elephant, pick up the pachyderm and hurl him into the air to fall into a lake. For revenge the elephant filled his trunk with water and gave a moment’s unpleasantness to the dinosaur. The dinosaur’s answer was to drink the lake dry, leaving the elephant floundering in the mud.",
+    "The making of each scene required many drawings, for the dinosaur must be shown in hundreds of positions even in such a simple scene as that of throwing the elephant into the lake. Merely to open the dinosaur’s mouth meant that all of the dinosaur, the elephant, the lake, the trees, the rocks, everything must be drawn over to show each progressive movement in the process.",
+    "One picture would show the mouth partly open, which meant the drawing of all the other figures in the scene; another would show the drawing back of the lips; another the first baring of the teeth; another the reach forward of the head and the action thus continued until completed. To show the simple scene of the dinosaur opening his mouth meant a week’s work. Although a year was spent in the making of the film, it was projected in less than ten minutes."
+   ]
+  },
+  {
+   "id": "lindsay-art-of-the-moving-picture",
+   "title": "The Art of the Moving Picture",
+   "by": "Vachel Lindsay",
+   "year": "1915, revised 1922",
+   "kind": "film as art",
+   "source": "https://gutenberg.pglaf.org/1/3/0/2/13029/13029-0.txt",
+   "pages": [
+    "But let us examine at this point, as even more typical, an old Pathé Film from France. The representatives of the moving-firm are sent for. They appear in the middle of the room with an astonishing jump. They are told that this household desires to have its goods and hearthstone gods transplanted two streets east. The agents salute. They disappear. Yet their wireless orders are obeyed with a military crispness. The books and newspapers climb out of the window. They go soberly down the street.",
+    "In their wake are the dishes from the table. Then the more delicate porcelains climb down the shelves and follow. Then follow the hobble-de-hoy kitchen dishes, then the chairs, then the clothing, and the carpets from over the house. The most joyous and curious spectacle is to behold the shoes walking down the boulevard, from father's large boots to those of the youngest child. They form a complete satire of the family, yet have a masterful air of their own, as though they were the most important part of a human being.",
+    "The new apartment is shown. Everything enters in procession. In contrast to the general certainty of the rest, one or two pieces of furniture grow confused trying to find their places. A plate, in leaping upon a high shelf, misses and falls broken. The broom and dustpan sweep up the pieces, and consign them to the dustbin. Then the human family comes in, delighted to find everything in order. The moving agents appear and salute. They are paid their fee. They salute again and disappear with another gigantic leap.",
+    "The ability to do this kind of a thing is fundamental in the destinies of the art. Yet this resource is neglected because its special province is not understood. \"People do not like to be tricked,\" the manager says. Certainly they become tired of mere contraptions. But they never grow weary of imagination. There is possible many a highly imaginative fairy-tale on this basis if we revert to the sound principles of the story of the old lady and the pig."
+   ]
+  },
+  {
+   "id": "emerson-loos-breaking-into-the-movies",
+   "title": "Breaking Into the Movies",
+   "by": "John Emerson and Anita Loos",
+   "year": 1921,
+   "kind": "how-to",
+   "source": "https://gutenberg.pglaf.org/5/6/5/7/56570/56570-8.txt",
+   "pages": [
+    "Were the average man suddenly called upon to assemble all the women in his town who looked like Mary Pickford, he might find himself at a loss as to how to commence. In fact, he might even doubt that there were sufficient persons answering this description to warrant such a campaign. We know a way to get them all together on twenty-four hours' notice. Just insert a small advertisement in the local newspaper, reading: \"Wanted for the movies--a girl who looks like Mary Pickford--apply at such-and-such a studio to-morrow morning.\"",
+    "We guarantee that not only will every woman who looks like Mary Pickford be on the spot at sunrise, but that a large preponderance of the entire female population will drop in during the morning. For it is a puzzling but indisputable fact that everybody wants to break into the movies. The curious part of it all is that the movies really need these people. On the one hand are countless men and women besieging the studio doors in the hope of starting a career in any one of a thousand capacities, from actress to scenario writer, from director to cameraman.",
+    "There are people with plots, people with inventions, people with new ideas of every conceivable variety, all clamoring for admission. And, on the other hand, there are the men who manage the movies sending out all manner of exhortations, appeals and supplications to just such people to come and work in their studios. They drown each other's voices, the one calling for new talent and new types, the many for a chance to demonstrate that they are just the talent and types that are so in demand."
+   ]
+  },
+  {
+   "id": "arvidson-when-the-movies-were-young",
+   "title": "When the Movies Were Young",
+   "by": "Linda Arvidson (Mrs. D. W. Griffith)",
+   "year": 1925,
+   "kind": "memoir",
+   "source": "https://gutenberg.pglaf.org/6/8/8/5/68850/68850-0.txt",
+   "pages": [
+    "It was a bright May morning in 1909. When I came off the scene, I noticed a little girl sitting quietly in a corner near the door. She looked about fourteen. I afterwards learned she was nearing seventeen. She wore a plain navy-blue serge suit, a blue-and-white striped lawn shirtwaist, a rolled brim Tuscan straw sailor hat with a dark blue ribbon bow. About her face, so fresh, so pretty, and so gentle, bobbed a dozen or more short golden curls--such perfect little curls as I had never seen.",
+    "A timid applicant usually hugged the background. Bold ones would press forward to the camera and stand there, obtruding themselves, in the hope that the director would see them, like their look, and engage them for a day’s work. But Mary Pickford tucked herself away in a niche, while she quietly gave us “the once over.” The boss’s eagle eye had been roving her way at intervals, the while he directed, for here was something “different”--a maid so fair and an actress to boot! Pausing a moment in his work, he came over to me and said, “Don’t you think she would be good for Pippa?” “Ideal,” I answered.",
+    "Before we closed shop that day, he had Mary make up--gave her a violin, and told her to walk across the stage while playing it so that Billy Bitzer could make a test. Before she left the studio that day, every actor there had a “line” on Mary. In the dressing-room, the word went around: “There’s a cute kid outside; have you seen her?” “No, where is she?” “She’s been sitting out there in a corner by herself.” “Guess I’ll take a look.” “She’s cute all right; they’re taking a test.”",
+    "Something was impending. There was excitement and expectancy in the air. America’s Sweetheart was soon to make her first screen appearance. The test was O. K. and Mary was told to come to the studio on the morrow. David promised her five dollars a day for her first picture, and were her work good, he’d talk business with her. That satisfied Mary."
+   ]
+  },
+  {
+   "id": "lang-west-musical-accompaniment",
+   "title": "Musical Accompaniment of Moving Pictures",
+   "by": "Edith Lang and George West",
+   "year": 1920,
+   "kind": "film music",
+   "source": "https://archive.org/details/musicalaccompani00lang/page/36/mode/1up",
+   "pages": [
+    "Sense of humor is a gift of the gods, but they will not withhold it from any one who seriously tries to acquire it. The player should learn to recognize, and be able personally to enjoy, the fun of the comic situations depicted on the screen. Nothing is more calamitous than to see “Mutt and Jeff” disport themselves in their inimitable antics and to have a “Brother Gloom” at the organ who gives vent to his perennial grouch in sadly sentimental or funereal strains. A cheerful aspect of things, the faculty to laugh with and at the world, are indispensable.",
+    "In no part of the pictures should the attention of the player be riveted more firmly on the screen than here. If the “point” of the joke be missed, if the player lag behind with his effect, all will be lost, and the audience cheated out of its rightful share of joy. Nor does it suffice, as seems to be the idea of certain picture-players, to be armed with one lively tune that must serve all cartoons, comedies and jokes, invariably and indiscriminately.",
+    "In the cartoons and in the comedies all sorts of other emotions, besides that of plain hilarity, may come into play; there may be sorrow, doubt, horror and even death; only all these emotions lack the quality of truth, and they must be expressed as “mock” sorrow and grief, “mock” doubt and death. This is very different from reality and should therefore be treated differently in the music. Take as a glaring example the funeral march of Chopin, with its sublime note of tragedy and bereavement, and the exquisite “Funeral March for a Marionette” by Gounod, with its suggestion of fine persiflage.",
+    "Nowhere does success, the “getting across” of a picture, depend so much on special effects as it does here. It may be stated candidly that these effects, and the best among them, are not always purely musical. As will be pointed out in the chapter on “Special Effects,” a battery of traps and other accessories are really needed to emphasize in a comic manner the action on the screen.",
+    "It is often noise, more than music, that is wanted, to arouse the hilarity of the audience; and the noise again may be of various kinds. It should always be broadly imitative when accompanying a fall, a hit, a slide, a whirl or flight through the air, a brawl, the whistle of an engine, the chirping of a bird, the mewing of a cat, or the barking of a dog. In the last analysis it takes very little to make a crowd laugh; only the fuse to its magazine of laughter must be ignited with a live spark."
+   ]
+  },
+  {
+   "id": "hope-moving-picture-girls",
+   "title": "The Moving Picture Girls; or, First Appearances in Photo Dramas",
+   "by": "Laura Lee Hope (Stratemeyer Syndicate pseudonym)",
+   "year": 1914,
+   "kind": "children's novel",
+   "source": "https://gutenberg.pglaf.org/1/9/1/7/19171/19171.txt",
+   "pages": [
+    "Alice looked about the big room, that seemed filled with all sorts of scenery, parts of buildings, rustic bridges--in short, all sorts of \"props.\" She had been behind the scenes often in some of the plays in which her father took part, so this was not startlingly new to her. Yet it was different from the usual theatre. And such strange \"business\" seemed going on.",
+    "There were men and women going through plays--Alice could tell that, but the odd part of it was that in one section of the room what seemed a tragedy in a mountain log cabin was being enacted; while, not ten feet away, was a parlor scene, showing men in evening dress, and women in ball costumes, gliding through the mazes of a waltz. Next to this was a scene representing a counterfeiter's den in some low cellar, with the police breaking through the door with drawn revolvers, to capture the criminals.",
+    "And in front of these varied scenes stood a battery of queer cameras--moving picture cameras, looking like flat fig boxes with a tube sticking out, and a handle on one side, at which earnest-faced young men were vigorously clicking. And, off to one side, stood several men in their shirt sleeves superintending the performances. They gave many directions. \"No, not that way! When you faint, fall good and hard, Miss Pennington!\" \"Hurry now, Mr. Switzer; get in some of that funny business! Look funny; don't act as though this was your funeral!\"",
+    "\"Come on there Mr. Bunn; this isn't 'Hamlet.' You needn't stalk about that way. There's no grave in this!\" \"Hold on, there! Cut that part out. Stop the camera; that will have to be done over. There's no life in it!\" And so it went on, in the glaring light that filtered in through the roof, composed wholly of skylights, while a battery of arc lamps, in addition, on some of the scenes, poured out their hissing glare to make the taking of the negatives more certain.",
+    "Alice was enthralled by it all. She stood close to Russ's side, clasping his arm. Many of the men engaged in taking the pictures knew the young operator, and nodded to him in friendly fashion, as they hurried about. Some of the actors and actresses, too, bowed to the young fellow and smiled. He seemed a general favorite. \"Isn't it wonderful?\" whispered Alice. \"I had no idea the making of a moving picture was anything like this!\""
+   ]
+  },
+  {
+   "id": "sudzuky-cinema-in-japan",
+   "title": "\"Cinema in Japan\", in Close Up, vol. IV",
+   "by": "J. Shige Sudzuky",
+   "year": 1929,
+   "kind": "Japan, benshi",
+   "source": "https://archive.org/details/closeup04macp/page/n158/mode/1up",
+   "pages": [
+    "If there is anyone who thinks that Japanese buildings are of bamboo and paper, he will be greatly in the wrong. Such a hut may have stood a hundred years ago. Our present-day cinema houses of the new type are as excellent as any of the European ones. In each of them is contained one speciality which you cannot see in any other country. This is the existence of ben-shi or explainers. A ben-shi (literally, speaker) explains not only the title of a film, but speaks the dialogues that pass between the principal characters thereof.",
+    "It is quite an independent occupation. Each ben-shi has his own art. Some of them are so popular among the fans that they are often said to affect the fate of cinema houses. The invention of the vitaphone, movitone, and phonofilm seems to have been very popular in Europe and America. The part which these machines play, you may imagine, is played by the ben-shi in Japan. The film is accompanied by Western music. This is nearly always the case with the Japanese film. Some cinema houses have, of course, a large symphony orchestra, but there is none provided with a pipe organ.",
+    "No restrictions are imposed upon children by law, though formerly there were some. As for accommodation, it is quite the same as that which we see in Western countries. The only difference is that every cinema-goer can have a beautiful programme free of charge. Some of these programmes are so beautiful indeed that they may be considered as works of art."
+   ]
+  },
+  {
+   "id": "de-wit-java-wayang",
+   "title": "Java: Facts and Fancies",
+   "by": "Augusta de Wit",
+   "year": 1905,
+   "kind": "shadow theatre",
+   "source": "https://gutenberg.pglaf.org/4/3/6/6/43665/43665-0.txt",
+   "pages": [
+    "The \"wayang poerwa\" is best described as a combination of a \"Punch-and-Judy\" show and a kind of \"Chinese shadows\"; and--as with the famed shield which was silver on one side and gold on the other--its appearance depends upon the stand-point of the spectator. A puppet show to those in front of the screen, where the gaudily-painted figures are fixed in a piece of banana stem, it is a Chinese lantern to those on the other side, who see the shadows projected on the luminous canvas.",
+    "As soon as it becomes known that some well-known \"dalang\" will hold a wayang-performance at such and such a house, the village folk from miles around come trooping toward the spot, trudging for hours, or even days, along the sun-scorched, dust-choked highroads, an enormous, mushroom-shaped hat on their head, and a handful of boiled rice, neatly folded in a green leaf, tucked into their girdle.",
+    "At one of the numerous warongs or shops temporarily erected near the spot, where the wayang is to be performed, they buy some bananas and a cup of hot water, flavoured, perhaps, with green leaves of the coffee-plant, and sweetened with the aromatic areng-sugar. And, provided with these simple refreshments, they squat down upon the ground--the men on that side of the wayang-screen where they will see the puppets, the women on the other where the shadows are seen--and prepare to restfully enjoy the drama.",
+    "Already the last streaks of crimson and gold-shot opal have faded in the western skies, and the grey of dusk begins to deepen into nocturnal blackness. The evening breeze is astir in the tall tree-tops, waking a drowsy bird here and there among the branches; it chirps sleepily and is still again. Aloft, a single star is seen limpid and tremulous, like a dewdrop about to fall. And the garrulous groups around the wayang-screen gradually cease their talk.",
+    "Now the \"dalang\" rising, disposes, on an improvised altar, the sacrificial gifts--fruit, and yellow rice, and flowers, and lights the frankincense that keeps off evil spirits. Then, as the column of odoriferous smoke ascends, sways, and disperses through the thin, cool air, a volley of thunderous sound bursts from the \"gamellan,\" and the dancers appear. Slowly they advance, in hand-linked couples, gliding rather than walking, with so gentle a motion that it never stirs the folds of their trailing robes, gathered at the waist by a silver clasp."
+   ]
+  },
+  {
+   "id": "talbot-moving-pictures",
+   "title": "Moving Pictures: How They Are Made and Worked",
+   "by": "Frederick A. Talbot",
+   "year": 1912,
+   "kind": "trick films",
+   "source": "https://gutenberg.pglaf.org/6/7/9/7/67972/67972-0.txt",
+   "pages": [
+    "The trick-film owes its inception to a well-known French prestidigitateur, Monsieur Mélies. He was among the first to embark upon the manufacture of film subjects, and it naturally occurred to him to impress magic into the service of the industry. His first attempts were of the simplest description. He confined himself to the performance before the camera of the same tricks that he offered an audience from behind the footlights.",
+    "Having by this means tested the public and found it responsive, he introduced all the devices known to the “Black Art.” Furniture danced upon the screen, and moved hither and thither about a room; skeletons gambolled capriciously; weird displays of “Black Magic” were shown; all sorts of inanimate objects were imbued with life; dolls and toy animals and birds were given the semblance of natural action. The films amused and mystified the public exceedingly, and the Mélies trick films enjoyed a remarkable vogue.",
+    "One of the best and most successful trick films Paul ever produced was the mediæval mystery entitled “The Magic Sword.” It appealed to the grown-up because of the astonishing effects introduced, and to the children for the reason that it provided an intimate glimpse of fairyland with its giants, witches, good and bad fairies, and other strange beings not encountered in this world. It was sumptuously produced, and many of the tricks were introduced to the public for the first time.",
+    "The first scene shows a gallant knight meeting his lady-love on the battlements of the castle at midnight; a ghost appears, towards which the knight advances, but it melts from his grasp. A witch rides over the dark sky on her broom, and the knight in turn endeavours to seize her, but she eludes his attack and departs, shaking her fist in rage. An ogre no less than fifteen feet tall thrusts his head and shoulders over the battlements, seizes the damsel and bears her off through the sky.",
+    "The lover is in the depths of despair, but a good fairy comes to his aid, gives him a flaming sword, and bids him go in search of his lady-love. The battlemented castle gradually dissolves into a witch’s cavern, to which the frightened lady is brought captive by the witch, and transformed into a second hag. Many adventures follow; finally the good fairy triumphs over evil, and the witch is converted into a roll of carpet, on which the lovers float through the air to fall from the sky upon the lady’s parents while they are banqueting in the castle grounds."
+   ]
+  },
+  {
+   "id": "marsh-screen-acting",
+   "title": "Screen Acting",
+   "by": "Mae Marsh",
+   "year": 1921,
+   "kind": "acting, memoir",
+   "source": "https://gutenberg.pglaf.org/7/7/8/2/77829/77829-0.txt",
+   "pages": [
+    "In the past eight years I have received hundreds of thousands of letters from motion picture fans in every part of the world. In answer now to a question I have often heard asked, “Does a motion picture star immediately read all her mail?” I can say for myself, “Bless you, no.” A single mail has brought as many as a thousand letters and I shall leave it to the reader to determine how one could possibly read one thousand letters and arrive at the studio at 8:30 o’clock.",
+    "Personally, my secretaries are instructed to attend to such fan letters as request a reply--which practically all of them do--and then preserve the letters that I may read them in leisure moments. In that way I have managed I think to peruse at one time or another the majority of the letters that come to me. I find the reading of them a great pleasure.",
+    "It is nice to receive pleasant compliments on one’s hard and honest effort to do something worth while. I have on many occasions found helpful criticism in my mail. Almost anyone can dismiss a picture with a “I liked it” or “I didn’t like it.” There is the exceptional one in a thousand who will tell you he didn’t like it and why, placing his finger upon a real defect. Often that is a help."
+   ]
+  }
+ ]
+}

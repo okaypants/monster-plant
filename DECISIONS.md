@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The crystal ball goes in order: swirl, eyes, float, prophecy (Nov 27)
+
+- Jackie: "I would like the pacing for the crystal ball to go: click > swirling > cats eyes a little after swirling starts -> items float > prophecy".
+- The tap starts the swirl. The cat's eyes light 0.6 seconds later. The things begin to lift 1.3 seconds after the tap, when it is their turn (still at most once a minute). The prophecy is spoken 2.5 seconds after the tap. Eyes and floating last until a little after the prophecy has appeared.
+
+### The movie room's books about film have their real pages (Nov 27)
+
+- Eleven old books, each with three to five pages copied word for word from the book (movieroom/books.json, from research_notes/movieroom/film_book_pages.json, where every page is checked against its source). Nine are from Project Gutenberg's text; three (Croy, Lang and West, and Sudzuky's "Cinema in Japan") are from Internet Archive scans corrected against the page pictures.
+- They are: Animated Cartoons (Lutz), How Motion Pictures Are Made (Croy), The Art of the Moving Picture (Lindsay), Breaking Into the Movies (Emerson and Loos), When the Movies Were Young (Arvidson), Musical Accompaniment of Moving Pictures (Lang and West), The Moving Picture Girls (Hope), Java: Facts and Fancies on a wayang night (de Wit), Moving Pictures on Méliès's tricks (Talbot), Screen Acting (Mae Marsh), and "Cinema in Japan" on the benshi (Sudzuky).
+- Left out: Lafcadio Hearn's magic-lantern ghost play, which has a beheading and a god who eats girls. Merton of the Movies was passed over for The Moving Picture Girls because its opening has an offensive villain.
+
 ### Everything on the movie room's shelves does something, and films play with sound (Nov 27)
 
 - Jackie: "I want sound on movies etc if available - I want to work on all the stuff in the shelves they should work".
