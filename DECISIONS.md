@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A movie room is planned: what Jackie has settled so far (Nov 26)
+
+Nothing is built yet. The room's pictures are in art_src/movieroom/ (open, and the curtains closed and halfway, cut to set into the open picture). Research is in research_notes/movieroom/.
+
+- Jackie: "it's time to start making other rooms beginning with a movie room where you can actually watch public domain films - like a home theater with a big screen you're facing". The watchers are seen from behind, "kind of like MST3K".
+- The screen sits in built-in shelving. Jackie first wanted "cool things to touch", then: "maybe we skip any interactive things like that and make all the microinteractions related to viewing". So no telephone, guests or game controller.
+- The table lamp is out ("the lamp also doesn't make a lot of sense"): wall sconces and a wall dimmer instead. The projector is out; in its place "a movie collection with reels, vhs, and bluray".
+- The curtains are closed until a film starts (her idea: "closed by default until you start watching"). She hated the gold rope tie-backs on the closed curtains, so the closed frame has none.
+- "Obviously drinks are for watering, popcorn is a snack and maybe there are different flavors kind of like the different foods in the other room."
+- The row of books on the bottom left shelf are books about film to read ("row of books are books"). The three-film box set on the bottom right is "maybe just full of lord of the rings and tolkien knowledge". It is drawn with no title or logo.
+- Not yet settled: whether flavours and films nudge a monster's nature, which channels to start with, and how you get into the room.
+
 ### The cat is a white long-haired cat, after the one in the film House (Nov 26)
 
 - Jackie: "now lets make the cat from house". She had ChatGPT redraw the cat's sheet pose for pose as a fluffy white long-haired cat with green eyes, from a numbered sample sheet of the 25 poses the orange cat had.
