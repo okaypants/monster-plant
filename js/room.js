@@ -5,7 +5,7 @@
    curtains are light worked out here from that one picture (RULES 1: light itself may blend), so every thing in the room is lit the
    same way whatever state it is in. tools/room_build.py makes the pictures from art_src/room2/. */
 const ROOM2=img('room2.png'),CURT2=img('curtains2.png');
-const OBJ={};'frame frame_tilt frame_blink frame_glow cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
+const OBJ={};'frame frame_tilt frame_blink frame_glow cup coin trunk_open ball2 ball3 ball4 ball5 moon1 moon2 moon3 moon4 moon5 moon3w moon4w nocrate bass bass_bed cup_open'.split(' ').forEach(n=>OBJ[n]=img('obj_'+n+'.png'));
 /* Almost everything is painted into the room (Jackie, Nov 18). These few are their own pictures, drawn on top: the cat's framed picture in the bookcase (the wind-up cat
    painted into the room is taken out of its cubby, and the frame stands there), the cup you carry, and the faces that change: the moon dial's phase, the crystal
    ball's mist, the trunk's lifted lid. Each has its name, the picture it shows right now (none = nothing drawn), and where the
@@ -30,7 +30,12 @@ const BASS_FRONT=[[236,652,206,126]],BASS_FRONT_BED=[[236,652,206,126],[262,643,
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
 function moonDialPic(){const ahead=typeof moonDialAt==='function'?moonDialAt():null,f=typeof moonAge==='function'?moonAge(ahead??undefined)/MOON_MONTH:0; // tonight's moon, or the night the dial has been turned on to (js/fidgets.js) // the five drawn faces: waning crescent, full, gibbous, quarter, waxing crescent
- return f<.06||f>.94?'moon1':f<.2?'moon5':f<.32?'moon4':f<.44?'moon3':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon1';}
+ /* Jackie, Nov 26: "the moon in the window should match the moon in the spinning thing". The window's moon is the true one (lit on the
+    right while it grows, on the left while it shrinks). The dial's faces were handed out without regard to side, so a growing moon
+    could show lit on the left. Now each face is used for the side it is drawn lit on: moon1 the young crescent (lit right), moon5
+    the old crescent (lit left), moon4 and moon3 the last quarter and shrinking gibbous as drawn (lit left), and their mirror
+    images moon4w and moon3w for the first quarter and growing gibbous. */
+ return f<.2?'moon1':f<.32?'moon4w':f<.44?'moon3w':f<.56?'moon2':f<.7?'moon3':f<.82?'moon4':'moon5';}
 function ballPic(){const f=typeof ballFrame==='function'?ballFrame():1;if(f<=1)return null;if(typeof ballEyesOn==='function'&&ballEyesOn())return ballEyesPic();const t=typeof ballTint==='function'?ballTint():null;return t?ballTinted(f,t):'ball'+f;} // the crystal ball's mist (js/fidgets.js); clear = the ball as painted
 function thingBox(t){const n=t.pic(),im=n&&OBJ[n];if(!im||!ok(im))return null;return {x:t.x-Math.round(im.naturalWidth/2),y:t.y-im.naturalHeight,w:im.naturalWidth,h:im.naturalHeight,im};}
 const roomReady=()=>ok(ROOM2);

@@ -70,7 +70,9 @@ async def main():
         check(not missing, f"moon plates missing from moon/: {missing}")
         await pg.click(".screen.moonpg .mpx")
         check(await pg.evaluate("()=>!document.querySelector('.screen.moonpg')&&moonDialAt()===null"), "the moon page should close")
-        check(await pg.evaluate("()=>/^moon[1-5]$/.test(moonDialPic())"), "the moon dial should show one of its five faces")
+        check(await pg.evaluate("()=>/^moon[1-5]w?$/.test(moonDialPic())"), "the moon dial should show one of its faces")
+        r = await pg.evaluate("()=>{const o=MOON_TEST,f=a=>{MOON_TEST=a;return moonDialPic();},out=[f(4),f(7.4),f(11),f(14.8),f(18),f(22.1),f(26)];MOON_TEST=o;return out;}")
+        check(r == ['moon1', 'moon4w', 'moon3w', 'moon2', 'moon3', 'moon4', 'moon5'], "the dial's face is lit on the same side as the window's moon through the month: " + str(r))
         await pg.evaluate("()=>{__step(5);capClear()}")
         # the crystal ball: mist gathers, cutting from colour to colour, it delivers one of its visions, and it clears again
         check(await pg.evaluate("()=>BALL_VISIONS.length>=25&&new Set(BALL_VISIONS.map(v=>v.t)).size===BALL_VISIONS.length&&BALL_VISIONS.every(v=>v.t&&v.by&&/\\d/.test(v.t)&&/[.]$/.test(v.t)&&!/[.]$/.test(v.by)&&ballSay(v)===v.t+' \u2014 '+v.by+'.')&&!BALL_VISIONS.some(v=>/\\b(he|she|his|her)\\b/i.test(v.t+' '+v.by))"), "the ball should have twenty-five or more different visions, each a dated prediction with who foretold it after a dash, and none giving anyone a gender")

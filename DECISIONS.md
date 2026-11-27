@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The moon dial shows the moon lit on the same side as the window's moon (Nov 26)
+
+- Jackie: "the moon in the window should match the moon in the spinning thing".
+- The window's moon is the true one: lit on the right while it grows, on the left while it shrinks. The dial's five faces had been handed out without regard to side, so the two could disagree (a growing crescent showed lit on the left on the dial).
+- Each face is now used for the side it is drawn lit on, and the quarter and gibbous faces have mirror images for the growing half of the month (obj_moon3w.png, obj_moon4w.png: the same drawings flipped). At new moon the window shows no moon and the dial shows its thinnest crescent, since it has no empty face.
+
 ### The crystal ball casts a spell, at most once a minute (Nov 26)
 
 - Jackie: "maybe whenever we use the crystal ball, his eyes turn green and things float, but only once every like minute".
