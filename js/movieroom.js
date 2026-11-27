@@ -112,10 +112,12 @@ function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[M
    The gold knob on the wall steps the room's light down: up, low, lower, nearly out, and round to up again. While a film is
    playing the room is never brighter than low, as before. Everything but the screen dims: the room, the curtains, the cat and
    what is on the couch. Light may blend (RULES), so this is a plain darkening. */
+/* The knob is the room's own picture at every setting (Jackie, Nov 27: "the lights on and lights off switches are dif tho": with the lights up it had been covered by a differently drawn knob from the accessories sheet). A small dark mark on its dial shows the setting: at the top for up, then round to the right, the bottom and the left as the lights go down. */
+const MV_KNOB_C={x:1624,y:323},MV_KNOB_AT=[[0,-13],[13,0],[0,13],[-13,0]];
 const MV_KNOB={x:1592,y:290,w:64,h:68},MV_KNOB_TAP={x:1566,y:272,w:104,h:108},MV_LAMPS=[{x:0,y:112,w:100,h:170},{x:1570,y:112,w:100,h:158}], /* the knob's picture is small, and on a phone it was about a quarter of an inch across: too small to hit reliably (Jackie, Nov 27: "the light switch still isnt working"). Its tap area is now well over twice the size, and a tap on either wall lamp does the same thing. */MV_LIGHTS=[1,.62,.34,.14],MV_LIGHT_SAY=['Lights up.','Lights low.','Lights lower.','Lights nearly out.'];let mvSound=true,mvLight=0;
 function mvSoundSet(on){mvSound=!!on;if(!on)mvMode='off';else if(mvMode==='off')mvMode='film';mvSoundApply();}
 function mvLightApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),playing=mvState==='open'&&mvEl.dataset.paused!=='1'&&v&&v.getAttribute('src');
- const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;mvEl.querySelector('.mvknobon').hidden=mvLight!==0;mvEl.querySelectorAll('.mvsconce').forEach(e=>{e.hidden=lv!==0;});} // the wall lamps are lit only while the lights are right up; in the base picture they are off
+ const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;{const t=mvEl.querySelector('.mvknobtick'),p=MV_KNOB_AT[mvLight];t.style.cssText=mvPct({x:MV_KNOB_C.x+p[0]-4,y:MV_KNOB_C.y+p[1]-4,w:8,h:8});}mvEl.querySelectorAll('.mvsconce').forEach(e=>{e.hidden=lv!==0;});} // the wall lamps are lit only while the lights are right up; in the base picture they are off
 function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightApply();mvNote(MV_LIGHT_SAY[mvLight]);}
 /* THE KALIMBASIZER (Jackie, Nov 27: "I think I'd like to replace the books with the kalimbasizer, where it has the option to track old
    public domain silents and shorts", "i mean the lotr boxset not the books", "I do like a monster-plant custom version of
@@ -334,7 +336,7 @@ function openMovieRoom(){
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:0,y:100,w:106,h:200})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1564,y:100,w:106,h:200})+'">'+
-  '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
+  '<i class="mvknobtick"></i>'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB_TAP)+'"></button>'+MV_LAMPS.map(r=>'<button type="button" class="mvhot mvlamp" aria-label="Room lights" style="'+mvPct(r)+'"></button>').join('')+
   '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+

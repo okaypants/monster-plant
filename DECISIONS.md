@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The light knob looks the same at every setting (Nov 27)
+
+- Jackie: "the lights on and lights off switches are dif tho". With the lights up, the knob had been covered by a differently drawn knob from the accessories sheet; turned down, it was the room's own.
+- It is now the room's own knob at every setting. A small dark mark on its dial shows the setting: at the top for up, then right, bottom and left as the lights go down. The mark dims with the room.
+
 ### A kalimba stands where the box set was (Nov 27)
 
 - Jackie had ChatGPT redraw the movie room with a small kalimba on the bottom right shelf ("4 looked crazy so I did three": it has three tines). Only the kalimba is taken from that picture and set into the room's base, which it lined up with exactly. Tapping it opens the Kalimbasizer, as tapping the box set's place did.
