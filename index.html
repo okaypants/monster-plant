@@ -67,6 +67,15 @@ canvas{display:block;image-rendering:pixelated;touch-action:none;-webkit-user-se
 .vwhood{--ar:.87;width:min(94vw,calc(90vh*var(--ar)));aspect-ratio:var(--ar);border-radius:14px;overflow:hidden;box-shadow:0 0 0 6px #2a1c14,0 0 60px #000}
 .vwhood canvas{display:block;width:100%;height:100%}.vwhint{margin-top:4px}
 .screen.viewer .vwx{position:absolute;top:10px;right:10px;width:40px;height:40px;font:inherit;font-size:24px;font-weight:800;cursor:pointer;padding:0;z-index:3}
+.screen.movieroom{display:block;padding:0;background:#19101b;z-index:55;overflow:hidden}
+.mvstage{position:absolute;left:0;top:50%;width:100%;aspect-ratio:1670/941;transform:translateY(-50%)}
+.mvstage video{position:absolute;background:#000;object-fit:contain}
+.mvstage img{position:absolute;image-rendering:pixelated;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.mvroom{left:0;top:0;width:100%;height:100%}
+.movieroom[data-state=open]:not([data-paused="1"]) .mvroom{filter:brightness(.62)}
+.mvtap{position:absolute;background:none;border:0;padding:0;cursor:pointer}
+.mvnote{position:absolute;left:50%;bottom:31%;transform:translateX(-50%);background:var(--ts-paper,#fdebc9);color:var(--ts-ink,#3a2418);border:max(2px,calc(var(--S)*4px)) solid var(--ts-ink,#3a2418);border-radius:10px;padding:6px 14px;font-weight:800;font-size:max(14px,calc(var(--S)*22px));pointer-events:none}
+.mvback{position:absolute;left:1.2%;bottom:5%;font:inherit;font-weight:800;font-size:max(14px,calc(var(--S)*22px));padding:6px 14px;border-radius:10px;border:max(2px,calc(var(--S)*4px)) solid #3a2418;background:#fdebc9;color:#3a2418;cursor:pointer}
 .screen.sampler{display:block;padding:0;background:#19101b;z-index:55}.screen.sampler iframe{display:block;width:100%;height:100%;border:0}
 .screen.journal{display:block;padding:0;background:rgba(25,16,27,.55);text-align:left}
 .jbook{position:absolute;left:50%;top:50%;width:760px;height:446px;transform-origin:50% 50%;color:#4a2a4f;font-weight:600}
@@ -402,6 +411,7 @@ body.testing #testBadge{display:block}
 <script src="js/charts.js"></script>
 <script src="js/iching.js"></script>
 <script src="js/sampler.js"></script>
+<script src="js/movieroom.js"></script>
 <script src="js/decor.js"></script>
 <script src="js/cupboard.js"></script>
 <script src="js/viewerdata.js"></script>

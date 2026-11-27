@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The movie room's first version: the screen, the curtains and one film (Nov 26)
+
+- Built to try the screen before anything else. The room's picture lies over a film that plays behind its see-through screen (js/movieroom.js, tools/movieroom_build.py). The curtains are closed when you come in; tap them and they open in two steps and the film starts; tap again to pause; when the film ends they close. While a film plays the room dims.
+- One film so far, A Trip to the Moon (Georges Méliès, 1902), streamed from the Internet Archive, so it needs a connection. It plays muted, because the music on that copy is not known to be free to use.
+- For now the room opens only from the debug drawer ("Movie room"). The door from the main room, the popcorn, the soda, the film collection, the books and the watchers on the couch are not built; their art is being made.
+- Channels and films researched (research_notes/movieroom/channels.md) and books about film (film_books.md). The row of books will be those books. The box set, Jackie agreed ("k"), is three small books: the old stories behind The Lord of the Rings (real public-domain passages), an Elvish language book ("can we have like an elvish language book"), and how the films were made. They are written in our own words with single Elvish words only; none of Tolkien's own text, and nothing from the films.
+
 ### A movie room is planned: what Jackie has settled so far (Nov 26)
 
 Nothing is built yet. The room's pictures are in art_src/movieroom/ (open, and the curtains closed and halfway, cut to set into the open picture). Research is in research_notes/movieroom/.
