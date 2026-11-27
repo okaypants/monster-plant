@@ -14,8 +14,8 @@
 /* SECOND ROUND (Jackie, Nov 27: "let's start completely over with decorations and string lights", after "maybe get chat to make a
    beach ball? and then rethink everything in that way -- like things that indicate a season or holiday or fun event", and
    "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS"). The thirty sets are gone.
-   A decoration is now one object standing on the floor (decor/t_<id>.png, cut by tools/decor2_build.py), chosen from four
-   groups; a garland for the window is chosen separately (decor/g_<id>.png). Nothing goes in the bookcase cubby any more, so the
+   A set is now one object standing on the floor (decor/t_<id>.png, cut by tools/decor2_build.py), chosen from four
+   groups, with a garland for the window (decor/g_<id>.png; see DECOR_GARLAND below). Nothing goes in the bookcase cubby any more, so the
    framed cat stays where it is. The big pumpkin and the big tree, which rock and sway when tapped (js/seasonal.js), are kept as
    two more things to put out. Names follow reports/Respectful seasonal and holiday decor.md: a holiday's object is listed under
    the holiday's own name. */
@@ -31,23 +31,27 @@ const DECOR_GROUPS=[['Seasons and weather',[['boots','Rain boots'],['beachball',
    Two pieces are cut but not offered until Jackie has seen them: the morning glory (decor/t_morningglory.png), whose bamboo frame
    ends in two small crosses, and the moon garland (decor/g_moons.png), which came back with a star beside each crescent. Both
    were ruled out in the prompt (she took the maypole out of the summer set because it "is a cross"). */
-const DECOR_SETS=[].concat(...DECOR_GROUPS.map(([group,L])=>L.map(([id,name])=>({id,name,group,floor:id==='pumpkin'||id==='tree'?id:'t_'+id}))));
+/* SETS, NOT SEPARATE PICKS (Jackie, Nov 27, after a first build where the garland had its own list: "No I don't want them separate, I
+   want sets lol"). Every decoration is a set again: its thing for the floor and the garland that goes with it, put out and put
+   away together by one choice. Thirteen garlands serve the sixty-two sets, so related sets share one. */
+const DECOR_GARLAND={boots:'rain',beachball:'citrus',leaves:'leaves',sledge:'snow',umbrellas:'rain',stormlamp:'rain',fan:'citrus',pinwheels:'bunting',moonlamp:'lanterns',seedlings:'blossom',squash:'leaves',pumpkin:'leaves',sunflower:'citrus',firewood:'evergreen',sandbucket:'citrus',picnic:'citrus',
+ present:'bunting',newhome:'bunting',trophy:'bunting',sickday:'hearts',catbox:'hearts',backpack:'leaves',movienight:'lanterns',fort:'lanterns',boardgame:'bunting',teatray:'blossom',ballgame:'bunting',crafts:'blossom',books:'leaves',mop:'citrus',
+ newyear:'bunting',kumquat:'lanterns',valentine:'hearts',peach:'blossom',holi:'blossom',hyacinth:'blossom',eggtree:'eggs',waterjar:'blossom',eidlantern:'lanterns',irises:'blossom',lotus:'lanterns',hibiscus:'bunting',midsummer:'blossom',pride:'pennants',tanabata:'lanterns',
+ pampas:'lanterns',bojagi:'leaves',rangoli:'marigold',jackolantern:'bats',marigolds:'marigold',dreidel:'snow',winterlantern:'evergreen',smalltree:'evergreen',tree:'evergreen',kwanzaa:'snow',applepie:'leaves',snowglobe:'snow',poinsettia:'evergreen',presents:'bunting',paperlantern:'lanterns',mandarins:'lanterns',skates:'snow'};
+const DECOR_SETS=[].concat(...DECOR_GROUPS.map(([group,L])=>L.map(([id,name])=>({id,name,group,garland:DECOR_GARLAND[id],floor:id==='pumpkin'||id==='tree'?id:'t_'+id}))));
 const GARLAND_KINDS=[['blossom','Blossom'],['citrus','Orange and lemon'],['leaves','Autumn leaves'],['snow','Snowflakes'],['rain','Rain and clouds'],['hearts','Hearts'],['eggs','Painted eggs'],['bats','Bats'],['evergreen','Evergreen and bows'],['marigold','Marigolds'],['pennants','Rainbow pennants'],['lanterns','Paper lanterns'],['bunting','Birthday bunting']];
 const DECOR_IMG={};for(const s of DECOR_SETS)if(s.floor[1]==='_')DECOR_IMG[s.floor]=img('decor/'+s.floor+'.png');for(const [id] of GARLAND_KINDS)DECOR_IMG['g_'+id]=img('decor/g_'+id+'.png');
-// what a save from the thirty sets turns into: the nearest single thing, and a garland where one plainly matches
-const DECOR_OLD={lny:['kumquat','lanterns'],hina:['peach','blossom'],nowruz:['hyacinth'],blossom:['peach','blossom'],easter:['eggtree','eggs'],songkran:['waterjar'],eid:['eidlantern'],kodomo:['irises'],vesak:['lotus'],juneteenth:['hibiscus'],obon:[''],
- autumn:['pumpkin','leaves'],midautumn:['pampas'],chuseok:['bojagi'],diwali:['rangoli','marigold'],halloween:['jackolantern','bats'],muertos:['marigolds','marigold'],harvest:['applepie','leaves'],advent:['winterlantern','evergreen'],hanukkah:['dreidel'],
- solstice:['snowglobe','snow'],christmas:['tree','evergreen'],birthday:['present','bunting']};
-function decorOld(k,gk){const o=DECOR_OLD[st[k]];if(o){st[k]=o[0]||null;if(o[1]&&!st[gk])st[gk]=o[1];}}
-function decorNow(){decorOld('decor','garland');return DECOR_SETS.find(s=>s.id===st.decor)||null;}
+// what a save from the thirty old sets turns into: the nearest new set
+const DECOR_OLD={lny:'kumquat',hina:'peach',nowruz:'hyacinth',blossom:'peach',easter:'eggtree',songkran:'waterjar',eid:'eidlantern',kodomo:'irises',vesak:'lotus',juneteenth:'hibiscus',obon:'',autumn:'pumpkin',midautumn:'pampas',chuseok:'bojagi',diwali:'rangoli',halloween:'jackolantern',muertos:'marigolds',harvest:'applepie',advent:'winterlantern',hanukkah:'dreidel',solstice:'snowglobe',christmas:'tree',birthday:'present'};
+function decorOld(k){const o=DECOR_OLD[st[k]];if(o!==undefined)st[k]=o||null;}
+function decorNow(){decorOld('decor');return DECOR_SETS.find(s=>s.id===st.decor)||null;}
 function decorOffered(){return DECOR_SETS;}
 function decorBoxes(){return [];} // nothing stands on the shelf or the desk in this round
 // what stands on the floor spot: 'pumpkin', 'tree' or the name of a decoration picture (drawn by js/seasonal.js)
 function decorFloor(){const s=decorNow();return s?s.floor:null;}
 function decorInCubby(){return false;} // the framed cat keeps its place
 function drawDecor(){}
-function garlandNow(){decorNow();return GARLAND_KINDS.some(q=>q[0]===st.garland)?st.garland:'';}
-function garlandSet(id){st.garland=GARLAND_KINDS.some(q=>q[0]===id)?id:'';sfx(st.garland?'chime':'tick');tell(st.garland?'A garland hangs in the window.':'The garland is back in the cupboard.',{kind:'info',key:'decor',now:true});save();}
+function garlandNow(){const d=decorNow();return d?d.garland:'';} // the garland of the set that is out
 // the garland's little lights blink now and then (Jackie: "1 light animation for every occasion"): every 6 to 16 seconds they go dim and
 // bright three times, a frame swap between the garland's two pictures. Not with reduced motion.
 const LIGHTS_GAP=[6000,16000],LIGHTS_STEP=160;let lightsAt=0;
@@ -101,4 +105,4 @@ function drawGarland(n){if(!st.started)return;const id=garlandNow(),[at,mask,cv]
  x.globalCompositeOperation='destination-in';x.drawImage(mask,0,0);g.drawImage(cv,at.x,at.y);}
 function drawDecorWindow(){drawGarland(0);}
 function drawDecorWall(){drawStringLights();} // the top of the wall: the string lights (the garland no longer hangs on the right-hand wall)
-function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'A decoration is out on the floor.':'The decoration is back in the cupboard.',{kind:'info',key:'decor',now:true});save();}
+function decorSet(id){const s=DECOR_SETS.find(q=>q.id===id);st.decor=s?s.id:null;sfx(s?'chime':'tick');tell(s?'The decorations are out.':'The decorations are back in the cupboard.',{kind:'info',key:'decor',now:true});save();}

@@ -22,7 +22,7 @@ function cubIsOpen(){return !!cubEl||!!cub.item;}
 function cubTray(){if(cubEl){cubEl.remove();}cubEl=document.createElement('div');cubEl.className='ttray tsb';
  cubEl.addEventListener('pointerdown',e=>e.stopPropagation());cubEl.addEventListener('click',e=>e.stopPropagation());ui.appendChild(cubEl);return cubEl;}
 function cubBtn(txt,fn,cls){const b=document.createElement('button');b.type='button';b.className='cubpick'+(cls?' '+cls:'');b.textContent=txt;b.addEventListener('click',e=>{e.stopPropagation();sfx('tick');fn();});return b;}
-function cubOpen(){sfx('tick');if(!cubEl){const el=cubTray();el.dataset.k='pick';el.append(cubBtn('Cat toys',cubToys),cubBtn('Decorations',cubDecor),cubBtn('Garlands',cubGarlands),cubBtn('String lights',cubLights));}cubPlace();cub.t=performance.now();}
+function cubOpen(){sfx('tick');if(!cubEl){const el=cubTray();el.dataset.k='pick';el.append(cubBtn('Cat toys',cubToys),cubBtn('Decorations',cubDecor),cubBtn('String lights',cubLights));}cubPlace();cub.t=performance.now();}
 function cubToys(){const el=cubTray();el.dataset.k='toys';
   for(const s of CUB_TOYS){const b=document.createElement('button');b.type='button';b.className='ttreat';b.dataset.id=s.id;b.setAttribute('aria-label',s.name);
    const im=document.createElement('img');im.src=CUB_IMG[s.id].src;im.alt='';im.draggable=false;b.appendChild(im);
@@ -40,14 +40,9 @@ function cubLights(){const el=cubTray();el.dataset.k='lights';el.classList.add('
 // option to remove decorations"; it had been the last of thirty-one buttons); the set that is up is marked
 function cubPic(b,src){const im=document.createElement('img');im.src=src;im.alt='';im.draggable=false;b.prepend(im);return b;} // each choice shows its own picture beside its name
 function cubDecor(){const el=cubTray();el.dataset.k='decor';el.classList.add('cubdecor','cubpics');
- if(decorNow())el.appendChild(cubBtn('Put the decoration away',()=>{decorSet(null);cubClose();},'cubdown'));
+ if(decorNow())el.appendChild(cubBtn('Take the decorations down',()=>{decorSet(null);cubClose();},'cubdown'));
  for(const [group] of DECOR_GROUPS){const h=document.createElement('div');h.className='cubhead';h.textContent=group;el.appendChild(h);
   for(const s of DECOR_SETS.filter(q=>q.group===group)){const b=cubPic(cubBtn(s.name,()=>{decorSet(s.id);cubClose();},st.decor===s.id?'on':''),s.floor==='pumpkin'?PUMPKIN[0].src:s.floor==='tree'?TREE[0].src:'decor/'+s.floor+'.png');b.dataset.id=s.id;el.appendChild(b);}}
- cubPlace();cub.t=performance.now();}
-// garlands for the window have their own list, since a garland and a floor decoration are chosen apart
-function cubGarlands(){const el=cubTray();el.dataset.k='decor';el.classList.add('cubdecor','cubpics','cubgarlands');const now=garlandNow();
- if(now)el.appendChild(cubBtn('Take the garland down',()=>{garlandSet('');cubClose();},'cubdown'));
- for(const [id,name] of GARLAND_KINDS){const b=cubPic(cubBtn(name,()=>{garlandSet(id);cubClose();},now===id?'on':''),'decor/g_'+id+'.png');b.dataset.id=id;el.appendChild(b);}
  cubPlace();cub.t=performance.now();}
 function cubPlace(){if(!cubEl)return;const w=cubEl.offsetWidth,h=cubEl.offsetHeight;if(cubEl.dataset.k==='decor'){cubEl.style.left=Math.round(clamp((CUPBOARD.x+CUPBOARD.w)*S-w,4,W*S-w-4))+'px';cubEl.style.top=Math.round(Math.max(48,(H*S-h)/2))+'px';return;} // the long list stands beside the cupboard, in the middle of the screen's height
   // along the bottom, ending under the cupboard, clear of the bottom edge like the treat tray

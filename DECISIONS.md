@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Decorations are sets again: one choice puts out the thing and its garland (Nov 27)
+
+- Jackie, after the first build of the new decorations gave garlands a list of their own: "No I don't want them separate, I want sets lol".
+- Each of the 62 decorations is a set: its thing for the floor and a garland that goes with it. One choice puts both out, and taking the decorations down takes both. The separate garland lists are gone from the study's cupboard and the movie room's drawer.
+- Thirteen garlands serve the sets, so related sets share one (rain for the rain boots and umbrellas, autumn leaves for the pumpkins and Harvest, paper lanterns for Lunar New Year and Tanabata, evergreen for Christmas, and so on). The pairing is `DECOR_GARLAND` in `js/decor.js`. Hanukkah and Kwanzaa have no garland of their own on the sheet and hang snowflakes for now.
+- The message is "The decorations are out."
+
 ### Decorations start over as single things, with garlands and blankets of their own (Nov 27)
 
 - Jackie: "Actually let's start completely over with decorations and string lights", after "maybe get chat to make a beach ball? and then rethink everything in that way -- like things that indicate a season or holiday or fun event", and "WHEN WE ARE CONSIDERING DECORATIONS WE SHOULD CONSIDER MORE REASONS TO DECORATE THAN HOLIDAYS ETC". She sent back the sheets and asked "now that we have all that, how do we wrap them up?"

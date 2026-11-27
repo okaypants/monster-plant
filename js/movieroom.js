@@ -425,11 +425,10 @@ function mvLightsSet(n){st.mvLights=n||'';if(st.started)save();mvLightsDraw();sf
    MV_DECOR.fk times its size in the study. (They used to be one garland along the couch's back and a small floor piece in the
    front left corner.) */
 const MV_DECOR={gl:{x:238,y:196,k:1.05},gr:{x:1437,y:196,k:1.05},f:{x:192,y:806},fk:1.4};
-function mvDecorShow(){if(!mvEl)return;if(typeof decorOld==='function')decorOld('mvDecor','mvGarland');const id=st.mvDecor,gd=typeof GARLAND_KINDS!=='undefined'&&GARLAND_KINDS.some(q=>q[0]===st.mvGarland)?st.mvGarland:'';for(const c of ['.mvgarland','.mvgarland2','.mvfloorpiece']){const e=mvEl.querySelector(c);if(e)e.hidden=true;}
+function mvDecorShow(){if(!mvEl)return;if(typeof decorOld==='function')decorOld('mvDecor');const id=st.mvDecor,gd=((id&&typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id))||{}).garland||'';for(const c of ['.mvgarland','.mvgarland2','.mvfloorpiece']){const e=mvEl.querySelector(c);if(e)e.hidden=true;}
  if(gd){mvOnCouch('mvgarland','decor/g_'+gd+'.png',MV_DECOR.gl);mvOnCouch('mvgarland2','decor/g_'+gd+'.png',MV_DECOR.gr);}const s=id&&typeof DECOR_SETS!=='undefined'&&DECOR_SETS.find(q=>q.id===id),fl=s&&s.floor;
  if(fl)mvOnCouch('mvfloorpiece',fl==='pumpkin'?'pumpkin1.png':fl==='tree'?'tree1.png':'decor/'+fl+'.png',{x:MV_DECOR.f.x,y:MV_DECOR.f.y,k:(fl==='pumpkin'||fl==='tree'?.5:1)*MV_DECOR.fk});}
-function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();mvLightsDraw();sfx(id?'chime':'tick');mvNote(id?'A decoration is out by the shelves.':'The decoration is back in the drawer.');}
-function mvGarlandSet(id){st.mvGarland=id||'';if(st.started)save();mvDecorShow();sfx(id?'chime':'tick');mvNote(id?'Garlands hang on the shelf units.':'The garlands are back in the drawer.');} /* the second round of decorations (Jackie, Nov 27; js/decor.js): a single thing for the floor and a garland are chosen apart, both from this drawer */
+function mvDecorSet(id){st.mvDecor=id||'';if(st.started)save();mvDecorShow();mvLightsDraw();sfx(id?'chime':'tick');mvNote(id?'The decorations are out.':'The decorations are back in the drawer.');} /* a set is its thing for the floor and its garland, which hangs on both shelf units (Jackie, Nov 27: "I don't want them separate, I want sets") */
 /* THE BLANKETS DRAWER (Jackie, Nov 27: "i like curtains, lost and found, blankets, and ticket stubs"). Six throws from her sheet take
    the place of the cream throw over the left end of the couch's back. Each is one picture laid over the room's own, covering
    the old throw with a patch of bare couch and the new throw on it (tools/decor2_build.py); the cream one is the room's
@@ -460,9 +459,8 @@ const MV_LOST=[['🧦','One sock.','Nobody has come back for it.'],['🧤','A si
 function mvLostNow(){const d=new Date();return MV_LOST[Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)%MV_LOST.length];}
 function mvLostDrawer(){const o=mvLostNow(),box=mvPanel('mvdrawer','<div class="mvplist mvlost"><h2>Lost and found</h2><div class="mvlostbig" aria-hidden="true">'+o[0]+'</div><p><b></b> <span></span></p><p class="mvlostnote">Something else turns up tomorrow.</p></div>');const el=box.querySelector('.mvlost');el.querySelector('b').textContent=o[1];el.querySelector('span').textContent=o[2];sfx('paper');}
 function mvDrawer(k){let h='',pick;if(k==='tickets'){mvTickets();return;}if(k==='curtains'){mvCurtDrawer();return;}if(k==='lost'){mvLostDrawer();return;}
- if(k==='decor'){const t=s=>mvDrawerTile(s.id,s.name,mvDecorPic(s),st.mvDecor===s.id);pick=id=>id.startsWith('g:')?mvGarlandSet(id.slice(2)):mvDecorSet(id);
-  h='<h2>Decorations</h2><div class="mvdgrid"><div class="mvhead">Garlands</div>'+(st.mvGarland?mvDrawerTile('g:','Take them down',''):'')+GARLAND_KINDS.map(([id,n])=>mvDrawerTile('g:'+id,n,'decor/g_'+id+'.png',st.mvGarland===id)).join('')+
-   DECOR_GROUPS.map(([gn],i)=>'<div class="mvhead">'+gn+'</div>'+(i===0&&st.mvDecor?mvDrawerTile('','Put it away',''):'')+DECOR_SETS.filter(q=>q.group===gn).map(t).join('')).join('')+'</div>';}
+ if(k==='decor'){const t=s=>mvDrawerTile(s.id,s.name,mvDecorPic(s),st.mvDecor===s.id);pick=mvDecorSet;
+  h='<h2>Decorations</h2><div class="mvdgrid">'+DECOR_GROUPS.map(([gn],i)=>'<div class="mvhead">'+gn+'</div>'+(i===0&&st.mvDecor?mvDrawerTile('','Take them down',''):'')+DECOR_SETS.filter(q=>q.group===gn).map(t).join('')).join('')+'</div>';}
  else if(k==='blankets'){pick=mvBlanketSet;h='<h2>Blankets</h2><div class="mvdgrid">'+MV_BLANKETS.map(([id,n])=>mvDrawerTile(id,n,'movieroom/blanket_'+(id||'cream')+'_icon.png',(st.mvBlanket||'')===id)).join('')+'</div>';}
  else if(k==='lights'){pick=mvLightsSet;h='<h2>String lights</h2><div class="mvdgrid">'+(st.mvLights?mvDrawerTile('','Take them down',''):'')+[['auto','Seasonal']].concat(LIGHTS_KINDS).map(([id,n])=>mvDrawerTile(id,n,'decor/lights_'+(id==='auto'?lightsAuto(st.mvDecor):id)+'_on.png',st.mvLights===id)).join('')+'</div>';}
  else{pick=id=>mvToy(CUB_TOYS.find(t=>t.id===id));h='<h2>Cat toys</h2><div class="mvdgrid">'+CUB_TOYS.map(t=>mvDrawerTile(t.id,t.name,CUB_IMG[t.id].src)).join('')+'</div>';}
