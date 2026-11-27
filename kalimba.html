@@ -195,7 +195,7 @@ const noteGain=(n,g)=>{const a=atkTime(),t=AC.currentTime;if(a>.004){n.gain.setV
 function applyShape(){if(!AC)return;const t=AC.currentTime,S=SHAPE,oct=S.wob*2.2;
   ds.gain.setTargetAtTime(.52*S.echo,t,.05);rs.gain.setTargetAtTime(.76*S.verb,t,.05);
   toneF.frequency.setTargetAtTime(200*Math.pow(80,S.tone)/Math.pow(2,oct),t,.03);toneF.Q.setTargetAtTime(.3+S.edge*S.edge*16,t,.03);
-  wobG.gain.setTargetAtTime(oct*1200,t,.05);wobLFO.frequency.setTargetAtTime(typeof metOn!=='undefined'&&metOn?metBpm/30:2.8,t,.05);
+  wobG.gain.setTargetAtTime(oct*1200,t,.05);wobLFO.frequency.setTargetAtTime(2.8,t,.05);
   const g=1+S.grit*S.grit*9;drvG.gain.setTargetAtTime(g,t,.03);drvPost.gain.setTargetAtTime(1/(1+S.grit*1.6),t,.03)}
 function satCurve(k){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i/(n-1)*2-1;c[i]=Math.tanh(k*x)/Math.tanh(k)}return c}
 function makeIR(sec){const sr=AC.sampleRate,len=Math.floor(sr*sec),b=AC.createBuffer(2,len,sr);
@@ -641,15 +641,15 @@ function metTick(){if(!AC||!metOn)return;while(metNext<now()+.12){const t=Math.m
   const bi=metBeat%4;setTimeout(()=>{metFlash=performance.now();metShown=bi},Math.max(0,(t-now())*1000));metBeat++;metNext+=60/metBpm}}
 function setMet(bpm){clearInterval(metTimer);metOn=!!bpm&&!!AC;const el=$('bMet');el.querySelector('.val').textContent=metOn?bpm:'off';$('kMetV').textContent=metOn?bpm:'off';if(!metOn){el.classList.remove('on');applyShape();return}
   metBpm=bpm;if(!metGain){metGain=AC.createGain();metGain.gain.value=MET_VOLS[metVol][1];metGain.connect(AC.destination)}
-  dIn.delayTime.setTargetAtTime(60/bpm*.75,now(),.05);applyShape(); // echo and wobble follow the tempo
+  /* the click changes nothing about the sound (Jackie, Nov 27: "the synth is pulsing with the metronome which isn't great"): the echo and the wobble used to take their time from it, so notes pulsed on the beat. They keep their own time now. The click itself goes straight to the speaker, past the recorder, so it is never in a recording. */
   metNext=now()+.1;metBeat=0;metTimer=setInterval(metTick,25)}
 /* THE METRONOME is beside the film too (Jackie, Nov 27: "we also need a metronome"): CLICK opens the same list of tempos and loudness. It is heard while you play and is never recorded. */
 const metSheet=()=>openSheet('CLICK · not recorded',[{label:'off',sub:'silent',sel:!metOn,quiet:true,act:()=>setMet(0)}].concat(TEMPOS.map(b=>({label:b,sub:'bpm',sel:metOn&&b===metBpm,quiet:true,act:()=>setMet(b)})),MET_VOLS.map(([l,v],i)=>({label:l,sub:'volume',sel:i===metVol,quiet:true,act:()=>{metVol=i;if(metGain)metGain.gain.value=v}}))),76);press($('bMet'),metSheet);
 // ───────── SHAPE sheet: plain-word sliders, with the synth term underneath ─────────
-const KNOBS=[['echo','ECHO','tape delay · follows the click tempo','none','lots'],['verb','REVERB','room size','dry','cathedral'],
+const KNOBS=[['echo','ECHO','tape delay','none','lots'],['verb','REVERB','room size','dry','cathedral'],
  ['tone','TONE','low-pass filter cutoff','dark','bright'],['edge','EDGE','filter resonance','smooth','whistly'],
  ['swell','SWELL','envelope attack','snappy','slow fade-in'],['tail','TAIL','envelope decay · release','short','long'],
- ['grit','GRIT','drive · saturation','clean','crunchy'],['wob','WOBBLE','LFO → filter, in time with the click','still','wub wub']];
+ ['grit','GRIT','drive · saturation','clean','crunchy'],['wob','WOBBLE','LFO → filter','still','wub wub']];
 function syncShape(){const mod=KNOBS.some(k=>Math.abs(SHAPE[k[0]]-SHAPE_DEF[k[0]])>.005);$('bShape').classList.toggle('on',mod);$('bShape').querySelector('.val').textContent=mod?'tweak':'stock';
   try{localStorage.setItem('kz-shape',JSON.stringify(SHAPE))}catch(e){}}
 function openShape(){stopPlay();$('shTitle').textContent='05 · SHAPE THE SOUND';shGrid.style.gridTemplateColumns='repeat(auto-fill,minmax(250px,1fr))';shGrid.innerHTML='';

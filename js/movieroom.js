@@ -200,7 +200,7 @@ function mvRemote(){const v=mvEl.querySelector('video'),on=mvState==='open'&&!v.
    the soda fountain and the cups offer four drinks; the tap pours, a cup lands on the couch, and nobody in the room is thirsty;
    the 3D glasses turn the film amber, blue or rose, as silent films were often tinted, and then plain again;
    the row of books opens the books about film, and the box set opens its three books, each read a page at a time. */
-const MV_CORN=[['butter','Butter popcorn'],['caramel','Caramel popcorn'],['cheese','Cheese popcorn'],['seaweed','Seaweed popcorn'],['charcoal','Charcoal popcorn']],
+const MV_CORN=[['butter','Butter popcorn'],['caramel','Caramel popcorn'],['cheese','Cheese popcorn'],['seaweed','Trash popcorn'],['charcoal','Gravel popcorn']]/* the flavours are butter, caramel, cheese, trash and gravel (Jackie, Nov 27); the last two were seaweed and charcoal and keep those pictures and inner names */,
  MV_SODA=[['yellow','Honeysuckle tea'],['red','Cherry soda'],['blue','Beetle brew'],['swamp','Swamp fizz']], /* Jackie's names (Nov 27): "they'll be honeysuckle tea, cherry soda, beetle brew, and swamp fizz" */MV_TINTS=['','amber','blue','rose'],MV_TINT_NAME={'':'No tint.',amber:'Amber tint.',blue:'Blue tint.',rose:'Rose tint.'},
  MV_SPOTS={machine:{x:126,y:162,w:148,h:186},buckets:{x:1316,y:504,w:66,h:88},fountain:{x:1326,y:178,w:150,h:170},cups:{x:1480,y:176,w:78,h:172},glasses:{x:1384,y:540,w:80,h:52},boxset:{x:1470,y:496,w:82,h:96},books:{x:110,y:500,w:260,h:92}},
  MV_ON={corn:{x:560,y:697,k:.42},cup:{x:1262,y:697,k:.4},pop:{x:124,y:160,w:152,h:192},pour:{x:1322,y:174,w:158,h:176}};
@@ -227,7 +227,7 @@ const MV_FAV=w=>w.ge>.3?'caramel':w.ge<-.3?'charcoal':w.lc>.3?'butter':w.lc<-.3?
 const MV_SODA_COL={red:'#e23b2e',blue:'#2f7fe0',yellow:'#f2c230',swamp:'#7d8a3a'};
 let mvFx=[],mvFxOn=false,mvHeld=null,mvPopping=null,mvBurpT=0;
 function mvFxLoop(){const c=mvEl&&mvEl.querySelector('.mvfx');if(!c){mvFxOn=false;return;}const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);const U=4;
- for(const p of mvFx){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life--;
+ for(const p of mvFx){if(p.pop){mvPopStep(p);mvPopDraw(x,p,U);continue;}p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life--;
   if(p.hitY!=null&&p.vy<0&&p.y<=p.hitY){p.vy=Math.abs(p.vy)*.25;p.vx*=-.5;p.hitY=null;} // it meets the screen and drops
   if(p.floor!=null&&p.y>=p.floor&&p.vy>0){p.y=p.floor;p.vy=p.vy>2?-p.vy*.35:0;p.vx*=.6;if(p.land){const f=p.land;p.land=null;f();}}
   if(p.sway)p.vx=Math.sin(p.life/11)*.5;
@@ -235,19 +235,40 @@ function mvFxLoop(){const c=mvEl&&mvEl.querySelector('.mvfx');if(!c){mvFxOn=fals
   if(p.b){x.fillRect(X-4,Y-8,8,16);x.fillRect(X-8,Y-4,16,8);x.fillStyle='rgba(255,255,255,.55)';x.fillRect(X-4,Y-4,4,4);}else{x.fillRect(X-4,Y-4,8,8);x.fillStyle='#fff8e6';x.fillRect(X-4,Y-4,4,4);}}
  mvFx=mvFx.filter(p=>p.life>0&&p.y<p.end);
  const now=performance.now();if(now>mvBurpT){mvBurpT=now+rnd(5000,10000);const L=mvWho.filter(w=>w.soda);if(L.length){const w=L[Math.floor(Math.random()*L.length)];mvFx.push({x:w.x+rnd(-10,10),y:MV_SEAT.top-w.pic.height*MV_SEAT.show-6,vx:0,vy:-1.1,g:0,sway:true,life:230,end:1e9,b:true,c:MV_SODA_COL[w.soda]});}}
- if(mvFx.length||mvWho.some(w=>w.soda)||mvPopping)requestAnimationFrame(mvFxLoop);else mvFxOn=false;}
+ if(mvFx.length||mvWho.some(w=>w.soda)||mvPopping||mvPopFly)requestAnimationFrame(mvFxLoop);else mvFxOn=false;}
+/* POPCORN THAT FLIES (Jackie, Nov 27: "when popcorn is popping i want it to fly out of the machine and bounce off the floor lightly
+   with real popcorn physics and i want it to be for a hot minute"). Starting the machine sets it popping for MV_POP_FOR: slowly at
+   first, then a rush, then stragglers, as a real pan does. Each piece leaves the top of the machine at its own speed and angle,
+   falls under gravity with a little drag, and bounces on the floor a few times. A popped kernel is light and lumpy, so each bounce
+   keeps well under half its height and kicks it a little sideways, and it tumbles (its picture swaps between shapes) until it
+   settles. It lies there a few seconds and is gone. Pieces that land beside the couch may land anywhere on that floor; pieces that
+   carry past the couch's arm land on the strip of floor in front of it. Whole-pixel moves and picture swaps only. */
+const MV_POP_FOR=45000,MV_POP_G=.42,MV_POP_SHAPES=[[[0,0],[4,-4],[-4,-4],[0,-8]],[[0,0],[4,0],[-4,-4],[4,-4]],[[0,0],[-4,0],[0,-4],[4,-8]]];let mvPopFly=null,mvPopFlyT=0;
+function mvPopFloor(p){return p.x<430||p.x>1250?p.f1:p.f2;}
+function mvPopStep(p){if(p.rest){p.life--;return;}p.vy+=MV_POP_G;p.vx*=.992;p.vy*=.998;p.x+=p.vx;p.y+=p.vy;const fl=mvPopFloor(p);
+ if(p.x<16){p.x=16;p.vx=Math.abs(p.vx)*.4;}if(p.x>MV.W-16){p.x=MV.W-16;p.vx=-Math.abs(p.vx)*.4;}
+ if(p.y>=fl&&p.vy>0){p.y=fl;p.n++;if(p.vy<2.2||p.n>5){p.rest=true;p.vx=p.vy=0;p.life=rnd(240,420);if(p.land){const f=p.land;p.land=null;f();}}
+  else{p.vy=-p.vy*p.e;p.vx=p.vx*.62+rnd(-1,1)*Math.abs(p.vy)*.3;p.s=(p.s+1)%MV_POP_SHAPES.length;}}}
+function mvPopDraw(x,p,U){const X=Math.round(p.x/U)*U,Y=Math.round(p.y/U)*U,S=MV_POP_SHAPES[p.s];if(p.rest&&p.life<40&&p.life%8<4)return; // it blinks away at the end
+ x.fillStyle='#b98a3e';for(const[a,b]of S)x.fillRect(X+a-2,Y+b-2,8,8);x.fillStyle=p.c;for(const[a,b]of S)x.fillRect(X+a-4,Y+b-4,8,8);x.fillStyle='#fffdf2';x.fillRect(X+S[1][0]-4,Y+S[1][1]-4,4,4);}
+function mvPopOne(){const o=MV_ON.pop;mvFx.push({pop:true,x:o.x+76+rnd(-34,34),y:o.y+34,vx:rnd(-2.5,9.5)*(Math.random()<.85?1:.4),vy:rnd(-13,-6),e:rnd(.28,.46),n:0,s:Math.floor(rnd(0,3)),f1:rnd(772,930),f2:rnd(918,936),life:900,end:1e9,c:Math.random()<.2?'#fff3c4':'#f6e3a1',land:Math.random()<.04?()=>mvCatPounce(300):null});if(mvFx.length>260)mvFx.shift();mvFxGo();}
+function mvPopFlyGo(){const now=performance.now();if(mvPopFly){mvPopFly.t0=Math.min(mvPopFly.t0,now-MV_POP_FOR*.15);mvPopFly.end=now+MV_POP_FOR*.85;return;} /* started again while popping: it keeps going from the rush */mvPopFly={t0:now,end:now+MV_POP_FOR};
+ const tick=()=>{if(!mvPopFly||!mvEl)return;const t=performance.now(),k=(t-mvPopFly.t0)/(mvPopFly.end-mvPopFly.t0);if(k>=1){mvPopFly=null;return;}
+  mvPopOne();if(k>.15&&k<.7&&Math.random()<.45)mvPopOne();if(Math.random()<.12)sfx('tick');
+  const gap=k<.15?420-k/.15*340:k<.7?80:80+(k-.7)/.3*620;mvPopFlyT=setTimeout(tick,gap*rnd(.6,1.4));};tick();}
 function mvFxGo(){if(!mvFxOn){mvFxOn=true;requestAnimationFrame(mvFxLoop);}}
 function mvKernel(x,y,vx,vy,o){mvFx.push(Object.assign({x,y,vx,vy,g:.5,life:400,end:MV_SEAT.top-2,c:'#f6e3a1'},o||{}));if(mvFx.length>220)mvFx.shift();mvFxGo();}
 function mvCatPounce(x){if(!mvCat)return;clearTimeout(mvCatT);mvCat.awake=true;mvCatShow(x<mvCat.x?'leap_l':'pounce');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit1');},900);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
 /* holding the machine */
-function mvPopDown(){if(mvPopping)return;const t0=performance.now();mvPopping={t0,spilled:false};mvOver('mvpop','movieroom/acc_machine_pop.png',MV_ON.pop);sfx('tick');mvFxGo();
+function mvPopDown(){if(mvPopping)return;const t0=performance.now();mvPopping={t0,spilled:false};mvOver('mvpop','movieroom/acc_machine_pop.png',MV_ON.pop);sfx('tick');mvFxGo();mvPopFlyGo();
  const tick=()=>{if(!mvPopping||!mvEl)return;const held=performance.now()-mvPopping.t0;
   mvKernel(MV_ON.pop.x+76+rnd(-30,30),MV_ON.pop.y+120,rnd(-1.5,1.5),rnd(-5,-2),{g:.4,life:26,end:1e9}); // popping inside the glass
   if(held>3200){if(!mvPopping.spilled){mvPopping.spilled=true;mvNote('It’s overflowing.');} // over the top, down to the floor on the left, for the cat
    mvKernel(MV_ON.pop.x+rnd(10,140),MV_ON.pop.y+150,rnd(-3.5,-1),rnd(-4,-1),{end:1e9,floor:rnd(880,925),life:900,land:Math.random()<.2?()=>mvCatPounce(140):null});}
   mvPopT=setTimeout(tick,90);};tick();}
 const MV_POP_MIN=1300; // a tap still pops for a moment before the kinds are offered (Jackie, Nov 27: "the popcorn doesn't pop": on a phone a tap was over before anything showed)
-function mvPopUp(){if(!mvPopping||mvPopping.ending)return;const left=MV_POP_MIN-(performance.now()-mvPopping.t0),end=()=>{if(!mvPopping)return;clearTimeout(mvPopT);mvPopping=null;const im=mvEl&&mvEl.querySelector('.mvpop');if(im)im.hidden=true;if(mvEl)mvOffer('corn');};
+function mvPopPicOff(){if(mvPopFly){setTimeout(mvPopPicOff,500);return;}if(mvPopping)return;const im=mvEl&&mvEl.querySelector('.mvpop');if(im)im.hidden=true;}
+function mvPopUp(){if(!mvPopping||mvPopping.ending)return;const left=MV_POP_MIN-(performance.now()-mvPopping.t0),end=()=>{if(!mvPopping)return;clearTimeout(mvPopT);mvPopping=null;if(mvEl)mvOffer('corn');mvPopPicOff();}; /* the machine's popping picture stays while pieces are still flying out */
  if(left>0){mvPopping.ending=true;setTimeout(end,left);}else end();}
 /* choosing, then handing over */
 function mvOffer(kind){const L=kind==='corn'?MV_CORN:MV_SODA,pre=kind==='corn'?'acc_corn_':'acc_cup_';
@@ -383,7 +404,7 @@ function openMovieRoom(){
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);['play','pause','seeked','ended'].forEach(ev=>v.addEventListener(ev,()=>mvSoundApply()));v.addEventListener('timeupdate',mvScoreTick);v.addEventListener('timeupdate',mvInterCheck);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
  mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvRemote;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelectorAll('.mvlamp').forEach(b=>b.onclick=mvLightStep);mvEl.querySelector('.mvamp').onclick=mvSoundStep;mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
  mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundApply();mvCatEnter();mvThingsWire();mvLightApply();mvScoresLoad();mvDecorShow();mvLightsDraw();MV_TOP_MASK.complete||MV_TOP_MASK.addEventListener('load',mvLightsDraw,{once:true});clearInterval(mvLightsT);mvLightsT=setInterval(mvLightsDraw,LIGHTS_TWINK);}
-function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
+function closeMovieRoom(){if(!mvEl)return;clearInterval(mvLightsT);if(mvInter){clearTimeout(mvInter.t);mvLight=mvInter.light;mvInter=null;}clearTimeout(mvPopT);clearTimeout(mvPopFlyT);mvPopFly=null;mvPopping=null;mvHeld=null;mvFx=[];mvWho=[];mvScoreStop();closeKalimba();mvTvClose();mvSweepT.forEach(clearTimeout);mvSweepT=[];mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
    film is left to the film: leaving the movie room stops it. */

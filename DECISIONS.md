@@ -2,12 +2,19 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Popcorn flies out of the machine and bounces on the floor for 45 seconds; two flavours are trash and gravel (Nov 27)
+
+- Jackie: "when popcorn is popping i want it to fly out of the machine and bounce of the floor lightly with real popcorn physics and i want it to be for a hot minute".
+- Starting the machine sets it popping for 45 seconds: slowly at first, then a rush, then stragglers. Each piece leaves the top of the machine at its own speed and angle, falls under gravity with a little drag, and bounces a few times, each bounce under half the last and kicked a little sideways, tumbling as it goes. It lies on the floor a few seconds and blinks away. Now and then the cat pounces on one. The kinds are still offered after a moment, while it goes on popping. "A hot minute" was taken as 45 seconds; the number is MV_POP_FOR.
+- Jackie: "i want popcorn flavors to be butter, caramel, cheese, trash, and gravel". Seaweed is now Trash popcorn and charcoal is Gravel popcorn. They keep their pictures (the green one and the dark one), and each monster's favourite is as before under the new name.
+
 ### Sideways, Kalimba-Score is two thumb pads either side of the film; the metronome sits beside the film (Nov 27)
 
 - Jackie: "maybe if it's horizontal you can score with something else not a kalimbasizer that works with that hand position but still enables a good view of the movie - right or left handed - an intuitive touch based pad that sparks and reacts and swishes to your touch and movement and notes are kind of intuitively found". Offered one pad or two: "ooh yeah i want two thumbs".
 - With the phone sideways and a film chosen, the film is in the middle and a tall pad stands at each side. Up and down a pad is the note, low at the bottom, always in the chosen key and scale; the left pad is the low octave and the right pad the one above. Side to side is the tone, dull to bright (on the plucked sounds). A tap plucks, a held thumb sustains with the sounds that hold, a slide runs through the notes, and a quick move adds a swish of air. Sparks fly from the thumb and a ribbon follows it; the note under the thumb lights.
 - The pads use the instrument's own sounds, key and scale, and feed the same recorder, so parts, layering, loop and save work the same. Upright keeps the keys.
 - Jackie: "we also need a metronome". The instrument already had one (CLICK: nine tempos, three loudnesses, heard while you play and never recorded) but it was only in the set up view. CLICK is now one of the buttons under the film, and FILM is back there too: ten buttons in two rows.
+- Jackie: "the synth is pulsing with the metronome which isn't great. also we want to make sure the click track doesn't show up in the recording". The echo and the wobble used to take their time from the click, so notes pulsed on the beat; the click now changes nothing about the sound. The click goes straight to the speaker, past the point the recorder listens at, so it is not in a recording (checked in the code; not yet by ear on a phone).
 - The line telling you to turn the phone upright was taken off, since sideways is now a way to play in its own right.
 
 ### Kalimba-Score is played with the phone upright (Nov 27)
