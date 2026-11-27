@@ -54,7 +54,7 @@ function plantBoxRaw(){const sp=SPOT[spotKey()];
  let im,sc=1;const aa=ageArt(),age=st.stage<=5?'kid':st.stage>=8?'adult':'teen';if(st.stage<=5){im=BABY[st.species];sc=AGE_H.kid/(im.naturalHeight||AGE_REF.kid);}else if(aa){im=aa.im;sc=AGE_H[age]/Math.max(im.naturalHeight,AGE_REF[age]);} /* squat drawings aren't blown up */else{im=ELDER[st.species];sc=AGE_H[age]/(im.naturalHeight||601);} /* stand-in */
  const wl=st.witherLv||0;let w=im.naturalWidth*sc*(1-.05*wl),h=im.naturalHeight*sc*(1-.07*wl); // withering: hunches and curls in, one clear step per level
  const dk=depthK(plantDepth())*growK()*(!onChair()&&spotKey()==='crate'&&bassinetOut()?BASS_K:1)/* mid grow-up: part of the way to its new size, face and all; a little smaller in the bassinet, to sit inside its hood */,at=onChair()?CHAIR_SEAT:sp;w*=dk;h*=dk;sc*=dk; // the armchair is just another spot: its depth, like any other
- const [nx,ny]=plantNudge();return {img:im,x:at.x-w/2+nx,y:at.y-h+padPx(im,h)+ny,w,h,scale:sc,dk};} // pot bottom on the surface line
+ const [nx,ny]=plantNudge(),inBass=!onChair()&&spotKey()==='crate'&&bassinetOut();return {img:im,x:at.x-w/2+nx,y:inBass?BASS_TOP+ny:at.y-h+padPx(im,h)+ny,w,h,scale:sc,dk};} // in the bassinet it is placed by the top of its head (js/room.js) // pot bottom on the surface line
 function ageName(s=st.stage){return s<1?'seed':s<4?'sprout':s<6?'kid':s<8?'teen':'adult';}
 function plantSpotName(){if(onChair())return 'chair';const k=spotKey();return k==='free'?'rug':k;}
 function plantNudge(){return NUDGE.plant[(st.species+1)+'|'+ageName()+'|'+plantSpotName()]||[0,0];}

@@ -25,7 +25,7 @@ function bassinetOut(){if(typeof st==='undefined'||!st.started)return false;cons
 const bassIn=q=>isYoung(q)&&(q.stage<4?(q.place||{}).seed==='crate':q.perch==='crate')&&!(drag.on&&drag.id===q.id); // sitting in it right now
 function bassAsleep(){return allRaw().some(q=>bassIn(q)&&(q.nap>0||st.night));}
 const CAT_BED_FRONT=[1462,838,208,98],CAT_BED_HOLLOW=[1562,838,64,22]; // the cat bed's front rim: the lower half of the bed, outside the oval of its hollow
-const BASS_FRONT=[[236,652,206,126]],BASS_FRONT_BED=[[236,652,206,126],[262,643,152,9]]; // its front rail (and the blanket's top edge), drawn again over whoever sits in it
+const BASS_FRONT=[[236,619,206,159]],BASS_FRONT_BED=[[236,619,206,159]]; /* from the dark line along the top of the cream mattress down (Jackie: "the black line above the cream in the bassinet should be where the monster pops up from"; it was from the rail down): a monster in the bassinet is behind the mattress, under the hood, with just its face showing (Jackie, Nov 27: "deep behind the white part but below the lowest arch of the bassinet like just a little face poking up") */ // its front rail (and the blanket's top edge), drawn again over whoever sits in it
 // a thing that opens (the jar's lid, the lockbox, the trunk, the viewer's lever) stays open for a moment after a tap
 const thingOpenT={};function thingOpen(n){return (thingOpenT[n]||0)>performance.now();}function openThing(n,ms=900){thingOpenT[n]=performance.now()+ms;}
 function thingMoving(n){const p=typeof FP!=='undefined'&&FP.find(q=>q.thing===n);return !!(p&&(Math.round(p.ox)||Math.round(p.oy)));} // bouncing: its own picture is drawn moved (js/fidgets.js)
@@ -157,7 +157,7 @@ const FLOOR_BACK=790,FLOOR_FRONT=918,FLOOR_X0=200,FLOOR_X1=1460;
 const HORIZON=464,DEPTH_FRONT=918,DEPTH_BACK=748;
 const DEPTH={sill:748/* the wall under the windowsill */,desk:766/* desk legs */,crate:777/* crate bottom */,books:766/* sized like the armchair and the desk beside it, as the book stack was */,chair:750/* a little behind the armchair's feet: whoever sits in it sits back in the seat (Jackie, Nov 27: "a little further back into the chair rn now it looks on the edge") */,bed:927/* cat bed bottom */,floor:925/* floor in front of the rug */};
 function depthK(d){return clamp((d-HORIZON)/(DEPTH_FRONT-HORIZON),(DEPTH_BACK-HORIZON)/(DEPTH_FRONT-HORIZON),1);}
-const BASS_DEPTH=726,BASS_K=.86; /* in the bassinet a monster sits up in the cream hood, not down in the wicker (Jackie, Nov 27: "the monster plant should be in or behind the cream part not the crate part"), so its pot stands at the top of the front rail and it is drawn a little smaller to fit inside the hood */ // a monster in the bassinet is as far back as the wall under the sill
+const BASS_DEPTH=726,BASS_K=.6,BASS_TOP=594; // in the bassinet a monster is small enough to fit inside the hood, and the top of its head is BASS_TOP, just under the hood's arch; the rest of it is behind the mattress
 function spotDepth(k){if(k==='crate'&&bassinetOut())return BASS_DEPTH;return DEPTH[k]??(SPOT[k]?SPOT[k].y:DEPTH_FRONT);} // rug spots ('free', rugL/C/R): their own floor row
 /* NEVER SHARING A SPACE (Jackie, Nov 4): "I never want them sharing a space or on top of each other." A plant may only go where its sprite
    wouldn't overlap any other plant's (the side 15% of each box is mostly empty leaves, so it doesn't count). */
