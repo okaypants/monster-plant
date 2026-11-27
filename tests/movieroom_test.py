@@ -53,8 +53,12 @@ async def main():
         check("the remote pauses the film and starts it again", r["a"] is True and r["b"] is False and r["state"] == "open", r)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));const a=mvState;__step(.5);const c=document.querySelector('.mvcurtain');return {a,b:mvState,cur:c.getAttribute('src'),hidden:c.hidden,seats:document.querySelector('.mvseats').hidden};}")
         check("when the film ends the curtains close", r["a"] == "half" and r["b"] == "closed" and r["cur"].endswith("curtain_closed.png") and not r["hidden"] and r["seats"], r)
-        r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video'),k=document.querySelector('.mvknob'),a=v.muted;k.click();const b=v.muted,on=!document.querySelector('.mvknobon').hidden,note=document.querySelector('.mvnote').textContent;k.click();return {a,b,on,note,c:v.muted};}")
-        check("the gold plate turns the film's sound off and on, and it starts on", r["a"] is False and r["b"] is True and not r["on"] and r["note"] == "Sound off." and r["c"] is False, r)
+        r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video'),k=document.querySelector('.mvamp'),a=v.muted;k.click();const b=v.muted,note=document.querySelector('.mvnote').textContent;k.click();return {a,b,note,c:v.muted};}")
+        check("the receiver turns the film's sound off and on, and it starts on", r["a"] is False and r["b"] is True and r["note"] == "Sound off." and r["c"] is False, r)
+        r = await pg.evaluate("()=>{const m=document.querySelector('.movieroom'),k=document.querySelector('.mvknob'),b=()=>+m.style.getPropertyValue('--mvb'),L=[b()];for(let i=0;i<4;i++){k.click();L.push(b());}const note=document.querySelector('.mvnote').textContent;"
+                              "k.click();k.click();k.click();const low=b();document.querySelector('.mvremote').click();__step(.6);const playing=b();mvLight=0;mvLightApply();const playUp=b();document.querySelector('.mvremote').click();const paused=b();mvScreen();__step(.5);return {L,note,low,playing,playUp,paused};}")
+        check("the gold knob steps the room's light down and round again", r["L"] == [1, .62, .34, .14, 1] and r["note"] == "Lights up." and r["low"] == .14, r)
+        check("while a film plays the room is never brighter than low, and the knob can take it lower", r["playing"] == .14 and r["playUp"] == .62 and r["paused"] == 1, r)
         # the shelves: popcorn, soda, the glasses, the box set
         r = await pg.evaluate("()=>{const hot=k=>[...document.querySelectorAll('.mvthing')].find(b=>b.dataset.k===k);st.full=0;st.needs.thirst=.8;hot('machine').click();const tiles=document.querySelectorAll('.mvtile').length;document.querySelector('.mvtile[data-id=caramel]').click();"
                               "const full=st.full,note1=document.querySelector('.mvnote').textContent,pop=!!document.querySelector('.mvpop');hot('cups').click();const sodas=document.querySelectorAll('.mvtile').length;document.querySelector('.mvtile[data-id=blue]').click();"
@@ -80,10 +84,10 @@ async def main():
         check("choosing a film opens the curtains on it", not r["pick"] and r["state"] == "open" and "fairies" in r["src"].lower() and "Fairies" in r["note"], r)
         r = await pg.evaluate("()=>{const v=document.querySelector('.mvstage video');v.dispatchEvent(new Event('ended'));__step(.5);return mvState;}")
         check("that film ends and the curtains close", r == "closed", r)
-        r = await pg.evaluate("()=>{const t=mvTonight();document.querySelector('.mvamp').click();__step(.6);const note=document.querySelector('.mvnote').textContent,same=mvFilm===t,st1=mvState;"
+        r = await pg.evaluate("()=>{const t=mvTonight();mvPick();document.querySelector('.mvtonight').click();__step(.6);const note=document.querySelector('.mvnote').textContent,same=mvFilm===t,st1=mvState;"
                               "document.querySelector('.mvstage video').dispatchEvent(new Event('ended'));__step(.5);mvPick(MV_SHELVES.find(q=>q.films.includes(mvTonight())));"
                               "const seen=[...document.querySelectorAll('.mvpfilm span')].filter(x=>x.textContent.endsWith('seen')).length;document.querySelector('.mvpx').click();return {note,same,st1,seen,list:mvSeen().length};}")
-        check("the amplifier puts on tonight's film", r["same"] and r["st1"] == "open" and r["note"].startswith("Tonight"), r)
+        check("the button at the top of the film menu puts on tonight's film", r["same"] and r["st1"] == "open" and r["note"].startswith("Tonight"), r)
         check("films watched to the end are marked seen in their list", r["list"] >= 2 and r["seen"] >= 1, r)
         r = await pg.evaluate("()=>{document.querySelector('.mvtap').click();__step(.5);const v=document.querySelector('.mvstage video');document.querySelector('.mvback').click();const paused=v.paused,here=document.querySelector('.rmcard[data-id=movie]').textContent;"
                               "document.querySelector('.rmcard[data-id=main]').click();return {paused,here,open:movieRoomOpen(),left:!!document.querySelector('.movieroom'),rooms:!!document.querySelector('.rooms')};}")

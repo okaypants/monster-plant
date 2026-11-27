@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Movie room: the gold knob is the lights and the receiver is the sound (Nov 27)
+
+- Jackie: "Maybe the far right gold knob can control lighting (I'd like to be able to turn the room way down during a movie) and the receiver can do audio".
+- The gold knob steps the room's light down: up, low, lower, nearly out, then up again. While a film is playing the room is never brighter than low, as before, and the knob can take it much lower. Everything but the screen dims.
+- The receiver turns the film's sound off and on.
+- Tonight's film, which the receiver used to start, is now a button at the top of the film menu.
+- The watchers' dark shapes are a little darker, so they stay darker than the room at its lowest light.
+
 ### The window garland and the floor decoration go dark with the room (Nov 27)
 
 - Jackie, with a screenshot of the room at night with the lamps off: "The lighting is a little off" (and on Nov 26: "the lighting for the garland in the window is pretty bad along with some added items"). The window's garland and the harvest basket on the floor stood at full daytime brightness in a dark room.

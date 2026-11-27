@@ -57,26 +57,26 @@ function movieRoomOpen(){return !!(mvEl&&mvEl.isConnected);}
 function mvPct(b){return 'left:'+(b.x/MV.W*100)+'%;top:'+(b.y/MV.H*100)+'%;width:'+(b.w/MV.W*100)+'%;height:'+(b.h/MV.H*100)+'%';}
 function mvSet(s){mvState=s;if(!mvEl)return;mvEl.dataset.state=s;const c=mvEl.querySelector('.mvcurtain');
  c.hidden=s==='open';if(s!=='open')c.src='movieroom/curtain_'+(s==='half'?'half':'closed')+'.png';
- const w=mvEl.querySelector('.mvseats');if(w){if(s!=='closed'&&w.hidden)mvSeats();w.hidden=s==='closed';}}
+ const w=mvEl.querySelector('.mvseats');if(w){if(s!=='closed'&&w.hidden)mvSeats();w.hidden=s==='closed';}mvLightApply();}
 function mvCurtains(open,then){clearTimeout(mvTimer);mvSet('half');mvTimer=setTimeout(()=>{mvSet(open?'open':'closed');if(then)then();},MV.step);}
 let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote');if(!n)return;clearTimeout(mvNoteT);n.textContent=t||'';n.hidden=!t;if(t&&!stay)mvNoteT=setTimeout(()=>{n.hidden=true;},5000);} // a film's name shows for a few seconds; trouble stays
 /* Jackie, Nov 27: "you can open the curtains but I think you should be able to close them too by clicking the screen and only
    control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
 function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm;if(v.dataset.film!==f.id+'/'+f.f){v.src=mvSrc(f);v.dataset.film=f.id+'/'+f.f;}return v;}
-function mvStart(){const v=mvLoad(),p=v.play();mvEl.dataset.paused='';if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
+function mvStart(){const v=mvLoad(),p=v.play();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(()=>mvNote('The film could not start. It needs a connection.',true));}
 function mvScreen(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video');sfx('paper');
  if(mvState==='closed'){mvLoad();mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);}
  else{v.pause();mvEl.dataset.paused='1';mvCurtains(false);}}
 function mvPlay(){if(!mvEl||mvState==='half')return;const v=mvEl.querySelector('video'),f=mvFilm;
  if(mvState==='closed'){mvNote(f.t+', '+f.by);sfx('paper');mvLoad();mvCurtains(true,mvStart);return;}
- if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';}}
+ if(v.paused)mvStart();else{v.pause();mvEl.dataset.paused='1';mvLightApply();}}
 function mvEnd(){if(!mvEl||mvState==='closed')return;mvSeenAdd(mvFilm);const v=mvEl.querySelector('video');v.pause();mvEl.dataset.paused='';mvCurtains(false,()=>{try{v.currentTime=0;}catch(e){}mvNote('');});}
 /* THE WATCHERS (Jackie, Nov 26: "when they sit down to watch, you see them from the backside a little bit kind of like MST3K").
    While the curtains are open, the monsters sit on the couch as dark shapes against the screen, their lower halves
    hidden behind the couch back (Jackie, later the same day: "Maybe it's just your monster(s)"; the cat has its own places, below). A dark shape from behind is the same as from the front, so each monster's own picture is used,
    filled in dark. They are drawn once when the film starts. */
-const MV_SEAT={top:697,dark:'#1b0f1e',xs:[770,650,890],show:.66}; // small enough that only the tops of their heads reach the screen (Jackie, Nov 27: "the plant needs to be smaller so the screen is less obscured")
+const MV_SEAT={top:697,dark:'#0a060d',xs:[770,650,890],show:.66}; // small enough that only the tops of their heads reach the screen (Jackie, Nov 27: "the plant needs to be smaller so the screen is less obscured")
 function mvShadow(src,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0,w,h);x.globalCompositeOperation='source-in';x.fillStyle=MV_SEAT.dark;x.fillRect(0,0,w,h);return c;}
 function mvSeats(){const c=mvEl&&mvEl.querySelector('.mvseats');if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);let n=0;
  const sit=(im,cx)=>{const y=Math.round(MV_SEAT.top-im.height*MV_SEAT.show);x.drawImage(im,Math.round(cx-im.width/2),y);};
@@ -98,11 +98,18 @@ function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');
  else{mvCatShow('pet1');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('pet2');},260);setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit2');},700);}
  mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
 function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[Math.floor(Math.random()*MV_CAT_SPOTS.length)];mvCat={...sp,nap:sp.sleep[Math.floor(Math.random()*sp.sleep.length)],awake:false};mvCatSleep();}
-/* SOUND (Jackie, Nov 27: "we need audio control (prob the gold box)"). The gold plate on the right-hand wall turns the film's sound
-   on and off. It starts on (Jackie, Nov 27: "I want sound on movies etc if available"). The films are silent-era, and the music on these
-   copies was added later by whoever uploaded them, so it is not known to be free to use; she chose sound knowing that. With sound on, the plate shows its dial turned up. */
-const MV_KNOB={x:1592,y:290,w:64,h:68};let mvSound=true;
-function mvSoundSet(on){mvSound=!!on;if(!mvEl)return;const v=mvEl.querySelector('video');v.muted=!mvSound;mvEl.querySelector('.mvknobon').hidden=!mvSound;}
+/* SOUND AND LIGHTS (Jackie, Nov 27: "Maybe the far right gold knob can control lighting (I'd like to be able to turn the room way down
+   during a movie) and the receiver can do audio"). The receiver on the right-hand shelf turns the film's sound off and on; sound
+   starts on ("I want sound on movies etc if available"). The music on these copies was added by whoever uploaded them and is not
+   known to be free to use; she chose sound knowing that.
+   The gold knob on the wall steps the room's light down: up, low, lower, nearly out, and round to up again. While a film is
+   playing the room is never brighter than low, as before. Everything but the screen dims: the room, the curtains, the cat and
+   what is on the couch. Light may blend (RULES), so this is a plain darkening. */
+const MV_KNOB={x:1592,y:290,w:64,h:68},MV_LIGHTS=[1,.62,.34,.14],MV_LIGHT_SAY=['Lights up.','Lights low.','Lights lower.','Lights nearly out.'];let mvSound=true,mvLight=0;
+function mvSoundSet(on){mvSound=!!on;if(!mvEl)return;mvEl.querySelector('video').muted=!mvSound;}
+function mvLightApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),playing=mvState==='open'&&mvEl.dataset.paused!=='1'&&v&&v.getAttribute('src');
+ const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;mvEl.querySelector('.mvknobon').hidden=mvLight!==0;}
+function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightApply();mvNote(MV_LIGHT_SAY[mvLight]);}
 /* THE THINGS ON THE SHELVES (Jackie, Nov 27: "I want to work on all the stuff in the shelves they should work"). Each does one thing:
    the popcorn machine and the stack of buckets offer five kinds of popcorn; the machine pops for a moment, a bucket lands on the couch,
      and every monster in the room that is old enough to eat is a little fuller;
@@ -142,7 +149,7 @@ fetch('movieroom/books.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.books
 function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvthing';b.dataset.k=k;b.setAttribute('aria-label',label);b.style.cssText=mvPct(MV_SPOTS[k]);b.onclick=fn;st2.insertBefore(b,mvEl.querySelector('.mvnote'));};
  add('machine','Popcorn',()=>mvOffer('corn'));add('buckets','Popcorn',()=>mvOffer('corn'));add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
  add('glasses','Tint the film',mvGlasses);add('boxset','The box set',mvBoxSet);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
-/* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The amplifier on the right-hand shelf puts on tonight's film: one of the collection, the
+/* TONIGHT'S FILM, AND WHAT YOU HAVE SEEN. The button at the top of the film menu puts on tonight's film: one of the collection, the
    same all day and a different one tomorrow. A film watched to its end is remembered on this device and marked "seen" in its list. */
 const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
 function mvSeen(){try{return JSON.parse(localStorage.getItem(MV_SEEN_KEY)||'[]');}catch(e){return [];}}
@@ -155,9 +162,9 @@ function mvChoose(f){mvPickClose();const v=mvEl.querySelector('video');mvFilm=f;
  const start=()=>{try{v.pause();}catch(e){}mvEl.dataset.paused='';mvSet('closed');mvPlay();};
  if(mvState==='closed')start();else{v.pause();mvCurtains(false,start);}} // a film already showing: the curtains close on it first
 function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLast=sh;const seen=mvSeen(),sibs=MV_SHELVES; /* one menu for the whole collection, whichever film thing was tapped (Jackie, Nov 27: "maybe we need all those movie clicks to lead to the same menu"); it opens on the collection you last looked at */mvPickEl=document.createElement('div');mvPickEl.className='screen mvpick';
- mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist">'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
+ mvPickEl.innerHTML='<div class="mvpbox"><img src="'+sh.pic+'" alt="" draggable="false"><div class="mvplist"><button type="button" class="mvrbtn mvtonight"></button>'+(sibs.length>1?'<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'">'+q.name+'</button>').join('')+'</div>':'')+'<h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
- mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES.find(q=>q.id===b.dataset.id)));
+ mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;{const tb=mvPickEl.querySelector('.mvtonight'),tf=mvTonight();tb.textContent='Tonight’s film: '+tf.t;tb.onclick=()=>{mvChoose(tf);mvNote('Tonight’s film is '+tf.t+'.');};}mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(MV_SHELVES.find(q=>q.id===b.dataset.id)));
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
  if(mvEl)return;
@@ -168,14 +175,14 @@ function openMovieRoom(){
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
   '<img class="mvknobon" src="movieroom/acc_dimmer_high.png" alt="" draggable="false" hidden style="'+mvPct({x:MV_KNOB.x+4,y:MV_KNOB.y+4,w:56,h:63})+'">'+
-  '<button type="button" class="mvhot mvknob" aria-label="Sound on or off" style="'+mvPct(MV_KNOB)+'"></button>'+
-  '<button type="button" class="mvhot mvamp" aria-label="Tonight\'s film" style="'+mvPct(MV_AMP)+'"></button>'+
+  '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB)+'"></button>'+
+  '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="Start or pause the film" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback">Leave</button></div>';
  const v=mvEl.querySelector('video');v.addEventListener('ended',mvEnd);v.addEventListener('error',()=>{if(v.getAttribute('src'))mvNote('The film could not be reached. It needs a connection.',true);});
- mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelector('.mvamp').onclick=()=>{const f=mvTonight();if(mvState==='open'&&mvFilm===f)return;mvChoose(f);mvNote('Tonight’s film is '+f.t+'.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
- mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(mvSound);mvCatEnter();mvThingsWire();}
+ mvEl.querySelector('.mvtap').onclick=mvScreen;mvEl.querySelector('.mvremote').onclick=mvPlay;mvEl.querySelector('.mvknob').onclick=mvLightStep;mvEl.querySelector('.mvamp').onclick=()=>{mvSoundSet(!mvSound);sfx('tick');mvNote(mvSound?'Sound on.':'Sound off.');};mvEl.querySelectorAll('.mvhot[data-shelf]').forEach(b=>b.onclick=()=>mvPick());mvEl.querySelector('.mvback').onclick=openRooms;
+ mvEl.querySelector('.mvcat').onclick=mvCatTap;ui.appendChild(mvEl);mvSet('closed');mvSoundSet(mvSound);mvCatEnter();mvThingsWire();mvLightApply();}
 function closeMovieRoom(){if(!mvEl)return;mvPickClose();mvTrayClose();clearTimeout(mvCatT);mvCat=null;clearTimeout(mvTimer);const v=mvEl.querySelector('video');try{v.pause();v.removeAttribute('src');v.load();}catch(e){}mvEl.remove();mvEl=null;mvState='closed';}
 /* LEAVING A ROOM (Jackie, Nov 26: "Maybe somewhere in each room there's a leave button basically and you can then choose a room from a
    screen"). Each room has a Leave button; it opens a screen with a picture of every room, and a tap on one takes you there. Pausing a
