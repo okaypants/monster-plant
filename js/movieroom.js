@@ -258,7 +258,7 @@ function mvPopFlyGo(){const now=performance.now();if(mvPopFly){mvPopFly.t0=Math.
   const gap=k<.15?420-k/.15*340:k<.7?80:80+(k-.7)/.3*620;mvPopFlyT=setTimeout(tick,gap*rnd(.6,1.4));};tick();}
 function mvFxGo(){if(!mvFxOn){mvFxOn=true;requestAnimationFrame(mvFxLoop);}}
 function mvKernel(x,y,vx,vy,o){mvFx.push(Object.assign({x,y,vx,vy,g:.5,life:400,end:MV_SEAT.top-2,c:'#f6e3a1'},o||{}));if(mvFx.length>220)mvFx.shift();mvFxGo();}
-function mvCatPounce(x){if(!mvCat)return;clearTimeout(mvCatT);mvCat.awake=true;mvCatShow(x<mvCat.x?'leap_l':'pounce');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit1');},900);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
+function mvCatPounce(x){if(!mvCat)return;clearTimeout(mvCatT);mvCat.awake=true;if(mvCat.y<800){mvCatShow('sit1');mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);return;} /* on the couch's back it only looks up */mvCatShow(x<mvCat.x?'leap_l':'pounce');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit1');},900);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
 /* holding the machine */
 function mvPopDown(){if(mvPopping)return;const t0=performance.now();mvPopping={t0,spilled:false};mvOver('mvpop','movieroom/acc_machine_pop.png',MV_ON.pop);sfx('tick');mvFxGo();mvPopFlyGo();
  const tick=()=>{if(!mvPopping||!mvEl)return;const held=performance.now()-mvPopping.t0;
@@ -362,7 +362,13 @@ function mvDrawer(k){let h='',pick;
  else if(k==='lights'){pick=mvLightsSet;h='<h2>String lights</h2><div class="mvdgrid">'+(st.mvLights?mvDrawerTile('','Take them down',''):'')+[['auto','Seasonal']].concat(LIGHTS_KINDS).map(([id,n])=>mvDrawerTile(id,n,'decor/lights_'+(id==='auto'?lightsAuto(st.mvDecor):id)+'_on.png',st.mvLights===id)).join('')+'</div>';}
  else{pick=id=>mvToy(CUB_TOYS.find(t=>t.id===id));h='<h2>Cat toys</h2><div class="mvdgrid">'+CUB_TOYS.map(t=>mvDrawerTile(t.id,t.name,CUB_IMG[t.id].src)).join('')+'</div>';}
  const el=mvPanel('mvdrawer','<div class="mvplist">'+h+'</div>');el.querySelectorAll('.mvdt').forEach(b=>b.onclick=()=>{mvTrayClose();pick(b.dataset.id);});}
-function mvToy(t){if(!mvCat){mvNote('The cat is not here.');return;}const left=mvCat.x>835?-1:1;mvOnCouch('mvtoy',CUB_IMG[t.id].src,{x:mvCat.x+left*86,y:mvCat.y,k:mvCat.k*1.1});sfx('chime');
+/* THE CAT PLAYS ON THE FLOOR (Jackie, Nov 27: "the cat interacts weird with the toys in the movie room and also pops over the couch
+   so it doesn't look natural when they are in front of the couch"). A toy used to be set down wherever the cat was, so with the
+   cat asleep along the couch's back the toy and the playing cat hung in front of the couch. Now a cat on the couch's back hops
+   down to the floor beside the couch first, on whichever side is nearer, and the toy is set on the floor next to it. It naps
+   there afterwards. Popcorn landing only makes a cat on the floor pounce; on the couch's back it just looks up. */
+function mvCatDown(){if(!mvCat||mvCat.y>800)return;const sp=mvCat.x<835?MV_CAT_SPOTS[1]:MV_CAT_SPOTS[2];Object.assign(mvCat,{x:sp.x,y:sp.y,k:sp.k,nap:sp.sleep[Math.floor(Math.random()*sp.sleep.length)]});}
+function mvToy(t){if(!mvCat){mvNote('The cat is not here.');return;}mvCatDown();const left=mvCat.x>835?-1:1;mvOnCouch('mvtoy',CUB_IMG[t.id].src,{x:mvCat.x+left*86,y:mvCat.y,k:mvCat.k*1.1});sfx('chime');
  clearTimeout(mvCatT);mvCat.awake=true;let at=0;for(const [pose,sec] of t.seq){if(!at)mvCatShow(pose);else setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow(pose);},at*1000);at+=sec;} // the same poses, in the same order, as with that toy in the study room
  if(t.pic)setTimeout(()=>{const im=mvEl&&mvEl.querySelector('.mvtoy');if(im)im.src=CUB_IMG[t.pic].src;},300);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);
  const who=typeof catName==='function'?catName():'The cat';mvNote(who+' '+t.say);}

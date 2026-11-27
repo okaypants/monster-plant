@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### In the movie room the cat comes down to the floor to play (Nov 27)
+
+- Jackie: "the cat interacts weird with the toys in the movie room and also pops over the couch so it doesn't look natural when they are in front of the couch".
+- A toy used to be set down wherever the cat was, so with the cat asleep along the couch's back the toy and the playing cat hung in front of the couch. Now a cat on the couch's back hops down to the floor beside the couch first, on the nearer side, and the toy is set on the floor next to it. It naps there afterwards.
+- Popcorn landing only makes a cat on the floor pounce. On the couch's back it just sits up and looks.
+- This is my reading of what looked wrong; a screenshot of it happening would confirm it.
+
 ### The television channels play, and Rooms is one cream button everywhere (Nov 27)
 
 - Jackie: "the tv channels say film could not be reached it needs a connection". The room added a refresh mark to every channel's address, which the satellite loops need and the Internet Archive refuses. Only the satellite loops get it now. All six shows and a satellite loop were then played in the room's screen, one after another, in the desktop browser. (When they were added they were only checked as loose files, not through the remote; that is how this was missed.)
