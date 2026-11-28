@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The small things that are always on screen sit the same distance from the edges (Nov 27)
+
+- Jackie: "imagine all the little text bubbles in the game that are there all the time -- rooms, journal, help. are each like equidistant from each side they are on up or down left or right".
+- They were not: Rooms and full screen were 18 pixels in from the side but 14 from the top, and the name tags were a percentage of the room in from the left and the bottom. Now Rooms, full screen, the name tags and the ? are each 18 pixels from every edge they are near, or clear of the phone's own cut-outs where those are wider.
+
+### The ? moves to the bottom right, and its sheet is set evenly (Nov 27)
+
+- Jackie: "i wish the help guide was spaced more nicely it's kind of sloppy", "i also want it in the bottom right but also spaced away from margins".
+- The ? is in the bottom right corner of each room, 18 pixels in from the edges or clear of the phone's own cut-outs. It steps aside while a tray, the remote or a question bubble is using that corner.
+- The sheet has a ruled title and two columns that read downwards. Every line has the same shape: its picture in a fixed column, its name, then what it does, with a hairline between lines.
+
 ### Tantrums: a no makes a monster mad, a pestered cat storms out, and the room pays (Nov 27)
 
 - Jackie: "i think after you have two adults one should ask to move out", "and when you say no they should get mad and things should disappear and move and everything should be disrupted when monsters are mad", "like decorations bounce around or go crazy whatever", "remember we also have old image files like a fire and stuff", "same thing with the cat -- when it gets mad, things go nuts and its eyes go green then it leaves".

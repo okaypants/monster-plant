@@ -25,7 +25,7 @@ FIND = """()=>{const skip='.mvhot,.mvthing,.mvtap,.mvstage>video,.rmcard',out=[]
  return out.concat(off);}"""
 STATES = [
  ("study_long_speech", "()=>{capClear();CAP.seen.clear();tell(%r,{who:1,kind:'info',now:true});__step(.6);}" % LONG),
- ("study_help", "()=>{capClear();helpPlace();helpOpen();__step(.3);}"),
+ ("study_help", "()=>{capClear();if(typeof closeBubble==='function')closeBubble();helpPlace();helpOpen();__step(.3);}"),
  ("study_help_closed", "()=>{helpClose();tell(%r,{who:1,kind:'info',now:true});__step(.6);helpPlace();}" % LONG),
  ("study_cupboard", "()=>{capClear();cubOpen();__step(.3);}"),
  ("movie_closed_note", "()=>{cubClose&&cubClose();capClear();document.getElementById('leaveBtn').click();document.querySelector('.rmcard[data-id=movie]').click();__step(1);mvNote('A channel can’t be wound back or on.',true);__step(.3);}"),

@@ -1,7 +1,7 @@
 'use strict';
 /* THE CHEAT SHEET (Jackie, Nov 27: "maybe we should have a little cheat sheet help tab thing that pops up for everything that does
    something and says what", "like a translucent little ? in a circle you can click"). A small see-through ? in a circle sits
-   beside the Rooms button in every room. A tap opens a sheet that lists everything in that room that does something, with
+   in the bottom right corner of every room. A tap opens a sheet that lists everything in that room that does something, with
    what it does, in plain words. A tap on the ×, outside the sheet or on the ? again puts it away.
    The lists are written by hand from what the rooms really do (js/input.js, js/fidgets.js, js/movieroom.js): when a thing is
    added, changed or taken out, change its line here too. */
@@ -45,14 +45,14 @@ let helpEl=null;const helpBtn=document.createElement('button');helpBtn.id='helpB
 function helpClose(){if(helpEl){helpEl.remove();helpEl=null;}}
 function helpOpen(){if(helpEl){helpClose();return;}if(typeof sfx==='function')sfx('tick');const H=HELP[typeof roomNow==='function'?roomNow():'main']||HELP.main;helpEl=document.createElement('div');helpEl.className='screen helpsheet';
  helpEl.innerHTML='<div class="helpbox"><h2></h2><div class="helprows"></div><button type="button" class="helpx" aria-label="Close">×</button></div>';helpEl.querySelector('h2').textContent=H.title+': what does what';
- const R=helpEl.querySelector('.helprows');for(const [ic,name,what] of H.rows){const d=document.createElement('div');d.className='helprow';const i=document.createElement('i');i.textContent=ic;i.setAttribute('aria-hidden','true');const b=document.createElement('b');b.textContent=name;const s=document.createElement('span');s.textContent=what;d.append(i,b,s);R.appendChild(d);}
+ const R=helpEl.querySelector('.helprows');R.style.gridTemplateRows='repeat('+Math.ceil(H.rows.length/2)+',auto)'; /* two columns read downwards, left then right */for(const [ic,name,what] of H.rows){const d=document.createElement('div');d.className='helprow';const i=document.createElement('i');i.textContent=ic;i.setAttribute('aria-hidden','true');const b=document.createElement('b');b.textContent=name;const s=document.createElement('span');s.textContent=what;d.append(i,b,s);R.appendChild(d);}
  helpEl.querySelector('.helpx').onclick=helpClose;helpEl.addEventListener('click',e=>{if(e.target===helpEl)helpClose();});helpEl.addEventListener('pointerdown',e=>e.stopPropagation());ui.appendChild(helpEl);}
 helpBtn.addEventListener('click',e=>{e.stopPropagation();helpOpen();});helpBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-/* It stands just to the right of whichever Rooms button is showing (the study's, or the movie room's own), and hides while the
-   game has not begun or a full-page thing such as the journal, the sampler or Scorimba is open. */
-function helpPlace(){const a=document.getElementById('leaveBtn'),m=document.querySelector('.movieroom .mvback'),r0=m?m.getBoundingClientRect():a.getBoundingClientRect(),u=ui.getBoundingClientRect();
- const busy=!st.started||!r0.width||[...document.querySelectorAll('.screen')].some(e=>!e.matches('.movieroom,.helpsheet'));
- helpBtn.hidden=busy;if(busy)return;helpBtn.style.left=Math.round(r0.right-u.left+8)+'px';helpBtn.style.top=Math.round(r0.top-u.top)+'px';helpBtn.style.height=Math.round(r0.height)+'px';helpBtn.style.width=Math.round(r0.height)+'px';}
+/* It sits in the bottom right corner of the room, in from the edges (Jackie, Nov 27: "i also want it in the bottom right but also
+   spaced away from margins"; it began beside the Rooms button). The style sheet places it; this only hides it while the game
+   has not begun or a full page such as the journal, the sampler or Scorimba is open. It also steps aside for a tray along
+   the bottom and for the remote, which use that corner (index.html). */
+function helpPlace(){helpBtn.hidden=!st.started||[...document.querySelectorAll('.screen')].some(e=>!e.matches('.movieroom,.helpsheet'));}
 /* No timer: it finds its place only when something that could move or hide it happens (the window changes size, or a page is
    opened or closed over the room), which costs a phone nothing while you simply play (Jackie, Nov 27: "do whatever is best also
    for the phone battery throughout all this and memory"). */
