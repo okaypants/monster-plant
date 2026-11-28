@@ -2,6 +2,30 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A much bigger film library (Nov 27)
+
+- Jackie: "I want a much bigger film library", "including film and tv that have fallen into public domain before their time and other ephemera as good as what you've already found", "a larger quantity of viewing options", "just make it happen asap".
+- 70 more films in 11 new collections, added to the library's list after the first six. Each was researched earlier (`research_notes/movieroom/strange_collections.md` and `lapsed_films.md`) and checked today to answer with a video (`tools/library_build.py`, which writes `movieroom/library.json`).
+- **Pure light** (9): Lichtspiel Opus II, Lichtspiel Opus III, Lichtspiel Opus IV, Rhythmus 23, Filmstudie, Study No. 6, Tusalava, A Play of Light: Black, White, Grey, Two-Penny Magic
+- **Dreams before breakfast** (5): Ghosts Before Breakfast, Entr’acte, The Madness of Doctor Tube, Inflation, The Life and Death of 9413, a Hollywood Extra
+- **City poems** (5): The Tower, Studies in Movement, Kino-Pravda No. 19, Tokyo March (what survives), Twenty-Four-Dollar Island
+- **Paper shadows** (8): Wash ’Em Clean, Tale of Crab Temple, Our Baseball Game, The Monkey Masamune, Village Festival, The Frogs Who Wanted a King, Danse macabre, The Ghost of Slumber Mountain
+- **Far away, long ago** (7): Laborer’s Love, Travels of Cornélio Pires, An Outing to Playa Ancha, Jaffa Gate, Jerusalem, Dancers of the Cambodian Court, Nubia, Wadi Halfa and the Second Cataract, Trip to Brazil
+- **The machine hums** (6): Steel: A Symphony of Industry, Master Hands, part 1, Principles of Electro-Magnetism, Sound Waves and Their Sources, It Started with Muybridge, Skylab: Space Station I
+- **Odd little films** (7): A Case of Spring Fever, Hired!, Out of This World, The Home Economics Story, Brazil Gets the News, Gracias Amigos, The Grain That Built a Hemisphere
+- **Saturday cartoons** (9): Somewhere in Dreamland, The Cobweb Hotel, Dancing on the Moon, Christmas Comes But Once a Year, Balloon Land, Jack Frost, The Sunshine Makers, To Spring, The Dover Boys at Pimento University
+- **Matinee classics** (5): His Girl Friday, The Little Princess, My Favorite Brunette, The Flying Deuces, Meet John Doe
+- **The late, late show** (7): The Killer Shrews, The Giant Gila Monster, The Phantom Planet, Plan 9 from Outer Space, Killers from Space, Phantom from Space, The Little Shop of Horrors
+- **Long silent evenings** (2): Days of Youth, People on Sunday
+- Films published in 1930 or earlier, US government films and Prelinger films make up the first seven collections. Saturday cartoons, Matinee classics and The late, late show are American films whose copyrights were not renewed; the research notes rate each one's case and say plainly that music inside them is the weak point.
+- Silent films whose copies carry a modern score play without that sound. Tonight's film is still drawn from the first six collections, and Kalimba-Score is offered only the silent collections.
+- Left out for now: Angel and the Badman and Teenagers from Outer Space (their addresses did not answer in time today). No lapsed television: the one series with a good case, The Beverly Hillbillies' first season, has a theme song that was renewed in 1990. Left out on content or rights, as the notes list: horror, the wartime cartoons, characters that are still owned, musicals whose songs were renewed.
+- Nobody has watched these 70 through.
+
+### A curtain colour changes only the curtains (Nov 27)
+
+- Jackie: "switching curtain colors also colors things around it". The colour was being laid over the whole rectangle the curtains hang in, so the rail, the screen's frame and the shelf edges changed too. It is now laid only over the two tied-back curtains themselves, cut out of the room's picture by `tools/curtain_tint.py`.
+
 ### Lost and found's line (Nov 27)
 
 - Jackie: 'In the Lost and Found Say, underneath the item missing, "Check back tomorrow. Something else may turn up."' It read "Something else turns up tomorrow."

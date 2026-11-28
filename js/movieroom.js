@@ -71,7 +71,7 @@ let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote'
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
 function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}
  if(mvSeekTo>0){const t=mvSeekTo,go=()=>{try{v.currentTime=Math.min(t,Math.max(0,(v.duration||t)-3));}catch(e){}};mvSeekTo=0;if(v.readyState>=1)go();else v.addEventListener('loadedmetadata',go,{once:true});} // a channel is joined part-way through
- v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film';return v;}
+ v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film'||!!f.mute;return v;}
 function mvStart(){const v=mvLoad(),p=v.play();mvCardShow();mvEl.dataset.paused='';mvLightApply();if(p&&p.catch)p.catch(e=>{if(e&&e.name==='AbortError')return;mvTrouble('The film could not start. It needs a connection.');});} /* starting something else before the last thing had begun also ends up here, as an AbortError, which is no trouble at all: it used to put the message up and leave it there (Jackie, Nov 27: "sometimes a 'the film could not start it needs a connection' gets stuck on screen i hate it") */
 function mvScreen(){if(!mvEl||mvState==='half')return;if(mvInterEnd())return;const v=mvEl.querySelector('video');sfx('paper');
  if(mvState==='closed'){mvEl.dataset.paused=v.paused?'1':'';mvCurtains(true);} // the curtains only: whatever was on is still there, paused, and if nothing was chosen the screen is black
@@ -139,12 +139,12 @@ function mvScoreStop(){if(mvScoreP)mvScoreP.stop();}
 /* A soundtrack is a set of parts on the film's timeline (js/scores.js); the player sounds whichever belong to the moment. It is
    asked again each time the film reports its place, so parts start and stop as the film reaches them. */
 function mvScoreTick(){if(!mvEl||!mvScoreP||mvMode!=='mine')return;const v=mvEl.querySelector('video');mvScoreP.sync(v.currentTime,!v.paused&&mvState==='open');}
-function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine=mvMode==='mine'&&mvHasScore(mvFilm);v.muted=mvMode!=='film';mvSound=mvMode!=='off';
+function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine=mvMode==='mine'&&mvHasScore(mvFilm);v.muted=mvMode!=='film'||!!(mvFilm&&mvFilm.mute);mvSound=mvMode!=='off';
  if(!mine){mvScoreStop();return;}
  const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreTick();return;}
  mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreKey=k;mvScoreTick();});}
 function mvSoundStep(){const L=mvHasScore(mvFilm)?['film','mine','off']:['film','off'];mvMode=L[(L.indexOf(mvMode)+1)%L.length]||'film';sfx('tick');mvSoundApply();mvNote(mvMode==='film'?'The film’s own sound.':mvMode==='mine'?'Your soundtrack.':'Sound off.');}
-function mvKalimbaFilms(){return MV_SHELVES.concat(MV_MORE);} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
+function mvKalimbaFilms(){return MV_SHELVES.filter(q=>!q.talk).concat(MV_MORE);} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
  if(typeof radioHold==='function')radioHold(true);kalEl=document.createElement('div');kalEl.className='screen sampler kalimba';
@@ -224,6 +224,15 @@ function mvChannelsSet(j){const L=((j&&j.channels)||[]).map(c=>({n:c.n,name:c.na
  const ads=(L.find(c=>c.n===0)||{list:[]}).list; /* old commercials are programmed in between the films, two at a time, as a station would (Jackie, Nov 27: "old commercials programmed in") */
  for(const c of L){if(c.n===0||!ads.length)continue;const out=[];c.list.forEach((it,k)=>{out.push(it);for(let j=0;j<2;j++)out.push(Object.assign({ad:1},ads[(k*2+j+c.n*5)%ads.length]));});c.list=out;}
  MV_CH=L.filter(c=>c.n>0&&c.list.length).concat(MV_CH_LIVE).sort((a,b)=>a.n-b.n);}
+/* THE LIBRARY'S SECOND HELPING (Jackie, Nov 27: "I want a much bigger film library", "including film and tv that have fallen into
+   public domain before their time and other ephemera as good as what you've already found", "a larger quantity of viewing
+   options"). movieroom/library.json, made and checked by tools/library_build.py, holds more collections: abstract films, Dada,
+   city films, puppets and silhouettes, early records of far places, industrial films, odd sponsored films, colour cartoons,
+   features and 1950s science fiction whose copyrights lapsed, and two long silents. They join the six collections above in the
+   library's list. A film marked mute plays without its copy's sound (a modern score, or a record with its own term). Tonight's
+   film is still drawn from the first six only, and Kalimba-Score is offered only the silent ones. */
+function mvLibrarySet(j){if(!j||!Array.isArray(j.shelves))return;for(const sh of j.shelves){if(MV_SHELVES.some(q=>q.id===sh.id))continue;MV_SHELVES.push({id:sh.id,name:sh.name,about:sh.about,pic:'movieroom/acc_reel.png',extra:1,talk:sh.films.some(f=>!f.mute),films:sh.films});}}
+fetch('movieroom/library.json').then(r=>r.ok?r.json():null).then(mvLibrarySet).catch(()=>{});
 mvChannelsSet(null);fetch('movieroom/channels.json').then(r=>r.ok?r.json():null).then(j=>{if(j)mvChannelsSet(j);}).catch(()=>{});
 /* what a channel is showing at a moment: {it, i, off (seconds in), left (seconds to go), next} */
 function mvOnAir(ch,at){if(ch.live)return {it:{t:ch.about,d:0},off:0,left:0,next:null,live:true};const L=ch.list,tot=L.reduce((a,b)=>a+b.d,0);let p=((at===undefined?Date.now()/1000:at)+ch.n*977)%tot,i=0;while(p>=L[i].d){p-=L[i].d;i++;}return {it:L[i],i,off:p,left:L[i].d-p,next:L[(i+1)%L.length]};}
@@ -503,7 +512,7 @@ function mvToy(t){if(!mvCat){mvNote('The cat is not here.');return;}mvCatDown();
 const MV_AMP={x:1392,y:398,w:156,h:78},MV_SEEN_KEY='monsterplant.films.seen';
 function mvSeen(){try{return JSON.parse(localStorage.getItem(MV_SEEN_KEY)||'[]');}catch(e){return [];}}
 function mvSeenAdd(f){try{const L=mvSeen();if(!L.includes(f.id)){L.push(f.id);localStorage.setItem(MV_SEEN_KEY,JSON.stringify(L));}}catch(e){}}
-function mvTonight(){const all=MV_SHELVES.flatMap(s=>s.films),d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);return all[n%all.length];}
+function mvTonight(){const all=MV_SHELVES.filter(q=>!q.extra).flatMap(s=>s.films),d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);return all[n%all.length];}
 /* choosing a film: a tap on the reels, the tapes or the discs opens that shelf's list */
 let mvPickEl=null,mvLast=MV_SHELVES[0];
 function mvPickClose(){if(mvPickEl){mvPickEl.remove();mvPickEl=null;}}
@@ -546,7 +555,7 @@ function openMovieRoom(){
  if(mvEl)return;
  mvEl=document.createElement('div');mvEl.className='screen movieroom';
  mvEl.innerHTML='<div class="mvstage"><video playsinline preload="none" style="'+mvPct(MV.screen)+'"></video><div class="mvcard" hidden style="'+mvPct(MV.screen)+'"></div><div class="mvchb" hidden style="'+mvPct(MV.screen)+'"></div>'+
-  '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvroomtint" src="movieroom/room.png" alt="" draggable="false" hidden style="clip-path:inset('+(MV.curtain.y/MV.H*100)+'% '+((MV.W-MV.curtain.x-MV.curtain.w)/MV.W*100)+'% '+((MV.H-MV.curtain.y-MV.curtain.h)/MV.H*100)+'% '+(MV.curtain.x/MV.W*100)+'%)"><img class="mvcurtain mvcurtL" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'"><img class="mvcurtain mvcurtR" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
+  '<img class="mvroom" src="movieroom/room.png" alt="" draggable="false"><img class="mvroomtint" src="movieroom/room_curtains.png" alt="" draggable="false" hidden><img class="mvcurtain mvcurtL" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'"><img class="mvcurtain mvcurtR" src="movieroom/curtain_closed.png" alt="" draggable="false" style="'+mvPct(MV.curtain)+'">'+
   '<canvas class="mvseats" width="'+MV.W+'" height="'+MV.H+'" hidden></canvas>'+'<canvas class="mvfx" width="'+MV.W+'" height="'+MV.H+'"></canvas>'+'<canvas class="mvlights" width="'+MV.W+'" height="100"></canvas>'+
   '<button type="button" class="mvtap" aria-label="Open or close the curtains" style="'+mvPct(MV.curtain)+'"></button>'+
   MV_SHELVES.map((sh,i)=>(sh.at||[]).map(r=>'<button type="button" class="mvhot" data-shelf="'+i+'" aria-label="'+sh.name+'" style="'+mvPct(r)+'"></button>').join('')).join('')+
