@@ -65,7 +65,7 @@ function mvSet(s){mvState=s;if(!mvEl)return;mvEl.dataset.state=s;if(s==='closed'
 let mvSweepT=[];function mvCurtains(open,then){mvSweepT.forEach(clearTimeout);mvSweepT=[];clearTimeout(mvTimer);mvSet('half');for(let i=1;i<=MV_SWEEP;i++)mvSweepT.push(setTimeout(()=>{mvCurtainK(open?1-i/MV_SWEEP:i/MV_SWEEP);if(i===MV_SWEEP){mvSet(open?'open':'closed');if(then)then();}},i*MV_SWEEP_MS));} // every step is set at once, so they keep their order however time is stepped
 /* word of trouble goes away by itself after eight seconds, and at once when a picture starts playing; it never stays up */
 let mvTroubleOn=false;function mvTrouble(t){mvNote(t,true);mvTroubleOn=true;clearTimeout(mvNoteT);mvNoteT=setTimeout(mvTroubleOver,8000);}function mvTroubleOver(){if(!mvTroubleOn)return;mvTroubleOn=false;mvNote('');}
-let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote');if(!n)return;clearTimeout(mvNoteT);mvTroubleOn=false;n.textContent=t||'';n.hidden=!t;if(t&&!stay)mvNoteT=setTimeout(()=>{n.hidden=true;},5000);} // a film's name shows for a few seconds; trouble stays
+let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote');if(!n)return;clearTimeout(mvNoteT);mvTroubleOn=false;n.textContent=t||'';n.hidden=!t;if(t){const b=mvEl.querySelector('.mvchb');if(b)b.hidden=true;} /* a note and the channel's words share the bottom of the screen, so one makes way for the other (Jackie, Nov 27: "make sure that no buttons or text things cover each other") */if(t&&!stay)mvNoteT=setTimeout(()=>{n.hidden=true;},5000);} // a film's name shows for a few seconds; trouble stays
 /* Jackie, Nov 27: "you can open the curtains but I think you should be able to close them too by clicking the screen and only
    control playback with the remote". A tap on the curtains or the screen opens or closes the curtains and nothing else; closing
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
@@ -238,7 +238,7 @@ mvChannelsSet(null);fetch('movieroom/channels.json').then(r=>r.ok?r.json():null)
 /* what a channel is showing at a moment: {it, i, off (seconds in), left (seconds to go), next} */
 function mvOnAir(ch,at){if(ch.live)return {it:{t:ch.about,d:0},off:0,left:0,next:null,live:true};const L=ch.list,tot=L.reduce((a,b)=>a+b.d,0);let p=((at===undefined?Date.now()/1000:at)+ch.n*977)%tot,i=0;while(p>=L[i].d){p-=L[i].d;i++;}return {it:L[i],i,off:p,left:L[i].d-p,next:L[(i+1)%L.length]};}
 function mvChanFilm(ch,it){return ch.live?Object.assign({},ch.live,{chan:ch.n}):{id:it.id,f:it.f,src:it.src,t:it.t,by:'Channel '+ch.n+' · '+ch.name+(it.ad?' · a word from our sponsors':it.y?' · '+it.y:''),len:mvClock(it.d),chan:ch.n};}
-function mvBanner(ch,title){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;b.innerHTML='<b></b><span></span>';b.querySelector('b').textContent=ch.n+'  '+ch.name;b.querySelector('span').textContent=title||'';b.hidden=false;clearTimeout(mvBanner.t);mvBanner.t=setTimeout(()=>{b.hidden=true;},4000);}
+function mvBanner(ch,title){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;if(mvEl.querySelector('.mvguide')){b.hidden=true;return;}{const n=mvEl.querySelector('.mvnote');if(n)n.hidden=true;}b.innerHTML='<b></b><span></span>';b.querySelector('b').textContent=ch.n+'  '+ch.name;b.querySelector('span').textContent=title||'';b.hidden=false;clearTimeout(mvBanner.t);mvBanner.t=setTimeout(()=>{b.hidden=true;},4000);}
 /* A channel lands on something different each time (Jackie, Nov 27: "i wish ... the channels started on random things when you
    switched back to them from the playlist of possibilities ... including commercials"). Tuning in picks any item of the channel's
    playlist, commercials among them, never the one just seen; a long one is joined part-way through, a short one or a commercial
@@ -281,7 +281,7 @@ function mvPower(){if(!mvEl)return;mvScanStop(false);const v=mvEl.querySelector(
 /* THE INFORMATION KEY, a circled i where the film library's key was (Jackie, Nov 27: "maybe an information button instead of the
    library", "circled i"). It says what is on at the bottom of the screen, where the channel's words go: the title, who made it or
    which channel it is on, and how long it runs. With the screen dark it says how to start. */
-function mvInfo(){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;sfx('tick');b.innerHTML='<b></b><span></span>';const on=mvState!=='closed'&&mvFilm;
+function mvInfo(){const b=mvEl&&mvEl.querySelector('.mvchb');if(!b)return;sfx('tick');mvGuideClose();{const n=mvEl.querySelector('.mvnote');if(n)n.hidden=true;}b.innerHTML='<b></b><span></span>';const on=mvState!=='closed'&&mvFilm;
  b.querySelector('b').textContent=on?mvFilm.t:'Nothing is on';b.querySelector('span').textContent=on?[mvFilm.by,mvFilm.len].filter(Boolean).join(' · '):'Press POWER to turn the screen on.';b.hidden=false;clearTimeout(mvBanner.t);mvBanner.t=setTimeout(()=>{b.hidden=true;},6000);}
 function mvRemote(){if(!mvEl)return;if(mvRemEl){mvRemClose();return;}mvTrayClose();sfx('tick');mvRemEl=document.createElement('div');mvRemEl.className='mvrem';
  mvRemEl.innerHTML='<button type="button" class="mvremx" aria-label="Put the remote down">×</button><div class="mvremd"></div>'+
@@ -295,7 +295,7 @@ function mvRemote(){if(!mvEl)return;if(mvRemEl){mvRemClose();return;}mvTrayClose
  mvEl.querySelector('.mvstage').appendChild(mvRemEl);mvRemShow();}
 function mvRemClose(){if(mvRemEl){mvRemEl.remove();mvRemEl=null;}mvGuideClose();}
 function mvGuideClose(){clearInterval(mvGuideT);const g=mvEl&&mvEl.querySelector('.mvguide');if(g)g.remove();}
-function mvGuide(){if(!mvEl)return;if(mvEl.querySelector('.mvguide')){mvGuideClose();return;}const g=document.createElement('div');g.className='mvguide';g.style.cssText=mvPct(MV.screen);
+function mvGuide(){if(!mvEl)return;if(mvEl.querySelector('.mvguide')){mvGuideClose();return;}{const b=mvEl.querySelector('.mvchb');if(b)b.hidden=true;}const g=document.createElement('div');g.className='mvguide';g.style.cssText=mvPct(MV.screen);
  const draw=()=>{const now=new Date(),a=null,hm=x=>String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0');g.innerHTML='<div class="mvgh"><b>TV GUIDE</b><span>'+hm(now)+'</span></div>'+MV_CH.map((c,i)=>'<button type="button" class="mvgrow'+(c===mvChan?' on':'')+'" data-i="'+i+'"><i></i><b></b><span></span><em></em></button>').join('');
   g.querySelectorAll('.mvgrow').forEach(b=>{const c=MV_CH[+b.dataset.i];b.querySelector('i').textContent=c.n;b.querySelector('b').textContent=c.name;b.querySelector('span').textContent=c.about;b.querySelector('em').textContent=''; /* the guide is of channels, not of what is on (Jackie, Nov 27: "the tv guide can be for channels not shows") */b.onclick=e=>{e.stopPropagation();mvTune(c);};});};
  draw();g.addEventListener('click',mvGuideClose);mvEl.querySelector('.mvstage').appendChild(g);clearInterval(mvGuideT);mvGuideT=setInterval(()=>{if(mvEl&&mvEl.querySelector('.mvguide'))draw();else clearInterval(mvGuideT);},5000);if(mvState==='closed')mvScreen();}
@@ -476,7 +476,7 @@ function mvDrawerTile(id,name,pic,on){return '<button type="button" class="mvdt'
 function mvDecorPic(s){return s.floor==='pumpkin'?PUMPKIN[0].src:s.floor==='tree'?TREE[0].src:'decor/'+s.floor+'.png';}
 /* TICKET STUBS: one for every film watched to its end, kept in the drawer. */
 function mvTickets(){const seen=mvSeen(),all=MV_SHELVES.concat(MV_MORE).flatMap(s=>s.films),got=[];for(const id of seen){const f=all.find(q=>q.id===id);if(f&&!got.includes(f))got.push(f);}
- const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Ticket stubs</h2><p>'+(got.length?'You have watched '+got.length+' of '+new Set(all.map(f=>f.id)).size+' films to the end.':'Watch a film to its end and its ticket is kept here.')+'</p><div class="mvstubs">'+got.map((f,i)=>'<div class="mvstub" data-i="'+i+'"><i>ADMIT ONE</i><b></b><span></span></div>').join('')+'</div></div>');
+ const el=mvPanel('mvdrawer','<div class="mvplist"><h2>Ticket stubs</h2><p>Watch an entire film from your library and collect a ticket, stored here.'+(got.length?' You have '+got.length+' of '+new Set(all.map(f=>f.id)).size+'.':'')+'</p>' /* Jackie, Nov 27: "Change the ticket drawer description to something like watch an entire film from your library and collect a ticket stored here" */+'<div class="mvstubs">'+got.map((f,i)=>'<div class="mvstub" data-i="'+i+'"><i>ADMIT ONE</i><b></b><span></span></div>').join('')+'</div></div>');
  el.querySelectorAll('.mvstub').forEach(d=>{const f=got[+d.dataset.i];d.querySelector('b').textContent=f.t;d.querySelector('span').textContent=f.by;});}
 /* THE CURTAINS' COLOUR (Jackie, Nov 27, choosing the drawers: "i like curtains, lost and found, blankets, and ticket stubs"). The
    screen's curtains can be red velvet (as painted), midnight blue, forest green, old gold or plum. Nothing is redrawn: the

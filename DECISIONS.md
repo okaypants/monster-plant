@@ -2,6 +2,21 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The ticket drawer says how tickets are earned (Nov 27)
+
+- Jackie: "Change the ticket drawer description to something like watch an entire film from your library and collect a ticket stored here."
+- The drawer reads "Watch an entire film from your library and collect a ticket, stored here.", followed by how many you have once you have any.
+
+### Nothing you can press or read sits on anything else (Nov 27)
+
+- Jackie: "make sure that no buttons or text things cover each other or visible play".
+- A new check, `tests/overlap_shots.py`, measures every button and piece of overlaid text on two phones, a tablet and a laptop, in the study and the movie room, with speech up, the remote out, a note showing, the guide, the film library and a drawer open. The study was clean. The movie room had four overlaps, now fixed:
+- Two Rooms buttons were stacked in the movie room (the study's and the room's own). Only the room's own shows there.
+- The full screen button sat on the remote's display. It is put away while the remote is out.
+- A note and the channel's words both use the bottom of the screen. Showing one now takes the other down.
+- The channel's words lay over the guide. They are taken down when the guide opens, and the information key closes the guide first.
+- The remote's close button and its display no longer touch on small phones.
+
 ### The words at the top keep clear of the Rooms button (Nov 27)
 
 - Jackie: "the rooms button covers some text". The speech and notes along the top of the study already kept clear of the buttons at the top right. They now keep clear of the Rooms button at the top left as well, and are made narrower when there is not room for both.
