@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The receiver is a sound on/off switch again (Nov 27)
+
+- Jackie: "Sound knob doesn't work well", then "turn it back to on off".
+- A tap on the receiver turns the sound off, the next turns it on. The legend still calls it the Receiver. The volume steps are gone (an iPhone could not do them anyway).
+- Choosing your soundtrack still happens in Your films, not on the receiver.
+
 ### A curtain colour stays on the cloth when the curtains are closed (Nov 27)
 
 - Jackie: "The bleeding colors in the curtain are srill a problem with they are closed".

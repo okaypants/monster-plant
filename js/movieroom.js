@@ -153,17 +153,12 @@ function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine
  if(!mine){mvScoreStop();return;}
  const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreP.vol(mvVol/MV_VOL_MAX);mvScoreTick();return;}
  mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreP.vol(mvVol/MV_VOL_MAX);mvScoreKey=k;mvScoreTick();});}
-/* THE RECEIVER IS A VOLUME CONTROL (Jackie, Nov 27: "i want it to lower or raise the volume and be called a receiver in the legend").
-   A tap on its left half turns the sound down a step, a tap on its right half turns it up: off, then four steps to full. It says
-   "Sound off." at the bottom and the step otherwise. Some phones (iPhones) do not let a page set how loud a film is, only whether it
-   sounds at all; there the receiver says just "Sound off." and "Sound on." Whether a film plays its own sound or your soundtrack
-   is no longer chosen here: a film picked from Your films plays your soundtrack, and the same film picked from its shelf plays its own. */
-const MV_VOL_MAX=4;let mvVol=MV_VOL_MAX,mvVolCan=null;
-function mvVolOk(){if(mvVolCan==null){try{const a=document.createElement('audio');a.volume=.5;mvVolCan=a.volume===.5;}catch(e){mvVolCan=false;}}return mvVolCan;}
-function mvSoundStep(e){const b=e&&e.currentTarget,r=b&&e.detail?b.getBoundingClientRect():null,d=r?(e.clientX<r.left+r.width/2?-1:1):0;sfx('tick');
- if(!mvVolOk()){mvVol=mvVol?0:MV_VOL_MAX;mvSoundApply();mvNote(mvVol?'Sound on.':'Sound off.');return;}
- mvVol=d?Math.max(0,Math.min(MV_VOL_MAX,mvVol+d)):(mvVol?mvVol-1:MV_VOL_MAX); /* from the keyboard there is one key: it steps down, and round to full again */
- mvSoundApply();mvNote(mvVol?'Volume '+mvVol+' of '+MV_VOL_MAX+'.':'Sound off.');}
+/* THE RECEIVER SWITCHES THE SOUND OFF AND ON (Jackie, Nov 27: it had been made to step the volume down and up, then "Sound knob
+   doesn't work well", "turn it back to on off"). A tap turns the sound off; the next turns it on again, at full. Whether a film
+   plays its own sound or your soundtrack is not chosen here: a film picked from Your films plays your soundtrack, and the same
+   film picked from its shelf plays its own. */
+const MV_VOL_MAX=1;let mvVol=MV_VOL_MAX;
+function mvSoundStep(){sfx('tick');mvVol=mvVol?0:MV_VOL_MAX;mvSoundApply();mvNote(mvVol?'Sound on.':'Sound off.');}
 function mvKalimbaFilms(){return MV_SHELVES.filter(q=>!q.talk).concat(MV_MORE);} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
@@ -597,7 +592,7 @@ function openMovieRoom(){
   '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:0,y:100,w:106,h:200})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1564,y:100,w:106,h:200})+'">'+
   '<i class="mvknobtick"></i>'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB_TAP)+'"></button>'+MV_LAMPS.map(r=>'<button type="button" class="mvhot mvlamp" aria-label="Room lights" style="'+mvPct(r)+'"></button>').join('')+
-  '<button type="button" class="mvhot mvamp" aria-label="Receiver: quieter on the left, louder on the right" style="'+mvPct(MV_AMP)+'"></button>'+
+  '<button type="button" class="mvhot mvamp" aria-label="Receiver: sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback" aria-label="Go to another room">🚪 Rooms</button></div>';

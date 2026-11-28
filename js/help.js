@@ -33,7 +33,7 @@ const HELP={main:{title:'The study',rows:[
   ['🍿','Popcorn machine','Hold it down to pop. Tap the buckets to hand some out.'],
   ['🥤','Soda fountain','Tap for a soda to hand out.'],
   ['🕶️','Glasses','Tint the film.'],
-  ['🔊','Receiver','Tap its left side to turn the sound down, its right side to turn it up.'],
+  ['🔊','Receiver','Turn the sound off or on.'],
   ['💡','Light knob and wall lamps','Turn the room’s lights down or up.'],
   ['🎹','Scorimba','Play along with a film, or record a score for it.'],
   ['📖','Books','Old writing about the movies.'],
