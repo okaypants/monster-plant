@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Opening the curtains starts the film again (Nov 27)
+
+- Jackie: "make the video automatically start playing again when you reopen the curtain in a single session without having to press play again".
+- A tap that opens the curtains on a film or channel already chosen starts it playing from where it stopped. It used to open on a paused picture. With nothing chosen the screen is still black, and closing the curtains still pauses.
+
 ### Four new books of recently free writing, and two more cat reads (Nov 27)
 
 - Jackie: "i feel like our library is missing sooo much good stuff esp stuff that's recently public domain the modernists and detective stories virginia woolf and stuff i don't even know about". Shown a list of six books, she said "All six", then "do the easy ones first please".
