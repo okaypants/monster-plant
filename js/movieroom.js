@@ -383,7 +383,7 @@ function mvCatPlayGo(){if(!mvCat||mvCat.playing||!mvEl)return;clearTimeout(mvCat
 function mvCatPlayStep(){if(!mvEl||!mvCat||!mvCat.playing)return;const C=MV_CATPLAY,P=mvFx.filter(p=>p.pop&&p.x>C.x0-40&&p.x<C.x1+40&&p.y>730&&!(p.rest&&p.life<=40)),rest=P.filter(p=>p.rest);
  if(!mvPopFly&&!rest.length){mvCat.playing=false;mvCatShow('groom1');setTimeout(()=>{if(mvCat&&!mvCat.playing&&mvCat.awake)mvCatShow('groom2');},700);setTimeout(()=>{if(mvCat&&!mvCat.playing&&mvCat.awake)mvCatShow('sit1');},1500);if(mvCat.ate&&mvEl.querySelector('.mvnote').hidden&&!mvInter)mvNote((typeof catName==='function'?catName():'The cat')+' ate '+mvCat.ate+' piece'+(mvCat.ate===1?'':'s')+' of popcorn.');mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);return;}
  const L=rest.length&&Math.random()<.65?rest:P,t=L.length?L[Math.floor(Math.random()*L.length)]:null;let pose='playbow',flip=mvCat.left,wait=rnd(420,760);
- if(t){const dx=t.x-mvCat.x;flip=dx<0;if(t.rest&&Math.abs(dx)<C.reach){pose='eat';t.life=1;mvCat.ate++;wait=720;if(Math.random()<.5)sfx('tick');}
+ if(t){const dx=t.x-mvCat.x;flip=dx<0;if(t.rest&&Math.abs(dx)<C.reach){pose='playbow'; /* head down over the piece; the eating picture shows a tin of food, which is wrong here (Jackie, Nov 27) */t.life=1;mvCat.ate++;wait=720;if(Math.random()<.5)sfx('tick');}
   else{mvCat.x=Math.round(Math.max(C.x0,Math.min(C.x1,mvCat.x+Math.max(-C.step,Math.min(C.step,dx)))));pose=t.rest?(Math.abs(dx)>C.step?'stalk':'pounce'):(Math.random()<.6?(dx<0?'leap_l':'leap_r'):'pounce');if(pose==='leap_l'||pose==='leap_r')flip=false;}}
  else pose=['playbow','stalk','sit1'][Math.floor(Math.random()*3)];
  mvCat.left=flip;mvCatShow(pose,flip&&pose!=='sit1');mvCatT=setTimeout(mvCatPlayStep,wait);}

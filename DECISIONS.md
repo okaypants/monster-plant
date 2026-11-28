@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat eating popcorn has no tin of food (Nov 27)
+
+- Jackie: "when the cat is going after popcorn it shouldnt' do the eating image bcs it shows a tin of food which is weird".
+- In the movie room the cat now puts its head down over the piece (the bow picture) when it eats one. The eating picture with the tin is kept for the tin of treats only.
+
 ### Every book's pages are set cleanly (Nov 27)
 
 - Jackie: "reformat all of the books so they are clean and readable and wonderful".
