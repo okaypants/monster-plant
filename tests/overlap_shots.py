@@ -18,16 +18,20 @@ FIND = """()=>{const skip='.mvhot,.mvthing,.mvtap,.mvstage>video,.rmcard',out=[]
  const E=[...document.querySelectorAll('button,#cap,.mvnote,.mvchb,.mvtix .mvstub,.mvremd,.mvlibhead h1,.mvplist h2,.nametag,.ptag,#who')].filter(e=>!e.matches(skip)&&getComputedStyle(e).pointerEvents!=='none'||e.matches('#cap,.mvnote,.mvchb,.mvstub'));
  const L=E.map(e=>[e,vis(e)]).filter(x=>x[1]);const name=e=>(e.id?'#'+e.id:'.'+[...e.classList].join('.'))+(e.textContent?' "'+e.textContent.trim().slice(0,18)+'"':'');
  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){const[a,ra]=L[i],[b,rb]=L[j];if(a.contains(b)||b.contains(a))continue;
-  const top=document.querySelector('.mvpick,.rooms');if(top&&(top.contains(a)!==top.contains(b)))continue; // a panel that is open covers the room on purpose
+  const top=document.querySelector('.mvpick,.rooms,.helpsheet');if(top&&(top.contains(a)!==top.contains(b)))continue; // a panel that is open covers the room on purpose
   const rem=document.querySelector('.mvrem');if(rem&&(rem.contains(a)!==rem.contains(b))&&!(a.matches('.mvnote,.mvchb,#leaveBtn,.mvback,#fsBtn')||b.matches('.mvnote,.mvchb,#leaveBtn,.mvback,#fsBtn')))continue;
   const w=Math.min(ra.right,rb.right)-Math.max(ra.left,rb.left),h=Math.min(ra.bottom,rb.bottom)-Math.max(ra.top,rb.top);if(w>3&&h>3)out.push(name(a)+'  x  '+name(b)+'  ('+Math.round(w)+'x'+Math.round(h)+')');}
  const off=L.filter(([e,r])=>e.matches('button')&&(r.left<2||r.top<2||r.right>innerWidth-2||r.bottom>innerHeight-2)&&!e.closest('.mvpick')).map(([e])=>name(e)+' touches the edge of the screen');
  return out.concat(off);}"""
 STATES = [
  ("study_long_speech", "()=>{capClear();CAP.seen.clear();tell(%r,{who:1,kind:'info',now:true});__step(.6);}" % LONG),
+ ("study_help", "()=>{capClear();helpPlace();helpOpen();__step(.3);}"),
+ ("study_help_closed", "()=>{helpClose();tell(%r,{who:1,kind:'info',now:true});__step(.6);helpPlace();}" % LONG),
  ("study_cupboard", "()=>{capClear();cubOpen();__step(.3);}"),
  ("movie_closed_note", "()=>{cubClose&&cubClose();capClear();document.getElementById('leaveBtn').click();document.querySelector('.rmcard[data-id=movie]').click();__step(1);mvNote('A channel can’t be wound back or on.',true);__step(.3);}"),
  ("movie_remote_note_banner", "async()=>{const j=await (await fetch('movieroom/channels.json')).json();mvChannelsSet(j);document.querySelector('.mvremote').click();mvTune(MV_CH[1]);__step(3);mvInfo();mvNote('Fast forward. Press it again, or play, to watch from here.',true);__step(.3);}"),
+ ("movie_help", "()=>{mvPickClose();mvTrayClose();mvRemClose();helpPlace();helpOpen();__step(.3);}"),
+ ("movie_help_closed", "()=>{helpClose();helpPlace();}"),
  ("movie_film_ticket", "()=>{mvRemClose();mvNote('');mvChan=null;mvFilm=MV_SHELVES[0].films[0];mvSet('closed');mvTixFor=null;mvPlay();__step(3);}"),
  ("movie_guide", "()=>{mvNote('');mvGuide();__step(.3);}"),
  ("movie_library", "()=>{mvGuideClose();mvRemClose();mvPick();__step(.3);}"),

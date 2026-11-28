@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A ? beside the Rooms button opens a cheat sheet (Nov 27)
+
+- Jackie: "maybe we should have a little cheat sheet help tab thing that pops up for everything that does something and says what", "like a translucent little ? in a circle you can click".
+- A small see-through ? in a circle stands just right of the Rooms button in both rooms. A tap opens a sheet for the room you are in that lists each thing that does something and what it does: 21 lines for the study, 13 for the movie room.
+- The lines are written by hand in `js/help.js` from what the rooms really do. When a thing is added or changed, its line there has to change too.
+- The words along the top of the study keep clear of the ? as they do of the Rooms button.
+
 ### A little ticket shows when a film that can earn one begins (Nov 27)
 
 - Jackie: "maybe show a little movie ticket and notify someone when they start a movie that's eligible for a ticket".
