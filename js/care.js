@@ -232,11 +232,18 @@ function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if
 /* A page can carry the words in their original script (Jackie, Nov 16): {o: the original, l: its language code, e: the English}.
    The original has the left page to itself, in its own script, with its language named under it, and the English faces it on the
    right (Jackie, Nov 27; readPages in js/stories.js lays the pages out). Only where a real source text exists. */
-function storyPage(el,pg){el.textContent='';el.classList.toggle('stitle',!!(pg&&pg.t));el.classList.toggle('sfig',typeof pg==='string'&&pg.includes('\n')&&/^[A-Z\n]+$/.test(pg)); /* a charm written out as a figure (ABRACADABRA, the SATOR square) is set in the middle of its page in even letters, as a book would print it */
- if(!pg||typeof pg==='string'){el.classList.remove('sleft','sornp');if(pg)el.textContent=pg;return;}
+/* LINES THAT RUN OVER (Jackie, Nov 27: "review how all the books are set when you open them some are bad"). A page is narrow, so a
+   line of a poem often runs over, and the run-over used to start at the margin like a new line: nobody could tell where a
+   line really ended. Now every written line is set as its own line with its run-over indented, as a printed book of poems does.
+   A page that begins with a heading in capitals (A DOG. / LE PAPILLON) has that heading set bold, with its text under it as an
+   ordinary paragraph. The words in another language are set the same way, at the left, when they have more than one line. */
+function storyLines(box,text){const L=String(text).split('\n');if(L.length<2){box.textContent=text;return false;}const head=/^[^a-zà-ÿ]*[A-ZÀ-ÜА-Я][^a-zà-ÿа-я]*$/.test(L[0])&&L[0].length<40,v=document.createElement('span');v.className='sverse';
+ L.forEach((ln,i)=>{const d=document.createElement('span');d.className=head&&i===0?'sline shead':head&&L.length===2?'sline spara':'sline';d.textContent=ln+(i<L.length-1?'\n':'');v.appendChild(d);});box.appendChild(v);return true;}
+function storyPage(el,pg){el.textContent='';el.classList.remove('spoem');el.classList.toggle('stitle',!!(pg&&pg.t));el.classList.toggle('sfig',typeof pg==='string'&&pg.includes('\n')&&/^[A-Z\n]+$/.test(pg)); /* a charm written out as a figure (ABRACADABRA, the SATOR square) is set in the middle of its page in even letters, as a book would print it */
+ if(!pg||typeof pg==='string'){el.classList.remove('sleft','sornp');if(pg){if(el.classList.contains('sfig'))el.textContent=pg;else storyLines(el,pg);}return;}
 el.classList.toggle('sleft',!!(pg&&pg.o));el.classList.toggle('sornp',!!(pg&&pg.orn));
  if(pg.orn){const o=document.createElement('span');o.className='sorn';o.textContent='❦';o.setAttribute('aria-hidden','true');el.appendChild(o);return;} // a printer's flower on a page left open before a facing pair
- if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.dir='auto';o.textContent=pg.o;box.appendChild(o);const n=typeof LANG_NAMES!=='undefined'&&LANG_NAMES[pg.l];if(n){const f=document.createElement('span');f.className='slang';f.textContent=n;box.appendChild(f);}}if(pg.e){const e=document.createElement('span');e.textContent=pg.e;box.appendChild(e);}el.appendChild(box);return;}
+ if(!pg.t){const box=document.createElement('span');box.className='sbi';if(pg.o){const o=document.createElement('span');o.className='sorig';o.lang=pg.l||'';o.dir='auto';if(storyLines(o,pg.o))el.classList.add('spoem');box.appendChild(o);const n=typeof LANG_NAMES!=='undefined'&&LANG_NAMES[pg.l];if(n){const f=document.createElement('span');f.className='slang';f.textContent=n;box.appendChild(f);}}if(pg.e){const e=document.createElement('span');storyLines(e,pg.e);box.appendChild(e);}el.appendChild(box);return;}
  const t=document.createElement('b');t.textContent=pg.t;el.appendChild(t);if(pg.by){const by=document.createElement('span');by.className='sby';by.textContent=pg.by;el.appendChild(by);}}
 /* THE SONG BOOK (Jackie, Nov 17): a read about a real song carries its record from the crates (rec, js/stories.js). The open
    book then has a Play the record button: it streams the old record, and a caption says who is playing. Tap it again or close

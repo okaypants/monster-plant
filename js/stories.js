@@ -691,7 +691,7 @@ const STORIES={
   {t:'Poetry',by:'Marianne Moore, 1919',src:'Marianne Moore, "Poetry" (Others, July 1919), as printed in Poems (London: The Egoist Press, 1921); Project Gutenberg ebook 62833.',p:[
    'A poem about poetry, by a poet who begins by saying she does not care for it either.',
    'I too, dislike it: there are things that are important beyond all this fiddle.',
-   'Reading it, however, with a perfect contempt for it, one discovers that there is in\nit after all, a place for the genuine.',
+   'Reading it, however, with a perfect contempt for it, one discovers that there is in it after all, a place for the genuine.',
    'Hands that can grasp, eyes\nthat can dilate, hair that can rise\nif it must,',
    'Marianne Moore kept rewriting this poem for fifty years. The last version is three lines long.']},
   {t:'First Fig',by:'Edna St. Vincent Millay, 1920',src:'Edna St. Vincent Millay, "First Fig" and "Second Fig", in A Few Figs from Thistles (New York: Frank Shay, 1920); Project Gutenberg ebook 4399.',p:[

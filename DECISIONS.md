@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Lines that run over are indented, in every book (Nov 27)
+
+- Jackie: "review how all the books are set when you open them some are bad".
+- A page is narrow, so a line of a poem or song often runs over. The run-over used to start at the margin like a new line, so nobody could tell where a line really ended. Every written line is now set as its own line with its run-over indented, as a printed book of poems does it.
+- A page that starts with a heading in capitals (Tender Buttons, Renard's animals) has the heading in bold and its text under it as an ordinary paragraph.
+- Words in another language used to be centred, which broke badly when they had several lines. With more than one line they are now set at the left the same way.
+- Checked on review sheets of all 17 books (`research_notes/books_review/`).
+
 ### The fifth new book, the first translated reads, and no debug button (Nov 27)
 
 - **Small strange things** is the seventeenth book: Tagore's Stray Birds (his own English), Jules Renard's one-line animals (French and English), and Khlebnikov's Incantation by Laughter (Russian, with an explanation in place of a translation).
