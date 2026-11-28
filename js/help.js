@@ -1,7 +1,7 @@
 'use strict';
 /* THE CHEAT SHEET (Jackie, Nov 27: "maybe we should have a little cheat sheet help tab thing that pops up for everything that does
    something and says what", "like a translucent little ? in a circle you can click"). A small see-through ? in a circle sits
-   in the bottom right corner of every room. A tap opens a sheet that lists everything in that room that does something, with
+   at the top left of every room, just before the Rooms button. A tap opens a sheet that lists everything in that room that does something, with
    what it does, in plain words. A tap on the ×, outside the sheet or on the ? again puts it away.
    The lists are written by hand from what the rooms really do (js/input.js, js/fidgets.js, js/movieroom.js): when a thing is
    added, changed or taken out, change its line here too. */
@@ -47,10 +47,9 @@ function helpOpen(){if(helpEl){helpClose();return;}if(typeof sfx==='function')sf
  const R=helpEl.querySelector('.helprows');R.style.gridTemplateRows='repeat('+Math.ceil(H.rows.length/2)+',auto)'; /* two columns read downwards, left then right */for(const [ic,name,what] of H.rows){const d=document.createElement('div');d.className='helprow';const i=document.createElement('i');i.textContent=ic;i.setAttribute('aria-hidden','true');const b=document.createElement('b');b.textContent=name;const s=document.createElement('span');s.textContent=what;d.append(i,b,s);R.appendChild(d);}
  helpEl.querySelector('.helpx').onclick=helpClose;helpEl.addEventListener('click',e=>{if(e.target===helpEl)helpClose();});helpEl.addEventListener('pointerdown',e=>e.stopPropagation());ui.appendChild(helpEl);}
 helpBtn.addEventListener('click',e=>{e.stopPropagation();helpOpen();});helpBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-/* It sits in the bottom right corner of the room, in from the edges (Jackie, Nov 27: "i also want it in the bottom right but also
-   spaced away from margins"; it began beside the Rooms button). The style sheet places it; this only hides it while the game
-   has not begun or a full page such as the journal, the sampler or Scorimba is open. It also steps aside for a tray along
-   the bottom and for the remote, which use that corner (index.html). */
+/* It stands first at the top left, 18 pixels in, with the Rooms button straight after it (Jackie, Nov 27: "put the ? before ...
+   rooms"). The style sheet places both; this only hides the ? while the game has not begun or a full page such as the journal,
+   the sampler or Scorimba is open. */
 function helpPlace(){helpBtn.hidden=!st.started||[...document.querySelectorAll('.screen')].some(e=>!e.matches('.movieroom,.helpsheet'));}
 /* No timer: it finds its place only when something that could move or hide it happens (the window changes size, or a page is
    opened or closed over the room), which costs a phone nothing while you simply play (Jackie, Nov 27: "do whatever is best also

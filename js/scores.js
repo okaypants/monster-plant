@@ -17,10 +17,15 @@ const scoreKey=f=>f.id+(f.f?'/'+f.f:''); // one soundtrack a film
 function scoreParts(r){if(!r)return [];if(r.parts&&r.parts.length)return r.parts;return r.blob?[{t:0,dur:r.dur||0,blob:r.blob,mime:r.mime||r.blob.type||''}]:[];}
 const scoreBytes=r=>scoreParts(r).reduce((n,p)=>n+((p.blob&&p.blob.size)||0),0),scoreEnd=r=>scoreParts(r).reduce((n,p)=>Math.max(n,p.t+p.dur),0);
 function scoreCover(P){const S=P.map(p=>[p.t,p.t+p.dur]).sort((a,b)=>a[0]-b[0]);let n=0,e=-1;for(const[a,b]of S){if(b<=e)continue;n+=b-Math.max(a,e);e=b;}return n;} // seconds of film with sound, counting overlaps once
-function scorePut(f,take){const parts=scoreParts(take).map(p=>({t:p.t,dur:p.dur,blob:p.blob,mime:p.mime}));return scoresDo('readwrite',s=>s.put({parts,dur:scoreEnd({parts}),created:take.created||Date.now(),meta:take.meta||'',film:f.t,title:'',by:take.by||'',card:take.card||0},scoreKey(f)));}
+/* A part may be a song from the sampler laid under the film (Jackie, Nov 27: "yes we should build a way to work a sampler piece into a
+   film score", "maybe you can like layer into kalimba", "i think for the sampler you can crop it or loop it but that's it"). Such a
+   part carries the song's name, and loop when it is to go round and round for the whole of its stretch: its sound is one pass
+   only, however long it runs, so a loop under a whole film costs no more room than the song itself. */
+function scorePart(p){const o={t:p.t,dur:p.dur,blob:p.blob,mime:p.mime};if(p.loop)o.loop=1;if(p.name)o.name=String(p.name).slice(0,40);return o;}
+function scorePut(f,take){const parts=scoreParts(take).map(scorePart);return scoresDo('readwrite',s=>s.put({parts,dur:scoreEnd({parts}),created:take.created||Date.now(),meta:take.meta||'',film:f.t,title:'',by:take.by||'',card:take.card||0},scoreKey(f)));}
 /* Plays every part that belongs to the film's current moment. sync(t, playing) is called often while a film runs. */
-function scorePlayer(rec){const P=scoreParts(rec).map(p=>({t:p.t,dur:p.dur,a:new Audio(URL.createObjectURL(p.blob))}));
- return {n:P.length,sync(t,playing){for(const p of P){const on=playing&&t>=p.t&&t<p.t+p.dur;if(!on){if(!p.a.paused)try{p.a.pause();}catch(e){}continue;}const want=t-p.t;if(Math.abs(p.a.currentTime-want)>.35)try{p.a.currentTime=want;}catch(e){}if(p.a.paused){const q=p.a.play();if(q&&q.catch)q.catch(()=>{});}}},
+function scorePlayer(rec){const P=scoreParts(rec).map(p=>{const a=new Audio(URL.createObjectURL(p.blob));a.loop=!!p.loop;return {t:p.t,dur:p.dur,loop:!!p.loop,a};});
+ return {n:P.length,sync(t,playing){for(const p of P){const on=playing&&t>=p.t&&t<p.t+p.dur;if(!on){if(!p.a.paused)try{p.a.pause();}catch(e){}continue;}const L=p.loop&&isFinite(p.a.duration)&&p.a.duration>0?p.a.duration:0,want=L?(t-p.t)%L:t-p.t,off=Math.abs(p.a.currentTime-want);if(off>.35&&!(L&&L-off<.35))try{p.a.currentTime=want;}catch(e){}if(p.a.paused){const q=p.a.play();if(q&&q.catch)q.catch(()=>{});}}},
   stop(){for(const p of P)try{p.a.pause();}catch(e){}},free(){this.stop();for(const p of P)URL.revokeObjectURL(p.a.src);}};}
 /* SO IT NEVER FILLS A PHONE (Jackie, Nov 27: "how do we make sure this doesn't kill anyones phone cumulatively overtime"). A
    soundtrack is recorded small (about a quarter of a megabyte a minute), there is one a film, and all of them together may take
@@ -36,12 +41,12 @@ function scoreGetKey(k){return scoresDo('readonly',s=>s.get(k)).catch(()=>null);
    part starts and how big it is), the description, then the parts' sound one after another. Someone else adds the file in their movie room and it is kept beside their own, under
    the film's key with '#' and a few letters after it, so it never replaces theirs. Nothing is sent anywhere by the game itself. */
 const scoreFilmKey=k=>String(k).split('#')[0];
-function scoreFile(k){return scoreGetKey(k).then(r=>{if(!r)return null;const P=scoreParts(r),head=new TextEncoder().encode(JSON.stringify({v:2,key:scoreFilmKey(k),film:r.film||'',by:r.by||'',card:r.card||0,parts:P.map(p=>({t:+p.t.toFixed(2),dur:+p.dur.toFixed(2),size:p.blob.size,mime:p.mime||p.blob.type||''}))})),n=new Uint8Array(4);new DataView(n.buffer).setUint32(0,head.length);
+function scoreFile(k){return scoreGetKey(k).then(r=>{if(!r)return null;const P=scoreParts(r),head=new TextEncoder().encode(JSON.stringify({v:2,key:scoreFilmKey(k),film:r.film||'',by:r.by||'',card:r.card||0,parts:P.map(p=>{const o={t:+p.t.toFixed(2),dur:+p.dur.toFixed(2),size:p.blob.size,mime:p.mime||p.blob.type||''};if(p.loop)o.loop=1;if(p.name)o.name=p.name;return o;})})),n=new Uint8Array(4);new DataView(n.buffer).setUint32(0,head.length);
  const name=((r.film||'soundtrack')+(r.by?' scored by '+r.by:'')).replace(/[^\w \-]+/g,'').trim().slice(0,60)||'soundtrack';return new File([new TextEncoder().encode('MPS1'),n,head].concat(P.map(p=>p.blob)),name+'.mpscore',{type:'application/octet-stream'});});}
 function scoreFromFile(file){return file.arrayBuffer().then(buf=>{const u=new Uint8Array(buf),bad=()=>{throw new Error('not a soundtrack');};if(u.length<12||String.fromCharCode(u[0],u[1],u[2],u[3])!=='MPS1')bad();const n=new DataView(buf).getUint32(4);if(n>20000||8+n>=u.length)bad();
  const h=JSON.parse(new TextDecoder().decode(u.subarray(8,8+n)));if(!h||typeof h.key!=='string')bad();
  const L=Array.isArray(h.parts)?h.parts:[{t:0,dur:+h.dur||0,size:u.length-8-n,mime:h.mime}],parts=[];let o=8+n; /* a file from before parts is one part from the start */
- if(!L.length||L.length>200)bad();for(const q of L){const size=q.size|0;if(size<=0||o+size>u.length||!/^audio\//.test(q.mime||''))bad();parts.push({t:Math.max(0,+q.t||0),dur:Math.max(0,+q.dur||0),mime:q.mime,blob:new Blob([u.subarray(o,o+size)],{type:q.mime})});o+=size;}
+ if(!L.length||L.length>200)bad();for(const q of L){const size=q.size|0;if(size<=0||o+size>u.length||!/^audio\//.test(q.mime||''))bad();{const part={t:Math.max(0,+q.t||0),dur:Math.max(0,+q.dur||0),mime:q.mime,blob:new Blob([u.subarray(o,o+size)],{type:q.mime})};if(q.loop)part.loop=1;if(q.name)part.name=String(q.name).slice(0,40);parts.push(part);}o+=size;}
  return {key:h.key,film:String(h.film||'').slice(0,80),by:String(h.by||'').slice(0,30),card:Math.max(0,Math.min(3,h.card|0)),parts};});}
 function scoreAdd(rec){return scoreList().then(L=>{if(L.reduce((n,q)=>n+q.size,0)+scoreBytes(rec)>SCORES_MAX)throw new Error('full');const k=rec.key+'#'+Math.random().toString(36).slice(2,8);
  return scoresDo('readwrite',s=>s.put({parts:rec.parts,dur:scoreEnd(rec),created:Date.now(),meta:'',film:rec.film,title:'',by:rec.by,card:rec.card,from:1},k)).then(()=>k);});}

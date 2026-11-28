@@ -2,6 +2,20 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A sampler song can be laid into a film's score (Nov 27)
+
+- Jackie: "and yes we should build a way to work a sampler piece into a film score", "maybe you can like layer into kalimba", "i think for the sampler you can crop it or loop it but that's it".
+- In Scorimba's soundtrack sheet, "add a song from the sampler" lists the songs finished in the sampler. Choosing one gives two things to set and no more: where it starts and ends, and whether it loops to the end of the film. "listen" plays the result.
+- It goes in as a part that begins where the film is paused, beside whatever is played and recorded in Scorimba, and is listed with the song's name. It can be taken out like any part.
+- It plays with the film in Scorimba and in the movie room, and travels in the share file.
+- To stay small it is kept as plain sound at half the sampler's rate, about two thirds of a megabyte a minute. A loop stores one pass only.
+- The soundtrack sheet now opens even before anything is recorded, so a song can be the first part.
+
+### The ? stands before the Rooms button (Nov 27)
+
+- Jackie, after it had been put at the bottom right: "just kidding put the ? before journal name tag", then "no", "before rooms".
+- The ? is first at the top left, 18 pixels in, and the Rooms button comes straight after it, in both rooms.
+
 ### The cat plays in the popcorn (Nov 27)
 
 - Jackie: "i want the cat to play in the popcorn more too", "like so cute a lot".
