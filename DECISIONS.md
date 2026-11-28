@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A curtain colour stays on the cloth when the curtains are closed (Nov 27)
+
+- Jackie: "The bleeding colors in the curtain are srill a problem with they are closed".
+- The closed curtains' picture has the orange frame at its edges, and the chosen colour was laid over all of it. The cloth is now cut out on its own (movieroom/curtain_cloth.png, tools/curtain_tint.py) and the colour is laid on that alone, so the frame keeps its own colours.
+
 ### The decorations list keeps its box all the way down (Nov 27)
 
 - Jackie: "Decorations selections don't have a full background box".
