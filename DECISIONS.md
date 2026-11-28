@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Five more reads for the new books (Nov 27)
+
+- Jackie: "book reads".
+- **The moderns** gains The Great Frost (Woolf, Orlando, 1928), The Letter (Nella Larsen, Passing, 1929) and Before the Law (Kafka, 1915, German facing English made for the game).
+- **Odd novels** gains Sultana's Dream (Rokeya Sakhawat Hossain, 1905) and Mhudi (Sol Plaatje, 1930).
+- Each is quoted from the text on Wikisource named in its `src`.
+- Still not in, with the reason: A Room of One's Own (no proofread text found); The Red Wheelbarrow, Paris: A Poem and Dead Stars (no text found); "in Just-" (the text found had lost the poem's spacing, which is the poem); archy and mehitabel (no text found); Fénéon (the news items are nearly all deaths and crimes, and gentle ones need choosing by hand); Ranpo, Hanshichi, Bing Xin, Tablada, Gómez de la Serna, Walser and Colette (originals not yet fetched).
+
 ### A sampler song can be laid into a film's score (Nov 27)
 
 - Jackie: "and yes we should build a way to work a sampler piece into a film score", "maybe you can like layer into kalimba", "i think for the sampler you can crop it or loop it but that's it".

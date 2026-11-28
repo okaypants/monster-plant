@@ -616,7 +616,28 @@ const STORIES={
    {o:'„Wie heißt du denn?“ fragt man ihn. „Odradek“, sagt er.',l:'de',e:'“And what is your name?” you ask. “Odradek,” it says.'},
    {o:'„Und wo wohnst du?“ „Unbestimmter Wohnsitz“, sagt er und lacht;',l:'de',e:'“And where do you live?” “No fixed address,” it says, and laughs;'},
    {o:'Es klingt etwa so, wie das Rascheln in gefallenen Blättern.',l:'de',e:'It sounds something like the rustling of fallen leaves.'},
-   'The father of the house worries about only one thing. Odradek will probably still be rolling down the stairs when everyone else is gone.']}],
+   'The father of the house worries about only one thing. Odradek will probably still be rolling down the stairs when everyone else is gone.']},
+  {t:'The Great Frost',by:'Virginia Woolf, 1928',src:'Virginia Woolf, Orlando: A Biography (London: Hogarth Press, 1928), chapter 1; text as proofread on English Wikisource from that edition, read on Nov 27, 2026.',p:[
+   'Orlando is a made-up life story of someone who lives for more than three hundred years. Early on, in the time of King James, winter comes to England.',
+   'The Great Frost was, historians tell us, the most severe that has ever visited these islands.',
+   'Birds froze in mid-air and fell like stones to the ground.',
+   'The fields were full of shepherds, ploughmen, teams of horses, and little bird-scaring boys all struck stark in the act of the moment,',
+   'one with his hand to his nose, another with the bottle to his lips, a third with a stone raised to throw at the raven who sat, as if stuffed, upon the hedge within a yard of him.',
+   'The river Thames freezes twenty feet deep, and the King holds a carnival on the ice.']},
+  {t:'The Letter',by:'Nella Larsen, 1929',src:'Nella Larsen, Passing (New York: Alfred A. Knopf, 1929), part 1, chapter 1, opening; text as on English Wikisource, read on Nov 27, 2026.',p:[
+   'Passing is a short novel set in Harlem and Chicago in the 1920s, about two women who grew up together and chose very different lives. It opens with the post.',
+   'It was the last letter in Irene Redfield’s little pile of morning mail.',
+   'After her other ordinary and clearly directed letters the long envelope of thin Italian paper with its almost illegible scrawl seemed out of place and alien.',
+   'And there was, too, something mysterious and slightly furtive about it. A thin sly thing which bore no return address to betray the sender.',
+   'Purple ink. Foreign paper of extraordinary size.',
+   'Irene knows at once who it is from, and does not want to open it.']},
+  {t:'Before the Law',by:'Franz Kafka, 1915',src:'Franz Kafka, "Vor dem Gesetz", first printed in Selbstwehr (Prague), 7 September 1915; German as proofread on German Wikisource from that printing. English made for the game from the German.',p:[
+   'A very short story by Franz Kafka, written in German in Prague. Kafka later put it inside a novel, where two people argue about what it means and do not agree.',
+   {o:'Vor dem Gesetz steht ein Türhüter.',l:'de',e:'Before the law stands a doorkeeper.'},
+   {o:'Zu diesem Türhüter kommt ein Mann vom Lande und bittet um Eintritt in das Gesetz.',l:'de',e:'A man from the country comes to this doorkeeper and asks to be let into the law.'},
+   {o:'Aber der Türhüter sagt, daß er ihm jetzt den Eintritt nicht gewähren könne.',l:'de',e:'But the doorkeeper says that he cannot let him in just now.'},
+   {o:'„Es ist möglich,“ sagt der Türhüter, „jetzt aber nicht.“',l:'de',e:'“It is possible,” says the doorkeeper, “but not now.”'},
+   'The man sits down on a stool beside the door to wait. The door is open the whole time.']}],
  detective:[
   {t:'Enter Hercule Poirot',by:'Agatha Christie, 1920',src:'Agatha Christie, The Mysterious Affair at Styles (New York: John Lane, 1920), chapter 2; Project Gutenberg ebook 863.',p:[
    'Agatha Christie wrote her first detective novel on a dare from her sister. This is the first time anyone ever saw Hercule Poirot.',
@@ -745,7 +766,23 @@ const STORIES={
    'He stood a moment on the steps of the bank, watching the human river that swirled down Broadway. Few noticed him. Few ever noticed him save in a way that stung.',
    '“The comet?”\n“The comet——”\nEverybody was talking of it.',
    'Jim, a bank messenger, is sent down to the deepest vault. While Jim is down there the comet’s tail passes over New York.',
-   'Jim comes up to a silent city, and finds one other person alive.']}],
+   'Jim comes up to a silent city, and finds one other person alive.']},
+  {t:'Sultana’s Dream',by:'Rokeya Sakhawat Hossain, 1905',src:'Rokeya Sakhawat Hossain, "Sultana’s Dream", The Indian Ladies’ Magazine (Madras), 1905, written in English; text as on English Wikisource, read on Nov 27, 2026.',p:[
+   'Rokeya Sakhawat Hossain was a Bengali writer who started a school for girls. She wrote this story in English in 1905.',
+   'Sultana dreams of a country called Ladyland, and a friend shows her round.',
+   'I met more than a hundred women while walking there, but not a single man.',
+   '‘Where are the men?’ I asked her.',
+   '‘In their proper places, where they ought to be.’',
+   '‘O, I see my mistake, you cannot know our customs, as you were never here before. We shut our men indoors.’',
+   'Ladyland runs on sunlight, has flying cars, and has not had a war in years. It is one of the first science fiction stories written by a woman from India.']},
+  {t:'Mhudi',by:'Sol T. Plaatje, 1930',src:'Solomon Tshekisho Plaatje, Mhudi: An Epic of South African Native Life a Hundred Years Ago (Lovedale: Lovedale Press, 1930), chapter 1, opening; text as on English Wikisource, read on Nov 27, 2026.',p:[
+   'Sol Plaatje was a newspaper editor, a translator of Shakespeare into Setswana, and a founder of what became the African National Congress.',
+   'This is the first novel in English by a Black South African. It begins by setting the scene.',
+   'Two centuries ago the Bechuana tribes inhabited the extensive areas between Central Transvaal and the Kalahari Desert.',
+   'In this domain they led their patriarchal life under their several Chiefs who owed no allegiance to any king or emperor.',
+   'They raised their native corn which satisfied their simple wants,',
+   'and, when not engaged in hunting or in pastoral duties, the peasants whiled away their days in tanning skins or sewing magnificent fur rugs.',
+   'Plaatje finished the book in 1920. It took ten years to find a publisher.']}],
  /* SMALL STRANGE THINGS, the fifth of the new books (Nov 27): very short forms. */
  small:[
   {t:'Stray Birds',by:'Rabindranath Tagore, 1916',src:'Rabindranath Tagore, Stray Birds (New York: Macmillan, 1916), numbers 1, 6, 18 and 43, written in English by the author; Project Gutenberg ebook 6524.',p:[
