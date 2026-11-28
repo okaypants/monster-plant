@@ -9,7 +9,7 @@ function openSampler(){
  if(samplerEl)return;
  radioHold(true); // the radio goes quiet while the sampler is open
  samplerEl=document.createElement('div');samplerEl.className='screen sampler';
- const f=document.createElement('iframe');f.src='sampler.html';f.title='The sampler';f.setAttribute('allow','autoplay');
+ const f=document.createElement('iframe');f.src='sampler.html?v='+encodeURIComponent(window.MP_VERSION||''); /* the version is in the address so a phone never shows an old copy of the sampler */f.title='The sampler';f.setAttribute('allow','autoplay');
  samplerEl.appendChild(f);ui.appendChild(samplerEl);}
 function closeSampler(){if(!samplerEl)return;samplerEl.remove();samplerEl=null;radioHold(false);}
 addEventListener('message',e=>{if(e.data==='mp-sampler-close'&&samplerEl&&e.source===samplerEl.firstChild.contentWindow)closeSampler();});

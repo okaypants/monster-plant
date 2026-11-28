@@ -99,12 +99,18 @@ body.erase #slist .r b{text-decoration:line-through}
 #tr #play{background:#8a8a88;color:var(--ink)}
 #tr #erase{background:#dcdcda}
 #tr .b.on,#tr #play.on,#tr #erase.on{background:var(--k);color:var(--ink)}
+/* the introduction (Jackie, Nov 27): shown the first time the sampler is opened, and again from the ? key */
+#sintro{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:rgba(30,30,30,.62)}#sintro.on{display:flex}
+#sintro .box{background:var(--body);color:var(--k);border:var(--bw) solid var(--k);border-radius:2.4vh;padding:3.2vh 3.6vh;width:min(88vw,620px);max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:2.2vh;box-sizing:border-box;text-align:left}
+#sintro h3{margin:0;font-size:max(17px,4.8vh);letter-spacing:.06em}#sintro p{margin:0;font-size:max(14px,3.5vh);font-weight:600;line-height:1.42}
+#sintro .b{align-self:stretch;min-height:11vh;background:var(--acc);color:var(--acctx);font-size:max(15px,4vh)}
 </style>
 </head>
 <body>
 <div id="m">
   <div id="top">
     <div id="lcd"><div><div id="l1">THE CRATES</div><div id="l2">Pick a record on the left.</div></div><div id="bar"><div id="barF"></div></div></div>
+    <button class="b" id="help" aria-label="About the sampler">?</button>
     <button class="b" id="x" aria-label="Back to the room">✕</button>
   </div>
   <div id="mid">
@@ -144,6 +150,11 @@ body.erase #slist .r b{text-decoration:line-through}
     </div>
   </div>
 </div>
+<div id="sintro"><div class="box"><h3>THE CRATES</h3>
+<p>The Crates is a simple sampler. It plays old records and sounds that are free for everyone to use, such as 78s published more than a hundred years ago.</p>
+<p>Dig up a record and play it. Hold a pad while it plays to keep that snippet on the pad. Then tap the pads to build a beat and a song.</p>
+<p>A finished song can be sent to the radio on the desk, where it comes on now and then.</p>
+<button class="b" type="button" id="siGo">BEGIN</button></div></div>
 <script>
 'use strict';
 /* The Crates, Monster Plant edition: the sampler on the top shelf.
@@ -552,6 +563,13 @@ $('creset').onclick=()=>{const d=pads[SEQ.sel];if(!d)return;if(d.s0||d.s1)dirty=
 addEventListener('resize',()=>{if(!$('pClip').hidden)clipUI()});
 loadWork();
 chips();sync();beatUI();
+/* THE INTRODUCTION (Jackie, Nov 27: "Include an introduction to the sampler, like the kalimbascore noting it's a simple sampler that
+   uses public domain music (78s etc) and sounds to build songs you can have featured on the in-game radio"). It comes up the
+   first time the sampler is opened and whenever ? is pressed. It says nothing about film scores, because a song made here
+   cannot be put on a film yet. */
+(function(){const I=document.getElementById('sintro'),show=on=>{I.classList.toggle('on',!!on);if(!on){try{localStorage.setItem('mp-sampler-intro','1')}catch(e){}}};
+ document.getElementById('help').addEventListener('click',()=>show(true));document.getElementById('siGo').addEventListener('click',()=>show(false));I.addEventListener('pointerdown',e=>e.stopPropagation());
+ let seen=false;try{seen=!!localStorage.getItem('mp-sampler-intro')}catch(e){}if(!seen&&!navigator.webdriver)show(true);window.samplerIntro=show;})();
 </script>
 </body>
 </html>

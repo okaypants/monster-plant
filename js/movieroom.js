@@ -231,7 +231,7 @@ function mvChannelsSet(j){const L=((j&&j.channels)||[]).map(c=>({n:c.n,name:c.na
    city films, puppets and silhouettes, early records of far places, industrial films, odd sponsored films, colour cartoons,
    features and 1950s science fiction whose copyrights lapsed, and two long silents. They join the six collections above in the
    library's list. A film marked mute plays without its copy's sound (a modern score, or a record with its own term). Tonight's
-   film is still drawn from the first six only, and Kalimba-Score is offered only the silent ones. */
+   film is still drawn from the first six only, and Scorimba (the film scorer, called Kalimba-Score until Jackie renamed it on Nov 27) is offered only the silent ones. */
 function mvLibrarySet(j){if(!j||!Array.isArray(j.shelves))return;for(const sh of j.shelves){if(MV_SHELVES.some(q=>q.id===sh.id))continue;MV_SHELVES.push({id:sh.id,name:sh.name,about:sh.about,pic:'movieroom/acc_reel.png',extra:1,talk:sh.films.some(f=>!f.mute),films:sh.films});}}
 fetch('movieroom/library.json').then(r=>r.ok?r.json():null).then(mvLibrarySet).catch(()=>{});
 mvChannelsSet(null);fetch('movieroom/channels.json').then(r=>r.ok?r.json():null).then(j=>{if(j)mvChannelsSet(j);}).catch(()=>{});
@@ -436,7 +436,7 @@ function mvThingsWire(){const st2=mvEl.querySelector('.mvstage'),add=(k,label,fn
  add('machine','Popcorn',()=>{});add('buckets','Popcorn',()=>mvOffer('corn'));{const m=st2.querySelector('.mvthing[data-k=machine]');m.onclick=null;m.style.touchAction='none';m.addEventListener('pointerdown',e=>{e.preventDefault();try{m.setPointerCapture(e.pointerId);}catch(x){}mvPopDown();});['pointerup','pointercancel'].forEach(ev=>m.addEventListener(ev,mvPopUp));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')mvOffer('corn');});}
  mvWho.forEach((w,i)=>{const b=document.createElement('button');b.type='button';b.className='mvhot mvwho';b.dataset.i=i;b.setAttribute('aria-label',w.name);const h=w.pic.height*MV_SEAT.show;b.style.cssText=mvPct({x:w.x-w.pic.width/2,y:MV_SEAT.top-h,w:w.pic.width,h});b.onclick=()=>mvWhoTap(i);st2.insertBefore(b,mvEl.querySelector('.mvnote'));});add('fountain','Soda',()=>mvOffer('soda'));add('cups','Soda',()=>mvOffer('soda'));
  for(const k in MV_DRAWERS){MV_SPOTS['dr_'+k]=MV_DRAWERS[k];add('dr_'+k,{decor:'The decorations drawer',lights:'The string lights drawer',blankets:'The blankets drawer',curtains:'The curtains drawer',tickets:'The ticket stubs drawer',lost:'Lost and found'}[k]||'A drawer',()=>mvDrawer(k));}
- add('glasses','Tint the film',mvGlasses);add('boxset','Kalimba-Score',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
+ add('glasses','Tint the film',mvGlasses);add('boxset','Scorimba',openKalimba);add('books','Books about film',mvFilmBooks);mvEl.dataset.tint=MV_TINTS[mvTint];}
 /* THE DRAWERS (Jackie, Nov 27: "Maybe we should put something in each drawer in the movie room"; "Decorations go in a drawer. Cat toys
    in another. String lights in another."). The room has six drawers. Three are used so far:
    - the left-hand unit's drawer holds the decorations: choose an occasion and its garland hangs across the back of the couch

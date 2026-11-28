@@ -2,6 +2,17 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Kalimba-Score is renamed Scorimba (Nov 27)
+
+- Jackie: "but i want to rename kalimbascore Scorimba".
+- The name changes everywhere a player sees it: the shelf's label in the movie room, the page's title, its introduction, and the name given to a saved take. The line "adapted from the Kalimbasizer, a pocket thumb synthesizer" stays, as does the Kalimbasizer's own name on its start screen.
+
+### The sampler has an introduction (Nov 27)
+
+- Jackie: "Include an introduction to the sampler, like the kalimbascore noting it's a simple sampler that uses public domain music (78s etc) and sounds to build songs you can have featured on the in-game radio or maybe even fit into a film score!"
+- The first time the sampler opens, a page says what it is: a simple sampler that plays old records free for everyone to use, such as 78s more than a hundred years old; how to keep a snippet on a pad and build a song; and that a finished song can be sent to the radio. A ? key beside the close button brings the page back.
+- It does not mention film scores. A song made in the sampler cannot be put on a film yet, so saying so would be untrue. That would be a new feature.
+
 ### The ticket drawer says how tickets are earned (Nov 27)
 
 - Jackie: "Change the ticket drawer description to something like watch an entire film from your library and collect a ticket stored here."
