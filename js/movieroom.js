@@ -110,11 +110,11 @@ function mvHop(w,n=2){let k=0;const up=()=>{w.hop=6;mvSeats();setTimeout(()=>{w.
    left alone for a while it goes back to sleep. Its own pictures, swapped whole; it is not a dark shape. */
 const MV_CAT_SPOTS=[{x:1000,y:702,k:.44,sleep:['loaf2','curl1']},{x:205,y:912,k:.62,sleep:['curl1','side1']},{x:1475,y:912,k:.62,sleep:['curl1','loaf2']}],MV_CAT_NAP=12000;
 let mvCat=null,mvCatT=0;
-function mvCatShow(name){const im=mvEl&&mvEl.querySelector('.mvcat'),f=typeof CATF!=='undefined'&&CATF[name];if(!im||!f||!mvCat)return;
- const put=()=>{const w=f.naturalWidth*mvCat.k,h=f.naturalHeight*mvCat.k;im.src=f.src;im.dataset.pose=name;im.style.cssText='left:'+((mvCat.x-w/2)/MV.W*100)+'%;top:'+((mvCat.y-h)/MV.H*100)+'%;width:'+(w/MV.W*100)+'%;height:'+(h/MV.H*100)+'%';im.hidden=false;};
+function mvCatShow(name,flip){const im=mvEl&&mvEl.querySelector('.mvcat'),f=typeof CATF!=='undefined'&&CATF[name];if(!im||!f||!mvCat)return;
+ const put=()=>{const w=f.naturalWidth*mvCat.k,h=f.naturalHeight*mvCat.k;im.src=f.src;im.dataset.pose=name;im.style.cssText='left:'+((mvCat.x-w/2)/MV.W*100)+'%;top:'+((mvCat.y-h)/MV.H*100)+'%;width:'+(w/MV.W*100)+'%;height:'+(h/MV.H*100)+'%'+(flip?';transform:scaleX(-1)':'');im.hidden=false;};
  if(ok(f))put();else f.addEventListener('load',put,{once:true});}
 function mvCatSleep(){if(!mvCat)return;mvCat.awake=false;mvCatShow(mvCat.nap);}
-function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');if(typeof cat!=='undefined'&&cat.sulk&&cat.state==='away'){cat.sulk=false;cat.awayT=0;mvNote(catName()+' will come back to the study with you.');} /* found sulking here after a tantrum in the study (js/tantrum.js): a pet ends the sulk, and the cat is back in the study when you are */
+function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');mvCat.playing=false;if(typeof cat!=='undefined'&&cat.sulk&&cat.state==='away'){cat.sulk=false;cat.awayT=0;mvNote(catName()+' will come back to the study with you.');} /* found sulking here after a tantrum in the study (js/tantrum.js): a pet ends the sulk, and the cat is back in the study when you are */
  if(!mvCat.awake){mvCat.awake=true;mvCatShow('sit1');}
  else{mvCatShow('pet1');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('pet2');},260);setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit2');},700);}
  mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
@@ -366,13 +366,28 @@ function mvPopStep(p){if(p.rest){p.life--;return;}p.vy+=MV_POP_G;p.vx*=.992;p.vy
 function mvPopDraw(x,p,U){const X=Math.round(p.x/U)*U,Y=Math.round(p.y/U)*U,S=MV_POP_SHAPES[p.s];if(p.rest&&p.life<40&&p.life%8<4)return; // it blinks away at the end
  x.fillStyle='#b98a3e';for(const[a,b]of S)x.fillRect(X+a-2,Y+b-2,8,8);x.fillStyle=p.c;for(const[a,b]of S)x.fillRect(X+a-4,Y+b-4,8,8);x.fillStyle='#fffdf2';x.fillRect(X+S[1][0]-4,Y+S[1][1]-4,4,4);}
 function mvPopOne(){const o=MV_ON.pop;mvFx.push({pop:true,x:o.x+76+rnd(-34,34),y:o.y+34,vx:rnd(-2.5,9.5)*(Math.random()<.85?1:.4),vy:rnd(-13,-6),e:rnd(.28,.46),n:0,s:Math.floor(rnd(0,3)),f1:rnd(772,930),f2:rnd(918,936),life:900,end:1e9,c:Math.random()<.2?'#fff3c4':'#f6e3a1',land:Math.random()<.04?()=>mvCatPounce(300):null});if(mvFx.length>260)mvFx.shift();mvFxGo();}
-function mvPopFlyGo(){const now=performance.now();if(mvPopFly){mvPopFly.t0=Math.min(mvPopFly.t0,now-MV_POP_FOR*.15);mvPopFly.end=now+MV_POP_FOR*.85;return;} /* started again while popping: it keeps going from the rush */mvPopFly={t0:now,end:now+MV_POP_FOR};
+function mvPopFlyGo(){const now=performance.now();setTimeout(mvCatPlayGo,1200);if(mvPopFly){mvPopFly.t0=Math.min(mvPopFly.t0,now-MV_POP_FOR*.15);mvPopFly.end=now+MV_POP_FOR*.85;return;} /* started again while popping: it keeps going from the rush */mvPopFly={t0:now,end:now+MV_POP_FOR};
  const tick=()=>{if(!mvPopFly||!mvEl)return;const t=performance.now(),k=(t-mvPopFly.t0)/(mvPopFly.end-mvPopFly.t0);if(k>=1){mvPopFly=null;return;}
   mvPopOne();if(k>.15&&k<.7&&Math.random()<.45)mvPopOne();if(Math.random()<.12)sfx('tick');
   const gap=k<.15?420-k/.15*340:k<.7?80:80+(k-.7)/.3*620;mvPopFlyT=setTimeout(tick,gap*rnd(.6,1.4));};tick();}
 function mvFxGo(){if(!mvFxOn){mvFxOn=true;requestAnimationFrame(mvFxLoop);}}
 function mvKernel(x,y,vx,vy,o){mvFx.push(Object.assign({x,y,vx,vy,g:.5,life:400,end:MV_SEAT.top-2,c:'#f6e3a1'},o||{}));if(mvFx.length>220)mvFx.shift();mvFxGo();}
-function mvCatPounce(x){if(!mvCat)return;clearTimeout(mvCatT);mvCat.awake=true;if(mvCat.y<800){mvCatShow('sit1');mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);return;} /* on the couch's back it only looks up */mvCatShow(x<mvCat.x?'leap_l':'pounce');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit1');},900);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
+/* THE CAT PLAYS IN THE POPCORN (Jackie, Nov 27: "i want the cat to play in the popcorn more too", "like so cute a lot"). It used to
+   pounce once, now and then. Now, a moment after the machine starts, the cat wakes, comes down to the floor by the machine and
+   plays for as long as popcorn is flying or lying there: it stalks a piece, pounces on it, leaps at one in the air, bows, and
+   eats the ones it catches, which are then gone. It follows the pieces left and right, facing the way it goes. When the floor
+   is clear it washes and goes back to sleep. A tap on the cat stops the game for a pet. Its own pictures, swapped whole and
+   moved in whole steps; nothing is drawn. */
+const MV_CATPLAY={x0:120,x1:400,y:912,k:.62,reach:48,step:90};
+function mvCatPlayGo(){if(!mvCat||mvCat.playing||!mvEl)return;clearTimeout(mvCatT);const sp=MV_CAT_SPOTS[1];Object.assign(mvCat,{x:Math.max(MV_CATPLAY.x0,Math.min(MV_CATPLAY.x1,mvCat.y>800?mvCat.x:sp.x)),y:MV_CATPLAY.y,k:MV_CATPLAY.k,nap:sp.sleep[Math.floor(Math.random()*sp.sleep.length)],playing:true,awake:true,ate:0});mvCatShow('sit1');mvCatT=setTimeout(mvCatPlayStep,500);}
+function mvCatPlayStep(){if(!mvEl||!mvCat||!mvCat.playing)return;const C=MV_CATPLAY,P=mvFx.filter(p=>p.pop&&p.x>C.x0-40&&p.x<C.x1+40&&p.y>730&&!(p.rest&&p.life<=40)),rest=P.filter(p=>p.rest);
+ if(!mvPopFly&&!rest.length){mvCat.playing=false;mvCatShow('groom1');setTimeout(()=>{if(mvCat&&!mvCat.playing&&mvCat.awake)mvCatShow('groom2');},700);setTimeout(()=>{if(mvCat&&!mvCat.playing&&mvCat.awake)mvCatShow('sit1');},1500);if(mvCat.ate&&mvEl.querySelector('.mvnote').hidden&&!mvInter)mvNote((typeof catName==='function'?catName():'The cat')+' ate '+mvCat.ate+' piece'+(mvCat.ate===1?'':'s')+' of popcorn.');mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);return;}
+ const L=rest.length&&Math.random()<.65?rest:P,t=L.length?L[Math.floor(Math.random()*L.length)]:null;let pose='playbow',flip=mvCat.left,wait=rnd(420,760);
+ if(t){const dx=t.x-mvCat.x;flip=dx<0;if(t.rest&&Math.abs(dx)<C.reach){pose='eat';t.life=1;mvCat.ate++;wait=720;if(Math.random()<.5)sfx('tick');}
+  else{mvCat.x=Math.round(Math.max(C.x0,Math.min(C.x1,mvCat.x+Math.max(-C.step,Math.min(C.step,dx)))));pose=t.rest?(Math.abs(dx)>C.step?'stalk':'pounce'):(Math.random()<.6?(dx<0?'leap_l':'leap_r'):'pounce');if(pose==='leap_l'||pose==='leap_r')flip=false;}}
+ else pose=['playbow','stalk','sit1'][Math.floor(Math.random()*3)];
+ mvCat.left=flip;mvCatShow(pose,flip&&pose!=='sit1');mvCatT=setTimeout(mvCatPlayStep,wait);}
+function mvCatPounce(x){if(!mvCat||mvCat.playing)return;clearTimeout(mvCatT);mvCat.awake=true;if(mvCat.y<800){mvCatShow('sit1');mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);return;} /* on the couch's back it only looks up */mvCatShow(x<mvCat.x?'leap_l':'pounce');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit1');},900);mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}
 /* holding the machine */
 function mvPopDown(){if(mvPopping)return;const t0=performance.now();mvPopping={t0,spilled:false};mvOver('mvpop','movieroom/acc_machine_pop.png',MV_ON.pop);sfx('tick');mvFxGo();mvPopFlyGo();
  const tick=()=>{if(!mvPopping||!mvEl)return;const held=performance.now()-mvPopping.t0;

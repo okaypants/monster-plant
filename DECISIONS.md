@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The cat plays in the popcorn (Nov 27)
+
+- Jackie: "i want the cat to play in the popcorn more too", "like so cute a lot".
+- It used to pounce once, now and then. Now, a moment after the popcorn machine starts, the cat wakes, comes down to the floor beside the machine and plays for as long as popcorn is flying or lying there. It stalks pieces, pounces, leaps at ones in the air, bows, and eats the ones it catches, which are then gone. It follows the pieces left and right and faces the way it goes.
+- When the floor is clear it washes, a note says how many pieces it ate, and it goes back to sleep. A tap on the cat stops the game for a pet.
+
 ### The small things that are always on screen sit the same distance from the edges (Nov 27)
 
 - Jackie: "imagine all the little text bubbles in the game that are there all the time -- rooms, journal, help. are each like equidistant from each side they are on up or down left or right".

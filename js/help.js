@@ -21,7 +21,7 @@ const HELP={main:{title:'The study',rows:[
   ['💿','Milk crate','Puts a record on the radio.'],
   ['🔮','Crystal ball','Tap for a prophecy.'],
   ['🌗','Moon dial','Tells you about tonight’s moon.'],
-  ['🃏','Moon box','A tarot reading.'],
+  ['🃏','Moon box','Birth charts, tarot and I Ching readings.'], /* Jackie, Nov 27: "Moon box has birth charts, tarot, and i ching readings" */
   ['🖼️','Picture viewer','Old pictures to look through.'],
   ['🔒','Lockbox','Keep your game safe with a backup.'],
   ['🐈','The cat','Tap to pet.'],
