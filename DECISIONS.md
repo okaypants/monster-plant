@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Three of the five new books are taken out (Nov 27)
+
+- Jackie: "forget most of the new books. they are formatted poorly and they don't read very well", "i like the old ones better". Asked which to keep, she kept New poems, Small strange things and the four new Cats reads.
+- The moderns, Detective stories and Odd novels are out of the game, with their covers. They were excerpts from longer works cut into pages, which is what read badly. Their texts are still in the repository's history if wanted.
+- The study has fourteen books, still four to a place.
+
 ### Five more reads for the new books (Nov 27)
 
 - Jackie: "book reads".

@@ -556,140 +556,12 @@ const STORIES={
    'A mother carries her eggs in a pouch on her belly, like a kangaroo.',
    'Once in a while you may find a bright blue one. It has caught a virus that forms tiny crystals under the shell.',
    'Turn over a stone or a log, and put it back the way you found it.']}],
- /* FIVE MORE BOOKS (Jackie, Nov 27: "i feel like our library is missing sooo much good stuff esp stuff that's recently public domain
+ /* TWO MORE BOOKS, New poems and Small strange things. Five were made; three (The moderns, Detective stories, Odd novels) were taken out the same day: "forget most of the new books. they are formatted poorly and they don't read very well", "i like the old ones better". They were excerpts from longer works; these two hold whole short pieces. (Jackie, Nov 27: "i feel like our library is missing sooo much good stuff esp stuff that's recently public domain
     the modernists and detective stories virginia woolf and stuff i don't even know about"; shown a list of six, "All six").
     These are well-known writers, which the first twelve books avoid; she asked for them. Every quoted page is word for word from
     the edition named in src (a Project Gutenberg transcription of it, read on Nov 27, 2026), with the printer's italics dropped.
     Everything here was first published in 1930 or earlier, so it is free to use in the United States. Several of these writers
     died after 1955 and are still in copyright in Britain and Europe. */
- moderns:[
-  {t:'Mrs Dalloway',by:'Virginia Woolf, 1925',src:'Virginia Woolf, Mrs. Dalloway (New York: Harcourt, Brace, copyright 1925), opening; Project Gutenberg ebook 71865.',p:[
-   'A whole novel that happens on one day in June, in London. A woman goes out to buy flowers for her party. This is how it begins.',
-   'Mrs. Dalloway said she would buy the flowers herself.',
-   'For Lucy had her work cut out for her. The doors would be taken off their hinges; Rumpelmayer’s men were coming.',
-   'And then, thought Clarissa Dalloway, what a morning—fresh as if issued to children on a beach.',
-   'What a lark! What a plunge!',
-   'The book never leaves her thoughts for long. People were not sure a novel was allowed to do that.']},
-  {t:'Kew Gardens',by:'Virginia Woolf, 1919',src:'Virginia Woolf, "Kew Gardens" (Hogarth Press, 1919), as collected in Monday or Tuesday (New York: Harcourt, Brace, 1921); Project Gutenberg ebook 29220.',p:[
-   'People walk past a flower bed on a hot day and talk. The story keeps looking down, at what is going on in the soil.',
-   'In the oval flower bed the snail, whose shell had been stained red, blue, and yellow for the space of two minutes or so, now appeared to be moving very slightly in its shell,',
-   'and next began to labour over the crumbs of loose earth which broke away and rolled down as it passed over them.',
-   'It appeared to have a definite goal in front of it,',
-   'The snail spends the rest of the story deciding whether to go round a dead leaf or under it.']},
-  {t:'Miss Brill',by:'Katherine Mansfield, 1920',src:'Katherine Mansfield, "Miss Brill" (Athenaeum, 26 November 1920), as collected in The Garden Party and Other Stories (1922); Project Gutenberg ebook 1429.',p:[
-   'Every Sunday Miss Brill goes to the park in France to listen to the band and to other people’s conversations. Today the fur comes too.',
-   'Miss Brill was glad that she had decided on her fur.',
-   'The air was motionless, but when you opened your mouth there was just a faint chill, like a chill from a glass of iced water before you sip,',
-   'and now and again a leaf came drifting—from nowhere, from the sky.',
-   'Miss Brill put up her hand and touched her fur. Dear little thing! It was nice to feel it again.',
-   'Katherine Mansfield was from New Zealand. Virginia Woolf said hers was the only writing she had ever been jealous of.']},
-  {t:'The Garden Party',by:'Katherine Mansfield, 1922',src:'Katherine Mansfield, "The Garden Party", in The Garden Party and Other Stories (1922), opening; Project Gutenberg ebook 1429.',p:[
-   'A family gets ready for a party on the lawn. The story begins in the middle of a thought, with the word “And”.',
-   'And after all the weather was ideal. They could not have had a more perfect day for a garden-party if they had ordered it.',
-   'Windless, warm, the sky without a cloud.',
-   'As for the roses, you could not help feeling they understood that roses are the only flowers that impress people at garden-parties;',
-   'the only flowers that everybody is certain of knowing.',
-   'Hundreds, yes, literally hundreds, had come out in a single night;']},
-  {t:'Araby',by:'James Joyce, 1914',src:'James Joyce, "Araby", in Dubliners (London: Grant Richards, 1914); Project Gutenberg ebook 2814.',p:[
-   'A boy in Dublin is in love with his friend’s sister and has never really spoken to her. Carrying the shopping home through a loud market, this is what goes on inside.',
-   'I imagined that I bore my chalice safely through a throng of foes.',
-   'Her name sprang to my lips at moments in strange prayers and praises which I myself did not understand.',
-   'My eyes were often full of tears (I could not tell why)',
-   'and at times a flood from my heart seemed to pour itself out into my bosom.',
-   'She finally speaks to the boy, about a fair called Araby. The boy promises to bring something back.']},
-  {t:'Tender Buttons',by:'Gertrude Stein, 1914',src:'Gertrude Stein, Tender Buttons: Objects, Food, Rooms (New York: Claire Marie, 1914), from "Objects"; Project Gutenberg ebook 15396.',p:[
-   'Gertrude Stein wanted to describe ordinary things without using the words everyone already used for them. Each of these is a whole piece, with its title.',
-   'A DOG.\nA little monkey goes like a donkey that means to say that means to say that more sighs last goes. Leave with it. A little monkey goes like a donkey.',
-   'A PETTICOAT.\nA light white, a disgrace, an ink spot, a rosy charm.',
-   'A WHITE HUNTER.\nA white hunter is nearly crazy.',
-   'A newspaper of the day said the book read like the work of a typesetter gone mad. It is still in print.']},
-  {t:'Storm Ending',by:'Jean Toomer, 1923',src:'Jean Toomer, "Storm Ending", in Cane (New York: Boni and Liveright, 1923); Project Gutenberg ebook 60093.',p:[
-   'Cane is one book made of poems, stories and a play, set in Georgia and Washington. This poem turns thunder into flowers.',
-   'Thunder blossoms gorgeously above our heads,\nGreat, hollow, bell-like flowers,\nRumbling in the wind,',
-   'Stretching clappers to strike our ears ..\nFull-lipped flowers\nBitten by the sun',
-   'Bleeding rain\nDripping rain like golden honey—\nAnd the sweet earth flying from the thunder.',
-   'Jean Toomer wrote this one book and then, more or less, stopped. Other writers of the Harlem Renaissance never got over it.']},
-  {t:'Odradek',by:'Franz Kafka, 1919',src:'Franz Kafka, "Die Sorge des Hausvaters", first printed in Selbstwehr (Prague), 19 December 1919; German as proofread on German Wikisource from that printing. English made for the game from the German.',p:[
-   'Franz Kafka wrote in German, in Prague. This is a whole story about one small thing that lives in the house. Nobody knows what it is for.',
-   {o:'Es sieht zunächst aus wie eine flache sternartige Zwirnspule,',l:'de',e:'At first it looks like a flat, star-shaped spool of thread,'},
-   {o:'das Ganze erscheint zwar sinnlos, aber in seiner Art abgeschlossen.',l:'de',e:'the whole thing seems to have no point, but in its own way it is complete.'},
-   {o:'„Wie heißt du denn?“ fragt man ihn. „Odradek“, sagt er.',l:'de',e:'“And what is your name?” you ask. “Odradek,” it says.'},
-   {o:'„Und wo wohnst du?“ „Unbestimmter Wohnsitz“, sagt er und lacht;',l:'de',e:'“And where do you live?” “No fixed address,” it says, and laughs;'},
-   {o:'Es klingt etwa so, wie das Rascheln in gefallenen Blättern.',l:'de',e:'It sounds something like the rustling of fallen leaves.'},
-   'The father of the house worries about only one thing. Odradek will probably still be rolling down the stairs when everyone else is gone.']},
-  {t:'The Great Frost',by:'Virginia Woolf, 1928',src:'Virginia Woolf, Orlando: A Biography (London: Hogarth Press, 1928), chapter 1; text as proofread on English Wikisource from that edition, read on Nov 27, 2026.',p:[
-   'Orlando is a made-up life story of someone who lives for more than three hundred years. Early on, in the time of King James, winter comes to England.',
-   'The Great Frost was, historians tell us, the most severe that has ever visited these islands.',
-   'Birds froze in mid-air and fell like stones to the ground.',
-   'The fields were full of shepherds, ploughmen, teams of horses, and little bird-scaring boys all struck stark in the act of the moment,',
-   'one with his hand to his nose, another with the bottle to his lips, a third with a stone raised to throw at the raven who sat, as if stuffed, upon the hedge within a yard of him.',
-   'The river Thames freezes twenty feet deep, and the King holds a carnival on the ice.']},
-  {t:'The Letter',by:'Nella Larsen, 1929',src:'Nella Larsen, Passing (New York: Alfred A. Knopf, 1929), part 1, chapter 1, opening; text as on English Wikisource, read on Nov 27, 2026.',p:[
-   'Passing is a short novel set in Harlem and Chicago in the 1920s, about two women who grew up together and chose very different lives. It opens with the post.',
-   'It was the last letter in Irene Redfield’s little pile of morning mail.',
-   'After her other ordinary and clearly directed letters the long envelope of thin Italian paper with its almost illegible scrawl seemed out of place and alien.',
-   'And there was, too, something mysterious and slightly furtive about it. A thin sly thing which bore no return address to betray the sender.',
-   'Purple ink. Foreign paper of extraordinary size.',
-   'Irene knows at once who it is from, and does not want to open it.']},
-  {t:'Before the Law',by:'Franz Kafka, 1915',src:'Franz Kafka, "Vor dem Gesetz", first printed in Selbstwehr (Prague), 7 September 1915; German as proofread on German Wikisource from that printing. English made for the game from the German.',p:[
-   'A very short story by Franz Kafka, written in German in Prague. Kafka later put it inside a novel, where two people argue about what it means and do not agree.',
-   {o:'Vor dem Gesetz steht ein Türhüter.',l:'de',e:'Before the law stands a doorkeeper.'},
-   {o:'Zu diesem Türhüter kommt ein Mann vom Lande und bittet um Eintritt in das Gesetz.',l:'de',e:'A man from the country comes to this doorkeeper and asks to be let into the law.'},
-   {o:'Aber der Türhüter sagt, daß er ihm jetzt den Eintritt nicht gewähren könne.',l:'de',e:'But the doorkeeper says that he cannot let him in just now.'},
-   {o:'„Es ist möglich,“ sagt der Türhüter, „jetzt aber nicht.“',l:'de',e:'“It is possible,” says the doorkeeper, “but not now.”'},
-   'The man sits down on a stool beside the door to wait. The door is open the whole time.']}],
- detective:[
-  {t:'Enter Hercule Poirot',by:'Agatha Christie, 1920',src:'Agatha Christie, The Mysterious Affair at Styles (New York: John Lane, 1920), chapter 2; Project Gutenberg ebook 863.',p:[
-   'Agatha Christie wrote her first detective novel on a dare from her sister. This is the first time anyone ever saw Hercule Poirot.',
-   'Poirot was an extraordinary looking little man. He was hardly more than five feet, four inches, but carried himself with great dignity.',
-   'His head was exactly the shape of an egg, and he always perched it a little on one side. His moustache was very stiff and military.',
-   'The neatness of his attire was almost incredible. I believe a speck of dust would have caused him more pain than a bullet wound.',
-   'Poirot went on to solve crimes in thirty-three novels.']},
-  {t:'Enter Miss Marple',by:'Agatha Christie, 1930',src:'Agatha Christie, The Murder at the Vicarage (London: Collins, 1930), chapters 1 and 2; Project Gutenberg ebook 78220.',p:[
-   'The vicar of a small English village is telling the story. He comes in to tea with the ladies of the parish.',
-   'Miss Marple is a white-haired old lady with a gentle appealing manner—Miss Wetherby is a mixture of vinegar and gush.',
-   'Of the two Miss Marple is much the more dangerous.',
-   'Miss Marple always sees everything.',
-   'Gardening is as good as a smoke screen, and the habit of observing birds through powerful glasses can always be turned to account.',
-   'This was the first Miss Marple novel. Nobody in the village commits a crime without it reminding Miss Marple of somebody.']},
-  {t:'Lord Peter Forgets Something',by:'Dorothy L. Sayers, 1923',src:'Dorothy L. Sayers, Whose Body? (New York: Boni and Liveright, copyright 1923), opening; Project Gutenberg ebook 58820.',p:[
-   'A detective novel that starts with its detective in a taxi, in a hurry, swearing.',
-   '“Oh, damn!” said Lord Peter Wimsey at Piccadilly Circus. “Hi, driver!”',
-   '“I’ve left the catalogue behind,” said Lord Peter deprecatingly. “Uncommonly careless of me. D’you mind puttin’ back to where we came from?”',
-   '“Thought you was in a hurry,” said the man, overcome with a sense of injury.',
-   'Lord Peter collects rare books and solves murders. Going back for the catalogue is how he hears about the body in the bath.']},
-  {t:'Sam Spade',by:'Dashiell Hammett, 1930',src:'Dashiell Hammett, The Maltese Falcon (New York: Alfred A. Knopf, copyright 1930), opening; Project Gutenberg ebook 77600.',p:[
-   'Dashiell Hammett had been a real private detective before he wrote about one. His detective is described entirely in the letter V.',
-   'Samuel Spade’s jaw was long and bony, his chin a jutting v under the more flexible v of his mouth. His nostrils curved back to make another, smaller, v.',
-   'His yellow-grey eyes were horizontal.',
-   'The v motif was picked up again by thickish brows rising outward from twin creases above a hooked nose,',
-   'He looked rather pleasantly like a blond satan.']},
-  {t:'The Cases Watson Never Told',by:'Arthur Conan Doyle, 1927',src:'Arthur Conan Doyle, "The Problem of Thor Bridge", in The Case-Book of Sherlock Holmes (London: John Murray, 1927), opening; Project Gutenberg ebook 69700.',p:[
-   'In the last book of Sherlock Holmes stories, Dr Watson admits that there is a box of cases he never wrote up.',
-   'Somewhere in the vaults of the bank of Cox and Co., at Charing Cross, there is a travel-worn and battered tin dispatch-box',
-   'with my name, John H. Watson, M.D., Late Indian Army, painted upon the lid.',
-   'Some, and not the least interesting, were complete failures,',
-   'Among these unfinished tales is that of Mr. James Phillimore, who, stepping back into his own house to get his umbrella, was never more seen in this world.',
-   'Readers have been writing the missing cases themselves ever since.']},
-  {t:'A Very Short Priest',by:'G. K. Chesterton, 1911',src:'G. K. Chesterton, "The Blue Cross", in The Innocence of Father Brown (London: Cassell, 1911); Project Gutenberg ebook 204.',p:[
-   'The greatest detective in France is on a train, looking for the greatest thief in the world. He looks over the other passengers and rules this one out.',
-   'he had a face as round and dull as a Norfolk dumpling; he had eyes as empty as the North Sea; he had several brown paper parcels, which he was quite incapable of collecting.',
-   'He had a large, shabby umbrella, which constantly fell on the floor. He did not seem to know which was the right end of his return ticket.',
-   'That is Father Brown. By the end of the story the priest has caught the thief, and the great detective has mostly watched.']},
-  {t:'The Thinking Machine',by:'Jacques Futrelle, 1905',src:'Jacques Futrelle, "The Problem of Cell 13" (Boston American, 1905), as printed in The Problem of Cell 13 (New York: Dodd, Mead, 1917); Project Gutenberg ebook 57669.',p:[
-   'Professor Van Dusen is so clever that the newspapers call him The Thinking Machine. One evening a friend says something careless.',
-   '“Such a thing is impossible,” declared Dr. Ransome emphatically, in the course of the conversation.',
-   '“Nothing is impossible,” declared The Thinking Machine with equal emphasis. He always spoke petulantly. “The mind is master of all things.”',
-   '“How about the airship?” asked Dr. Ransome.',
-   '“That’s not impossible at all,” asserted The Thinking Machine. “It will be invented some time. I’d do it myself, but I’m busy.”',
-   'To settle the argument the professor is locked in a prison cell with nothing but shoes, stockings, trousers and a shirt, and promises to be out in a week.']},
-  {t:'The Blind Detective',by:'Ernest Bramah, 1914',src:'Ernest Bramah, "The Coin of Dionysius", in Max Carrados (London: Methuen, 1914), as in Four Max Carrados Detective Stories; Project Gutenberg ebook 12932.',p:[
-   'A private detective calls on an expert in old coins. They have been talking for some time before the visitor understands something about his host.',
-   '“I am alternately envied and pitied,” replied Carrados, with a placid tolerance of circumstance that seemed characteristic of him.',
-   '“Envied, I can understand. But why are you pitied?”',
-   '“Because I am blind,” was the tranquil reply.',
-   '“Blind!” exclaimed Mr. Carlyle, using his own eyes superlatively. “Do you mean—literally blind?”',
-   'Max Carrados reads newspaper headlines with his fingertips and solves cases by what he hears and smells. In 1914 these stories were as popular as Sherlock Holmes.']}],
  poems:[
   {t:'The Negro Speaks of Rivers',by:'Langston Hughes, 1921',src:'Langston Hughes, "The Negro Speaks of Rivers" (The Crisis, June 1921), as printed in The Weary Blues (New York: Alfred A. Knopf, 1926); Project Gutenberg ebook 74745.',p:[
    'Langston Hughes was eighteen, on a train crossing the Mississippi at sunset, when he wrote this on the back of an envelope.',
@@ -734,55 +606,6 @@ const STORIES={
    {o:'Αλλά μη βιάζεις το ταξίδι διόλου.',l:'el',e:'But do not hurry the journey at all.'},
    {o:'Η Ιθάκη σ\' έδωσε το ωραίο ταξίδι.\nΧωρίς αυτήν δεν θάβγαινες στον δρόμο.',l:'el',e:'Ithaka gave you the beautiful journey.\nWithout her you would not have set out.'},
    {o:'Αλλο δεν έχει να σε δώσει πια.',l:'el',e:'She has nothing else to give you now.'}]}],
- odd:[
-  {t:'Lolly Willowes',by:'Sylvia Townsend Warner, 1926',src:'Sylvia Townsend Warner, Lolly Willowes; or, The Loving Huntsman (London: Chatto and Windus, first published 1926), part 3; Project Gutenberg ebook 72223.',p:[
-   'Laura Willowes is the unmarried aunt who lives in the spare room and helps. At forty-seven Laura moves to a village alone and becomes a witch. Here Laura explains why.',
-   'One doesn’t become a witch to run round being harmful, or to run round being helpful either, a district visitor on a broomstick.',
-   'It’s to escape all that—to have a life of one’s own, not an existence doled out to you by others,',
-   'The novel came out three years before Virginia Woolf asked for a room of one’s own. It was the first book ever chosen by the Book-of-the-Month Club.']},
-  {t:'Lud-in-the-Mist',by:'Hope Mirrlees, 1926',src:'Hope Mirrlees, Lud-in-the-Mist (London: Collins, 1926), opening of chapter 1; Project Gutenberg ebook 68061.',p:[
-   'A sensible country of merchants and lawyers has one embarrassing neighbour, which nobody is allowed to mention.',
-   'The Free State of Dorimare was a very small country, but, seeing that it was bounded on the south by the sea and on the north and east by mountains,',
-   'a considerable variety of scenery and vegetation was to be found within its borders.',
-   'for beyond the Debatable Hills (the boundary of Dorimare in the west) lay Fairyland.',
-   'There had, however, been no intercourse between the two countries for many centuries.',
-   'Then someone begins smuggling fairy fruit into town. The book was forgotten for forty years and is now loved by people who write fantasy.']},
-  {t:'Living Alone',by:'Stella Benson, 1919',src:'Stella Benson, Living Alone (London: Macmillan, first edition 1919), author’s note; Project Gutenberg ebook 14907.',p:[
-   'A novel about a witch who runs a boarding house in London during the war. Before the story starts, the author has a word with the reader.',
-   'This is not a real book. It does not deal with real people, nor should it be read by real people.',
-   'But there are in the world so many real books already written for the benefit of real people, and there are still so many to be written,',
-   'that I cannot believe that a little alien book such as this, written for the magically-inclined minority, can be considered too assertive a trespasser.']},
-  {t:'R.U.R.',by:'Karel Čapek, 1920',src:'Karel Čapek, R.U.R. (Rossum’s Universal Robots), 1920, in the English of Paul Selver (Garden City: Doubleday, Page, 1923), act 1; Project Gutenberg ebook 59112.',p:[
-   'A play from Prague, set in a factory that makes artificial workers. The manager is showing a visitor round. This play is where the word “robot” comes from.',
-   'DOMIN. My dear Miss Glory, the Robots are not people.',
-   'Mechanically they are more perfect than we are; they have an enormously developed intelligence, but they have no soul.',
-   'HELENA. How do you know they have no soul?',
-   'DOMIN. Have you ever seen what a Robot looks like inside?',
-   'HELENA. No.',
-   'DOMIN. Very neat, very simple. Really a beautiful piece of work.',
-   'Karel Čapek’s brother Josef thought of the word, from the Czech “robota”, forced labour.']},
-  {t:'The Comet',by:'W. E. B. Du Bois, 1920',src:'W. E. B. Du Bois, "The Comet", in Darkwater: Voices from Within the Veil (New York: Harcourt, Brace and Howe, 1920), opening; Project Gutenberg ebook 15210.',p:[
-   'W. E. B. Du Bois was a historian and a founder of the civil rights movement. He also wrote this, one of the first science fiction stories by a Black American.',
-   'He stood a moment on the steps of the bank, watching the human river that swirled down Broadway. Few noticed him. Few ever noticed him save in a way that stung.',
-   '“The comet?”\n“The comet——”\nEverybody was talking of it.',
-   'Jim, a bank messenger, is sent down to the deepest vault. While Jim is down there the comet’s tail passes over New York.',
-   'Jim comes up to a silent city, and finds one other person alive.']},
-  {t:'Sultana’s Dream',by:'Rokeya Sakhawat Hossain, 1905',src:'Rokeya Sakhawat Hossain, "Sultana’s Dream", The Indian Ladies’ Magazine (Madras), 1905, written in English; text as on English Wikisource, read on Nov 27, 2026.',p:[
-   'Rokeya Sakhawat Hossain was a Bengali writer who started a school for girls. She wrote this story in English in 1905.',
-   'Sultana dreams of a country called Ladyland, and a friend shows her round.',
-   'I met more than a hundred women while walking there, but not a single man.',
-   '‘Where are the men?’ I asked her.',
-   '‘In their proper places, where they ought to be.’',
-   '‘O, I see my mistake, you cannot know our customs, as you were never here before. We shut our men indoors.’',
-   'Ladyland runs on sunlight, has flying cars, and has not had a war in years. It is one of the first science fiction stories written by a woman from India.']},
-  {t:'Mhudi',by:'Sol T. Plaatje, 1930',src:'Solomon Tshekisho Plaatje, Mhudi: An Epic of South African Native Life a Hundred Years Ago (Lovedale: Lovedale Press, 1930), chapter 1, opening; text as on English Wikisource, read on Nov 27, 2026.',p:[
-   'Sol Plaatje was a newspaper editor, a translator of Shakespeare into Setswana, and a founder of what became the African National Congress.',
-   'This is the first novel in English by a Black South African. It begins by setting the scene.',
-   'Two centuries ago the Bechuana tribes inhabited the extensive areas between Central Transvaal and the Kalahari Desert.',
-   'In this domain they led their patriarchal life under their several Chiefs who owed no allegiance to any king or emperor.',
-   'They raised their native corn which satisfied their simple wants,',
-   'and, when not engaged in hunting or in pastoral duties, the peasants whiled away their days in tanning skins or sewing magnificent fur rugs.',
-   'Plaatje finished the book in 1920. It took ten years to find a publisher.']}],
  /* SMALL STRANGE THINGS, the fifth of the new books (Nov 27): very short forms. */
  small:[
   {t:'Stray Birds',by:'Rabindranath Tagore, 1916',src:'Rabindranath Tagore, Stray Birds (New York: Macmillan, 1916), numbers 1, 6, 18 and 43, written in English by the author; Project Gutenberg ebook 6524.',p:[

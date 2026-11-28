@@ -13,6 +13,7 @@ def main():
     bg=(r>190)&(b>190)&(g<110);lab,n=nd.label(nd.binary_closing(~bg,iterations=2));sl=[s for i,s in enumerate(nd.find_objects(lab),1) if (lab[s]==i).sum()>40000]
     assert len(sl)==6,len(sl);sl.sort(key=lambda s:(round(s[0].start/300),s[1].start))
     for name,s in zip(NAMES,sl):
+        if name in ('moderns','detective','odd'):continue # those three books were taken out of the game
         c=a[s].copy();m=bg[s];edge=c[c.shape[0]//2,3] # the border colour, from the middle of the left edge
         c[m]=edge;im=Image.fromarray(c.astype(np.uint8),'RGB').resize((42,60),Image.LANCZOS).quantize(24,method=Image.MEDIANCUT,dither=Image.NONE).convert('RGB')
         im.save(os.path.join(B,name+'.png'),optimize=True);print(name,s[1].stop-s[1].start,s[0].stop-s[0].start)

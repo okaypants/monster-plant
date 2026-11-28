@@ -42,13 +42,13 @@ const MASH={id:'mash',name:'Mash',s:'slurp',young:true},MASH_FULL=.4;
 const BOOKS=[{id:'fairy',name:'Fairy tales',ge:.08,lc:0},{id:'almanac',name:'Sloth’s Almanac',ge:0,lc:.08},{id:'nonsense',name:'Nonsense poems',ge:0,lc:-.08},{id:'grimoire',name:'Forbidden grimoire',ge:-.1,lc:-.02},
  {id:'songs',name:'Song book',ge:.06,lc:.02},{id:'stars',name:'The star book',ge:0,lc:-.03},{id:'riddles',name:'Cats',ge:0,lc:-.06},{id:'proverbs',name:'Proverbs',ge:.02,lc:.06},
  {id:'letters',name:'Letters and diaries',ge:.05,lc:.02},{id:'recipes',name:'Recipes',ge:.03,lc:.05},{id:'ghost',name:'Ghost stories',ge:-.06,lc:-.02},{id:'field',name:'Field guide',ge:0,lc:.04},
- {id:'moderns',name:'The moderns',ge:.02,lc:-.04},{id:'detective',name:'Detective stories',ge:-.03,lc:.06},{id:'poems',name:'New poems',ge:.05,lc:-.03},{id:'odd',name:'Odd novels',ge:-.02,lc:-.06},{id:'small',name:'Small strange things',ge:.03,lc:-.05}]; /* five more (Nov 27); their reads are in js/stories.js. They have no painted covers yet, so the old drawn book stands in */
+ {id:'poems',name:'New poems',ge:.05,lc:-.03},{id:'small',name:'Small strange things',ge:.03,lc:-.05}]; /* two more (Nov 27; three others were made and taken out the same day); their reads are in js/stories.js. They have no painted covers yet, so the old drawn book stands in */
 const BOOK_BY=id=>BOOKS.find(b=>b.id===id);
 // what a monster does while listening, the caption when a read begins
 const BOOK_SAY={fairy:'listens to the fairy tale, very still.',almanac:'nods along to Sloth’s Almanac.',nonsense:'giggles at the nonsense poems.',grimoire:'leans in for the forbidden spells.',
  songs:'sways along to the song.',stars:'gazes up, dreamy, at the star book.',riddles:'listens closely to the book about cats.',proverbs:'nods slowly at the old sayings.',
  letters:'listens to the old letter, cozy.',recipes:'smacks its lips at the recipe.',ghost:'shivers happily at the ghost story.',field:'peers closely at the field guide.',
- moderns:'follows every sentence to its end.',detective:'listens hard for clues.',poems:'goes quiet for the poem.',odd:'is not sure what kind of book this is, and likes it.',small:'holds very still so as not to miss it.'};
+ poems:'goes quiet for the poem.',small:'holds very still so as not to miss it.'};
 const READ_POT={fairy:'candy',almanac:'plaid',nonsense:'rainbow',grimoire:'eye'},READ_AT=10; // a pot after 10 reads of one of the first four books (Jackie, Nov 15); the new books count their reads from zero, no reward yet
 function pet(){const b=plantBox();plantBoing(mx);if(bump('pets')>=25)earnPot('basket');if(st.stage<4){sfx('purr');burst('heart',b.x+b.w*.1,b.y-20,1);return;}
  st.pets=(st.pets||[]).filter(t=>T-t<1.3);st.pets.push(T);
@@ -143,13 +143,13 @@ addEventListener('resize',()=>setTimeout(placeTray,50));
    hops back to the shelf. Let go anywhere else and the book just goes back to the tray. Same feel as the treat tray. */
 // tap areas: the rows of books on both bookcases, kept clear of the cat's framed picture, the jar, the lockbox, the floor lamp, the crystal ball and the moon trunk
 // Each place holds its own four books (Jackie, Nov 15: only four at a time, depending on where you tap): every book can be found in three or four places.
-const BOOK_ZONES=[ /* seventeen books now, still four to a place: the wide rows are each two places, left half and right half (Nov 27) */
- {x:4,y:140,w:104,h:86,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row, left half */,{x:108,y:140,w:104,h:86,books:['moderns','detective','poems','odd']}/* and right half */,
- {x:4,y:246,w:67,h:86,books:['songs','stars','letters','field']},{x:71,y:246,w:67,h:86,books:['moderns','poems','small','letters']},
+const BOOK_ZONES=[ /* fourteen books, still four to a place: the wide rows are each two places, left half and right half (Nov 27) */
+ {x:4,y:140,w:104,h:86,books:['fairy','almanac','nonsense','grimoire']}/* left bookcase, top row, left half */,{x:108,y:140,w:104,h:86,books:['poems','small','songs','stars']}/* and right half */,
+ {x:4,y:246,w:67,h:86,books:['songs','stars','letters','field']},{x:71,y:246,w:67,h:86,books:['poems','small','letters','proverbs']},
  {x:4,y:354,w:46,h:84,books:['riddles','proverbs','recipes','ghost']},{x:4,y:456,w:88,h:90,books:['fairy','songs','ghost','stars']},
- {x:4,y:558,w:100,h:88,books:['almanac','field','recipes','letters']},{x:104,y:558,w:100,h:88,books:['detective','odd','small','grimoire']},
+ {x:4,y:558,w:100,h:88,books:['almanac','field','recipes','letters']},{x:104,y:558,w:100,h:88,books:['riddles','small','ghost','grimoire']},
  {x:138,y:664,w:72,h:76,books:['stars','riddles','grimoire','ghost']}/* beside the lockbox */,
- {x:1482,y:316,w:79,h:78,books:['nonsense','riddles','songs','proverbs']}/* right bookcase, the full row, left half */,{x:1561,y:316,w:79,h:78,books:['moderns','detective','small','odd']}/* and right half */,
+ {x:1482,y:316,w:79,h:78,books:['nonsense','riddles','songs','proverbs']}/* right bookcase, the full row, left half */,{x:1561,y:316,w:79,h:78,books:['poems','small','field','recipes']}/* and right half */,
  {x:1482,y:498,w:60,h:64,books:['poems','proverbs','almanac','fairy']},{x:1546,y:498,w:92,h:64,books:['field','recipes','grimoire','nonsense']}]; // a monster or the cat sitting there is tapped first
 function bookZone(x,y){return BOOK_ZONES.find(r=>inR(x,y,r))||null;}
 function onBookshelf(x,y){return !!bookZone(x,y);}
@@ -158,7 +158,7 @@ const BOOK_LOOK={fairy:{c:C.coral,d:C.brick,e:['.y.','yyy','.y.']},almanac:{c:C.
  songs:{c:'#e98aa8',d:'#a8466a',e:['.ii','.i.','ii.']}/* a note */,stars:{c:C.navy,d:'#14284f',e:['y.y','.y.','y.y']}/* a twinkle */,riddles:{c:C.vio,d:C.plum,e:['ii.','..i','.i.','...','.i.']}/* a question mark */,
  proverbs:{c:C.sand,d:C.rust,e:['ooo','s.s','ooo']}/* a scroll */,letters:{c:C.cream,d:C.peach,e:['oooo','o..o','oooo']}/* an envelope */,recipes:{c:C.g3,d:C.g1,e:['.o.','ooo','.o.','.o.']}/* a spoon */,
  ghost:{c:'#6b7888',d:'#3c4652',e:['.i.','iii','i.i']}/* a little ghost */,field:{c:C.g2,d:C.g1,e:['..i','.ii','i..']}/* a leaf */,
- moderns:{c:'#2f6f73',d:'#1c4447',e:['i.i','.i.','i.i','.i.']}/* a wave */,detective:{c:'#5a4632',d:'#33271b',e:['.yy.','y..y','.yy.','...y']}/* a magnifying glass */,poems:{c:'#c9566b',d:'#7f2f43',e:['i..','ii.','i..','ii.']}/* short lines */,odd:{c:'#3d7a4a',d:'#23482b',e:['.y.','yyy','y.y']}/* a little house */,small:{c:'#e0a23c',d:'#9a6417',e:['...','.i.','...']}/* one dot */};
+ poems:{c:'#c9566b',d:'#7f2f43',e:['i..','ii.','i..','ii.']}/* short lines */,small:{c:'#e0a23c',d:'#9a6417',e:['...','.i.','...']}/* one dot */};
 const BPAL={y:C.fl3,v:C.vio,w:C.lav,i:C.ivory,s:C.sand,o:C.out};
 /* THE COVERS (Jackie, Nov 17): each book has its own illustrated cover, cut from Jackie's sheet (books/, 42 x 60). The tray, the
    journal's favorite story and the book hopping home show it at its own size; the book in your hand is twice that. Whole pixels,
