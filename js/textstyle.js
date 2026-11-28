@@ -42,6 +42,12 @@ const tsGlyphCache=new Map();
 function tsGlyphURL(name,color,px=2){const key=name+color+px;if(tsGlyphCache.has(key))return tsGlyphCache.get(key);
  const m=TS_GLYPH[name]||(typeof ICONS!=='undefined'&&ICONS[name]);if(!m)return '';const c=document.createElement('canvas');c.width=m[0].length*px;c.height=m.length*px;const x=c.getContext('2d');x.fillStyle=color;
  m.forEach((r,j)=>[...r].forEach((v,i)=>{if(v!=='.')x.fillRect(i*px,j*px,px,px);}));const u=c.toDataURL();tsGlyphCache.set(key,u);return u;}
+/* IN THE JOURNAL THE SIGNS ARE REAL EMOJI (Jackie, Nov 27: "i need good emojis in the monsters journals too like the clouds and
+   stuff nd the stars are lame in there"). Each pixel sign has an emoji that stands for it in the journal: a monster's own sign
+   beside its name and on its ribbon, the cat's paw, and the small signs over the sections. Everywhere else (captions, name tags)
+   the pixel sign stays, because it has to be told apart at a very small size. No stars. */
+const TS_EMO={star:'☁️',drop:'🌼',leaf:'🌿',triangle:'🍄',moon:'🌙',diamond:'🐚',ring:'🫧',paw:'🐾',sun:'☀️',heart:'💞',lock:'🔒',plane:'✈️',quirk:'🌀'};
+function tsEmo(name,cls='tsemo'){const s=document.createElement('span');s.className=cls;s.dataset.e=TS_EMO[name]||''; /* drawn by the style sheet, so the words around it read the same to everything else */s.setAttribute('aria-hidden','true');return s;}
 function tsGlyph(name,color,cls='tssym',px=2){const im=document.createElement('img');im.className=cls;im.alt='';im.src=tsGlyphURL(name,color,px);im.setAttribute('aria-hidden','true');return im;}
 
 /* names: bold, in their name color, with their symbol in front. Works on any text: captions, bubbles, letters. */
@@ -50,7 +56,7 @@ function tsNamesKnown(){const out=[],add=(n,l)=>{if(n&&n.length>1)out.push([n,l]
   for(const e of st.archive||[]){add(e.name,lookOf(e.snap));add(firstName(e.snap),lookOf(e.snap));}
   if(st.catName)add(st.catName,CAT_LOOK);}catch(e){}
  return out.sort((a,b)=>b[0].length-a[0].length);}
-function tsNameEl(text,look){const b=document.createElement('b');b.className='tsname';b.style.color=look.name;b.appendChild(tsGlyph(look.sym,look.name));b.appendChild(document.createTextNode(text));return b;}
+function tsNameEl(text,look){const b=document.createElement('b');b.className='tsname';b.style.color=look.name;b.appendChild(tsGlyph(look.sym,look.name));b.appendChild(tsEmo(look.sym));b.appendChild(document.createTextNode(text));return b;}
 function tsNamify(el){const known=tsNamesKnown();if(!known.length)return tsKeepName(el);
  const re=new RegExp('\\b('+known.map(([n])=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\b','g'),look=new Map(known);
  const walk=n=>{for(const c of [...n.childNodes]){if(c.nodeType===3){const t=c.nodeValue;re.lastIndex=0;if(!re.test(t))continue;re.lastIndex=0;const f=document.createDocumentFragment();let at=0,m;

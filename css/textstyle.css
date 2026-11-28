@@ -149,3 +149,12 @@
 /* the treat and book trays: same paper and shape */
 .ttray{padding:6px 12px}
 .tsnowrap{white-space:nowrap} /* "Sloth, PhD" stays on one line */
+
+/* real emoji for the signs, in the journal only */
+.tsemo{display:none;font-style:normal;font-weight:400;line-height:1}
+.journal .tsemo{display:inline-block}
+.tsemo::before{content:attr(data-e)}
+.journal .tsname img.tssym{display:none}
+.journal .tsname .tsemo{font-size:.8em;margin-right:.18em}
+.journal .jlab .tslabicon.tsemo{width:auto;height:auto;font-size:1.05em}
+.journal .jrib .tssym.tsemo{width:auto;height:auto;font-size:22px;margin:0}

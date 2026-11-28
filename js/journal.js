@@ -78,8 +78,8 @@ function bornLine(){return temperament().replace('It seems ','Born ').replace(/\
 
 /* ---------- the book ---------- */
 function jdiv(cls,kids=[],txt){const e=document.createElement('div');e.className=cls;if(txt!=null)e.textContent=txt;for(const k of kids)if(k)e.appendChild(k);return e;}
-const LAB_ICON={Likes:'sun',Friends:'heart',Quirks:'star'}; // small rust pixel icons over these sections
-function jlabel(t){const l=jdiv('jlab',[],null);if(LAB_ICON[t])l.appendChild(tsGlyph(LAB_ICON[t],TS.rust,'tslabicon'));l.appendChild(document.createTextNode(t));return l;}
+const LAB_ICON={Likes:'sun',Friends:'heart',Quirks:'quirk'}; // small rust pixel icons over these sections
+function jlabel(t){const l=jdiv('jlab',[],null);if(LAB_ICON[t])l.appendChild(tsEmo(LAB_ICON[t],'tslabicon tsemo'));l.appendChild(document.createTextNode(t));return l;}
 function fitBook(){if(!jEl)return;const noRib=jEl.classList.contains('archive'),r=wrap.getBoundingClientRect(),k=Math.min(r.width*.96/JB.w,r.height*.95/(JB.h+(noRib?0:JB.rib))),dy=noRib?-Math.round(JB.rib/2*k):0; // the Files have no ribbons: their room goes to the pages
  jEl.bookK=k;const bk=jEl.querySelector('.jbook');bk.style.setProperty('--jk',k);bk.style.transform=`translate(-50%,calc(-50% + ${dy}px)) scale(${k})`;} // --jk keeps small print at 14px or more on screen (css/textstyle.css)
 function closeJournal(){if(jEl){jEl.remove();jEl=null;}jKeep=null;if(jPage==='archive'||jPage==='keep'){jPage=null;jSub=0;}}
@@ -103,7 +103,7 @@ function renderJournal(){if(!jEl)return;if(jPage==='archive'){renderArchive();re
  const ribs=jEl.querySelector('.jribs');ribs.innerHTML='';
  P.forEach((p,i)=>{const r=document.createElement('button');r.type='button';r.className='jrib'+(p===jPage?' on':'');r.dataset.page=p;r.style.left=(430+i*52)+'px';
   const q=p[0]==='p'?allRaw().find(o=>o.id===+p.slice(1)):null,lk=p==='cat'?CAT_LOOK:q?lookOf(q):null; // each ribbon: the monster's ribbon color and symbol (the cat: a paw)
-  r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':p==='safe'?'Keep it safe':(q&&q.name)||'Plant');r.appendChild(tsGlyph(lk?lk.sym:p==='safe'?'lock':'plane',lk?lk.name:TS.ink,'tssym',3));
+  r.style.background=lk?lk.rib:TS.toffee;r.setAttribute('aria-label',p==='cat'?catName():p==='world'?'Out in the world':p==='safe'?'Keep it safe':(q&&q.name)||'Plant');r.appendChild(tsEmo(lk?lk.sym:p==='safe'?'lock':'plane','tssym tsemo'));
   r.addEventListener('click',e=>{e.stopPropagation();jTurn(p);});ribs.appendChild(r);});
  const L=jEl.querySelector('.jl'),R=jEl.querySelector('.jr');L.innerHTML='';R.innerHTML='';R.appendChild(jdiv('jday',[],dayWords())); // today in words, top corner of every page (not the Files: those are keepsakes)
  

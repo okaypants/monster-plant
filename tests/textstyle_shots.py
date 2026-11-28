@@ -152,9 +152,9 @@ async def main():
             await audit(pg, ".journal", "FILES drawer")
             await shot("08_files_drawer")
             await pg.evaluate("()=>{closeJournal();openJournal('p1');__step(.3);}")
-            r = await pg.evaluate("""()=>({icons:[...document.querySelectorAll('.jlab')].filter(l=>l.querySelector('img')).map(l=>l.textContent),
-              unseen:[...document.querySelectorAll('.jstamp.jfaint')].map(s=>s.textContent),ribs:[...document.querySelectorAll('.jrib')].map(r=>!!r.querySelector('img.tssym'))})""")
-            check({"Likes", "Quirks"} <= set(r["icons"]), f"Likes and Quirks need their rust icons: {r['icons']}")
+            r = await pg.evaluate("""()=>({icons:[...document.querySelectorAll('.jlab')].filter(l=>l.querySelector('.tsemo[data-e]')).map(l=>l.textContent),
+              unseen:[...document.querySelectorAll('.jstamp.jfaint')].map(s=>s.textContent),ribs:[...document.querySelectorAll('.jrib')].map(r=>!!r.querySelector('.tssym.tsemo[data-e]'))})""")
+            check({"Likes", "Quirks"} <= set(r["icons"]), f"Likes and Quirks need their signs: {r['icons']}")
             check(r["unseen"] and all(t == "not seen yet" for t in r["unseen"]), f"unseen quirks should say 'not seen yet': {r['unseen'][:3]}")
             check(r["ribs"] and all(r["ribs"]), "every ribbon should show its symbol")
             await audit(pg, ".journal", "journal page")

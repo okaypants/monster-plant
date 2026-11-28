@@ -2,6 +2,12 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The journal's signs are real emoji (Nov 27)
+
+- Jackie: "i need good emojis in the monsters journals too like the clouds and stuff nd the stars are lame in there".
+- In the journal each monster's sign beside its name and on its ribbon is a real emoji: cloud, daisy, herb, mushroom, moon, shell, bubbles; the cat has paw prints. The section signs are a sun (Likes), hearts (Friends) and a swirl (Quirks). No stars.
+- Outside the journal (captions, name tags) the small pixel signs stay.
+
 ### The popcorn buckets offer nothing to an empty room (Nov 27)
 
 - Jackie: "i don't want the popcorn to offer me selections if there's no monster in there. but i do want thepopping !!".
