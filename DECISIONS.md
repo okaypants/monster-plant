@@ -2,6 +2,7 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+<<<<<<< HEAD
 ### Lines that run over are indented, in every book (Nov 27)
 
 - Jackie: "review how all the books are set when you open them some are bad".
@@ -9,6 +10,14 @@ Everything Jackie has decided about Monster Plant, with the reason. Add new entr
 - A page that starts with a heading in capitals (Tender Buttons, Renard's animals) has the heading in bold and its text under it as an ordinary paragraph.
 - Words in another language used to be centred, which broke badly when they had several lines. With more than one line they are now set at the left the same way.
 - Checked on review sheets of all 17 books (`research_notes/books_review/`).
+=======
+### Painted covers for the five new books, and a cat for the Cats book (Nov 27)
+
+- Jackie sent back the sheet of six covers from the prompt in `research_notes/decor/book_covers_prompt.md`.
+- The moderns (a window on the sea), Detective stories (a magnifying glass over a footprint), New poems (a blackbird in snow), Odd novels (a broom by a round door), and Small strange things (one ant under a star) have their own covers in place of the plain stand-ins.
+- The Cats book has a cat asleep on an open book. It had kept the keyhole cover from when it was the riddle book.
+- Each is 42 by 60 pixels in 24 colours, like the first twelve (`tools/covers_cut.py`).
+>>>>>>> 1cf7e61 (Painted covers for the five new books, and a cat for the Cats book)
 
 ### The fifth new book, the first translated reads, and no debug button (Nov 27)
 
