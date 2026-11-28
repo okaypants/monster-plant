@@ -2,6 +2,18 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The popcorn buckets offer nothing to an empty room (Nov 27)
+
+- Jackie: "i don't want the popcorn to offer me selections if there's no monster in there. but i do want thepopping !!".
+- With no monster in the movie room, a tap on the buckets says nobody is here to have popcorn and shows no choices. Holding the machine still pops.
+
+### The receiver turns the sound down and up (Nov 27)
+
+- Jackie: "the volume knob should just say sound on and sound off but actually i want it to lower or raise the volume and be called a receiver in the legend".
+- A tap on the receiver's left half turns the sound down a step and on its right half up a step: off, then four steps to full. The legend calls it the Receiver.
+- An iPhone does not let a page set how loud a film is, only whether it sounds, so there the receiver says only "Sound off." and "Sound on."
+- The receiver no longer switches between a film's own sound and your soundtrack. A film picked from Your films plays your soundtrack; the same film picked from its shelf plays its own sound.
+
 ### The cat eating popcorn has no tin of food (Nov 27)
 
 - Jackie: "when the cat is going after popcorn it shouldnt' do the eating image bcs it shows a tin of food which is weird".

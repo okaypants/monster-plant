@@ -26,7 +26,7 @@ function scorePut(f,take){const parts=scoreParts(take).map(scorePart);return sco
 /* Plays every part that belongs to the film's current moment. sync(t, playing) is called often while a film runs. */
 function scorePlayer(rec){const P=scoreParts(rec).map(p=>{const a=new Audio(URL.createObjectURL(p.blob));a.loop=!!p.loop;return {t:p.t,dur:p.dur,loop:!!p.loop,a};});
  return {n:P.length,sync(t,playing){for(const p of P){const on=playing&&t>=p.t&&t<p.t+p.dur;if(!on){if(!p.a.paused)try{p.a.pause();}catch(e){}continue;}const L=p.loop&&isFinite(p.a.duration)&&p.a.duration>0?p.a.duration:0,want=L?(t-p.t)%L:t-p.t,off=Math.abs(p.a.currentTime-want);if(off>.35&&!(L&&L-off<.35))try{p.a.currentTime=want;}catch(e){}if(p.a.paused){const q=p.a.play();if(q&&q.catch)q.catch(()=>{});}}},
-  stop(){for(const p of P)try{p.a.pause();}catch(e){}},free(){this.stop();for(const p of P)URL.revokeObjectURL(p.a.src);}};}
+  vol(x){for(const p of P)try{p.a.volume=x;p.a.muted=!x;}catch(e){}},stop(){for(const p of P)try{p.a.pause();}catch(e){}},free(){this.stop();for(const p of P)URL.revokeObjectURL(p.a.src);}};}
 /* SO IT NEVER FILLS A PHONE (Jackie, Nov 27: "how do we make sure this doesn't kill anyones phone cumulatively overtime"). A
    soundtrack is recorded small (about a quarter of a megabyte a minute), there is one a film, and all of them together may take
    no more than SCORES_MAX; past that, one has to be removed before another is kept. scoreList gives each one's size so the
