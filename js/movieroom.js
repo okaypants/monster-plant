@@ -545,11 +545,11 @@ function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLa
     library so the ui and menu are compelling and clean"). A title bar that says Film library, with tonight's film on its right;
     under it the collections in one column down the left, each with how many films it holds, and the chosen collection's films on
     the right. It had been a picture of a reel beside a row of wrapping tabs with the collection's name as the only heading. */
- mvPickEl.innerHTML='<div class="mvpbox mvlib"><div class="mvlibhead"><h1>Film library</h1><button type="button" class="mvrbtn mvtonight"></button></div><div class="mvlibbody">'+
+ mvPickEl.innerHTML='<div class="mvpbox mvlib"><div class="mvlibhead"><h1>Film library</h1></div><div class="mvlibbody">'+
   '<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'" data-n="'+q.films.length+'">'+q.name+'</button>').join('')+'</div>'+
   '<div class="mvplist"><h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+(sh===MV_MINE?'<div class="mvmine"></div>':'')+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div></div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
- mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;{const tb=mvPickEl.querySelector('.mvtonight'),tf=mvTonight();tb.textContent='Tonight’s film: '+tf.t;tb.onclick=()=>{mvChoose(tf);mvNote('Tonight’s film is '+tf.t+'.');};}mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
+ mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;/* no "Tonight's film" button (Jackie, Nov 27: "I don't want a 'tonight's film' either") */mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
  if(mvEl)return;

@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### No "Tonight's film" (Nov 27)
+
+- Jackie: "I don't want a 'tonight's film' either". The amber button is gone from the film library's title bar.
+
+### This version's name, and buttons kept in from the edges (Nov 27)
+
+- Jackie: "and call Prototype V2: Two Rooms and Some Basics". The opening screen says so under the game's name, for a new game and for a returning one. It had read "prototype v2 · your real plants".
+- Jackie: "i think anything touchable, like a button, should be a little bit away from the margins because sometimes they get covered by things". The Rooms button, the full screen button and the debug button sit 18 pixels in from the screen's edge and 14 down, or clear of the phone's own cut-outs where those are wider. The remote stands further in from the right edge.
+
 ### Film collections say plainly what they are (Nov 27)
 
 - Jackie: "Film categories in the film library should be more explicit like the late show should just say b whatever movies".
