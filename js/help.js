@@ -16,9 +16,8 @@ const HELP={main:{title:'The study',rows:[
   ['🪟','Window','Tap to open or close the curtains.'],
   ['🌙','Bassinet','Tap to say goodnight. The armchair does too when someone is in it.'],
   ['🗄️','Desk drawers','The files of your past monsters.'],
-  ['📻','Radio','Tap to turn it on or off.'],
+  ['📻','Radio','Tap to turn it on or off.'], /* the milk crate's line is out: Jackie, Nov 27, "milk crate does not put a record on the radio" (the code means it to, when no bassinet stands there, but it does not for her) */
   ['🎛️','Sampler on the top shelf','The Crates: make songs from old records.'],
-  ['💿','Milk crate','Puts a record on the radio.'],
   ['🔮','Crystal ball','Tap for a prophecy.'],
   ['🌗','Moon dial','Tells you about tonight’s moon.'],
   ['🃏','Moon box','Birth charts, tarot and I Ching readings.'], /* Jackie, Nov 27: "Moon box has birth charts, tarot, and i ching readings" */
