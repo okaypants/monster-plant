@@ -66,7 +66,7 @@ async def main():
                 check(r["show"] and not r["tail"], f"{dev_name} {when}: a tip should show with no tail ({r})")
                 check(r["top"] < 60, f"{dev_name} {when}: bubble isn't at the top (y {r['top']:.0f})")
                 check(not r["covers"], f"{dev_name} {when}: the bubble covers a plant's face")
-                over = await pg.evaluate("()=>{const a=cap.getBoundingClientRect();return [...document.querySelectorAll('#fsBtn,#dbgBtn')].some(b=>{const r=b.getBoundingClientRect();return r.width&&a.right>r.left&&a.left<r.right&&a.bottom>r.top&&a.top<r.bottom;});}")
+                over = await pg.evaluate("()=>{const a=cap.getBoundingClientRect();return [...document.querySelectorAll('#fsBtn,#dbgBtn,#leaveBtn')].some(b=>{const r=b.getBoundingClientRect();return r.width&&a.right>r.left&&a.left<r.right&&a.bottom>r.top&&a.top<r.bottom;});}")
                 check(not over, f"{dev_name} {when}: the bubble overlaps the buttons at the top right")
                 check(6 <= r["dur"] <= 8 and abs(r["dur"] - min(8, max(3, 2 + .3 * len(LONG.split())))) < .01, f"duration {r['dur']} for {len(LONG.split())} words (the longest lines stay 6-8 s)")
                 if dev_name == "phone":

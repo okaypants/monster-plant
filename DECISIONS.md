@@ -2,6 +2,10 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The words at the top keep clear of the Rooms button (Nov 27)
+
+- Jackie: "the rooms button covers some text". The speech and notes along the top of the study already kept clear of the buttons at the top right. They now keep clear of the Rooms button at the top left as well, and are made narrower when there is not room for both.
+
 ### Lines that run over are indented, in every book (Nov 27)
 
 - Jackie: "review how all the books are set when you open them some are bad".
