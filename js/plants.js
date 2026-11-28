@@ -430,7 +430,7 @@ function slothArrive(){ // the next morning: the paw brings the seed packet (js/
  if(!st.slothSend||st.day<st.slothSend)return;st.slothSend=0;if(plantCount()>=MAX_PLANTS)return;st.pawWait='seed';save();}
 /* ASKING TO GO (Jackie, Nov 8): a content adult may ask, now and then, to go somewhere that fits its nature (GO_REASONS in names.js).
    At most one roll a day, after things have been calm for a little while; never while another ask, note or seed is waiting; never a kid or teen.
-   Yes: it sets off the next morning (moveOut). Not yet, or tapping away: no penalty of any kind, it asks again in 3 days. */
+   Yes: it sets off the next morning (moveOut). Not yet: it has a tantrum (js/tantrum.js) and asks again in 3 days. Tapping away costs nothing. */
 const GO_CHANCE=.2,GO_CALM=20,GO_AGAIN=3,GO_SETTLED=3;let goCalm=0; // chance per day; seconds of calm first; days until it asks again; days an adult settles in before it can ask
 function goContent(){return st.stage>=8&&st.nap<=0&&!want('thirst')&&!want('attention')&&st.lightState==='ok'&&!st.float&&!(st.grump>0)&&!READ.has(st.id)&&(st.adultDay==null||st.day>=st.adultDay+GO_SETTLED)&&(st.goAgain||0)<=st.day;}
 function goWaiting(){return goBusy()||letterWaiting();}
@@ -439,12 +439,13 @@ function goTick(dt){if(!quiet())return; // a caption only pauses the calm
  if(st.night||T<8||goWaiting()||(st.goNext||0)>st.day||st.goRolled===st.day||drag.down||held.tool||storyEl||trayEl||btrayEl||document.querySelector('.screen')){goCalm=0;return;}
  const ids=[];eachPlant(()=>{if(goContent())ids.push(st.id);});if(!ids.length){goCalm=0;return;}goCalm+=dt;if(goCalm<GO_CALM)return;goCalm=0;st.goRolled=st.day;
  const due=ids.filter(id=>allRaw().find(q=>q.id===id).goAgain);if(due.length){goAsk(due[0]);return;} // it said it would ask again
- if(Math.random()<GO_CHANCE)goAsk(ids[Math.floor(Math.random()*ids.length)]);else save();}
+ const adults=allRaw().filter(q=>q.stage>=8).length; /* with two adults in the room one of them asks the same day, no dice (Jackie, Nov 27: "i think after you have two adults one should ask to move out") */
+ if(adults>=2||Math.random()<GO_CHANCE)goAsk(ids[Math.floor(Math.random()*ids.length)]);else save();}
 function goAsk(id){withPlant(id,()=>{const p=pers(),R=[p.g,p.l].filter(Boolean).flatMap(k=>GO_REASONS[k]),L=R.length?R:GO_REASONS.neutral,r=L[Math.floor(Math.random()*L.length)],b=plantBox(),N=esc(who());
   st.goAgain=st.day+GO_AGAIN;st.goNext=st.day+GO_AGAIN;sfx('paper');const right=b.x+b.w+390<W;
   openBubble(right?b.x+b.w+10:b.x-390,Math.max(20,b.y+10),N+' '+esc(r[0])+'. May '+N+' go?'+tsChoices(CHOICES.go),{y:()=>{closeBubble();goYes(id,r[1]);},n:()=>{closeBubble();goNotYet(id);}});if(bubble)bubble.style.setProperty('--bg',lookOf(st).tint);});save();} // asked in its own tint
 function goYes(id,dest){withPlant(id,()=>{st.goDest=dest;st.goDay=st.day+1;delete st.goAgain;sfx('chime');tell(who()+' will set off in the morning.',{kind:'important',who:st.id});});save();}
-function goNotYet(id){withPlant(id,()=>{const b=plantBox();st.goAgain=st.day+GO_AGAIN;burst('heart',b.x+b.w/2,b.y-20,3);plantBoing(b.x+b.w/2);tell(who()+' snuggles back in.',{kind:'important',who:st.id});});save();}
+function goNotYet(id){withPlant(id,()=>{const b=plantBox();st.goAgain=st.day+GO_AGAIN;plantBoing(b.x+b.w/2);tell(who()+' is furious about staying.',{kind:'important',who:st.id});if(typeof tantrumStart==='function')tantrumStart(st.id,who());});save();} /* a no makes it mad, and the room pays for it (js/tantrum.js); it used to snuggle back in at no cost. It still asks again in three days */
 // the morning after a yes (wake in start.js): gone, journal in the desk. If that was the last monster, the room waits a moment, then a new seed can be planted
 function goMorning(){const L=allRaw().filter(q=>q.goDest&&st.day>=q.goDay),go=L.map(q=>({id:q.id,d:q.goDest}));for(const q of L){delete q.goDest;delete q.goDay;}
  const copies=L.map(plantFields);go.forEach((x,i)=>moveOut(x.id,x.d,copies.slice(0,i))); // leaving together: each keepsake still knows the other

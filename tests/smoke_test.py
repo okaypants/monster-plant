@@ -193,7 +193,7 @@ CASES = [
      "st.stage=6;feed.item={id:'solar'};feed.over=st.id;const t=mouthNow();st.stage=8;const a=mouthNow();feed.item=null;feed.over=null;return (t===2&&a===2&&mouthNow()!==2)||'teen or adult mouth: '+t+' '+a;})()"),
     # bothered into moving three times in a row, the cat leaves the room, stays away a while and walks back in (Jackie, Nov 25)
     ("cat_leaves_room", TEEN + "s.catTrust=.7;", "", 0.1,
-     "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.to!=='out')return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"
+     "(()=>{capClear();cat.hold=false;cat.pester=3;huffWalk();if(cat.state!=='mad'||!tantrumOn()||catFrame().catName!=='glow')return 'did not sit and glare with green eyes: '+cat.state;__step(TANTRUM_CAT_SIT+.5);if(cat.to!=='out'||!cat.sulk)return 'not heading out: '+cat.to;for(let i=0;i<900&&cat.state!=='away';i++)__step(.05);if(cat.state!=='away')return 'never left: '+cat.state+' x'+Math.round(cat.x);"
      "if(cat.x>-60&&cat.x<W+60)return 'still on screen at x'+Math.round(cat.x);if(!CAP.log.some(l=>/has left the room/.test(l.t))&&!CAP.q.concat(CAP.cur||[]).some(c=>/has left the room/.test(c.t)))return 'did not say it left';"
      "cat.t=cat.awayT+1;__step(.1);if(cat.state!=='walk')return 'did not come back: '+cat.state;for(let i=0;i<1200&&cat.state==='walk';i++)__step(.05);return (cat.state==='sleep'&&cat.x>0&&cat.x<W&&!cat.pester)||'did not settle: '+cat.state+' x'+Math.round(cat.x);})()"),
     # the cat answers a touch even while he's walking: he stops for a moment (Jackie, Nov 7)

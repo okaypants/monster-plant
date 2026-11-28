@@ -256,7 +256,7 @@ function draw(){const nowD=performance.now();dtDraw=Math.min(.1,(nowD-lastDraw)/
    else if(where==='side'){x=b.x+b.w-w*.1;y=b.y+b.h*.3;} // tucked against its upper right side, half on the plant
    else if(where==='topL'){x=cx-w*.75;y=top-M*.6-h/2;}else if(where==='topR'){x=cx+w*.75;y=top-M*.6-h/2;}
    fx(n,x,y,rate,ph,sc);};
-  if(st.glare===2){fx('flames',cx,top-14-sz('flames')[1]/FX_SCALE*.27/2,5,0,.27);}
+  if(st.glare===2||(typeof tantrumMad==='function'&&tantrumMad(st.id))){fx('flames',cx,top-14-sz('flames')[1]/FX_SCALE*.27/2,5,0,.27);}
   if((st.nap>0||st.night)&&st.stage>=4){const[w,h]=[sz('zzz')[0]/FX_SCALE*.5,sz('zzz')[1]/FX_SCALE*.5];sleepZ('p'+st.id,b.x+b.w+w*.2,Math.min(top,vt+40)+h*1.4,.5);} // only plants whose eyes can close (elders' face kit); babies have their eyes drawn in // Zzz only when actually asleep (eyes closed); too dark = hunching smaller only
   if(st.listen>0)slot('sparkles','side',3,0,SPARKLE_SC); // smaller and close in (Jackie): it was as big as a kid's face and drifted onto the next plant
   if(st.over>0&&st.overType!=='water'&&!(st.listen>0))slot('sweat','mr',2);

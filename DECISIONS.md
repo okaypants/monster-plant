@@ -2,6 +2,20 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Tantrums: a no makes a monster mad, a pestered cat storms out, and the room pays (Nov 27)
+
+- Jackie: "i think after you have two adults one should ask to move out", "and when you say no they should get mad and things should disappear and move and everything should be disrupted when monsters are mad", "like decorations bounce around or go crazy whatever", "remember we also have old image files like a fire and stuff", "same thing with the cat -- when it gets mad, things go nuts and its eyes go green then it leaves".
+- This replaces the Nov 8 rule that "Not yet" cost nothing.
+- **Asking.** With two adults in the room, one of them asks to move out that day. With one adult it is still one chance in five a day.
+- **A no.** The monster is furious: grumpy face, the old fire picture over its head, and a tantrum. It asks again in three days, as before.
+- **The tantrum** lasts twenty seconds and "Ends by itself" (her answer). Everything springy is thrown about in waves, the leaves shake, small things lift and bob, and half the string lights flicker dark.
+- **The mess stays.** Jackie: "i think we have to put things back". A few seconds in, the decorations go back in the cupboard and the string lights and every lamp go off. When it ends a line says who has calmed down and what needs putting back.
+- **Who puts it back.** "or if you have a tidy monster nearby it can do it or if your monster cools off and feels bad lol". You can always do it yourself. A tidy (lawful) monster in the room does it about fifteen seconds later. Otherwise the mad one feels bad and does it after about a minute, one time in two. What you have already put right is left alone.
+- **The cat.** Pestered to its limit, it sits with its green glowing eyes for six seconds while the room has the same tantrum, then walks out. "if your monster or the cat get mad they might go in another room", "and you have to find them if you want them immediately": it goes to the movie room, and a pet there brings it straight back to the study. Left alone it comes back by itself as before.
+- **The fire** was left to me ("fire is up to you"): it is on the mad monster's head, the same flames a glaring monster already had.
+- Not built: a mad monster leaving for another room. Monsters do not move between rooms yet.
+- With reduced motion nothing is thrown about, but the mess is still made.
+
 ### A ? beside the Rooms button opens a cheat sheet (Nov 27)
 
 - Jackie: "maybe we should have a little cheat sheet help tab thing that pops up for everything that does something and says what", "like a translucent little ? in a circle you can click".

@@ -150,6 +150,7 @@ cv.addEventListener('pointermove',e=>{const [x,y]=toGame(e);
  fDrag.last={x,y};});
 function fspring(p){p.vx+=-p.k*p.ox;p.vy+=-p.k*p.oy;p.vx*=1-p.d;p.vy*=1-p.d;p.ox+=p.vx;p.oy+=p.vy;if(Math.abs(p.ox)<.3&&Math.abs(p.vx)<.2){p.ox=0;p.vx=0;}if(Math.abs(p.oy)<.3&&Math.abs(p.vy)<.2){p.oy=0;p.vy=0;}}
 function fidgetStep(){
+ if(typeof tantrumStep==='function')tantrumStep(); // a mad monster or cat throws the room about (js/tantrum.js)
  const spell=spellStep();
  for(const p of FP){
   if(!spell)fspring(p);if(p.puff&&p.lastPoke&&performance.now()-p.lastPoke>8000)p.dust=Math.min(10,p.dust+.02);}

@@ -88,7 +88,8 @@ function lightsPick(id){st.lightsKind=id||'';if(st.noLights)st.noLights=false;st
 const LIGHTS_TAP={x:250,y:36,w:1170,h:60}; // the stretch of strand between the two hanging plants
 function lightsLit(){return !st.lightsDark;}
 function lightsTap(){st.lightsDark=!st.lightsDark;sfx('tick');tell(st.lightsDark?'The string lights are off.':'The string lights are on.',{kind:'info',key:'decor',now:true});save();}
-function lightsOut(n){ // which bulbs are dark this moment: a few, chosen afresh every LIGHTS_TWINK ms, the same ones for the whole of that time
+function lightsOut(n){if(n&&typeof tantrumWild==='function'&&tantrumWild()){const k=Math.floor(performance.now()/170),out=[];let h=(k*2654435761)>>>0;for(let i=0;i<Math.ceil(n/2);i++){h=(Math.imul(h^(h>>>15),2246822519)+i*374761393)>>>0;out.push(h%n);}return out;} /* in a tantrum half the bulbs go dark, different ones every instant */
+  // which bulbs are dark this moment: a few, chosen afresh every LIGHTS_TWINK ms, the same ones for the whole of that time
  if((typeof tsCalm==='function'&&tsCalm())||!n)return [];const k=Math.floor(performance.now()/LIGHTS_TWINK),out=[];let h=(k*2654435761)>>>0;
  for(let i=0;i<LIGHTS_OUT;i++){h=(Math.imul(h^(h>>>15),2246822519)+i*374761393)>>>0;out.push(h%n);}return out;}
 function lightsSet(on){st.noLights=!on;sfx('tick');tell(on?'The string lights are up.':'The string lights are back in the cupboard.',{kind:'info',key:'decor',now:true});save();} // they can be taken down like the other decorations (Jackie, Nov 27: "we also need to be able to turn off the decorations")

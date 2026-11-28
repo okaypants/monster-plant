@@ -53,12 +53,12 @@ async def main():
         fit = await pg.evaluate("()=>{const r=bubble.getBoundingClientRect(),c=cv.getBoundingClientRect();return r.left>=c.left&&r.right<=c.right&&r.top>=c.top&&r.bottom<=c.bottom;}")
         check(fit, "the bubble leaves the room")
 
-        # Not yet: caption, no penalty, not again today, asks again in 3 days
+        # Not yet: it is furious and has a tantrum (js/tantrum.js); its own needs and nature are untouched; not again today, asks again in 3 days
         before = await pg.evaluate(f"()=>{{const q=allRaw().find(x=>x.name.startsWith('{name}'));return {{ge:q.ge,lc:q.lc,th:q.needs.thirst,at:q.needs.attention}};}}")
         await pg.click(".bubble [data-k=n]")
         await pg.evaluate("()=>__step(.3)")
         after = await pg.evaluate(f"()=>{{const q=allRaw().find(x=>x.name.startsWith('{name}'));return {{ge:q.ge,lc:q.lc,th:q.needs.thirst,at:q.needs.attention,again:q.goAgain,day:st.day,dest:q.goDest||''}};}}")
-        check(await pg.evaluate(f"()=>CAP.log.some(l=>l.t==='{name} snuggles back in.')"), "no snuggle caption")
+        check(await pg.evaluate(f"()=>CAP.log.concat(CAP.cur||[]).some(l=>/^{name}.* is furious about staying\\.$/.test(l.t))&&tantrumOn()"), "a no should make it furious and start a tantrum")
         check(after["again"] == after["day"] + 3 and not after["dest"], f"not yet: {after}")
         check(all(abs(before[k] - after[k]) < .02 for k in before), f"not yet changed something: {before} -> {after}")
         await pg.wait_for_timeout(200)

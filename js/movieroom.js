@@ -114,7 +114,7 @@ function mvCatShow(name){const im=mvEl&&mvEl.querySelector('.mvcat'),f=typeof CA
  const put=()=>{const w=f.naturalWidth*mvCat.k,h=f.naturalHeight*mvCat.k;im.src=f.src;im.dataset.pose=name;im.style.cssText='left:'+((mvCat.x-w/2)/MV.W*100)+'%;top:'+((mvCat.y-h)/MV.H*100)+'%;width:'+(w/MV.W*100)+'%;height:'+(h/MV.H*100)+'%';im.hidden=false;};
  if(ok(f))put();else f.addEventListener('load',put,{once:true});}
 function mvCatSleep(){if(!mvCat)return;mvCat.awake=false;mvCatShow(mvCat.nap);}
-function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');
+function mvCatTap(){if(!mvCat)return;clearTimeout(mvCatT);sfx('tick');if(typeof cat!=='undefined'&&cat.sulk&&cat.state==='away'){cat.sulk=false;cat.awayT=0;mvNote(catName()+' will come back to the study with you.');} /* found sulking here after a tantrum in the study (js/tantrum.js): a pet ends the sulk, and the cat is back in the study when you are */
  if(!mvCat.awake){mvCat.awake=true;mvCatShow('sit1');}
  else{mvCatShow('pet1');setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('pet2');},260);setTimeout(()=>{if(mvCat&&mvCat.awake)mvCatShow('sit2');},700);}
  mvCatT=setTimeout(mvCatSleep,MV_CAT_NAP);}

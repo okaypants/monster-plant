@@ -80,13 +80,14 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
  else if(cat.state==='look'){if(cat.t>CAT_LOOK_T){if(cat.lookNap>0){cat.state='sleep';cat.t=0;cat.nap=cat.lookNap;}else{cat.state='wake';cat.t=1.2;}}} // it looked at a monster growing up (js/growup.js); back to its nap
  else if(cat.state==='sniff'){if(cat.t>1.6){cat.state='wake';cat.t=1.2;}}
  else if(cat.state==='wake'){if(cat.t>2.6){const bk=cat.back&&cat.pat>=1?backSpot():null;catGo(bk||catPick());}} // after a walk-off, once patience is full: a fond cat may come back over
+ else if(cat.state==='mad'){if(cat.t>TANTRUM_CAT_SIT){cat.sulk=true;tell(catName()+' has gone off to the movie room.',{kind:'important',who:'cat'});catExit();}} // it sits and glares with green eyes while the room goes wild, then walks out (js/tantrum.js)
  else if(cat.state==='annoyed'){if(cat.t>.5)huffWalk();} // it gets up and goes
  else if(cat.state==='fedup'){if(cat.t>2.4){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}} // the last pet it'll take: it sits, twitches its tail, then settles back
  else if(cat.state==='present'){if(cat.t>cat.presT){cat.state='sleep';cat.pose='loaf';cat.t=0;cat.nap=rnd(60,150);}} // came back to the front for a pet; it dozes if none comes
  else if(cat.state==='settle'){const a=cat.awake;cat.huffF=cat.t>a*.5&&cat.t%3.4<.3?'sit2':'sit1'; // sitting awake, facing a little away, "grooming" (a slow 1 px head bob, drawCat), then a slow blink now and then
   if(cat.t>a){cat.state='loafwake';cat.t=0;cat.loafT=rnd(40,70);}}
  else if(cat.state==='loafwake'){if(cat.t>cat.loafT){cat.state='sleep';cat.pose='curl';cat.t=0;cat.nap=rnd(60,150);cat.huff=0;cat.huffN=0;cat.pets=0;cat.pester=0;}} // only now does it curl up and nap for real (patience refills while it sleeps)
- else if(cat.state==='away'){if(cat.t>cat.awayT){cat.huffN=0;cat.huff=0;cat.pets=0;cat.pester=0;patFull();catGo(catPick());tell(catName()+' comes back in.',{kind:'info',who:'cat'});}} // out of the room; then back in to a spot of its choosing
+ else if(cat.state==='away'){if(cat.t>cat.awayT){cat.sulk=false;cat.huffN=0;cat.huff=0;cat.pets=0;cat.pester=0;patFull();catGo(catPick());tell(catName()+' comes back in.',{kind:'info',who:'cat'});}} // out of the room; then back in to a spot of its choosing
  else if(cat.state==='play'){if(!cat.play||cat.t>=cat.play.len){cat.play=null;cat.state='wake';cat.t=1.2;}} // a toy from the cupboard (js/cupboard.js): when the play is over it sits, then wanders off to nap
  else if(cat.state==='pet'){if(cat.t>2.2){cat.state='sleep';cat.t=0;cat.nap=rnd(30,70);}}
  else if(cat.state==='walk'&&(cat.pauseT||0)>0){cat.pauseT-=dt;if(cat.pauseT<=0)cat.walkPet=false;} // stopped for a touch
@@ -101,7 +102,7 @@ function catUpdate(dt){if(cat.hold)return; // held still by the debug Nudge tool
   cat.sc+=((cat.path.length?catSc(DEPTH.floor):CAT_SPOTS[cat.to].sc)-cat.sc)*Math.min(1,dt*4);}
  // company: a cat napping near the plant keeps it a little company
  if(cat.state==='sleep'&&st.started&&st.stage>=4&&!st.night){const b=plantBox();if(Math.abs(cat.x-(b.x+b.w/2))<b.w*.9+120&&Math.abs(cat.y-SPOT[spotKey()].y)<160)st.needs.attention=Math.max(0,st.needs.attention-dt*.002);}}
-function catFrame(){const f=catFrame0();return CATF.glow&&typeof eyesOn==='function'&&eyesOn()&&!cat.force&&cat.state!=='away'?CATF.glow:f;} // the crystal ball: the cat sits up with glowing green eyes while the vision lasts, whatever it was doing (js/fidgets.js)
+function catFrame(){if(cat.state==='mad'&&!cat.force)return CATF.glow||CATF.sit1;const f=catFrame0();return CATF.glow&&typeof eyesOn==='function'&&eyesOn()&&!cat.force&&cat.state!=='away'?CATF.glow:f;} // the crystal ball: the cat sits up with glowing green eyes while the vision lasts, whatever it was doing (js/fidgets.js)
 function catFrame0(){if(cat.force&&CATF[cat.force])return CATF[cat.force]; // debug: hold any frame
  if(cat.state==='sleep')return CATF[{curl:'curl1',loaf:'loaf2',side:'side1'}[cat.pose]]; // asleep: ONE frame per pose (Jackie, calm-down); the breathing is done in code (catBreath)
  if(cat.state==='wake')return cat.t<1.2?CATF.yawn:CATF[T%2.4<.18?'sit2':'sit1']; // sit2 = a slow blink now and then
@@ -119,7 +120,7 @@ const catPetF=()=>Math.floor(T*4)%2; // petted frame; the back-scratcher rocks w
 // Whole pixels only; never more than 1 px. Drawn by repeating one row low in the body, so he stays on his surface.
 const BREATH=4.6;const catBreath=()=>{const u=(T%BREATH)/BREATH;return u>.3&&u<.7?1:0;};
 function catBox(){const f=catFrame();if(!ok(f))return null;const k=cat.sc*catK(f),w=Math.round(f.naturalWidth*k),h=Math.round(f.naturalHeight*k);const [nx,ny]=catNudge(),s1=CATF.sit1,shift=f.old&&CAT_DIR==='old_cat'&&cat.state==='pet'&&ok(s1)?Math.round((f.naturalWidth-s1.naturalWidth)/2*k):0; /* the old petted frames line up with his sitting body */return {f,k,x:Math.round(cat.x-w/2+shift)+nx,y:Math.round(cat.y-h+bottomPad(f)*k)+ny,w,h};} // paws/body on the surface line
-function catPose(){if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return 'sit';if(cat.state==='settle')return 'sit';if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
+function catPose(){if(cat.state==='mad')return 'sit';if(cat.state==='annoyed'||cat.state==='fedup'||cat.state==='present')return 'sit';if(cat.state==='settle')return 'sit';if(cat.state==='loafwake')return 'loaf';return cat.state==='sleep'?cat.pose:cat.state==='walk'?'walk':cat.state==='pet'?(cat.belly?'belly':'pet'):cat.state==='wake'&&cat.t<1.2?'yawn':'sit';}
 function catNudge(){return NUDGE.cat[catPose()+'|'+(cat.state==='walk'?'floor':cat.spot)]||[0,0];}
 let catLit=null; // the room's light where the cat is (js/light.js), set by drawCat
 function catImg(f,x,y,w,h){const old=f.old;f=litPic(f,catLit); /* the lit copy doesn't carry .old, so read it first (or the cat walks left backwards in dim light) */if((old&&cat.state==='walk'&&cat.dir<0)||((cat.state==='settle'||cat.state==='loafwake')&&cat.away)||((cat.state==='look'||cat.state==='present')&&cat.faceX!=null&&cat.faceX>cat.x)){ /* turned toward a monster that just grew up: its tail away from it */g.save();g.translate(x+w,y);g.scale(-1,1);g.drawImage(f,0,0,w,h);g.restore();}else g.drawImage(f,x,y,w,h);} // the old cat walks left by mirroring its walk; winding down, it sits facing a little away (mirrored so its back end is toward you)
@@ -173,7 +174,7 @@ function huffSpot(){const from=cat.huffFrom??cat.x,pl=[];if(st.started)eachPlant
    for a minute or two. Then it walks back in, patience full again, and settles somewhere. It still never scolds, and trust is not touched. */
 const CAT_OUT_AT=3,CAT_OUT_X=170,CAT_AWAY=[60,120];
 function catExit(){catSaw('huff');const x=cat.x<W/2?-CAT_OUT_X:W+CAT_OUT_X;CAT_SPOTS.out={x,y:SURFACE.floor,sc:catSc(DEPTH.floor),poses:['loaf']};catGo('out');cat.huff=0;cat.fast=1.35;}
-function huffWalk(){catSaw('huff');cat.huffN=(cat.huffN||0)+1;if((cat.pester||0)>=CAT_OUT_AT){catExit();return;} /* only your own touching counts (cat.pester): a monster taking the armchair or a plant in the way never sends it out */cat.huffFrom=cat.touchX??cat.x;catGo(huffSpot());cat.huff=1;}
+function huffWalk(){catSaw('huff');cat.huffN=(cat.huffN||0)+1;if((cat.pester||0)>=CAT_OUT_AT){if(typeof tantrumStart==='function'&&cat.state!=='mad'){cat.state='mad';cat.t=0;cat.path=null;tantrumStart('cat',catName());tell(catName()+' has had enough.',{kind:'important',who:'cat'});return;}catExit();return;} /* only your own touching counts (cat.pester): a monster taking the armchair or a plant in the way never sends it out */cat.huffFrom=cat.touchX??cat.x;catGo(huffSpot());cat.huff=1;}
 function huffSettle(){cat.state='settle';cat.t=0;cat.huffF='sit1';cat.away=(cat.huffFrom??cat.x)<cat.x;const n=cat.huffN||1;cat.awake=n>1?Math.max(rnd(30,90)*(1+.35*(n-1)),(cat.awake||0)+10):rnd(30,90);fplay('cat_settle');} // each extra move: a little longer
 // COMING BACK (Nov 10): after it walked off, once its patience is full again, a fond cat may come nap by the monster you're tending and a cat
 // that adores you may come sit near the front of the room for a pet. Said once: "<Cat> wanders back over."
