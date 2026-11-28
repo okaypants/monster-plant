@@ -2,6 +2,14 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Four choices for the greenhouse and the kitchen (Nov 28)
+
+- Jackie: "Your picks across the board". Nothing is built yet; these settle the plan.
+- Greenhouse ranks open the room a little at a time: more bench places, the bog tub, the hanging rail, the feeder, rarer seeds.
+- Monsters help in the greenhouse now and then, lightly and as a surprise: one that likes water may water a pot while you are away. It is never a chore you have to arrange.
+- The kitchen pantry starts with a few plain staples (such as bread, eggs and rice), so there is always something to cook.
+- Food fills a monster and cheers it, gently, the way popcorn does now. Each monster has its favourites.
+
 ### The receiver is a sound on/off switch again (Nov 27)
 
 - Jackie: "Sound knob doesn't work well", then "turn it back to on off".
