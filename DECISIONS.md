@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### A little ticket shows when a film that can earn one begins (Nov 27)
+
+- Jackie: "maybe show a little movie ticket and notify someone when they start a movie that's eligible for a ticket".
+- When a library film that has not been watched to its end starts, a small yellow ticket shows at the top of the screen for seven seconds: "ADMIT ONE. Watch this film to the end to collect its ticket." It shows once for that film each time you come into the room.
+- It does not show for a channel, a satellite loop, or a film whose ticket is already in the drawer.
+- When the film ends, a note says "Your ticket for [the film] is in the ticket drawer."
+
 ### Kalimba-Score is renamed Scorimba (Nov 27)
 
 - Jackie: "but i want to rename kalimbascore Scorimba".

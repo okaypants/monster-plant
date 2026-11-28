@@ -15,7 +15,7 @@ FIND = """()=>{const skip='.mvhot,.mvthing,.mvtap,.mvstage>video,.rmcard',out=[]
  const vis=e=>{const r=e.getBoundingClientRect(),c=getComputedStyle(e);if(r.width<4||r.height<4||c.visibility==='hidden'||c.display==='none'||+c.opacity<.05||e.hidden)return null;
   for(let p=e;p;p=p.parentElement){if(p.hidden)return null;const q=getComputedStyle(p);if(q.display==='none'||q.visibility==='hidden')return null;}
   if(r.right<=0||r.bottom<=0||r.left>=innerWidth||r.top>=innerHeight)return null;return r;};
- const E=[...document.querySelectorAll('button,#cap,.mvnote,.mvchb,.mvremd,.mvlibhead h1,.mvplist h2,.nametag,.ptag,#who')].filter(e=>!e.matches(skip)&&getComputedStyle(e).pointerEvents!=='none'||e.matches('#cap,.mvnote,.mvchb'));
+ const E=[...document.querySelectorAll('button,#cap,.mvnote,.mvchb,.mvtix .mvstub,.mvremd,.mvlibhead h1,.mvplist h2,.nametag,.ptag,#who')].filter(e=>!e.matches(skip)&&getComputedStyle(e).pointerEvents!=='none'||e.matches('#cap,.mvnote,.mvchb,.mvstub'));
  const L=E.map(e=>[e,vis(e)]).filter(x=>x[1]);const name=e=>(e.id?'#'+e.id:'.'+[...e.classList].join('.'))+(e.textContent?' "'+e.textContent.trim().slice(0,18)+'"':'');
  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){const[a,ra]=L[i],[b,rb]=L[j];if(a.contains(b)||b.contains(a))continue;
   const top=document.querySelector('.mvpick,.rooms');if(top&&(top.contains(a)!==top.contains(b)))continue; // a panel that is open covers the room on purpose
@@ -28,6 +28,7 @@ STATES = [
  ("study_cupboard", "()=>{capClear();cubOpen();__step(.3);}"),
  ("movie_closed_note", "()=>{cubClose&&cubClose();capClear();document.getElementById('leaveBtn').click();document.querySelector('.rmcard[data-id=movie]').click();__step(1);mvNote('A channel can’t be wound back or on.',true);__step(.3);}"),
  ("movie_remote_note_banner", "async()=>{const j=await (await fetch('movieroom/channels.json')).json();mvChannelsSet(j);document.querySelector('.mvremote').click();mvTune(MV_CH[1]);__step(3);mvInfo();mvNote('Fast forward. Press it again, or play, to watch from here.',true);__step(.3);}"),
+ ("movie_film_ticket", "()=>{mvRemClose();mvNote('');mvChan=null;mvFilm=MV_SHELVES[0].films[0];mvSet('closed');mvTixFor=null;mvPlay();__step(3);}"),
  ("movie_guide", "()=>{mvNote('');mvGuide();__step(.3);}"),
  ("movie_library", "()=>{mvGuideClose();mvRemClose();mvPick();__step(.3);}"),
  ("movie_drawer", "()=>{mvPickClose();mvDrawer('decor');__step(.3);}"),
