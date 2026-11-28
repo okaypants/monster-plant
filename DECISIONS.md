@@ -2,6 +2,15 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Lost and found's line (Nov 27)
+
+- Jackie: 'In the Lost and Found Say, underneath the item missing, "Check back tomorrow. Something else may turn up."' It read "Something else turns up tomorrow."
+
+### The film library has its own title and a tidy layout (Nov 27)
+
+- Jackie: "in the film library i want it to say film library at the top and clearly organize the library so the ui and menu are compelling and clean".
+- A title bar reads Film library, with tonight's film as an amber button on its right. Below it the collections run down the left in one column, each with its number of films, and the chosen collection's name, description and films are on the right. The picture of a reel and the row of wrapping tabs are gone.
+
 ### Trouble messages never stay up, and the remote's display is taller (Nov 27)
 
 - Jackie: "sometimes a 'the film could not start it needs a connection' gets stuck on screen i hate it". Two causes. Starting something else before the last thing had begun was being reported as a failure, which it is not; that no longer says anything. And a real failure's message stayed until something replaced it; it now goes after eight seconds, or at once when a picture starts playing.
