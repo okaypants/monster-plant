@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The decorations list keeps its box all the way down (Nov 27)
+
+- Jackie: "Decorations selections don't have a full background box".
+- In the cupboard's decorations list the cream box scrolled away with the first screenful, so the choices further down had nothing behind them. The list now has a real background and border that stay put.
+
 ### The journal's signs are real emoji (Nov 27)
 
 - Jackie: "i need good emojis in the monsters journals too like the clouds and stuff nd the stars are lame in there".

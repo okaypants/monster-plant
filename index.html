@@ -392,6 +392,8 @@ body>.screen.kalimba iframe{position:absolute;left:env(safe-area-inset-left,0px)
 .cubpick.on{background:#ffcf40}.cubpick.cubdown{background:#fde0ea}
 .cubpics .cubhead{color:#5a3a22}.cubpics .cubpick{display:inline-flex;align-items:center;gap:6px}.cubpics .cubpick img{height:30px;width:34px;object-fit:contain;image-rendering:pixelated}
 .ttray.cubdecor{flex-wrap:wrap;justify-content:center;border-radius:18px;max-width:min(560px,92vw);max-height:76vh;overflow:auto;padding:8px;touch-action:auto}
+/* The paper box of a .tsb is drawn by two layers behind its contents, and in a list that scrolls they scrolled away with the first screenful, leaving the choices further down with nothing behind them (Jackie, Nov 27: "Decorations selections don't have a full background box"). A scrolling list gets a real background and border instead. */
+.ttray.tsb.cubdecor{background:var(--ts-paper,#FFF4E0)!important;border:3px solid var(--ts-ink,#5B3A2E)!important;box-shadow:var(--ts-sx,0) var(--ts-sy,3px) 0 var(--ts-ink,#5B3A2E)!important}.ttray.tsb.cubdecor::before,.ttray.tsb.cubdecor::after{display:none}
 .ttreat{width:46px;height:46px;border:none;background:none;padding:2px;margin:0;cursor:grab;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-touch-callout:none}
 .ttreat img{max-width:40px;max-height:40px;image-rendering:pixelated;pointer-events:none}
 .ttreat.tbook{width:86px;height:auto;flex-direction:column;justify-content:flex-start;gap:3px;padding:2px 2px 4px} /* a book's cover (books/, 42 x 60 with its outline) with its name under it */
