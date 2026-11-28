@@ -2,6 +2,21 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Four new books of recently free writing, and two more cat reads (Nov 27)
+
+- Jackie: "i feel like our library is missing sooo much good stuff esp stuff that's recently public domain the modernists and detective stories virginia woolf and stuff i don't even know about". Shown a list of six books, she said "All six", then "do the easy ones first please".
+- The easy ones are in: every read whose English text is on Project Gutenberg. Each quoted page is word for word from the edition named in the read's `src`.
+- **The moderns** (7): Mrs Dalloway, Kew Gardens, Miss Brill, The Garden Party, Araby, Tender Buttons, Storm Ending (from Cane).
+- **Detective stories** (8): Poirot's and Miss Marple's first appearances, Whose Body?, The Maltese Falcon, The Problem of Thor Bridge, The Blue Cross, The Problem of Cell 13, Max Carrados.
+- **New poems** (5): The Negro Speaks of Rivers, Thirteen Ways of Looking at a Blackbird, Oread, Poetry, First Fig.
+- **Odd novels** (5): Lolly Willowes, Lud-in-the-Mist, Living Alone, R.U.R., The Comet.
+- **Cats** gets Tobermory and Mr Bloom's cat from Ulysses.
+- These writers are well known, which the first twelve books avoid ("nothing a Western reader already knows"); the new books are exempt because she asked for them.
+- All are free in the United States (first published 1930 or earlier). Christie, Hammett, Sayers, Hughes, Stevens, Moore, H.D., Millay, Warner, Mirrlees, Benson's contemporaries and others who died after 1955 are still in copyright in Britain and Europe.
+- Sixteen books are still shown four to a place: the wide shelf rows are each two places now.
+- The four new books have plain stand-in covers made from their colours; painted covers are still to be drawn.
+- Still to come: the fifth book, Small strange things, and every read that needs translating (Kafka, Rilke, Ranpo, Hanshichi, Cavafy, Bing Xin, Tablada, Fénéon, Renard, Gómez de la Serna, Khlebnikov, Walser, Sōseki, Colette), plus those whose texts were not on Gutenberg (Orlando, A Room of One's Own, Passing, Williams, Cummings, Paris, Sultana's Dream, Dead Stars, Mhudi, archy and mehitabel).
+
 ### No "Tonight's film" (Nov 27)
 
 - Jackie: "I don't want a 'tonight's film' either". The amber button is gone from the film library's title bar.
