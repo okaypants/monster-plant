@@ -345,7 +345,21 @@ const STORIES={
    'Mr Bloom watched curiously, kindly the lithe black form. Clean to see: the gloss of her sleek hide, the white button under the butt of her tail, the green flashing eyes.',
    '—Milk for the pussens, he said.\n—Mrkgnao! the cat cried.',
    'They call them stupid. They understand what we say better than we understand them.',
-   'Wonder what I look like to her. Height of a tower? No, she can jump me.']}],
+   'Wonder what I look like to her. Height of a tower? No, she can jump me.']},
+  {t:'Black Cat',by:'Rainer Maria Rilke, 1908',src:'Rainer Maria Rilke, "Schwarze Katze", in Der neuen Gedichte anderer Teil (Leipzig: Insel-Verlag, 1908), p. 53 of the 1918 printing; German as on German Wikisource. English made for the game from the German, line for line, without the rhyme.',p:[
+   'A poem about what happens when you look at a black cat, and then the cat looks at you.',
+   {o:'Ein Gespenst ist noch wie eine Stelle,\ndran dein Blick mit einem Klange stößt;',l:'de',e:'Even a ghost is like a place\nyour look bumps into with a sound;'},
+   {o:'aber da an diesem schwarzen Felle\nwird dein stärkstes Schauen aufgelöst:',l:'de',e:'but there, on this black fur,\nyour hardest looking is dissolved:'},
+   {o:'Doch auf einmal kehrt sie, wie geweckt,\nihr Gesicht und mitten in das deine:',l:'de',e:'But all at once, as if woken, she turns\nher face, and straight into yours:'},
+   {o:'und da triffst du deinen Blick im geelen\nAmber ihrer runden Augensteine',l:'de',e:'and there you meet your own look,\nin the yellow amber of her round eye-stones,'},
+   {o:'unerwartet wieder: eingeschlossen\nwie ein ausgestorbenes Insekt.',l:'de',e:'again, unexpected: shut inside\nlike an insect that died out long ago.'}]},
+  {t:'I Am a Cat',by:'Natsume Sōseki, 1905',src:'Natsume Sōseki, Wagahai wa neko de aru (吾輩は猫である), serialised in Hototogisu from January 1905, opening lines; Japanese as on Aozora Bunko (card 789). English made for the game from the Japanese.',p:[
+   'One of the most famous novels in Japan is told by a house cat with a very high opinion of itself and a low one of people. It begins like this.',
+   {o:'吾輩は猫である。名前はまだ無い。',l:'ja',e:'I am a cat. As yet I have no name.'},
+   {o:'どこで生れたかとんと見当がつかぬ。',l:'ja',e:'Where I was born, I have not the faintest idea.'},
+   {o:'何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。',l:'ja',e:'All I remember is crying “nyaa, nyaa” in some dim, damp place.'},
+   {o:'吾輩はここで始めて人間というものを見た。',l:'ja',e:'It was here that I first saw the thing called a human being.'},
+   'The cat uses a grand old word for “I”, the kind a lord would use. The cat never does get a name.']}],
  proverbs:[
   {t:'Wasted on Them',by:'sayings from Japan, China and India',src:'Japanese: 猫に小判 (neko ni koban); Chinese: 對牛彈琴 (duì niú tán qín), from the Mouzi Lihuolun; Hindi: बंदर क्या जाने अदरक का स्वाद.',p:[
    {o:'猫に小判',l:'ja',e:'Gold coins to a cat.\n— Japan'},
@@ -594,7 +608,15 @@ const STORIES={
    'Thunder blossoms gorgeously above our heads,\nGreat, hollow, bell-like flowers,\nRumbling in the wind,',
    'Stretching clappers to strike our ears ..\nFull-lipped flowers\nBitten by the sun',
    'Bleeding rain\nDripping rain like golden honey—\nAnd the sweet earth flying from the thunder.',
-   'Jean Toomer wrote this one book and then, more or less, stopped. Other writers of the Harlem Renaissance never got over it.']}],
+   'Jean Toomer wrote this one book and then, more or less, stopped. Other writers of the Harlem Renaissance never got over it.']},
+  {t:'Odradek',by:'Franz Kafka, 1919',src:'Franz Kafka, "Die Sorge des Hausvaters", first printed in Selbstwehr (Prague), 19 December 1919; German as proofread on German Wikisource from that printing. English made for the game from the German.',p:[
+   'Franz Kafka wrote in German, in Prague. This is a whole story about one small thing that lives in the house. Nobody knows what it is for.',
+   {o:'Es sieht zunächst aus wie eine flache sternartige Zwirnspule,',l:'de',e:'At first it looks like a flat, star-shaped spool of thread,'},
+   {o:'das Ganze erscheint zwar sinnlos, aber in seiner Art abgeschlossen.',l:'de',e:'the whole thing seems to have no point, but in its own way it is complete.'},
+   {o:'„Wie heißt du denn?“ fragt man ihn. „Odradek“, sagt er.',l:'de',e:'“And what is your name?” you ask. “Odradek,” it says.'},
+   {o:'„Und wo wohnst du?“ „Unbestimmter Wohnsitz“, sagt er und lacht;',l:'de',e:'“And where do you live?” “No fixed address,” it says, and laughs;'},
+   {o:'Es klingt etwa so, wie das Rascheln in gefallenen Blättern.',l:'de',e:'It sounds something like the rustling of fallen leaves.'},
+   'The father of the house worries about only one thing. Odradek will probably still be rolling down the stairs when everyone else is gone.']}],
  detective:[
   {t:'Enter Hercule Poirot',by:'Agatha Christie, 1920',src:'Agatha Christie, The Mysterious Affair at Styles (New York: John Lane, 1920), chapter 2; Project Gutenberg ebook 863.',p:[
    'Agatha Christie wrote her first detective novel on a dare from her sister. This is the first time anyone ever saw Hercule Poirot.',
@@ -676,7 +698,21 @@ const STORIES={
    'Two very short poems that open the same book. Half of New York could recite the first one.',
    'My candle burns at both ends;\nIt will not last the night;\nBut ah, my foes, and oh, my friends—\nIt gives a lovely light!',
    'Safe upon the solid rock the ugly houses stand:\nCome and see my shining palace built upon the sand!',
-   'The saying “burning the candle at both ends” was already old. After this poem it sounded like a good idea.']}],
+   'The saying “burning the candle at both ends” was already old. After this poem it sounded like a good idea.']},
+  {t:'The Panther',by:'Rainer Maria Rilke, 1907',src:'Rainer Maria Rilke, "Der Panther. Im Jardin des Plantes, Paris", in Neue Gedichte (Leipzig: Insel-Verlag, 1907), p. 37; German as proofread on German Wikisource from that edition. English made for the game from the German, line for line, without the rhyme.',p:[
+   'The sculptor Rodin told the young poet Rilke to go to the zoo in Paris and look at one animal until he could really see it. Rilke went and looked at the panther.',
+   {o:'Sein Blick ist vom Vorübergehn der Stäbe\nso müd geworden, daß er nichts mehr hält.',l:'de',e:'His gaze, from the bars going past,\nhas grown so tired that it holds nothing any more.'},
+   {o:'Ihm ist, als ob es tausend Stäbe gäbe\nund hinter tausend Stäben keine Welt.',l:'de',e:'To him it is as if there were a thousand bars\nand behind a thousand bars no world.'},
+   {o:'Nur manchmal schiebt der Vorhang der Pupille\nsich lautlos auf –. Dann geht ein Bild hinein,',l:'de',e:'Only sometimes the curtain of the pupil\nslides open without a sound. Then a picture goes in,'},
+   {o:'geht durch der Glieder angespannte Stille –\nund hört im Herzen auf zu sein.',l:'de',e:'goes through the tensed stillness of the limbs\nand in the heart stops being.'}]},
+  {t:'Ithaka',by:'C. P. Cavafy, 1911',src:'C. P. Cavafy, "Ιθάκη", written 1910, first printed 1911 (Grammata, Alexandria); Greek as on Greek Wikisource. English made for the game from the Greek.',p:[
+   'Odysseus took ten years to sail home to the island of Ithaka. Cavafy, a Greek poet who lived in Egypt, wrote this to anyone setting out for anywhere.',
+   {o:'Σα βγεις στον πηγαιμό για την Ιθάκη,\nνα εύχεσαι νάναι μακρύς ο δρόμος,',l:'el',e:'When you set out on the way to Ithaka,\nwish for the road to be long,'},
+   {o:'γεμάτος περιπέτειες, γεμάτος γνώσεις.',l:'el',e:'full of adventures, full of things to learn.'},
+   {o:'Πάντα στον νου σου νάχεις την Ιθάκη.\nΤο φθάσιμον εκεί είν\' ο προορισμός σου.',l:'el',e:'Keep Ithaka always in your mind.\nArriving there is what you are bound for.'},
+   {o:'Αλλά μη βιάζεις το ταξίδι διόλου.',l:'el',e:'But do not hurry the journey at all.'},
+   {o:'Η Ιθάκη σ\' έδωσε το ωραίο ταξίδι.\nΧωρίς αυτήν δεν θάβγαινες στον δρόμο.',l:'el',e:'Ithaka gave you the beautiful journey.\nWithout her you would not have set out.'},
+   {o:'Αλλο δεν έχει να σε δώσει πια.',l:'el',e:'She has nothing else to give you now.'}]}],
  odd:[
   {t:'Lolly Willowes',by:'Sylvia Townsend Warner, 1926',src:'Sylvia Townsend Warner, Lolly Willowes; or, The Loving Huntsman (London: Chatto and Windus, first published 1926), part 3; Project Gutenberg ebook 72223.',p:[
    'Laura Willowes is the unmarried aunt who lives in the spare room and helps. At forty-seven Laura moves to a village alone and becomes a witch. Here Laura explains why.',
@@ -709,7 +745,30 @@ const STORIES={
    'He stood a moment on the steps of the bank, watching the human river that swirled down Broadway. Few noticed him. Few ever noticed him save in a way that stung.',
    '“The comet?”\n“The comet——”\nEverybody was talking of it.',
    'Jim, a bank messenger, is sent down to the deepest vault. While Jim is down there the comet’s tail passes over New York.',
-   'Jim comes up to a silent city, and finds one other person alive.']}]};
+   'Jim comes up to a silent city, and finds one other person alive.']}],
+ /* SMALL STRANGE THINGS, the fifth of the new books (Nov 27): very short forms. */
+ small:[
+  {t:'Stray Birds',by:'Rabindranath Tagore, 1916',src:'Rabindranath Tagore, Stray Birds (New York: Macmillan, 1916), numbers 1, 6, 18 and 43, written in English by the author; Project Gutenberg ebook 6524.',p:[
+   'Rabindranath Tagore wrote in Bengali and won the Nobel Prize. In Japan people kept asking him to write something on their fans.',
+   'These short sayings came of it. He wrote them in English himself.',
+   'Stray birds of summer come to my window to sing and fly away.',
+   'And yellow leaves of autumn, which have no songs, flutter and fall there with a sigh.',
+   'If you shed tears when you miss the sun, you also miss the stars.',
+   'What you are you do not see, what you see is your shadow.',
+   'The fish in the water is silent, the animal on the earth is noisy, the bird in the air is singing,',
+   'But Man has in him the silence of the sea, the noise of the earth and the music of the air.']},
+  {t:'Natural Histories',by:'Jules Renard, 1896',src:'Jules Renard, Histoires naturelles (first edition Paris: Flammarion, 1896; these pieces from the enlarged editions of 1899 to 1904); French as in Project Gutenberg ebook 44255. English made for the game from the French.',p:[
+   'Jules Renard grew up on a farm in France. He described animals in as few words as he could, sometimes one line each.',
+   {o:'LE PAPILLON\nCe billet doux plié en deux cherche une adresse de fleurs.',l:'fr',e:'THE BUTTERFLY\nThis love letter folded in two is looking for a flower’s address.'},
+   {o:'LA PUCE\nUn grain de tabac à ressort.',l:'fr',e:'THE FLEA\nA grain of tobacco on a spring.'},
+   {o:'LE VER\nEn voilà un qui s\'allonge comme une belle nouille.',l:'fr',e:'THE WORM\nNow here is one who stretches out like a fine noodle.'},
+   {o:'LES FOURMIS\nChacune d\'elle ressemble au chiffre 3.\nEt il y en a! il y en a!',l:'fr',e:'THE ANTS\nEach of them looks like the number 3.\nAnd there are so many! so many!'},
+   {o:'LA PIE\nElle était toute noire; mais elle a passé l\'hiver dernier aux champs et il lui reste de la neige.',l:'fr',e:'THE MAGPIE\nShe was all black; but she spent last winter in the fields and still has some snow on her.'}]},
+  {t:'Incantation by Laughter',by:'Velimir Khlebnikov, 1910',src:'Velimir Khlebnikov, "Заклятие смехом", written 1908 to 1909, first printed in Studiya impressionistov (St Petersburg, 1910); Russian as on Russian Wikisource (from Tvoreniya, Moscow, 1986). The English is an explanation, not a translation.',p:[
+   'A Russian poet took one word, “smekh”, which means laughter, and built a whole poem by adding beginnings and endings to it. Most of these words had never existed before.',
+   {o:'О, рассмейтесь, смехачи!\nО, засмейтесь, смехачи!',l:'ru',e:'O, laugh it out, you laughers!\nO, laugh it up, you laughers!'},
+   {o:'Смейево, смейево,\nУсмей, осмей, смешики, смешики,\nСмеюнчики, смеюнчики.',l:'ru',e:'Laughdom, laughdom,\nlaugh off, laugh at, laughlets, laughlets,\nlaugherlings, laugherlings.'},
+   'It cannot really be translated. Read the left-hand page aloud: smey, smey, smey. It sounds like what it is about.']}]};
 
 // the pages of a read as the open book shows them: the title page first
 /* FACING PAGES (Jackie, Nov 27: "for books we read; have translations be like, the original language on the left page and the
@@ -717,7 +776,7 @@ const STORIES={
    its original words becomes two: the original alone on a left page, with the name of its language at the foot, and the English
    alone on the right page facing it. Where that would start on a right page, a printer's flower fills the right page first,
    as a book does to bring a new piece onto a fresh opening. The same flower closes a read that ends on a left page. */
-const LANG_NAMES={ko:'Korean',vi:'Vietnamese',bn:'Bengali',ja:'Japanese',ar:'Arabic',sga:'Old Irish',la:'Latin',hi:'Hindi',ak:'Akan',fa:'Persian','zh-Hant':'Chinese',sw:'Swahili',tl:'Tagalog',tr:'Turkish'};
+const LANG_NAMES={ko:'Korean',vi:'Vietnamese',bn:'Bengali',ja:'Japanese',ar:'Arabic',sga:'Old Irish',la:'Latin',hi:'Hindi',ak:'Akan',fa:'Persian','zh-Hant':'Chinese',sw:'Swahili',tl:'Tagalog',tr:'Turkish',fr:'French',de:'German',ru:'Russian',el:'Greek'};
 function readPages(s){if(!s)return [];const P=[{t:s.t,by:s.by}],L=s.p;for(let i=0;i<L.length;i++){const pg=L[i];if(pg&&typeof pg==='object'&&pg.o){if(P.length%2)P.push({orn:1});P.push({o:pg.o,l:pg.l});
   if(pg.e)P.push({e:pg.e,l:pg.l});else if(typeof L[i+1]==='string')P.push(L[++i]);else P.push({orn:1});}else P.push(pg);}if(P.length%2)P.push({orn:1}); /* a read that ends on a left page has the flower on the last right page, so no page is left bare */return P;} // an original with no English of its own (Khichuri) is faced by the page that follows it, which is its English
 /* Which read comes next for a book. st.shelf[book] is the order still to come (saved); when it runs out it is shuffled again,

@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### The fifth new book, the first translated reads, and no debug button (Nov 27)
+
+- **Small strange things** is the seventeenth book: Tagore's Stray Birds (his own English), Jules Renard's one-line animals (French and English), and Khlebnikov's Incantation by Laughter (Russian, with an explanation in place of a translation).
+- Translated reads added elsewhere, each with the original facing an English made for the game from that original: Kafka's Odradek in The moderns; Rilke's The Panther and Cavafy's Ithaka in New poems; Rilke's Black Cat and the opening of Sōseki's I Am a Cat in Cats.
+- Small strange things has a plain stand-in cover like the other four. The prompt for painted covers is `research_notes/decor/book_covers_prompt.md`.
+- Jackie: "get rid of the debug button". It no longer shows in the game. The tests' browser still gets it, and so does anyone who adds `?debug` to the address. The full screen button takes its corner.
+
 ### Opening the curtains starts the film again (Nov 27)
 
 - Jackie: "make the video automatically start playing again when you reopen the curtain in a single session without having to press play again".

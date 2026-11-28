@@ -101,7 +101,7 @@ async def main():
           closeStory(true);return bad;}""")
         fails += bad
         # twelve books, four at a time by where you tap (Jackie, Nov 15): each place has its own four, every book is in three places or more
-        r = await pg.evaluate("""()=>{const ids=BOOKS.map(b=>b.id),bad=[],where={};if(ids.length!==16)bad.push('books: '+ids.length);
+        r = await pg.evaluate("""()=>{const ids=BOOKS.map(b=>b.id),bad=[],where={};if(ids.length!==17)bad.push('books: '+ids.length);
           for(const id of ids){if(!BOOK_LOOK[id])bad.push(id+': no cover');if(!BOOK_SAY[id])bad.push(id+': no caption');if((STORIES[id]||[]).length<3)bad.push(id+': fewer than 3 reads');where[id]=0;}
           const f0=st.free,c0=cat.x;st.perch=null;st.free={x:700,y:918};cat.x=-999;__step(.1); // nothing sitting in front of a book
           const r=cv.getBoundingClientRect();BOOK_ZONES.forEach((z,i)=>{if(z.books.length!==4||new Set(z.books).size!==4)bad.push('place '+i+': '+z.books);

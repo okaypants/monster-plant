@@ -398,6 +398,7 @@ body>.screen.kalimba iframe{position:absolute;left:env(safe-area-inset-left,0px)
 .btray{border-radius:22px!important;padding:8px 10px!important;align-items:flex-start}
 #dbgBtn{position:absolute;right:max(18px,env(safe-area-inset-right,0px));top:calc(14px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-size:16px;padding:6px 12px;background:rgba(52,24,57,.5);color:#fdebc9;border:1px solid #6c61a4;border-radius:999px;cursor:pointer;opacity:.8}
 #dbgBtn:hover{opacity:1}
+html:not(.dbg) #dbgBtn{display:none}html:not(.dbg) #fsBtn{right:max(18px,env(safe-area-inset-right,0px))} /* no debug button in the game (Jackie, Nov 27: "get rid of the debug button"); it is still there for the tests, and for anyone who adds ?debug to the address */
 /* EVERYTHING YOU CAN TOUCH KEEPS AWAY FROM THE EDGES (Jackie, Nov 27: "anything touchable, like a button, should be a little bit away from the margins because sometimes they get covered by things"): the corner buttons sit 18px in, or clear of the phone's own cut-outs if those are wider, and the remote stands in from the right edge */
 #leaveBtn{position:absolute;left:max(18px,env(safe-area-inset-left,0px));top:calc(14px + var(--cut,0px));z-index:50;pointer-events:auto;font:inherit;font-weight:700;font-size:max(13px,calc(var(--S)*19px));padding:4px 11px;border-radius:999px;border:max(1px,calc(var(--S)*2px)) solid rgba(58,36,24,.55);background:rgba(253,235,201,.72);color:rgba(58,36,24,.9);cursor:pointer} /* the same cream button in every room (Jackie, Nov 27: "rooms is invisible in some scenes and cream colored in others. choose one"); in the study it used to be a faint dark pill */
 .screen.rooms{z-index:60}.rmtitle{margin:0;color:#fdebc9;font-size:max(18px,calc(var(--S)*34px))}
@@ -457,7 +458,7 @@ body.testing #testBadge{display:block}
 <div id="caption" role="status" aria-live="polite"><div class="ci tsb"><span class="ct"></span></div><div class="tail"></div></div>
 <button id="fsBtn" type="button" aria-label="Full screen">⛶</button>
 <button id="leaveBtn" type="button" aria-label="Go to another room">🚪 Rooms</button>
-<button id="dbgBtn" type="button">debug</button>
+<button id="dbgBtn" type="button">debug</button><script>if(/[?&](test|debug)\b/.test(location.search)||navigator.webdriver)document.documentElement.classList.add("dbg");</script>
 </div>
 </div>
 <!-- debug drawer and TEST MODE label sit outside the room, so they stay full size on phones -->
