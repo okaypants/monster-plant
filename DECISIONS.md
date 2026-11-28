@@ -2,6 +2,13 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Every book's pages are set cleanly (Nov 27)
+
+- Jackie: "reformat all of the books so they are clean and readable and wonderful".
+- In all fourteen books: the lines on a page come out near the same length, with no single word left alone on a last line; the words stay left-aligned (her choice of Nov 15) but the block of words now sits in the middle of the page, so the margins match; each page of a read has its page number at the foot; a closing line that says where something is from ("— Japan") is set smaller and to the right; a title page has a short rule under the title; a line in another language that is one line long sits in the middle of its page over its language name.
+- Poems keep their own line breaks, with a run-over line indented, and the whole poem sits in the middle of the page.
+- Every page of every read still fits at phone size (`tests/reading_shots.py`).
+
 ### Three of the five new books are taken out (Nov 27)
 
 - Jackie: "forget most of the new books. they are formatted poorly and they don't read very well", "i like the old ones better". Asked which to keep, she kept New poems, Small strange things and the four new Cats reads.

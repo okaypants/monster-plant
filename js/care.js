@@ -227,7 +227,7 @@ function placeStory(){if(!storyEl)return;const X=900,Y=470,w=640,h=320; // the r
  Object.assign(storyEl.style,{left:Math.min(Math.round(X*S),Math.round(W*S)-pw-6)+'px',top:Math.min(Math.round(Y*S),Math.round(H*S)-ph-6)+'px',width:pw+'px',height:ph+'px'});}
 addEventListener('resize',()=>setTimeout(placeStory,50));
 function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if(!r)return;const P=readPages(r.s);songButton(r);
- storyPage(storyEl.querySelector('.sl'),P[r.page]);storyPage(storyEl.querySelector('.sr'),P[r.page+1]);}
+ storyPage(storyEl.querySelector('.sl'),P[r.page],r.page);storyPage(storyEl.querySelector('.sr'),P[r.page+1],r.page+1);}
 // one page: words (poems keep their lines), or the title page: the title with who wrote it, or where it's told, underneath
 /* A page can carry the words in their original script (Jackie, Nov 16): {o: the original, l: its language code, e: the English}.
    The original has the left page to itself, in its own script, with its language named under it, and the English faces it on the
@@ -237,9 +237,16 @@ function showStory(){if(!storyEl)return;const r=READ.get(+storyEl.dataset.id);if
    line really ended. Now every written line is set as its own line with its run-over indented, as a printed book of poems does.
    A page that begins with a heading in capitals (A DOG. / LE PAPILLON) has that heading set bold, with its text under it as an
    ordinary paragraph. The words in another language are set the same way, at the left, when they have more than one line. */
-function storyLines(box,text){const L=String(text).split('\n');if(L.length<2){box.textContent=text;return false;}const head=/^[^a-zà-ÿ]*[A-ZÀ-ÜА-Я][^a-zà-ÿа-я]*$/.test(L[0])&&L[0].length<40,v=document.createElement('span');v.className='sverse';
- L.forEach((ln,i)=>{const d=document.createElement('span');d.className=head&&i===0?'sline shead':head&&L.length===2?'sline spara':'sline';d.textContent=ln+(i<L.length-1?'\n':'');v.appendChild(d);});box.appendChild(v);return true;}
-function storyPage(el,pg){el.textContent='';el.classList.remove('spoem');el.classList.toggle('stitle',!!(pg&&pg.t));el.classList.toggle('sfig',typeof pg==='string'&&pg.includes('\n')&&/^[A-Z\n]+$/.test(pg)); /* a charm written out as a figure (ABRACADABRA, the SATOR square) is set in the middle of its page in even letters, as a book would print it */
+/* EVERY PAGE SET CLEANLY (Jackie, Nov 27: "reformat all of the books so they are clean and readable and wonderful"). Four things, in
+   every book: (1) lines on a page come out near the same length, with no single word left alone on the last line (the browser's
+   own line balancing); (2) the words stay left-aligned, as she chose on Nov 15, but the block of words is measured and set in
+   the middle of the page, so the margins match; (3) a page of the read carries its page number at the foot; (4) a closing line
+   that says where something is from ("— Japan") is set smaller, to the right. Title pages get a small rule under the title. */
+function storyBlock(box,text){const s=document.createElement('span');s.className='stext';s.textContent=text;box.appendChild(s);storyTight(s);return s;}
+function storyTight(s){try{const r=document.createRange();r.selectNodeContents(s);const R=[...r.getClientRects()].filter(q=>q.width>0);if(!R.length)return;const w=Math.max(...R.map(q=>q.right))-Math.min(...R.map(q=>q.left));if(w>4)s.style.width=Math.ceil(w+1)+'px';}catch(e){}} // as wide as its longest line, so it can be centred
+function storyLines(box,text){const L=String(text).split('\n');if(L.length<2){storyBlock(box,text);return false;}const head=/^[^a-zà-ÿ]*[A-ZÀ-ÜА-Я][^a-zà-ÿа-я]*$/.test(L[0])&&L[0].length<40,v=document.createElement('span');v.className='sverse';
+ L.forEach((ln,i)=>{const d=document.createElement('span');d.className=head&&i===0?'sline shead':head&&L.length===2?'sline spara':i===L.length-1&&/^— /.test(ln)?'sline sattr':'sline';d.textContent=ln+(i<L.length-1?'\n':'');v.appendChild(d);});box.appendChild(v);return true;}
+function storyPage(el,pg,n){el.textContent='';el.classList.remove('spoem');if(n>0&&pg&&!pg.t&&!pg.orn)el.dataset.folio=n;else delete el.dataset.folio;el.classList.toggle('stitle',!!(pg&&pg.t));el.classList.toggle('sfig',typeof pg==='string'&&pg.includes('\n')&&/^[A-Z\n]+$/.test(pg)); /* a charm written out as a figure (ABRACADABRA, the SATOR square) is set in the middle of its page in even letters, as a book would print it */
  if(!pg||typeof pg==='string'){el.classList.remove('sleft','sornp');if(pg){if(el.classList.contains('sfig'))el.textContent=pg;else storyLines(el,pg);}return;}
 el.classList.toggle('sleft',!!(pg&&pg.o));el.classList.toggle('sornp',!!(pg&&pg.orn));
  if(pg.orn){const o=document.createElement('span');o.className='sorn';o.textContent='❦';o.setAttribute('aria-hidden','true');el.appendChild(o);return;} // a printer's flower on a page left open before a facing pair
