@@ -2,6 +2,11 @@
 
 Everything Jackie has decided about Monster Plant, with the reason. Add new entries at the top. The rules that never change are in [RULES.md](RULES.md).
 
+### Film collections say plainly what they are (Nov 27)
+
+- Jackie: "Film categories in the film library should be more explicit like the late show should just say b whatever movies".
+- Every collection has a plain name: Magic lantern is now Trick films and fairy tales; Paper, puppets and ink is now Early cartoons and puppets; Slapstick matinee is now Silent comedies; Things that swim is now Sea life; Small lives is now Flowers and insects; Colour before colour is now Early colour films; Pure light is now Abstract films; Dreams before breakfast is now Surreal shorts; City poems is now City films; Paper shadows is now Puppet and shadow films; Far away, long ago is now Early travel films; The machine hums is now Science and industry; Odd little films is now Sponsored and training films; Saturday cartoons is now Colour cartoons; Matinee classics is now Classic features; The late, late show is now B movies; Long silent evenings is now Silent features. One-minute films and Your films keep their names.
+
 ### A much bigger film library (Nov 27)
 
 - Jackie: "I want a much bigger film library", "including film and tv that have fallen into public domain before their time and other ephemera as good as what you've already found", "a larger quantity of viewing options", "just make it happen asap".
