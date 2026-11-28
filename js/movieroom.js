@@ -71,7 +71,7 @@ let mvNoteT=0;function mvNote(t,stay){const n=mvEl&&mvEl.querySelector('.mvnote'
    them pauses the film where it is. The remote starts and pauses the film, and opens the curtains first if they are closed. */
 function mvLoad(){const v=mvEl.querySelector('video'),f=mvFilm,src=mvSrc(f);if(v.dataset.film!==src){v.src=src;v.dataset.film=src;}
  if(mvSeekTo>0){const t=mvSeekTo,go=()=>{try{v.currentTime=Math.min(t,Math.max(0,(v.duration||t)-3));}catch(e){}};mvSeekTo=0;if(v.readyState>=1)go();else v.addEventListener('loadedmetadata',go,{once:true});} // a channel is joined part-way through
- v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=mvMode!=='film'||!!f.mute;return v;}
+ v.loop=!!f.loop;if(mvMode==='mine'&&!mvHasScore(f))mvMode='film';v.muted=!mvVol||mvMode!=='film'||!!f.mute;return v;}
 let mvBegun=null; // the film or channel item that has been started since the room was opened
 /* A LITTLE TICKET WHEN A FILM THAT CAN EARN ONE BEGINS (Jackie, Nov 27: "maybe show a little movie ticket and notify someone when they
    start a movie that's eligible for a ticket"). A film from the library that has not been watched to its end yet earns a ticket
@@ -129,7 +129,7 @@ function mvCatEnter(){if(!st.started){mvCat=null;return;}const sp=MV_CAT_SPOTS[M
 /* The knob is the room's own picture at every setting (Jackie, Nov 27: "the lights on and lights off switches are dif tho": with the lights up it had been covered by a differently drawn knob from the accessories sheet). A small dark mark on its dial shows the setting: at the top for up, then round to the right, the bottom and the left as the lights go down. */
 const MV_KNOB_C={x:1624,y:323},MV_KNOB_AT=[[0,-13],[13,0],[0,13],[-13,0]];
 const MV_KNOB={x:1592,y:290,w:64,h:68},MV_KNOB_TAP={x:1566,y:272,w:104,h:108},MV_LAMPS=[{x:0,y:112,w:100,h:170},{x:1570,y:112,w:100,h:158}], /* the knob's picture is small, and on a phone it was about a quarter of an inch across: too small to hit reliably (Jackie, Nov 27: "the light switch still isnt working"). Its tap area is now well over twice the size, and a tap on either wall lamp does the same thing. */MV_LIGHTS=[1,.62,.34,.14],MV_LIGHT_SAY=['Lights up.','Lights low.','Lights lower.','Lights nearly out.'];let mvSound=true,mvLight=0;
-function mvSoundSet(on){mvSound=!!on;if(!on)mvMode='off';else if(mvMode==='off')mvMode='film';mvSoundApply();}
+function mvSoundSet(on){mvVol=on?(mvVol||MV_VOL_MAX):0;mvSoundApply();}
 function mvLightApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),playing=mvState==='open'&&mvEl.dataset.paused!=='1'&&v&&v.getAttribute('src');
  const lv=playing?Math.max(mvLight,1):mvLight;mvEl.style.setProperty('--mvb',MV_LIGHTS[lv]);mvEl.dataset.light=lv;{const t=mvEl.querySelector('.mvknobtick'),p=MV_KNOB_AT[mvLight];t.style.cssText=mvPct({x:MV_KNOB_C.x+p[0]-4,y:MV_KNOB_C.y+p[1]-4,w:8,h:8});}mvEl.querySelectorAll('.mvsconce').forEach(e=>{e.hidden=lv!==0;});} // the wall lamps are lit only while the lights are right up; in the base picture they are off
 function mvLightStep(){mvLight=(mvLight+1)%MV_LIGHTS.length;sfx('tick');mvLightApply();mvNote(MV_LIGHT_SAY[mvLight]);}
@@ -149,11 +149,21 @@ function mvScoreStop(){if(mvScoreP)mvScoreP.stop();}
 /* A soundtrack is a set of parts on the film's timeline (js/scores.js); the player sounds whichever belong to the moment. It is
    asked again each time the film reports its place, so parts start and stop as the film reaches them. */
 function mvScoreTick(){if(!mvEl||!mvScoreP||mvMode!=='mine')return;const v=mvEl.querySelector('video');mvScoreP.sync(v.currentTime,!v.paused&&mvState==='open');}
-function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine=mvMode==='mine'&&mvHasScore(mvFilm);v.muted=mvMode!=='film'||!!(mvFilm&&mvFilm.mute);mvSound=mvMode!=='off';
+function mvSoundApply(){if(!mvEl)return;const v=mvEl.querySelector('video'),mine=mvMode==='mine'&&mvHasScore(mvFilm);v.muted=!mvVol||mvMode!=='film'||!!(mvFilm&&mvFilm.mute);try{v.volume=mvVol/MV_VOL_MAX;}catch(e){}mvSound=mvVol>0;
  if(!mine){mvScoreStop();return;}
- const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreTick();return;}
- mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreKey=k;mvScoreTick();});}
-function mvSoundStep(){const L=mvHasScore(mvFilm)?['film','mine','off']:['film','off'];mvMode=L[(L.indexOf(mvMode)+1)%L.length]||'film';sfx('tick');mvSoundApply();mvNote(mvMode==='film'?'The film’s own sound.':mvMode==='mine'?'Your soundtrack.':'Sound off.');}
+ const k=mvScoreFor(mvFilm);if(mvScoreKey===k&&mvScoreP){mvScoreP.vol(mvVol/MV_VOL_MAX);mvScoreTick();return;}
+ mvScoreStop();scoreGetKey(k).then(t=>{if(!t||!mvEl||mvScoreFor(mvFilm)!==k)return;if(mvScoreP)mvScoreP.free();mvScoreP=scorePlayer(t);mvScoreP.vol(mvVol/MV_VOL_MAX);mvScoreKey=k;mvScoreTick();});}
+/* THE RECEIVER IS A VOLUME CONTROL (Jackie, Nov 27: "i want it to lower or raise the volume and be called a receiver in the legend").
+   A tap on its left half turns the sound down a step, a tap on its right half turns it up: off, then four steps to full. It says
+   "Sound off." at the bottom and the step otherwise. Some phones (iPhones) do not let a page set how loud a film is, only whether it
+   sounds at all; there the receiver says just "Sound off." and "Sound on." Whether a film plays its own sound or your soundtrack
+   is no longer chosen here: a film picked from Your films plays your soundtrack, and the same film picked from its shelf plays its own. */
+const MV_VOL_MAX=4;let mvVol=MV_VOL_MAX,mvVolCan=null;
+function mvVolOk(){if(mvVolCan==null){try{const a=document.createElement('audio');a.volume=.5;mvVolCan=a.volume===.5;}catch(e){mvVolCan=false;}}return mvVolCan;}
+function mvSoundStep(e){const b=e&&e.currentTarget,r=b&&e.detail?b.getBoundingClientRect():null,d=r?(e.clientX<r.left+r.width/2?-1:1):0;sfx('tick');
+ if(!mvVolOk()){mvVol=mvVol?0:MV_VOL_MAX;mvSoundApply();mvNote(mvVol?'Sound on.':'Sound off.');return;}
+ mvVol=d?Math.max(0,Math.min(MV_VOL_MAX,mvVol+d)):(mvVol?mvVol-1:MV_VOL_MAX); /* from the keyboard there is one key: it steps down, and round to full again */
+ mvSoundApply();mvNote(mvVol?'Volume '+mvVol+' of '+MV_VOL_MAX+'.':'Sound off.');}
 function mvKalimbaFilms(){return MV_SHELVES.filter(q=>!q.talk).concat(MV_MORE);} function mvKalimbaSrc(f){return mvSrc(f);} // what the Kalimbasizer's page asks this one for (a page can call another page's functions, not read its constants)
 function kalimbaOpen(){return !!(kalEl&&kalEl.isConnected);}
 function openKalimba(){if(kalEl||!mvEl)return;mvTrayClose();const v=mvEl.querySelector('video');if(!v.paused){v.pause();mvEl.dataset.paused='1';mvLightApply();}mvScoreStop();
@@ -266,7 +276,7 @@ function mvChanPick(ch,fromStart){if(ch.live)return {it:{t:ch.about,d:0},off:0};
  if(!fromStart&&ch.on&&ch.leftAt&&now-ch.leftAt<MV_CH_HOLD){const pos=now-ch.on.t0;if(pos<ch.on.it.d-3)return {it:ch.on.it,off:pos};} // back within five minutes: the same thing is still on, further along by the time away
  const L=ch.list;let i=Math.floor(Math.random()*L.length);if(L.length>1&&ch.on&&L[i]===ch.on.it)i=(i+1+Math.floor(Math.random()*(L.length-1)))%L.length;const it=L[i],off=fromStart||it.ad||it.d<200?0:Math.floor(Math.random()*it.d*.7);ch.on={it,t0:now-off};return {it,off};}
 function mvTune(ch,fromStart){if(!mvEl||!ch)return;mvTicketOff();if(mvChan&&mvChan!==ch)mvChanLeave();if(mvChan!==ch||!ch.since)ch.since=Date.now()/1000;ch.leftAt=0;mvChan=ch;const a=mvChanPick(ch,fromStart),f=mvChanFilm(ch,a.it);mvSeekTo=a.off;mvRemShow();mvGuideClose();if(!fromStart)sfx('tick'); /* no click when one thing follows another on a channel, only when you change it yourself (Jackie, Nov 27: "no click between segments in channels") */
- if(mvState==='open'&&!mvInter){mvFilm=f;mvEl.dataset.paused='';if(mvMode==='mine')mvMode='film';mvStart();mvBanner(ch,ch.live?ch.about:a.it.t);mvNote('');}
+ if(mvState==='open'&&!mvInter){mvFilm=f;mvEl.dataset.paused='';mvMode='film';mvStart();mvBanner(ch,ch.live?ch.about:a.it.t);mvNote('');}
  else{mvChoose(f);mvChan=ch;setTimeout(()=>mvBanner(ch,ch.live?ch.about:a.it.t),900);}}
 function mvTuneBy(d){if(!MV_CH.length)return;const i=mvChan?MV_CH.indexOf(mvChan):(d>0?-1:0);mvTune(MV_CH[((i+d)%MV_CH.length+MV_CH.length)%MV_CH.length]);}
 function mvDigit(k){mvDigits=(mvDigits+k).slice(-2);mvRemShow();sfx('tick');clearTimeout(mvDigitT);mvDigitT=setTimeout(()=>{const n=+mvDigits;mvDigits='';const ch=MV_CH.find(c=>c.n===n);if(ch)mvTune(ch);else{mvNote('Nothing is on channel '+n+'.');mvRemShow();}},mvDigits.length>=2?350:1300);}
@@ -400,7 +410,7 @@ function mvPopPicOff(){if(mvPopFly){setTimeout(mvPopPicOff,500);return;}if(mvPop
 function mvPopUp(){if(!mvPopping||mvPopping.ending)return;const left=MV_POP_MIN-(performance.now()-mvPopping.t0),end=()=>{if(!mvPopping)return;clearTimeout(mvPopT);mvPopping=null;if(mvEl)mvOffer('corn');mvPopPicOff();}; /* the machine's popping picture stays while pieces are still flying out */
  if(left>0){mvPopping.ending=true;setTimeout(end,left);}else end();}
 /* choosing, then handing over */
-function mvOffer(kind){const L=kind==='corn'?MV_CORN:MV_SODA,pre=kind==='corn'?'acc_corn_':'acc_cup_';
+function mvOffer(kind){if(kind==='corn'&&!mvWho.length){mvNote('Nobody is here to have popcorn.');return;} /* with no monster in the room the buckets offer nothing; the machine still pops (Jackie, Nov 27: "i don't want the popcorn to offer me selections if there's no monster in there. but i do want thepopping !!") */const L=kind==='corn'?MV_CORN:MV_SODA,pre=kind==='corn'?'acc_corn_':'acc_cup_';
  const el=mvPanel('mvoffer','<div class="mvplist"><h2>'+(kind==='corn'?'Popcorn':'Soda')+'</h2><div class="mvtiles">'+L.map(([id,name])=>'<button type="button" class="mvtile" data-id="'+id+'"><img'+(id==='swamp'?' class="mvswamp"':'')+' src="movieroom/'+pre+(id==='swamp'?'yellow':id)+'.png" alt="" draggable="false"><span>'+name+'</span></button>').join('')+'</div></div>');
  el.querySelectorAll('.mvtile').forEach(b=>b.onclick=()=>{const it=L.find(q=>q[0]===b.dataset.id);mvHand(kind,it[0],it[1].replace(/ \(.*/,''));});}
 function mvHand(kind,id,name){mvTrayClose();if(kind==='soda')mvOver('mvpour','movieroom/acc_soda_pour_'+(id==='swamp'?'yellow':id)+'.png',MV_ON.pour,1400);
@@ -574,7 +584,7 @@ function mvPick(sh){if(!mvEl)return;mvPickClose();sfx('tick');sh=sh||mvLast;mvLa
   '<div class="mvptabs">'+sibs.map(q=>'<button type="button" class="mvptab'+(q===sh?' on':'')+'" data-id="'+q.id+'" data-n="'+q.films.length+'">'+q.name+'</button>').join('')+'</div>'+
   '<div class="mvplist"><h2>'+sh.name+'</h2><p>'+sh.about+'</p>'+(sh===MV_MINE?'<div class="mvmine"></div>':'')+
   sh.films.map((f,i)=>'<button type="button" class="mvpfilm" data-i="'+i+'"><b>'+f.t+'</b><span>'+f.by+' · '+f.len+(seen.includes(f.id)?' · seen':'')+'</span></button>').join('')+'</div></div><button type="button" class="mvpx" aria-label="Close">×</button></div>';
- mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>mvChoose(sh.films[+b.dataset.i]));mvPickEl.querySelector('.mvpx').onclick=mvPickClose;/* no "Tonight's film" button (Jackie, Nov 27: "I don't want a 'tonight's film' either") */mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
+ mvPickEl.querySelectorAll('.mvpfilm').forEach(b=>b.onclick=()=>{mvMode='film';mvChoose(sh.films[+b.dataset.i]);});mvPickEl.querySelector('.mvpx').onclick=mvPickClose;/* no "Tonight's film" button (Jackie, Nov 27: "I don't want a 'tonight's film' either") */mvPickEl.querySelectorAll('.mvptab').forEach(b=>b.onclick=()=>mvPick(sibs.find(q=>q.id===b.dataset.id)));if(sh===MV_MINE)mvPickMine();
  mvPickEl.onclick=e=>{if(e.target===mvPickEl)mvPickClose();};ui.appendChild(mvPickEl);}
 function openMovieRoom(){
  if(mvEl)return;
@@ -587,7 +597,7 @@ function openMovieRoom(){
   '<img class="mvover mvsconce" src="movieroom/sconce_l_lit.png" alt="" draggable="false" style="'+mvPct({x:0,y:100,w:106,h:200})+'"><img class="mvover mvsconce" src="movieroom/sconce_r_lit.png" alt="" draggable="false" style="'+mvPct({x:1564,y:100,w:106,h:200})+'">'+
   '<i class="mvknobtick"></i>'+
   '<button type="button" class="mvhot mvknob" aria-label="Room lights" style="'+mvPct(MV_KNOB_TAP)+'"></button>'+MV_LAMPS.map(r=>'<button type="button" class="mvhot mvlamp" aria-label="Room lights" style="'+mvPct(r)+'"></button>').join('')+
-  '<button type="button" class="mvhot mvamp" aria-label="Sound on or off" style="'+mvPct(MV_AMP)+'"></button>'+
+  '<button type="button" class="mvhot mvamp" aria-label="Receiver: quieter on the left, louder on the right" style="'+mvPct(MV_AMP)+'"></button>'+
   '<button type="button" class="mvhot mvremote" aria-label="The remote" style="'+mvPct(MV_REMOTE)+'"></button>'+
   '<img class="mvcat" alt="The cat" draggable="false" hidden>'+
   '<div class="mvnote" hidden></div><button type="button" class="mvback" aria-label="Go to another room">🚪 Rooms</button></div>';
